@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0 auto 40px;
+  max-width: 375px;
+  line-height: 1.5rem;
+  background-color: #EAF2F1;
+  color: #133d38;
+}
+
+.rc-slider-handle-dragging {
+  box-shadow: none !important;
+}
