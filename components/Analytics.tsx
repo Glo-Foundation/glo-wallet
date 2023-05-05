@@ -5,7 +5,7 @@ export default function Analytics() {
     <>
       <Script
         src="/pl/js/script.js"
-        data-domain="impact.glodollar.org"
+        data-domain="wallet.glodollar.org"
         data-api="/pl/api/event"
         defer
       />
