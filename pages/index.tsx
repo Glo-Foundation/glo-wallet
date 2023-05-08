@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className="mt-4 px-2.5">
       <Navbar />
-      <div className="font-semibold text-[1.75rem] mb-4">Impact calculator</div>
+      <div className="font-semibold text-[1.75rem] mb-4">Glo Wallet</div>
       <div className="mb-8">
         Calculate how you can help end extreme poverty by owning Glo.
       </div>
