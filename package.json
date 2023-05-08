@@ -21,6 +21,7 @@
     "@web3auth/web3auth-wagmi-connector": "^3.0.2",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
+    "ethers": "^5.7.2",
     "next": "13.1.6",
     "rc-slider": "^10.1.1",
     "react": "18.2.0",

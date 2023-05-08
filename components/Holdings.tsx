@@ -1,7 +1,9 @@
+import { utils } from "ethers";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useEffect } from "react";
+import { useAccount, useBalance } from "wagmi";
 
 type Props = {
   glo: number;
@@ -59,6 +61,19 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
     // Fallback value enough for 4 digits
     return 116;
   };
+
+  const { address } = useAccount();
+  const { data: balance } = useBalance({
+    address,
+    token: process.env.NEXT_PUBLIC_USDGLO as any,
+  });
+
+  useEffect(() => {
+    const val = balance?.value;
+    if (val && !val.isZero()) {
+      setGlo(parseFloat(utils.formatEther(val)));
+    }
+  }, [balance]);
 
   useEffect(() => {
     const gloInput = document.getElementById("gloInput");

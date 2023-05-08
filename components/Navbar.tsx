@@ -7,6 +7,7 @@ export default function Navbar() {
     useConnect();
   const { data: balance, refetch } = useBalance({
     address,
+    token: process.env.NEXT_PUBLIC_USDGLO as any,
   });
   const { disconnect } = useDisconnect();
 
