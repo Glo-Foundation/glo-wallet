@@ -1,14 +1,17 @@
 import {
   ADAPTER_EVENTS,
+  CHAIN_NAMESPACES,
   CONNECTED_EVENT_DATA,
   WALLET_ADAPTERS,
   WALLET_ADAPTER_TYPE,
 } from "@web3auth/base";
 import { ModalConfig, Web3Auth } from "@web3auth/modal";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
+import { Chain } from "wagmi";
 
-export const createWeb3Auth = () => {
-  const web3Auth = new Web3Auth({
+export const Web3AuthConnectorInstance = (chains: Chain[]) => {
+  const web3AuthInstance = new Web3Auth({
     clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENTID!,
     authMode: "WALLET", // https://web3auth.io/docs/sdk/web/modal/initialize
     uiConfig: {
@@ -23,15 +26,12 @@ export const createWeb3Auth = () => {
     },
 
     chainConfig: {
-      chainNamespace: "eip155",
-      chainId: "0x13881", // hex of 80001, polygon testnet
-      rpcTarget: "https://rpc.ankr.com/polygon_mumbai",
-      // Avoid using public rpcTarget in production.
-      // Use services like Infura, Quicknode etc
-      displayName: "Polygon Mumbai Testnet",
-      blockExplorer: "https://mumbai.polygonscan.com/",
-      ticker: "MATIC",
-      tickerName: "Matic",
+      chainNamespace: CHAIN_NAMESPACES.EIP155,
+      chainId: "0x" + chains[0].id.toString(16),
+      rpcTarget: chains[0].rpcUrls.default.http[0], // This is the public RPC we have added, please pass on your own endpoint while creating an app
+      displayName: chains[0].name,
+      tickerName: chains[0].nativeCurrency?.name,
+      ticker: chains[0].nativeCurrency?.symbol,
     },
     enableLogging: true,
   });
@@ -57,8 +57,14 @@ export const createWeb3Auth = () => {
       },
     },
   });
-  web3Auth.configureAdapter(openloginAdapter);
-  return web3Auth;
+  web3AuthInstance.configureAdapter(openloginAdapter);
+
+  return new Web3AuthConnector({
+    chains: chains,
+    options: {
+      web3AuthInstance,
+    },
+  });
 };
 
 const BLOCKED_METHODS = [

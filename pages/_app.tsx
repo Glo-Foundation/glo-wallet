@@ -2,6 +2,23 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import localFont from "@next/font/local";
 import Analytics from "@/components/Analytics";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+
+import { publicProvider } from "wagmi/providers/public";
+import { polygonMumbai } from "wagmi/chains";
+import { Web3AuthConnectorInstance } from "@/lib/web3uath";
+
+const { chains, provider, webSocketProvider } = configureChains(
+  [polygonMumbai],
+  [publicProvider()]
+);
+
+const client = createClient({
+  autoConnect: true,
+  connectors: [Web3AuthConnectorInstance(chains)],
+  provider,
+  webSocketProvider,
+});
 
 const neueHaasGrotesk = localFont({
   src: [
@@ -40,7 +57,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
-        <Component {...pageProps} />
+        <WagmiConfig client={client}>
+          <Component {...pageProps} />
+        </WagmiConfig>
       </main>
     </>
   );
