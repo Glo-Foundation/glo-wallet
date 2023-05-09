@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import JoinTheMovement from "@/components/JoinTheMovement";
 import EnoughToBuy from "@/components/EnoughToBuy";
-import Holdings from "@/components/Holdings";
+import Balance from "@/components/Balance";
 import { useState } from "react";
 import { getTotalYield } from "@/utils";
 
@@ -20,7 +20,7 @@ export default function Home() {
         Calculate how you can help end extreme poverty by owning Glo.
       </div>
       <div className="flex flex-col space-y-10">
-        <Holdings glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
+        <Balance glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
         <EnoughToBuy yearlyYield={yearlyYield} />
         <JoinTheMovement isIframe={false} />
       </div>
