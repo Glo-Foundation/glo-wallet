@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "white": "#FFFFFF",
+        white: "#FFFFFF",
         "cyan-600": "#24E5DF",
         "pine-50": "#F4F9F8",
         "pine-100": "#EAF2F1",
@@ -21,10 +21,10 @@ module.exports = {
         "pine-900": "#133D38",
       },
       fontFamily: {
-        polysans: ['var(--font-polysans)'],
-        neuehaasgrotesk: ['var(--font-neuehaasgrotesk)'],
-      }
+        polysans: ["var(--font-polysans)"],
+        neuehaasgrotesk: ["var(--font-neuehaasgrotesk)"],
+      },
     },
   },
   plugins: [],
-}
+};

@@ -7,5 +7,5 @@ export default function Navbar() {
         <Image src="/glo-logo.svg" alt="glo logo" width={74} height={26} />
       </a>
     </nav>
-  )
+  );
 }
