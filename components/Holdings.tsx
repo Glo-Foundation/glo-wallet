@@ -9,7 +9,7 @@ type Props = {
   yearlyYield: number;
 };
 
-export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
+export default function Balance({ glo, setGlo, yearlyYield }: Props) {
   const gloOnInputChange = (e: { target: { value: any } }) => {
     let newGloQuantity = e.target.value;
 
