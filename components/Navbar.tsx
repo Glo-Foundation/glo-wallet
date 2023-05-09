@@ -15,6 +15,7 @@ export default function Navbar() {
     <nav className="mb-9">
       <a href="https://glodollar.org/">
         <Image src="/glo-logo.svg" alt="glo logo" width={74} height={26} />
+        {`https://${process.env.NEXT_PUBLIC_VERCEL_URL}`}
       </a>
       {isConnected ? (
         <>

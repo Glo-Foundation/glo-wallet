@@ -43,6 +43,7 @@ export const Web3AuthConnectorInstance = (chains: Chain[]) => {
     },
     adapterSettings: {
       whiteLabel: {
+        url: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
         name: "Glo Wallet",
         logoLight:
           "https://dashboard-public-assets.s3.amazonaws.com/glo_dollar_logo_pine.png",
