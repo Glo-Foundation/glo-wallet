@@ -13,19 +13,25 @@ type Props = {
 export default function Transactions({ transactions }: Props) {
   const [txnsState, setTxnsState] = useState("hidden");
   const renderTransactions = txns => txns.map((txn, idx) =>
-    <li key={idx}>
-      <span>{txn.from}</span>
-      <span>{txn.to}</span>
-      <span>{txn.amount}</span>
+    <li key={idx} className="border">
+      <div>From: {txn.from}</div>
+      <div>To: {txn.to}</div>
+      <div>Amount: {txn.amount}</div>
     </li>
   );
+  const toggleDropdown = () => txnsState === "hidden"
+    ? setTxnsState("list-item")
+    : setTxnsState("hidden");
+
   return (
-    <div className="bg-white rounded-[20px] p-8">
+    <div className="bg-white rounded-[20px] p-8 transition-all">
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">Transactions</div>
-        <Image className="cursor-pointer" src="/down-caret.svg" width={16} height={16} />
+        <button onClick={toggleDropdown}>
+          <Image className="cursor-pointer" src="/down-caret.svg" width={16} height={16} />
+        </button>
       </div>
-      <ul className={txnsState}>
+      <ul className={`mt-12 ${txnsState}`}>
         {renderTransactions(transactions)}
       </ul>
     </div>
