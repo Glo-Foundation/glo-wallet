@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
-import CTA from "@/components/CTA";
-import EnoughToBuy from "@/components/EnoughToBuy";
 import Balance from "@/components/Balance";
+import CTA from "@/components/CTA";
+import Transactions from "@/components/Transactions";
 import { useState } from "react";
 import { getTotalYield } from "@/utils";
 
@@ -26,7 +26,7 @@ export default function Home() {
 
   return (
     <div className="mt-4 px-2.5">
-      <Navbar />
+      <Header />
       <div className="flex flex-col space-y-10">
         <Balance glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
         <Transactions transactions={transactions} />
