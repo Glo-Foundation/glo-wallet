@@ -65,6 +65,7 @@ export const Web3AuthConnectorInstance = (chains: Chain[]) => {
     chains: chains,
     options: {
       web3AuthInstance,
+      modalConfig,
     },
   });
 };
@@ -84,38 +85,36 @@ const BLOCKED_METHODS = [
   "wechat",
 ];
 
-export const modalConfig: Record<WALLET_ADAPTER_TYPE, ModalConfig> = {
-  modalConfig: {
-    label: "config",
-    [WALLET_ADAPTERS.OPENLOGIN]: {
-      loginMethods: {
-        passwordless: {
-          name: "Email",
-          logoDark:
-            "https://cdn.icon-icons.com/icons2/614/PNG/512/email-envelope-outline-shape-with-rounded-corners_icon-icons.com_56530.png",
-          showOnDesktop: true,
-          showOnMobile: true,
-          showOnModal: true,
-        },
-        google: {
-          name: "Google",
-          logoDark:
-            "https://cdn.icon-icons.com/icons2/836/PNG/512/Google_icon-icons.com_66793.png",
-          showOnDesktop: true,
-          showOnMobile: true,
-          showOnModal: true,
-        },
-        ...BLOCKED_METHODS.reduce(
-          (acc, cur) => ({
-            ...acc,
-            [cur]: {
-              name: cur,
-              showOnModal: false,
-            },
-          }),
-          {}
-        ),
+export const modalConfig: Record<string, ModalConfig> = {
+  [WALLET_ADAPTERS.OPENLOGIN]: {
+    label: "openlogin",
+    loginMethods: {
+      passwordless: {
+        name: "Email",
+        logoDark:
+          "https://cdn.icon-icons.com/icons2/614/PNG/512/email-envelope-outline-shape-with-rounded-corners_icon-icons.com_56530.png",
+        showOnDesktop: true,
+        showOnMobile: true,
+        showOnModal: true,
       },
+      google: {
+        name: "Google",
+        logoDark:
+          "https://cdn.icon-icons.com/icons2/836/PNG/512/Google_icon-icons.com_66793.png",
+        showOnDesktop: true,
+        showOnMobile: true,
+        showOnModal: true,
+      },
+      ...BLOCKED_METHODS.reduce(
+        (acc, cur) => ({
+          ...acc,
+          [cur]: {
+            name: cur,
+            showOnModal: false,
+          },
+        }),
+        {}
+      ),
     },
   },
 };

@@ -18,7 +18,7 @@ export default function Navbar() {
       </a>
       {isConnected ? (
         <>
-          <button onClick={() => disconnect}>[Disconnect]</button>
+          <button onClick={() => disconnect()}>[Disconnect]</button>
           <div>
             {address?.slice(0, 5)}...
             {address?.slice(-3)}
