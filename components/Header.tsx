@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function Navbar() {
+export default function Header() {
   return (
     <nav className="mb-9 mt-6">
       <a href="https://glodollar.org/">

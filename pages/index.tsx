@@ -1,5 +1,5 @@
-import Navbar from "@/components/Navbar";
-import JoinTheMovement from "@/components/JoinTheMovement";
+import Header from "@/components/Header";
+import CTA from "@/components/CTA";
 import EnoughToBuy from "@/components/EnoughToBuy";
 import Balance from "@/components/Balance";
 import { useState } from "react";
@@ -11,13 +11,26 @@ export default function Home() {
   const totalDays = 365;
   const yearlyInterestRate = 0.027;
   const yearlyYield = getTotalYield(yearlyInterestRate, glo, totalDays);
+  const transactions = [
+    {
+      from: "me",
+      to: "glo",
+      amount: "1 bajillion Globules",
+    },
+    {
+      from: "me",
+      to: "rad",
+      amount: "1 bajillion Narwhals",
+    },
+  ];
 
   return (
     <div className="mt-4 px-2.5">
       <Navbar />
       <div className="flex flex-col space-y-10">
         <Balance glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
-        <JoinTheMovement isIframe={false} />
+        <Transactions transactions={transactions} />
+        <CTA />
       </div>
     </div>
   );
