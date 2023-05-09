@@ -41,9 +41,10 @@ export const Web3AuthConnectorInstance = (chains: Chain[]) => {
       mfaLevel: "default", // https://web3auth.io/docs/sdk/web/openlogin#custom-authentication-within-web3auth-modal
       loginProvider: "email_passwordless",
     },
+
     adapterSettings: {
+      network: "testnet",
       whiteLabel: {
-        url: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
         name: "Glo Wallet",
         logoLight:
           "https://dashboard-public-assets.s3.amazonaws.com/glo_dollar_logo_pine.png",
