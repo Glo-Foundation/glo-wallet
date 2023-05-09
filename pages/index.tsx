@@ -15,13 +15,8 @@ export default function Home() {
   return (
     <div className="mt-4 px-2.5">
       <Navbar />
-      <div className="font-semibold text-[1.75rem] mb-4">Impact calculator</div>
-      <div className="mb-8">
-        Calculate how you can help end extreme poverty by owning Glo.
-      </div>
       <div className="flex flex-col space-y-10">
         <Balance glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
-        <EnoughToBuy yearlyYield={yearlyYield} />
         <JoinTheMovement isIframe={false} />
       </div>
     </div>
