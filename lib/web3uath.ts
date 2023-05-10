@@ -4,6 +4,7 @@ import {
   CONNECTED_EVENT_DATA,
   WALLET_ADAPTERS,
 } from "@web3auth/base";
+import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import { ModalConfig, Web3Auth } from "@web3auth/modal";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { TorusWalletConnectorPlugin } from "@web3auth/torus-wallet-connector-plugin";
@@ -11,15 +12,16 @@ import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { Chain } from "wagmi";
 
 export const torusPlugin = new TorusWalletConnectorPlugin({
-  torusWalletOpts: {},
+  // torusWalletOpts: {},
   walletInitOptions: {
     whiteLabel: {
-      theme: { isDark: true, colors: { primary: "#00a8ff" } },
+      theme: { isDark: false, colors: { primary: "#00a8ff" } },
       logoDark: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
       logoLight: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
     },
     useWalletConnect: true,
     enableLogging: true,
+    showTorusButton: false,
   },
 });
 
@@ -74,8 +76,13 @@ export const Web3AuthConnectorInstance = (
       },
     },
   });
-  web3AuthInstance.configureAdapter(openloginAdapter);
   web3AuthInstance.addPlugin(torusPlugin);
+
+  web3AuthInstance.configureAdapter(openloginAdapter);
+
+  const metamaskAdapter = new MetamaskAdapter();
+
+  web3AuthInstance.configureAdapter(metamaskAdapter);
 
   return new Web3AuthConnector({
     chains: chains,
