@@ -7,6 +7,9 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { polygonMumbai } from "wagmi/chains";
 import { Web3AuthConnectorInstance } from "@/lib/web3uath";
+import { createContext, useState } from "react";
+import Modal from "react-modal";
+import { ModalContext } from "@/lib/context";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [polygonMumbai],
@@ -50,7 +53,33 @@ const polySans = localFont({
   display: "swap",
 });
 
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
+Modal.setAppElement("#__next");
+
 export default function App({ Component, pageProps }: AppProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(<div />);
+
+  function openModal(content: JSX.Element) {
+    setModalContent(content);
+    setIsModalOpen(true);
+  }
+
+  function afterOpenModal() {}
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
+
   return (
     <>
       <Analytics />
@@ -58,8 +87,18 @@ export default function App({ Component, pageProps }: AppProps) {
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
         <WagmiConfig client={client}>
-          <Component {...pageProps} />
+          <ModalContext.Provider value={openModal}>
+            <Component {...pageProps} />
+          </ModalContext.Provider>
         </WagmiConfig>
+        <Modal
+          isOpen={isModalOpen}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={customStyles}
+        >
+          {modalContent}
+        </Modal>
       </main>
     </>
   );

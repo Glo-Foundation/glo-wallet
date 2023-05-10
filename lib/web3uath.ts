@@ -3,14 +3,29 @@ import {
   CHAIN_NAMESPACES,
   CONNECTED_EVENT_DATA,
   WALLET_ADAPTERS,
-  WALLET_ADAPTER_TYPE,
 } from "@web3auth/base";
 import { ModalConfig, Web3Auth } from "@web3auth/modal";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import { TorusWalletConnectorPlugin } from "@web3auth/torus-wallet-connector-plugin";
 import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { Chain } from "wagmi";
 
-export const Web3AuthConnectorInstance = (chains: Chain[]) => {
+export const torusPlugin = new TorusWalletConnectorPlugin({
+  torusWalletOpts: {},
+  walletInitOptions: {
+    whiteLabel: {
+      theme: { isDark: true, colors: { primary: "#00a8ff" } },
+      logoDark: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
+      logoLight: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
+    },
+    useWalletConnect: true,
+    enableLogging: true,
+  },
+});
+
+export const Web3AuthConnectorInstance = (
+  chains: Chain[]
+): Web3AuthConnector => {
   const web3AuthInstance = new Web3Auth({
     clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENTID!,
     authMode: "WALLET", // https://web3auth.io/docs/sdk/web/modal/initialize
@@ -60,6 +75,7 @@ export const Web3AuthConnectorInstance = (chains: Chain[]) => {
     },
   });
   web3AuthInstance.configureAdapter(openloginAdapter);
+  web3AuthInstance.addPlugin(torusPlugin);
 
   return new Web3AuthConnector({
     chains: chains,
