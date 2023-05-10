@@ -7,8 +7,7 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { polygonMumbai } from "wagmi/chains";
 import { Web3AuthConnectorInstance } from "@/lib/web3uath";
-import { createContext, useState } from "react";
-import Modal from "react-modal";
+import { createContext, useEffect, useRef, useState } from "react";
 import { ModalContext } from "@/lib/context";
 
 const { chains, provider, webSocketProvider } = configureChains(
@@ -53,32 +52,26 @@ const polySans = localFont({
   display: "swap",
 });
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-Modal.setAppElement("#__next");
-
 export default function App({ Component, pageProps }: AppProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(<div />);
 
-  function openModal(content: JSX.Element) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const openModal = (content: JSX.Element) => {
     setModalContent(content);
-    setIsModalOpen(true);
-  }
+    dialogRef.current?.showModal();
+  };
 
-  function afterOpenModal() {}
+  const closeModal = () => {
+    setModalContent(<div />);
+    dialogRef.current?.close();
+  };
 
-  function closeModal() {
-    setIsModalOpen(false);
-  }
+  useEffect(() => {
+    dialogRef.current?.addEventListener("click", () => closeModal());
+    contentRef.current?.addEventListener("click", (e) => e.stopPropagation());
+  }, [dialogRef]);
 
   return (
     <>
@@ -91,14 +84,9 @@ export default function App({ Component, pageProps }: AppProps) {
             <Component {...pageProps} />
           </ModalContext.Provider>
         </WagmiConfig>
-        <Modal
-          isOpen={isModalOpen}
-          onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
-          style={customStyles}
-        >
-          {modalContent}
-        </Modal>
+        <dialog className="p-0" ref={dialogRef}>
+          <div ref={contentRef}>{modalContent}</div>
+        </dialog>
       </main>
     </>
   );
