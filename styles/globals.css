@@ -13,3 +13,9 @@ body {
 .rc-slider-handle-dragging {
   box-shadow: none !important;
 }
+
+@layer base {
+  h2 {
+    @apply text-xl font-bold;
+  }
+}

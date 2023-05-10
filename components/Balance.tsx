@@ -40,7 +40,7 @@ export default function Balance({ glo, setGlo, yearlyYield }: Props) {
       </div>
       <div className="flex flex-col bg-cyan-600/20 rounded-[24px] mx-1 mb-1 px-5 pb-3">
         <div className="overflow-hidden">
-          <div className="h-3.5 w-3.5 bg-white -rotate-45 transform origin-top-left translate-x-36"></div>
+          <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-36"></div>
         </div>
         <div className="flex w-full justify-between space-y-2">
           <div>

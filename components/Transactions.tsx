@@ -13,10 +13,10 @@ type Props = {
 export default function Transactions({ transactions }: Props) {
   const [txnsState, setTxnsState] = useState("hidden");
   const renderTransactions = txns => txns.map((txn, idx) =>
-    <li key={idx} className="border">
-      <div>From: {txn.from}</div>
-      <div>To: {txn.to}</div>
-      <div>Amount: {txn.amount}</div>
+    <li key={idx} className="py-4 border-y">
+      <div className="flex justify-between"><b>From:</b> {txn.from}</div>
+      <div className="flex justify-between"><b>To:</b> {txn.to}</div>
+      <div className="flex justify-between"><b>Amount:</b> {txn.amount} USDGLO</div>
     </li>
   );
   const toggleDropdown = () => txnsState === "hidden"

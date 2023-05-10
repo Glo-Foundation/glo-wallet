@@ -15,12 +15,12 @@ export default function Home() {
     {
       from: "me",
       to: "glo",
-      amount: "1 bajillion Globules",
+      amount: "1.001",
     },
     {
       from: "me",
       to: "rad",
-      amount: "1 bajillion Narwhals",
+      amount: "3.52",
     },
   ];
 
