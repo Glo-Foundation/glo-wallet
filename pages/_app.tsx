@@ -69,8 +69,14 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   useEffect(() => {
-    dialogRef.current?.addEventListener("click", () => closeModal());
-    contentRef.current?.addEventListener("click", (e) => e.stopPropagation());
+    const closeModalEvent = () => closeModal();
+    const stopPropagationEvent = (e: MouseEvent) => e.stopPropagation();
+    dialogRef.current?.addEventListener("click", closeModalEvent);
+    contentRef.current?.addEventListener("click", stopPropagationEvent);
+    return () => {
+      dialogRef.current?.removeEventListener("click", closeModalEvent);
+      contentRef.current?.removeEventListener("click", stopPropagationEvent);
+    };
   }, [dialogRef]);
 
   return (
