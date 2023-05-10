@@ -12,7 +12,7 @@ type Props = {
 
 export default function Transactions({ transactions }: Props) {
   const [txnsState, setTxnsState] = useState("hidden");
-  const renderTransactions = txns => txns.map((txn, idx) =>
+  const renderTransactions = (txns: Transaction[]) => txns.map((txn, idx) =>
     <li key={idx} className="py-4 border-y">
       <div className="flex justify-between"><b>From:</b> {txn.from}</div>
       <div className="flex justify-between"><b>To:</b> {txn.to}</div>
@@ -28,7 +28,7 @@ export default function Transactions({ transactions }: Props) {
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">Transactions</div>
         <button onClick={toggleDropdown}>
-          <Image className="cursor-pointer" src="/down-caret.svg" width={16} height={16} />
+          <Image className="cursor-pointer" src="/down-caret.svg" width={16} height={16} alt="down-arrow"/>
         </button>
       </div>
       <ul className={`mt-12 ${txnsState}`}>

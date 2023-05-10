@@ -44,7 +44,7 @@ export default function Balance({ glo, setGlo, yearlyYield }: Props) {
         </div>
         <div className="flex w-full justify-between space-y-2">
           <div>
-            <Image className="inline mr-2 align-botom" src="/glo-logo.svg" height={28} width={28} />
+            <Image className="inline mr-2 align-botom" src="/glo-logo.svg" alt="glo" height={28} width={28} />
             ${formattedYearlyYield} / year
           </div>
           <EnoughToBuy yearlyYield={yearlyYield} />

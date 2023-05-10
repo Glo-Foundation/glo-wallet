@@ -23,17 +23,17 @@ const CTAs: CTA[] = [
   }
 ];
 export default function CTA() {
-  const renderCTAs = ctas => ctas.map((cta, idx) =>
+  const renderCTAs = (ctas: CTA[]) => ctas.map((cta, idx) =>
     <li key={idx} className="flex items-center py-4 border-y">
       <div className="mr-8 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
-        <Image src={cta.iconPath} width={16} height={16} />
+        <Image src={cta.iconPath} width={16} height={16} alt="call to action" />
       </div>
       <div>
         <h2>{cta.title}</h2>
         <span className="font-thin">{cta.description}</span>
       </div>
       <a href={cta.link}>
-        <Image src="/arrow-right.svg" width={50} height={100}/>
+        <Image src="/arrow-right.svg" width={50} height={100} alt="arrow-right" />
       </a>
     </li>
   );
