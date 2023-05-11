@@ -37,7 +37,6 @@ const SendForm = ({ close }: { close: () => void }) => {
       sendForm.address,
       utils.parseEther(sendForm.amount)
     );
-    console.log({ x });
     setHash(x.hash);
   };
 
