@@ -14,7 +14,7 @@ import UsdgloContract from "@/abi/usdglo.json";
 import { ModalContext } from "@/lib/context";
 import { torusPlugin } from "@/lib/web3uath";
 
-const SendForm = ({ _close }: { _close: () => void }) => {
+const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
     address: "0x...",
     amount: "0.1",
