@@ -1,9 +1,66 @@
 import { ModalContext } from "@/lib/context";
 import { torusPlugin } from "@/lib/web3uath";
+import { ethers, utils } from "ethers";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
-import { useContext } from "react";
-import { useAccount, useBalance, useConnect, useDisconnect } from "wagmi";
+import { useContext, useEffect, useState } from "react";
+import {
+  useAccount,
+  useBalance,
+  useConnect,
+  useDisconnect,
+  usePrepareSendTransaction,
+  useSendTransaction,
+  useWaitForTransaction,
+  useContract,
+  useSigner,
+} from "wagmi";
+import UsdgloContract from "@/abi/usdglo.json";
+
+const SendForm = ({ close }: { close: () => void }) => {
+  const [sendForm, setSendForm] = useState({
+    address: "0x...",
+    amount: "0.1",
+  });
+  const [hash, setHash] = useState();
+
+  const { data: signer, isError, isLoading } = useSigner();
+
+  const contract = useContract({
+    address: process.env.NEXT_PUBLIC_USDGLO!,
+    abi: UsdgloContract,
+    signerOrProvider: signer,
+  });
+
+  const send = async () => {
+    const x = await contract?.transfer(
+      sendForm.address,
+      utils.parseEther(sendForm.amount)
+    );
+    console.log({ x });
+    setHash(x.hash);
+  };
+
+  return (
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await send();
+      }}
+    >
+      <input
+        value={sendForm.address}
+        onChange={(e) => setSendForm({ ...sendForm, address: e.target.value })}
+      />
+      <input
+        value={sendForm.amount}
+        onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
+      />
+      <button disabled={hash!!}>send</button>
+      {hash && <div>Sent with hash {hash}</div>}
+    </form>
+  );
+};
 
 export default function Navbar() {
   const { address, connector, isConnected } = useAccount();
@@ -15,7 +72,7 @@ export default function Navbar() {
   });
   const { disconnect } = useDisconnect();
 
-  const openModal = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const buy = async () => {
     if (!torusPlugin.torusWalletInstance.isInitialized) {
@@ -51,12 +108,7 @@ export default function Navbar() {
   };
 
   const transfer = async () => {
-    openModal(
-      <div>
-        <input value={"0x..."} />
-        <button>send</button>
-      </div>
-    );
+    openModal(<SendForm close={closeModal} />);
   };
 
   return (

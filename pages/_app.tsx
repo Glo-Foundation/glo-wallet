@@ -2,13 +2,13 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import localFont from "@next/font/local";
 import Analytics from "@/components/Analytics";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
-
-import { publicProvider } from "wagmi/providers/public";
-import { polygonMumbai } from "wagmi/chains";
 import { Web3AuthConnectorInstance } from "@/lib/web3uath";
 import { createContext, useEffect, useRef, useState } from "react";
 import { ModalContext } from "@/lib/context";
+import { publicProvider } from "@wagmi/core/providers/public";
+
+import { polygonMumbai } from "@wagmi/core/chains";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [polygonMumbai],
@@ -86,13 +86,13 @@ export default function App({ Component, pageProps }: AppProps) {
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
         <WagmiConfig client={client}>
-          <ModalContext.Provider value={openModal}>
+          <ModalContext.Provider value={{ openModal, closeModal }}>
             <Component {...pageProps} />
           </ModalContext.Provider>
+          <dialog className="p-0" ref={dialogRef}>
+            <div ref={contentRef}>{modalContent}</div>
+          </dialog>
         </WagmiConfig>
-        <dialog className="p-0" ref={dialogRef}>
-          <div ref={contentRef}>{modalContent}</div>
-        </dialog>
       </main>
     </>
   );
