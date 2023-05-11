@@ -62,7 +62,7 @@ const SendForm = ({ close }: { close: () => void }) => {
   );
 };
 
-export default function Navbar() {
+export default function Actions() {
   const { address, connector, isConnected } = useAccount();
   const { connect, connectors, error, isLoading, pendingConnector } =
     useConnect();
@@ -113,9 +113,6 @@ export default function Navbar() {
 
   return (
     <nav className="mb-9">
-      <a href="https://glodollar.org/">
-        <Image src="/glo-logo.svg" alt="glo logo" width={74} height={26} />
-      </a>
       {isLoading ? (
         "Loading..."
       ) : isConnected ? (

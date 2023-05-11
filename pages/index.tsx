@@ -1,28 +1,38 @@
-import Navbar from "@/components/Navbar";
-import JoinTheMovement from "@/components/JoinTheMovement";
-import EnoughToBuy from "@/components/EnoughToBuy";
-import Holdings from "@/components/Holdings";
+import Header from "@/components/Header";
+import Balance from "@/components/Balance";
+import CTA from "@/components/CTA";
+import Transactions from "@/components/Transactions";
 import { useState } from "react";
 import { getTotalYield } from "@/utils";
+import Actions from "@/components/Actions";
 
 export default function Home() {
-  const [glo, setGlo] = useState<number>(1000);
+  const [glo, setGlo] = useState<number>(1000.9);
 
   const totalDays = 365;
   const yearlyInterestRate = 0.027;
   const yearlyYield = getTotalYield(yearlyInterestRate, glo, totalDays);
+  const transactions = [
+    {
+      from: "me",
+      to: "glo",
+      amount: "1.001",
+    },
+    {
+      from: "me",
+      to: "rad",
+      amount: "3.52",
+    },
+  ];
 
   return (
     <div className="mt-4 px-2.5">
-      <Navbar />
-      <div className="font-semibold text-[1.75rem] mb-4">Glo Wallet</div>
-      <div className="mb-8">
-        Calculate how you can help end extreme poverty by owning Glo.
-      </div>
+      <Header />
       <div className="flex flex-col space-y-10">
-        <Holdings glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
-        <EnoughToBuy yearlyYield={yearlyYield} />
-        <JoinTheMovement isIframe={false} />
+        <Actions />
+        <Balance glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
+        <Transactions transactions={transactions} />
+        <CTA />
       </div>
     </div>
   );
