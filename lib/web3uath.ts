@@ -4,10 +4,12 @@ import {
   CONNECTED_EVENT_DATA,
   WALLET_ADAPTERS,
 } from "@web3auth/base";
+import { CoinbaseAdapter } from "@web3auth/coinbase-adapter";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import { ModalConfig, Web3Auth } from "@web3auth/modal";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { TorusWalletConnectorPlugin } from "@web3auth/torus-wallet-connector-plugin";
+import { WalletConnectV1Adapter } from "@web3auth/wallet-connect-v1-adapter";
 import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { Chain } from "wagmi";
 
@@ -28,8 +30,17 @@ export const torusPlugin = new TorusWalletConnectorPlugin({
 export const Web3AuthConnectorInstance = (
   chains: Chain[]
 ): Web3AuthConnector => {
+  const clientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENTID!;
+  const chainConfig = {
+    chainNamespace: CHAIN_NAMESPACES.EIP155,
+    chainId: "0x" + chains[0].id.toString(16),
+    rpcTarget: chains[0].rpcUrls.default.http[0], // This is the public RPC we have added, please pass on your own endpoint while creating an app
+    displayName: chains[0].name,
+    tickerName: chains[0].nativeCurrency?.name,
+    ticker: chains[0].nativeCurrency?.symbol,
+  };
   const web3AuthInstance = new Web3Auth({
-    clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENTID!,
+    clientId,
     authMode: "WALLET", // https://web3auth.io/docs/sdk/web/modal/initialize
     uiConfig: {
       theme: "light",
@@ -41,15 +52,7 @@ export const Web3AuthConnectorInstance = (
       web3AuthNetwork: "testnet",
       loginGridCol: 2,
     },
-
-    chainConfig: {
-      chainNamespace: CHAIN_NAMESPACES.EIP155,
-      chainId: "0x" + chains[0].id.toString(16),
-      rpcTarget: chains[0].rpcUrls.default.http[0], // This is the public RPC we have added, please pass on your own endpoint while creating an app
-      displayName: chains[0].name,
-      tickerName: chains[0].nativeCurrency?.name,
-      ticker: chains[0].nativeCurrency?.symbol,
-    },
+    chainConfig,
     enableLogging: true,
   });
 
@@ -83,6 +86,20 @@ export const Web3AuthConnectorInstance = (
   const metamaskAdapter = new MetamaskAdapter();
 
   web3AuthInstance.configureAdapter(metamaskAdapter);
+
+  // WalletConnectV2Adapter seems to be pretty too new
+  const walletConnectV1Adapter = new WalletConnectV1Adapter();
+
+  web3AuthInstance.configureAdapter(walletConnectV1Adapter);
+
+  const coinbaseAdapter = new CoinbaseAdapter({
+    clientId,
+    sessionTime: 3600, // 1 hour in seconds
+    chainConfig,
+    web3AuthNetwork: "testnet",
+  });
+
+  web3AuthInstance.configureAdapter(coinbaseAdapter);
 
   return new Web3AuthConnector({
     chains: chains,
