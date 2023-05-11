@@ -1,10 +1,11 @@
-import Header from "@/components/Header";
+import { useState } from "react";
+
+import Actions from "@/components/Actions";
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
+import Header from "@/components/Header";
 import Transactions from "@/components/Transactions";
-import { useState } from "react";
 import { getTotalYield } from "@/utils";
-import Actions from "@/components/Actions";
 
 export default function Home() {
   const [glo, setGlo] = useState<number>(1000.9);

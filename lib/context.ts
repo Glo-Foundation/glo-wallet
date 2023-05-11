@@ -1,6 +1,11 @@
 import { createContext } from "react";
 
-export const ModalContext = createContext({
-  openModal: (content: JSX.Element) => {},
-  closeModal: () => {},
+type Actions = {
+  openModal: (_content: JSX.Element) => void;
+  closeModal: () => void;
+};
+
+export const ModalContext = createContext<Actions>({
+  openModal: () => null,
+  closeModal: () => null,
 });

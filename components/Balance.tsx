@@ -1,5 +1,6 @@
-import Image from 'next/image';
-import EnoughToBuy from './EnoughToBuy';
+import Image from "next/image";
+
+import EnoughToBuy from "./EnoughToBuy";
 
 type Props = {
   glo: number;
@@ -26,15 +27,13 @@ export default function Balance({ glo, setGlo, yearlyYield }: Props) {
   return (
     <div className="bg-white rounded-[20px] pt-4">
       <div className="flex flex-col space-y-2 p-4">
-      <div className="self-center text-[1.1rem] text-pine-700/90">Balance</div>
+        <div className="self-center text-[1.1rem] text-pine-700/90">
+          Balance
+        </div>
         <div className="flex flex-row font-semibold justify-center">
           <div className="flex flex-row text-[2.625rem] items-baseline">
-            <div className="max-w-[226px]">
-              {fmtGloDollarPart}
-            </div>
-            <div className="text-xl">
-              .{fmtGloCentPart}
-            </div>
+            <div className="max-w-[226px]">{fmtGloDollarPart}</div>
+            <div className="text-xl">.{fmtGloCentPart}</div>
           </div>
         </div>
       </div>
@@ -44,7 +43,13 @@ export default function Balance({ glo, setGlo, yearlyYield }: Props) {
         </div>
         <div className="flex w-full justify-between space-y-2">
           <div>
-            <Image className="inline mr-2 align-botom" src="/glo-logo.svg" alt="glo" height={28} width={28} />
+            <Image
+              className="inline mr-2 align-botom"
+              src="/glo-logo.svg"
+              alt="glo"
+              height={28}
+              width={28}
+            />
             ${formattedYearlyYield} / year
           </div>
           <EnoughToBuy yearlyYield={yearlyYield} />

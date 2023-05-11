@@ -1,14 +1,15 @@
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
 import localFont from "@next/font/local";
-import Analytics from "@/components/Analytics";
-import { Web3AuthConnectorInstance } from "@/lib/web3uath";
-import { createContext, useEffect, useRef, useState } from "react";
-import { ModalContext } from "@/lib/context";
-import { publicProvider } from "@wagmi/core/providers/public";
-
 import { polygonMumbai } from "@wagmi/core/chains";
+import { publicProvider } from "@wagmi/core/providers/public";
+import { useEffect, useRef, useState } from "react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
+
+import Analytics from "@/components/Analytics";
+import { ModalContext } from "@/lib/context";
+import { Web3AuthConnectorInstance } from "@/lib/web3uath";
+
+import type { AppProps } from "next/app";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [polygonMumbai],
