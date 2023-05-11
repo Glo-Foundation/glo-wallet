@@ -1,23 +1,20 @@
-import { ModalContext } from "@/lib/context";
-import { torusPlugin } from "@/lib/web3uath";
-import { ethers, utils } from "ethers";
-import Image from "next/image";
+import { utils } from "ethers";
 import { QRCodeSVG } from "qrcode.react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import {
   useAccount,
   useBalance,
   useConnect,
   useDisconnect,
-  usePrepareSendTransaction,
-  useSendTransaction,
-  useWaitForTransaction,
   useContract,
   useSigner,
 } from "wagmi";
-import UsdgloContract from "@/abi/usdglo.json";
 
-const SendForm = ({ close }: { close: () => void }) => {
+import UsdgloContract from "@/abi/usdglo.json";
+import { ModalContext } from "@/lib/context";
+import { torusPlugin } from "@/lib/web3uath";
+
+const SendForm = ({ _close }: { _close: () => void }) => {
   const [sendForm, setSendForm] = useState({
     address: "0x...",
     amount: "0.1",
@@ -55,7 +52,7 @@ const SendForm = ({ close }: { close: () => void }) => {
         value={sendForm.amount}
         onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
       />
-      <button disabled={hash!!}>send</button>
+      <button disabled={hash!}>send</button>
       {hash && <div>Sent with hash {hash}</div>}
     </form>
   );
