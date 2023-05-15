@@ -17,9 +17,12 @@ export default function Header({ address, isConnected }: Props) {
 
   const receive = async () => {
     openModal(
-      <div>
-        <QRCodeSVG value={address as string} />
-        {address}
+      <div className="flex flex-col items-center">
+        <QRCodeSVG size={128} value={address as string} />
+        <span className="pt-8 text-l max-w-[50%] flex flex-wrap">
+          Wallet Address:
+        </span>
+        <div>{address}</div>
       </div>
     );
   };

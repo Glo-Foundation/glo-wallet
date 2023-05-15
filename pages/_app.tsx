@@ -90,7 +90,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <ModalContext.Provider value={{ openModal, closeModal }}>
             <Component {...pageProps} />
           </ModalContext.Provider>
-          <dialog className="p-0" ref={dialogRef}>
+          <dialog className="modal" ref={dialogRef}>
             <div ref={contentRef}>{modalContent}</div>
           </dialog>
         </WagmiConfig>

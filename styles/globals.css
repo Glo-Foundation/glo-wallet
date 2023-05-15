@@ -18,10 +18,22 @@ body {
   h2 {
     @apply text-xl font-bold;
   }
+
+  button {
+    @apply flex justify-center items-center rounded-full;
+  }
 }
 
 @layer components {
-  .action-buttons {
-    @apply flex justify-center items-center min-w-[64px] min-h-[64px] rounded-full bg-pine-200;
+  .action-button {
+    @apply min-w-[64px] min-h-[64px] bg-pine-200;
+  }
+
+  .primary-button {
+    @apply bg-cyan-600 pine-800;
+  }
+
+  .modal {
+    @apply rounded-lg;
   }
 }

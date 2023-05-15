@@ -101,7 +101,7 @@ export default function Actions() {
   const renderActionButtons = (buttons: ActionButton[]) =>
     buttons.map((button, idx) => (
       <li key={`actionButton${idx}`}>
-        <button className="action-buttons mb-4" onClick={() => button.action()}>
+        <button className="action-button mb-4" onClick={() => button.action()}>
           <Image
             src={button.iconPath}
             alt={button.description}
