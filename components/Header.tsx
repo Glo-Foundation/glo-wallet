@@ -28,21 +28,26 @@ export default function Header({ address, isConnected }: Props) {
   };
 
   return (
-    <nav className="mb-9 mt-6 flex justify-between">
+    <nav className="mb-9 mt-6 flex justify-between items-center">
       <a href="https://glodollar.org/">
         <Image src="/glo-logo-text.svg" alt="glo logo" width={74} height={26} />
       </a>
       {isConnected ? (
         <>
-          <button onClick={() => receive()}>
+          <span className="cursor-pointer" onClick={() => receive()}>
             {address?.slice(0, 5)}...
             {address?.slice(-3)}
+          </span>
+          <button className="primary-button" onClick={() => disconnect()}>
+            Disconnect
           </button>
-          <button onClick={() => disconnect()}>[Disconnect]</button>
         </>
       ) : (
-        <button onClick={() => connect({ connector: connectors[0] })}>
-          [Connect]
+        <button
+          className="primary-button"
+          onClick={() => connect({ connector: connectors[0] })}
+        >
+          Connect
         </button>
       )}
     </nav>

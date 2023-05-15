@@ -31,20 +31,33 @@ const SendForm = ({ close }: { close: () => void }) => {
 
   return (
     <form
+      className="flex flex-col"
       onSubmit={async (e) => {
         e.preventDefault();
         await send();
       }}
     >
-      <input
-        value={sendForm.address}
-        onChange={(e) => setSendForm({ ...sendForm, address: e.target.value })}
-      />
-      <input
-        value={sendForm.amount}
-        onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
-      />
-      <button disabled={hash!}>send</button>
+      <div className="form-group">
+        <label htmlFor="send-address">Send Address</label>
+        <input
+          id="send-address"
+          value={sendForm.address}
+          onChange={(e) =>
+            setSendForm({ ...sendForm, address: e.target.value })
+          }
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="send-amount">Amount</label>
+        <input
+          id="send-amount"
+          value={sendForm.amount}
+          onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
+        />
+      </div>
+      <button className="mt-4 primary-button" disabled={hash!}>
+        Send
+      </button>
       {hash && <div>Sent with hash {hash}</div>}
     </form>
   );
