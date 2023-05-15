@@ -13,7 +13,7 @@ const CTAs: ActionButton[] = [
     description:
       "Uniqlo <> Glo sounds like a perfect match. Email to ask for it.",
     iconPath: "/za-warudo.svg",
-    link: "https://glodollar.org",
+    link: "https://uniqlo.com",
   },
 ];
 
