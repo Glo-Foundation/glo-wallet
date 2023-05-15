@@ -1,12 +1,14 @@
-import Header from "@/components/Header";
+import { useState } from "react";
+
+import Actions from "@/components/Actions";
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
+import Header from "@/components/Header";
 import Transactions from "@/components/Transactions";
-import { useState } from "react";
 import { getTotalYield } from "@/utils";
 
 export default function Home() {
-  const [glo, setGlo] = useState<number>(1000.90);
+  const [glo, setGlo] = useState<number>(1000.9);
 
   const totalDays = 365;
   const yearlyInterestRate = 0.027;
@@ -28,6 +30,7 @@ export default function Home() {
     <div className="mt-4 px-2.5">
       <Header />
       <div className="flex flex-col space-y-10">
+        <Actions />
         <Balance glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
         <Transactions transactions={transactions} />
         <CTA />
