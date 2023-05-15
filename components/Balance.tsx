@@ -2,8 +2,8 @@ import Image from "next/image";
 
 import { getTotalYield } from "@/utils";
 
+import Actions from "./Actions";
 import EnoughToBuy from "./EnoughToBuy";
-
 
 type Props = {
   balance: any;
@@ -13,6 +13,7 @@ type Props = {
 
 export default function Balance({
   balance = { formatted: "1000", value: 1000 },
+  address = "0x0",
   isLoading,
   isConnected,
 }: Props) {
@@ -23,6 +24,8 @@ export default function Balance({
     balance.value,
     totalDays
   );
+
+  console.log({ yearlyYield });
   const formattedYearlyYield = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
@@ -38,11 +41,6 @@ export default function Balance({
         <div className="self-center text-[1.1rem] text-pine-700/90">
           Balance
         </div>
-        {/* {isLoading ? ( */}
-        {/*   <span>"Loading..."</span> */}
-        {/* ) : isConnected ? ( */}
-        {/* <Actions /> */}
-        {/* )} */}
         <div className="flex flex-row font-semibold justify-center">
           <div className="flex flex-row text-[2.625rem] items-baseline">
             <div className="max-w-[226px]">{fmtBalanceDollarPart}</div>
@@ -50,6 +48,7 @@ export default function Balance({
           </div>
         </div>
       </div>
+      <Actions />
       <div className="flex flex-col bg-cyan-600/20 rounded-[24px] mx-1 mb-1 px-5 pb-3">
         <div className="overflow-hidden">
           <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-36"></div>
