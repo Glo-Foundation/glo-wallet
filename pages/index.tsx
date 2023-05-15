@@ -30,7 +30,7 @@ export default function Home() {
 
   return (
     <div className="mt-4 px-2.5">
-      <Header isConnected={isConnected} />
+      <Header address={address} isConnected={isConnected} />
       <div className="flex flex-col space-y-10">
         <Balance balance={balance} address={address} />
         <Transactions transactions={transactions} />

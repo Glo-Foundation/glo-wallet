@@ -32,11 +32,11 @@ export default function Header({ address, isConnected }: Props) {
       </a>
       {isConnected ? (
         <>
-          <button onClick={() => disconnect()}>[Disconnect]</button>
           <button onClick={() => receive()}>
             {address?.slice(0, 5)}...
             {address?.slice(-3)}
           </button>
+          <button onClick={() => disconnect()}>[Disconnect]</button>
         </>
       ) : (
         <button onClick={() => connect({ connector: connectors[0] })}>

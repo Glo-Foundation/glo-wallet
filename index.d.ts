@@ -1,6 +1,7 @@
 type ActionButton = {
-  title: string;
+  title?: string;
   description: string;
   iconPath: string;
-  link: string;
+  link?: string;
+  action?: any;
 };

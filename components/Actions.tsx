@@ -1,3 +1,4 @@
+import { utils } from "ethers";
 import Image from "next/image";
 import { useState, useContext } from "react";
 import { useSigner, useContract } from "wagmi";
@@ -12,10 +13,8 @@ const SendForm = ({ close }: { close: () => void }) => {
     amount: "0.1",
   });
   const [hash, setHash] = useState();
-  const { openModal, closeModal } = useContext(ModalContext);
 
   const { data: signer, isError, isLoading } = useSigner();
-
   const contract = useContract({
     address: process.env.NEXT_PUBLIC_USDGLO!,
     abi: UsdgloContract,
@@ -52,6 +51,7 @@ const SendForm = ({ close }: { close: () => void }) => {
 };
 
 export default function Actions() {
+  const { openModal, closeModal } = useContext(ModalContext);
   const buy = async () => {
     if (!torusPlugin.torusWalletInstance.isInitialized) {
       console.log("Torus not initialized yet");
@@ -102,7 +102,12 @@ export default function Actions() {
     buttons.map((button, idx) => (
       <li key={`actionButton${idx}`}>
         <button className="action-buttons mb-4" onClick={() => button.action()}>
-          <Image src={button.iconPath} width={24} height={24} />
+          <Image
+            src={button.iconPath}
+            alt={button.description}
+            width={24}
+            height={24}
+          />
         </button>
         <span className="cursor-default w-full flex justify-center">
           {button.description}
