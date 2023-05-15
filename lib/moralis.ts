@@ -18,14 +18,19 @@ export const fetchTransactions = async (
   address: string,
   chain: string = EvmChain.MUMBAI.apiHex,
   limit = 5
-) => {
+): Promise<Transfer[]> => {
   const transfers = await instance.get<EvmErc20TransfersResponseJSON>(
     `erc20/transfers?contract_addresses%5B0%5D=${process.env.NEXT_PUBLIC_USDGLO}&wallet_addresses%5B0%5D=${address}&chain=${chain}&limit=${limit}`
   );
 
-  return transfers.data.result?.map((tx: EvmErc20TransferJSON) => ({
-    type: tx.from_wallet === address ? "outgoing" : "incoming",
-    ts: tx.block_timestamp,
-    value: tx.value_decimal,
-  }));
+  return (
+    transfers.data.result?.map((tx: EvmErc20TransferJSON) => ({
+      type:
+        tx.from_wallet.toLowerCase() === address.toLowerCase()
+          ? "outgoing"
+          : "incoming",
+      ts: tx.block_timestamp,
+      value: tx.value_decimal,
+    })) || []
+  );
 };

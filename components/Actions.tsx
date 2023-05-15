@@ -1,6 +1,6 @@
 import { utils } from "ethers";
 import { QRCodeSVG } from "qrcode.react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   useAccount,
   useBalance,
@@ -68,7 +68,18 @@ export default function Actions() {
   });
   const { disconnect } = useDisconnect();
 
+  const [transactions, setTransactions] = useState<Transfer[]>([]);
+
   const { openModal, closeModal } = useContext(ModalContext);
+
+  useEffect(() => {
+    if (address) {
+      fetch(`/api/transactions/${address}`).then(async (res) => {
+        const { transactions } = await res.json();
+        setTransactions(transactions as Transfer[]);
+      });
+    }
+  }, [address]);
 
   const buy = async () => {
     if (!torusPlugin.torusWalletInstance.isInitialized) {
@@ -125,6 +136,11 @@ export default function Actions() {
           <button onClick={() => transfer()}>[Transfer]</button>
           <button onClick={() => scan()}>[Scan]</button>
           <button onClick={() => receive()}>[Receive]</button>
+          {transactions.map((tx) => (
+            <p key={tx.ts}>
+              {tx.type} / {tx.value} / {tx.ts}
+            </p>
+          ))}
         </div>
       ) : (
         <button onClick={() => connect({ connector: connectors[0] })}>
