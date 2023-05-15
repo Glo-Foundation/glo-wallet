@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { QRCodeSVG } from "qrcode.react";
 import { useConnect, useDisconnect } from "wagmi";
 
 type Props = {
@@ -10,6 +11,16 @@ export default function Header({ address, isConnected }: Props) {
   const { connect, connectors, error, isLoading, pendingConnector } =
     useConnect();
   const { disconnect } = useDisconnect();
+
+  const receive = async () => {
+    openModal(
+      <div>
+        <QRCodeSVG value={address as string} />
+        {address}
+      </div>
+    );
+  };
+
   return (
     <nav className="mb-9 mt-6 flex justify-between">
       <a href="https://glodollar.org/">
@@ -18,10 +29,10 @@ export default function Header({ address, isConnected }: Props) {
       {isConnected ? (
         <>
           <button onClick={() => disconnect()}>[Disconnect]</button>
-          <div>
+          <button onClick={() => receive()}>
             {address?.slice(0, 5)}...
             {address?.slice(-3)}
-          </div>
+          </button>
         </>
       ) : (
         <button onClick={() => connect({ connector: connectors[0] })}>

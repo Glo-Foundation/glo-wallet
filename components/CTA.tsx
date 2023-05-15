@@ -1,13 +1,6 @@
 import Image from "next/image";
 
-type CTA = {
-  title: string;
-  description: string;
-  iconPath: string;
-  link: string;
-};
-
-const CTAs: CTA[] = [
+const CTAs: ActionButton[] = [
   {
     title: "Buy Glo Merch",
     description:
@@ -25,9 +18,9 @@ const CTAs: CTA[] = [
 ];
 
 export default function CTA() {
-  const renderCTAs = (ctas: CTA[]) =>
+  const renderCTAs = (ctas: ActionButton[]) =>
     ctas.map((cta, idx) => (
-      <li key={idx} className="flex items-center py-4 border-y">
+      <li key={`CTA${idx}`} className="flex items-center py-4 border-y">
         <div className="mr-8 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
           <Image
             src={cta.iconPath}

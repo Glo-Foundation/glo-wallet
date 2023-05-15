@@ -1,12 +1,10 @@
-import { QRCodeSVG } from "qrcode.react";
+import Image from "next/image";
 import { useContext, useState } from "react";
 import { useSigner, useContract } from "wagmi";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import { ModalContext } from "@/lib/context";
 import { torusPlugin } from "@/lib/web3uath";
-
-
 
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
@@ -78,27 +76,43 @@ export default function Actions() {
     await torusPlugin.showWalletConnectScanner();
   };
 
-  const receive = async () => {
-    openModal(
-      <div>
-        <QRCodeSVG value={address as string} />
-        {address}
-      </div>
-    );
-  };
-
   const transfer = async () => {
     openModal(<SendForm close={closeModal} />);
   };
 
+  const buttons: ActionButton[] = [
+    {
+      iconPath: "/plus.svg",
+      action: buy,
+      description: "Buy Glo",
+    },
+    {
+      iconPath: "/transfer.svg",
+      action: transfer,
+      description: "Transfer",
+    },
+    {
+      iconPath: "/scan.svg",
+      action: scan,
+      description: "Scan",
+    },
+  ];
+
+  const renderActionButtons = (buttons: ActionButton[]) =>
+    buttons.map((button, idx) => (
+      <li key={`actionButton${idx}`}>
+        <button className="action-buttons mb-4" onClick={() => button.action()}>
+          <Image src={button.iconPath} width={24} height={24} />
+        </button>
+        <span className="cursor-default w-full flex justify-center">
+          {button.description}
+        </span>
+      </li>
+    ));
+
   return (
-    <nav className="mb-9">
-      <div className="flex flex-col">
-        <button onClick={() => buy()}>[Buy Glo]</button>
-        <button onClick={() => transfer()}>[Transfer]</button>
-        <button onClick={() => scan()}>[Scan]</button>
-        <button onClick={() => receive()}>[Receive]</button>
-      </div>
-    </nav>
+    <ul className="flex justify-around w-full px-4 mt-4 mb-8">
+      {renderActionButtons(buttons)}
+    </ul>
   );
 }

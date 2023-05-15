@@ -6,7 +6,7 @@ body {
   margin: 0 auto 40px;
   max-width: 375px;
   line-height: 1.5rem;
-  background-color: #EAF2F1;
+  background-color: #eaf2f1;
   color: #133d38;
 }
 
@@ -17,5 +17,11 @@ body {
 @layer base {
   h2 {
     @apply text-xl font-bold;
+  }
+}
+
+@layer components {
+  .action-buttons {
+    @apply flex justify-center items-center min-w-[64px] min-h-[64px] rounded-full bg-pine-200;
   }
 }

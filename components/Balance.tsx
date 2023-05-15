@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function Balance({
-  balance = { formatted: "1000", value: 1000 },
+  balance = { formatted: "0", value: 0 },
   address = "0x0",
   isLoading,
   isConnected,
@@ -53,7 +53,7 @@ export default function Balance({
         <div className="overflow-hidden">
           <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-36"></div>
         </div>
-        <div className="flex w-full justify-between space-y-2">
+        <div className="flex w-full justify-between items-center space-y-2">
           <div>
             <Image
               className="inline mr-2 align-botom"
