@@ -1,9 +1,11 @@
+import { useContext } from "react";
 import { useAccount, useBalance } from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import Transactions from "@/components/Transactions";
+import { ModalContext } from "@/lib/context";
 
 export default function Home() {
   const { address, connector, isConnected } = useAccount();
@@ -11,6 +13,7 @@ export default function Home() {
     address,
     token: process.env.NEXT_PUBLIC_USDGLO as any,
   });
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const transactions = [
     {

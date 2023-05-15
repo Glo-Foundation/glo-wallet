@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useAccount } from "wagmi";
 
 import { getTotalYield } from "@/utils";
 
@@ -7,16 +8,12 @@ import EnoughToBuy from "./EnoughToBuy";
 
 type Props = {
   balance: any;
-  isLoading: boolean;
-  isConnected: boolean;
 };
 
 export default function Balance({
   balance = { formatted: "0", value: 0 },
-  address = "0x0",
-  isLoading,
-  isConnected,
 }: Props) {
+  const { isConnected } = useAccount();
   const totalDays = 365;
   const yearlyInterestRate = 0.027;
   const yearlyYield = getTotalYield(
@@ -25,7 +22,6 @@ export default function Balance({
     totalDays
   );
 
-  console.log({ yearlyYield });
   const formattedYearlyYield = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
@@ -48,7 +44,7 @@ export default function Balance({
           </div>
         </div>
       </div>
-      <Actions />
+      {isConnected && <Actions />}
       <div className="flex flex-col bg-cyan-600/20 rounded-[24px] mx-1 mb-1 px-5 pb-3">
         <div className="overflow-hidden">
           <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-36"></div>

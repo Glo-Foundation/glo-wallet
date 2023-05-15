@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
+import { useContext } from "react";
 import { useConnect, useDisconnect } from "wagmi";
+
+import { ModalContext } from "@/lib/context";
 
 type Props = {
   address: string;
@@ -11,6 +14,7 @@ export default function Header({ address, isConnected }: Props) {
   const { connect, connectors, error, isLoading, pendingConnector } =
     useConnect();
   const { disconnect } = useDisconnect();
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const receive = async () => {
     openModal(
