@@ -15,10 +15,6 @@ import { Chain } from "wagmi";
 
 export const torusPlugin = new TorusWalletConnectorPlugin({
   walletInitOptions: {
-    // network: {
-    //   // host: process.env.NEXT_PUBLIC_RPC_URL!,
-    //   host: "https://matic-mumbai.chainstacklabs.com",
-    // },
     whiteLabel: {
       theme: { isDark: false, colors: { primary: "#00a8ff" } },
       logoDark: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
@@ -37,8 +33,7 @@ export const Web3AuthConnectorInstance = (
   const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: "0x" + chains[0].id.toString(16),
-    rpcTarget: chains[0].rpcUrls.default.http[0], // This is the public RPC we have added, please pass on your own endpoint while creating an app
-    // rpcTarget: process.env.NEXT_PUBLIC_RPC_URL,
+    rpcTarget: chains[0].rpcUrls.default.http[0],
     displayName: chains[0].name,
     tickerName: chains[0].nativeCurrency?.name,
     ticker: chains[0].nativeCurrency?.symbol,
@@ -46,7 +41,7 @@ export const Web3AuthConnectorInstance = (
 
   const web3AuthInstance = new Web3Auth({
     clientId,
-    authMode: "WALLET", // https://web3auth.io/docs/sdk/web/modal/initialize
+    authMode: "WALLET",
     uiConfig: {
       theme: "light",
       loginMethodsOrder: ["google", "passwordless"],
@@ -63,7 +58,7 @@ export const Web3AuthConnectorInstance = (
 
   const openloginAdapter = new OpenloginAdapter({
     loginSettings: {
-      mfaLevel: "default", // https://web3auth.io/docs/sdk/web/openlogin#custom-authentication-within-web3auth-modal
+      mfaLevel: "default",
       loginProvider: "email_passwordless",
     },
 
