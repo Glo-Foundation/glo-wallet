@@ -1,28 +1,36 @@
 import Image from "next/image";
 
+import { getTotalYield } from "@/utils";
+
 import EnoughToBuy from "./EnoughToBuy";
 
+
 type Props = {
-  glo: number;
-  setGlo: React.Dispatch<React.SetStateAction<number>>;
-  yearlyYield: number;
+  balance: any;
+  isLoading: boolean;
+  isConnected: boolean;
 };
 
-export default function Balance({ glo, setGlo, yearlyYield }: Props) {
-  const formattedGlo = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(glo);
+export default function Balance({
+  balance = { formatted: "1000", value: 1000 },
+  isLoading,
+  isConnected,
+}: Props) {
+  const totalDays = 365;
+  const yearlyInterestRate = 0.027;
+  const yearlyYield = getTotalYield(
+    yearlyInterestRate,
+    balance.value,
+    totalDays
+  );
   const formattedYearlyYield = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
   }).format(yearlyYield);
 
-  const splitFmtGlo = formattedGlo.split(".");
-  const fmtGloDollarPart = splitFmtGlo[0];
-  const fmtGloCentPart = splitFmtGlo[1];
+  const splitFmtBalance = balance.formatted.split(".");
+  const fmtBalanceDollarPart = splitFmtBalance[0];
+  const fmtBalanceCentPart = splitFmtBalance[1];
 
   return (
     <div className="bg-white rounded-[20px] pt-4">
@@ -30,10 +38,15 @@ export default function Balance({ glo, setGlo, yearlyYield }: Props) {
         <div className="self-center text-[1.1rem] text-pine-700/90">
           Balance
         </div>
+        {/* {isLoading ? ( */}
+        {/*   <span>"Loading..."</span> */}
+        {/* ) : isConnected ? ( */}
+        {/* <Actions /> */}
+        {/* )} */}
         <div className="flex flex-row font-semibold justify-center">
           <div className="flex flex-row text-[2.625rem] items-baseline">
-            <div className="max-w-[226px]">{fmtGloDollarPart}</div>
-            <div className="text-xl">.{fmtGloCentPart}</div>
+            <div className="max-w-[226px]">{fmtBalanceDollarPart}</div>
+            <div className="text-xl">.{fmtBalanceCentPart || "00"}</div>
           </div>
         </div>
       </div>
