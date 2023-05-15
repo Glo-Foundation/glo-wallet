@@ -6,8 +6,7 @@ import { useConnect, useDisconnect } from "wagmi";
 import { ModalContext } from "@/lib/context";
 
 type Props = {
-  address: string;
-  connectors: any[];
+  address?: string;
   isConnected: boolean;
 };
 export default function Header({ address, isConnected }: Props) {

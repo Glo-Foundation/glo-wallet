@@ -32,7 +32,7 @@ export default function Home() {
     <div className="mt-4 px-2.5">
       <Header address={address} isConnected={isConnected} />
       <div className="flex flex-col space-y-10">
-        <Balance balance={balance} address={address} />
+        <Balance balance={balance} />
         <Transactions transactions={transactions} />
         <CTA />
       </div>
