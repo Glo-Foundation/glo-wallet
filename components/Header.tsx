@@ -19,7 +19,7 @@ export default function Header({ address, isConnected }: Props) {
   const receive = async () => {
     openModal(
       <div className="flex flex-col items-center">
-        <QRCodeSVG size={128} value={address as string} />
+        <QRCodeSVG size={128} value={address!} />
         <span className="pt-8 text-l max-w-[50%] flex flex-wrap">
           Wallet Address:
         </span>
@@ -36,7 +36,7 @@ export default function Header({ address, isConnected }: Props) {
       {isConnected ? (
         <>
           <span className="cursor-pointer" onClick={() => receive()}>
-            {sliceAddress(address)}
+            {sliceAddress(address!)}
           </span>
           <button className="primary-button" onClick={() => disconnect()}>
             Disconnect
