@@ -1,3 +1,4 @@
+import { utils } from "ethers";
 import Image from "next/image";
 import { useAccount } from "wagmi";
 
@@ -18,16 +19,16 @@ export default function Balance({
   const yearlyInterestRate = 0.027;
   const yearlyYield = getTotalYield(
     yearlyInterestRate,
-    balance.value,
+    utils.formatEther(String(balance.value)),
     totalDays
   );
 
-  const formattedYearlyYield = new Intl.NumberFormat("en-US", {
+  const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
-  }).format(yearlyYield);
+  }).format(balance.formatted);
 
-  const splitFmtBalance = balance.formatted.split(".");
+  const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
   const fmtBalanceCentPart = splitFmtBalance[1];
 
@@ -58,7 +59,7 @@ export default function Balance({
               height={28}
               width={28}
             />
-            ${formattedYearlyYield} / year
+            ${yearlyYield} / year
           </div>
           <EnoughToBuy yearlyYield={yearlyYield} />
         </div>
