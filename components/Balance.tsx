@@ -16,6 +16,8 @@ export default function Balance({
   const { isConnected } = useAccount();
   const totalDays = 365;
   const yearlyInterestRate = 0.027;
+
+  // ethers and typescript don't like each other
   const illFormatMyOwnEther = Number(String(balance.value).slice(-18));
   const yearlyYield = getTotalYield(
     yearlyInterestRate,
