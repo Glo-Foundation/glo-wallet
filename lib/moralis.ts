@@ -1,26 +1,9 @@
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
 import {
   EvmChain,
   EvmErc20TransferJSON,
   EvmErc20TransfersResponseJSON,
 } from "moralis/common-evm-utils";
-
-let axiosClient: AxiosInstance;
-
-const getAxiosClient = () => {
-  if (axiosClient) {
-    return axiosClient;
-  }
-  axiosClient = axios.create({
-    baseURL: "https://deep-index.moralis.io/api/v2/",
-    headers: {
-      accept: "application/json",
-      "X-API-Key": process.env.MORALIS_API_KEY,
-    },
-  });
-
-  return axiosClient;
-};
 
 // https://docs.moralis.io/web3-data-api/reference/get-erc20-transfers
 export const fetchTransactions = async (
@@ -28,7 +11,14 @@ export const fetchTransactions = async (
   chain: string = EvmChain.MUMBAI.apiHex,
   limit = 5
 ): Promise<Transfer[]> => {
-  const transfers = await getAxiosClient().get<EvmErc20TransfersResponseJSON>(
+  const axiosClient = axios.create({
+    baseURL: "https://deep-index.moralis.io/api/v2/",
+    headers: {
+      accept: "application/json",
+      "X-API-Key": process.env.MORALIS_API_KEY,
+    },
+  });
+  const transfers = await axiosClient.get<EvmErc20TransfersResponseJSON>(
     `erc20/transfers?contract_addresses%5B0%5D=${process.env.NEXT_PUBLIC_USDGLO}&wallet_addresses%5B0%5D=${address}&chain=${chain}&limit=${limit}`
   );
 
