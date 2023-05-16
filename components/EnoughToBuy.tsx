@@ -15,7 +15,7 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
 
   return (
     <>
-      {yearlyImpactItem.emoji} &#10005; {yearlyImpactItem.count}
+      {yearlyImpactItem?.emoji} &#10005; {yearlyImpactItem?.count}
     </>
   );
 }

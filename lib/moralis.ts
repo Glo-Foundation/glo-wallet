@@ -5,6 +5,8 @@ import {
   EvmErc20TransfersResponseJSON,
 } from "moralis/common-evm-utils";
 
+import { sliceAddress } from "./utils";
+
 const instance = axios.create({
   baseURL: "https://deep-index.moralis.io/api/v2/",
   headers: {
@@ -30,6 +32,8 @@ export const fetchTransactions = async (
           ? "outgoing"
           : "incoming",
       ts: tx.block_timestamp,
+      from: sliceAddress(tx.from_wallet),
+      to: sliceAddress(tx.to_wallet),
       value: tx.value_decimal,
     })) || []
   );
