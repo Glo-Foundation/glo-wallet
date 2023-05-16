@@ -1,4 +1,3 @@
-import { utils } from "ethers";
 import Image from "next/image";
 import { useAccount } from "wagmi";
 
@@ -17,9 +16,10 @@ export default function Balance({
   const { isConnected } = useAccount();
   const totalDays = 365;
   const yearlyInterestRate = 0.027;
+  const illFormatMyOwnEther = Number(String(balance.value).slice(-18));
   const yearlyYield = getTotalYield(
     yearlyInterestRate,
-    utils.formatEther(String(balance.value)),
+    illFormatMyOwnEther,
     totalDays
   );
 
