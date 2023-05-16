@@ -12,6 +12,7 @@ const instance = axios.create({
     "X-API-Key": process.env.MORALIS_API_KEY,
   },
 });
+console.log({ hello: process.env.MORALIS_API_KEY });
 
 // https://docs.moralis.io/web3-data-api/reference/get-erc20-transfers
 export const fetchTransactions = async (
@@ -19,6 +20,7 @@ export const fetchTransactions = async (
   chain: string = EvmChain.MUMBAI.apiHex,
   limit = 5
 ): Promise<Transfer[]> => {
+  console.log({ test: process.env.MORALIS_API_KEY });
   const transfers = await instance.get<EvmErc20TransfersResponseJSON>(
     `erc20/transfers?contract_addresses%5B0%5D=${process.env.NEXT_PUBLIC_USDGLO}&wallet_addresses%5B0%5D=${address}&chain=${chain}&limit=${limit}`
   );
