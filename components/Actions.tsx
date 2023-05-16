@@ -1,7 +1,7 @@
 import { utils } from "ethers";
 import Image from "next/image";
-import { useState, useContext } from "react";
-import { useSigner, useContract } from "wagmi";
+import { useContext, useState } from "react";
+import { useContract, useSigner } from "wagmi";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import { ModalContext } from "@/lib/context";
@@ -65,6 +65,7 @@ const SendForm = ({ close }: { close: () => void }) => {
 
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
+
   const buy = async () => {
     if (!torusPlugin.torusWalletInstance.isInitialized) {
       console.log("Torus not initialized yet");

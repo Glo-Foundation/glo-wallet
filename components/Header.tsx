@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { useConnect, useDisconnect } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
+import { sliceAddress } from "@/lib/utils";
 
 type Props = {
   address?: string;
@@ -18,7 +19,7 @@ export default function Header({ address, isConnected }: Props) {
   const receive = async () => {
     openModal(
       <div className="flex flex-col items-center">
-        <QRCodeSVG size={128} value={address as string} />
+        <QRCodeSVG size={128} value={address!} />
         <span className="pt-8 text-l max-w-[50%] flex flex-wrap">
           Wallet Address:
         </span>
@@ -35,8 +36,7 @@ export default function Header({ address, isConnected }: Props) {
       {isConnected ? (
         <>
           <span className="cursor-pointer" onClick={() => receive()}>
-            {address?.slice(0, 5)}...
-            {address?.slice(-3)}
+            {sliceAddress(address!)}
           </span>
           <button className="primary-button" onClick={() => disconnect()}>
             Disconnect
