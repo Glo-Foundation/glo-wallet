@@ -18,7 +18,7 @@ export default function Balance({
   const yearlyInterestRate = 0.027;
 
   // ethers and typescript don't like each other
-  const illFormatMyOwnEther = Number(String(balance.value).slice(-18));
+  const illFormatMyOwnEther = Number(balance.formatted);
   const yearlyYield = getTotalYield(
     yearlyInterestRate,
     illFormatMyOwnEther,
