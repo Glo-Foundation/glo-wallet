@@ -1,18 +1,20 @@
-import { useState } from "react";
+import { useContext } from "react";
+import { useAccount, useBalance } from "wagmi";
 
-import Actions from "@/components/Actions";
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import Transactions from "@/components/Transactions";
-import { getTotalYield } from "@/utils";
+import { ModalContext } from "@/lib/context";
 
 export default function Home() {
-  const [glo, setGlo] = useState<number>(1000.9);
+  const { address, connector, isConnected } = useAccount();
+  const { data: balance, refetch } = useBalance({
+    address,
+    token: process.env.NEXT_PUBLIC_USDGLO as any,
+  });
+  const { openModal, closeModal } = useContext(ModalContext);
 
-  const totalDays = 365;
-  const yearlyInterestRate = 0.027;
-  const yearlyYield = getTotalYield(yearlyInterestRate, glo, totalDays);
   const transactions = [
     {
       from: "me",
@@ -28,10 +30,9 @@ export default function Home() {
 
   return (
     <div className="mt-4 px-2.5">
-      <Header />
+      <Header address={address} isConnected={isConnected} />
       <div className="flex flex-col space-y-10">
-        <Actions />
-        <Balance glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
+        <Balance balance={balance} />
         <Transactions transactions={transactions} />
         <CTA />
       </div>

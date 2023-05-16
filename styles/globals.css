@@ -6,7 +6,7 @@ body {
   margin: 0 auto 40px;
   max-width: 375px;
   line-height: 1.5rem;
-  background-color: #EAF2F1;
+  background-color: #eaf2f1;
   color: #133d38;
 }
 
@@ -17,5 +17,35 @@ body {
 @layer base {
   h2 {
     @apply text-xl font-bold;
+  }
+
+  button {
+    @apply flex justify-center items-center rounded-full font-black;
+  }
+
+  input {
+    @apply border rounded-lg bg-pine-100 border-pine-400 p-[.4rem];
+  }
+
+  label {
+    @apply font-black mr-4;
+  }
+}
+
+@layer components {
+  .action-button {
+    @apply min-w-[64px] min-h-[64px] bg-pine-200;
+  }
+
+  .primary-button {
+    @apply py-2 px-4 bg-cyan-600 text-pine-800 drop-shadow;
+  }
+
+  .modal {
+    @apply rounded-lg;
+  }
+
+  .form-group {
+    @apply py-4 flex items-center justify-between;
   }
 }

@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import localFont from "@next/font/local";
 import { polygonMumbai } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 
@@ -90,8 +91,15 @@ export default function App({ Component, pageProps }: AppProps) {
           <ModalContext.Provider value={{ openModal, closeModal }}>
             <Component {...pageProps} />
           </ModalContext.Provider>
-          <dialog className="p-0" ref={dialogRef}>
-            <div ref={contentRef}>{modalContent}</div>
+          <dialog className="modal" ref={dialogRef}>
+            <header className="flex justify-end">
+              <button className="right-0" onClick={() => closeModal()}>
+                <Image alt="x" src="/x.svg" height={16} width={16} />
+              </button>
+            </header>
+            <main className="py-4" ref={contentRef}>
+              {modalContent}
+            </main>
           </dialog>
         </WagmiConfig>
       </main>
