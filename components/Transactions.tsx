@@ -1,20 +1,21 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transfer[]>([]);
 
   const { address } = useAccount();
+  const { chain } = useNetwork();
 
   useEffect(() => {
-    if (address) {
-      fetch(`/api/transactions/${address}`).then(async (res) => {
+    if (chain) {
+      fetch(`/api/transactions/${chain.id}/${address}`).then(async (res) => {
         const { transactions } = await res.json();
         setTransactions(transactions as Transfer[]);
       });
     }
-  }, [address]);
+  }, [chain]);
 
   const [txnsState, setTxnsState] = useState("hidden");
   const renderTransactions = (txns: Transfer[]) =>
