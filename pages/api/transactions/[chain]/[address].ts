@@ -8,6 +8,7 @@ export default async function handler(
 ) {
   const { chain, address } = req.query;
 
+  // TODO: [Rad] Add authorization, or NextCors
   if (req.method !== "GET") {
     return res.status(405).json({
       message: "method not supported",
