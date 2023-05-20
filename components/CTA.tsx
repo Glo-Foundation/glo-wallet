@@ -33,8 +33,8 @@ export default function CTA() {
   const renderCTAs = (ctas: ActionButton[]) =>
     ctas.map((cta, idx) => (
       <li key={`CTA${idx}`}>
-        <button
-          className="flex items-center py-4 border-y"
+        <div
+          className="flex cursor-pointer items-center py-4 border-y"
           onClick={cta.action}
         >
           <div className="mr-8 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
@@ -47,7 +47,9 @@ export default function CTA() {
           </div>
           <div>
             <h2>{cta.title}</h2>
-            <span className="font-thin">{cta.description}</span>
+            <span className="font-thin text-sm text-pine-700">
+              {cta.description}
+            </span>
           </div>
           <Image
             src="/arrow-right.svg"
@@ -55,7 +57,7 @@ export default function CTA() {
             height={100}
             alt="arrow-right"
           />
-        </button>
+        </div>
       </li>
     ));
   return (
