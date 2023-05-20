@@ -1,27 +1,42 @@
 import Image from "next/image";
+import { useContext } from "react";
 
-const CTAs: ActionButton[] = [
-  {
-    title: "Buy Glo Merch",
-    description:
-      "Glo is meant to be spent. Visit the Glo store and order a hoodie!",
-    iconPath: "/buy.svg",
-    link: "https://merch.glodollar.org",
-  },
-  {
-    title: "Ask Uniqlo to support Glo",
-    description:
-      "Uniqlo <> Glo sounds like a perfect match. Email to ask for it.",
-    iconPath: "/za-warudo.svg",
-    link: "https://uniqlo.com",
-  },
-];
+import { ModalContext } from "@/lib/context";
 
 export default function CTA() {
+  const { openModal, closeModal } = useContext(ModalContext);
+
+  const CTAs: ActionButton[] = [
+    {
+      title: "Share Glo with friends",
+      iconPath: "/megahorn.svg",
+      description: "Tell even more friends. Share your invite link.",
+      action: () =>
+        window.location.replace("https://www.glodollar.org/refer-a-friend"),
+    },
+    {
+      title: "Join the early adopter program",
+      description: "Be the change you want to see in the world",
+      iconPath: "/za-warudo.svg",
+      action: () =>
+        window.location.replace("https://www.glodollar.org/get-started"),
+    },
+    {
+      title: "Buy Glo Merch",
+      description:
+        "Glo is meant to be spent. Visit the Glo store and order a hoodie!",
+      iconPath: "/buy.svg",
+      action: () => window.location.replace("https://merch.glodollar.org"),
+    },
+  ];
+
   const renderCTAs = (ctas: ActionButton[]) =>
     ctas.map((cta, idx) => (
       <li key={`CTA${idx}`}>
-        <a className="flex items-center py-4 border-y" href={cta.link}>
+        <button
+          className="flex items-center py-4 border-y"
+          onClick={cta.action}
+        >
           <div className="mr-8 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
             <Image
               src={cta.iconPath}
@@ -40,7 +55,7 @@ export default function CTA() {
             height={100}
             alt="arrow-right"
           />
-        </a>
+        </button>
       </li>
     ));
   return (
