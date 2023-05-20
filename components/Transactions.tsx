@@ -28,7 +28,7 @@ export default function Transactions() {
           <b>To:</b> {txn.to}
         </div>
         <div className="flex justify-between">
-          <b>Amount:</b> {txn.value} USDGLO
+          <b>Amount:</b> ${txn.value} USDGLO
         </div>
       </li>
     ));
