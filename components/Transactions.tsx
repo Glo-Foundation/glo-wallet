@@ -28,7 +28,7 @@ export default function Transactions() {
           <b>To:</b> {txn.to}
         </div>
         <div className="flex justify-between">
-          <b>Amount:</b> {txn.value} USDGLO
+          <b>Amount:</b> ${txn.value} USDGLO
         </div>
       </li>
     ));
@@ -39,15 +39,17 @@ export default function Transactions() {
     <div className="bg-white rounded-[20px] p-8 transition-all">
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">Transactions</div>
-        <button onClick={toggleDropdown}>
-          <Image
-            className="cursor-pointer"
-            src="/down-caret.svg"
-            width={16}
-            height={16}
-            alt="down-arrow"
-          />
-        </button>
+        {txnsState === "list-item" && (
+          <button onClick={toggleDropdown}>
+            <Image
+              className="cursor-pointer"
+              src="/down-caret.svg"
+              width={16}
+              height={16}
+              alt="down-arrow"
+            />
+          </button>
+        )}
       </div>
       <ul className={`mt-12 ${txnsState}`}>
         {renderTransactions(transactions)}

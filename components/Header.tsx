@@ -50,7 +50,7 @@ export default function Header({ address, isConnected }: Props) {
             {sliceAddress(address!)}
           </span>
           <button className="primary-button" onClick={() => disconnect()}>
-            Disconnect
+            Log out
           </button>
         </>
       ) : (
@@ -58,7 +58,7 @@ export default function Header({ address, isConnected }: Props) {
           className="primary-button"
           onClick={() => connect({ connector: connectors[0] })}
         >
-          Connect
+          Log in
         </button>
       )}
       <button
