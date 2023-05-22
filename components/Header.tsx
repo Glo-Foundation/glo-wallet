@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
-import { useContext } from "react";
-import { useConnect, useDisconnect } from "wagmi";
+import { useContext, useEffect } from "react";
+import { useConnect, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
@@ -11,10 +11,19 @@ type Props = {
   isConnected: boolean;
 };
 export default function Header({ address, isConnected }: Props) {
-  const { connect, connectors, error, isLoading, pendingConnector } =
-    useConnect();
+  const { connect, connectors, isLoading } = useConnect();
   const { disconnect } = useDisconnect();
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { switchNetwork } = useSwitchNetwork();
+  const { chain, chains } = useNetwork();
+  const { openModal } = useContext(ModalContext);
+
+  const connector = connectors[0];
+
+  useEffect(() => {
+    if (!isConnected && connector) {
+      connect({ connector });
+    }
+  }, []);
 
   const receive = async () => {
     openModal(
@@ -33,7 +42,9 @@ export default function Header({ address, isConnected }: Props) {
       <a href="https://glodollar.org/">
         <Image src="/glo-logo-text.svg" alt="glo logo" width={74} height={26} />
       </a>
-      {isConnected ? (
+      {isLoading ? (
+        <button className="primary-button">Connecting... </button>
+      ) : isConnected ? (
         <>
           <span className="cursor-pointer" onClick={() => receive()}>
             {sliceAddress(address!)}
@@ -50,6 +61,14 @@ export default function Header({ address, isConnected }: Props) {
           Connect
         </button>
       )}
+      <button
+        className="primary-button"
+        onClick={() =>
+          switchNetwork!(chains.filter((x) => x.id !== chain?.id)[0].id)
+        }
+      >
+        {chain?.name || "Chain..."}
+      </button>
     </nav>
   );
 }

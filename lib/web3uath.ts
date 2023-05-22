@@ -16,6 +16,9 @@ import { Chain } from "wagmi";
 export const torusPlugin = new TorusWalletConnectorPlugin({
   walletInitOptions: {
     whiteLabel: {
+      topupHide: true,
+      disclaimerHide: true,
+      featuredBillboardHide: true,
       theme: { isDark: false, colors: { primary: "#00a8ff" } },
       logoDark: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
       logoLight: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
@@ -79,7 +82,8 @@ export const Web3AuthConnectorInstance = (
       },
     },
   });
-  web3AuthInstance.addPlugin(torusPlugin);
+  // Needed for Buy Glo, Scan buttons
+  web3AuthInstance.addPlugin(torusPlugin); // Promise
 
   web3AuthInstance.configureAdapter(openloginAdapter);
 
