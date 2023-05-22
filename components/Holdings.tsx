@@ -3,7 +3,9 @@ import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useEffect } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useNetwork } from "wagmi";
+
+import { getSmartContractAddress } from "@/lib/config";
 
 type Props = {
   glo: number;
@@ -63,9 +65,10 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
   };
 
   const { address } = useAccount();
+  const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
-    token: process.env.NEXT_PUBLIC_USDGLO as any,
+    token: getSmartContractAddress(chain?.id),
   });
 
   useEffect(() => {

@@ -1,15 +1,17 @@
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useNetwork } from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import Transactions from "@/components/Transactions";
+import { getSmartContractAddress } from "@/lib/config";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
-    token: process.env.NEXT_PUBLIC_USDGLO as any,
+    token: getSmartContractAddress(chain?.id),
   });
 
   return (

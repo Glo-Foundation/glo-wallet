@@ -1,6 +1,5 @@
 import axios from "axios";
 import {
-  EvmChain,
   EvmErc20TransferJSON,
   EvmErc20TransfersResponseJSON,
 } from "moralis/common-evm-utils";
@@ -18,11 +17,11 @@ const instance = axios.create({
 // https://docs.moralis.io/web3-data-api/reference/get-erc20-transfers
 export const fetchTransactions = async (
   address: string,
-  chain: string = EvmChain.MUMBAI.apiHex,
+  chainHex: string,
   limit = 5
 ): Promise<Transfer[]> => {
   const transfers = await instance.get<EvmErc20TransfersResponseJSON>(
-    `erc20/transfers?contract_addresses%5B0%5D=${process.env.NEXT_PUBLIC_USDGLO}&wallet_addresses%5B0%5D=${address}&chain=${chain}&limit=${limit}`
+    `erc20/transfers?contract_addresses%5B0%5D=${process.env.NEXT_PUBLIC_USDGLO}&wallet_addresses%5B0%5D=${address}&chain=${chainHex}&limit=${limit}`
   );
 
   return (
