@@ -13,3 +13,39 @@ body {
 .rc-slider-handle-dragging {
   box-shadow: none !important;
 }
+
+@layer base {
+  h2 {
+    @apply text-xl font-bold;
+  }
+
+  button {
+    @apply flex justify-center items-center rounded-full font-black;
+  }
+
+  input {
+    @apply border rounded-lg bg-pine-100 border-pine-400 p-[.4rem];
+  }
+
+  label {
+    @apply font-black mr-4;
+  }
+}
+
+@layer components {
+  .action-button {
+    @apply min-w-[64px] min-h-[64px] bg-pine-200;
+  }
+
+  .primary-button {
+    @apply py-2 px-4 bg-cyan-600 text-pine-800 drop-shadow;
+  }
+
+  .modal {
+    @apply rounded-lg;
+  }
+
+  .form-group {
+    @apply py-4 flex items-center justify-between;
+  }
+}

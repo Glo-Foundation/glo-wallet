@@ -12,6 +12,7 @@ module.exports = {
         "cyan-600": "#24E5DF",
         "pine-50": "#F4F9F8",
         "pine-100": "#EAF2F1",
+        "pine-200": "#D9E5E3",
         "pine-300": "#CAD9D7",
         "pine-400": "#B8C9C6",
         "pine-500": "#93ABA8",
