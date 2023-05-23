@@ -27,13 +27,18 @@ export default function Header({ address, isConnected }: Props) {
 
   const receive = async () => {
     openModal(
-      <div className="flex flex-col items-center">
-        <QRCodeSVG size={128} value={address!} />
-        <span className="pt-8 text-l max-w-[50%] flex flex-wrap">
-          Wallet Address:
-        </span>
-        <div>{address}</div>
-      </div>
+      <>
+        <div className="flex flex-col items-center">
+          <QRCodeSVG size={128} value={address!} />
+          <span className="pt-8 text-l max-w-[50%] flex flex-wrap">
+            Wallet Address:
+          </span>
+          <div>{address}</div>
+        </div>
+        <section>
+          <button className="primary-button">Log out</button>
+        </section>
+      </>
     );
   };
 
@@ -46,11 +51,9 @@ export default function Header({ address, isConnected }: Props) {
         <button className="primary-button">Connecting... </button>
       ) : isConnected ? (
         <>
-          <span className="cursor-pointer" onClick={() => receive()}>
-            {sliceAddress(address!)}
-          </span>
-          <button className="primary-button" onClick={() => disconnect()}>
-            Log out
+          <span className="cursor-default">{sliceAddress(address!)}</span>
+          <button className="primary-button" onClick={() => receive()}>
+            👤
           </button>
         </>
       ) : (
@@ -61,14 +64,6 @@ export default function Header({ address, isConnected }: Props) {
           Log in
         </button>
       )}
-      <button
-        className="primary-button"
-        onClick={() =>
-          switchNetwork!(chains.filter((x) => x.id !== chain?.id)[0].id)
-        }
-      >
-        {chain?.name || "Chain..."}
-      </button>
     </nav>
   );
 }
