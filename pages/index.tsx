@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 
 import Balance from "@/components/Balance";
@@ -5,6 +6,8 @@ import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import Transactions from "@/components/Transactions";
 import { getSmartContractAddress } from "@/lib/config";
+import { useUserStore } from "@/lib/store";
+import { api, initApi } from "@/lib/utils";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
@@ -13,6 +16,22 @@ export default function Home() {
     address,
     token: getSmartContractAddress(chain?.id),
   });
+
+  const { setTransfers, setActions } = useUserStore();
+
+  useEffect(() => {
+    if (isConnected) {
+      initApi(address!).then(async () => {
+        const { data: actions } = await api().get<Action[]>(`/actions`);
+        setActions(actions);
+
+        const { data: transfers } = await api().get<Transfer[]>(
+          `/transfers/${chain?.id}/${address}`
+        );
+        setTransfers(transfers);
+      });
+    }
+  }, [isConnected]);
 
   return (
     <div className="mt-4 px-2.5">

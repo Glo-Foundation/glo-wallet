@@ -27,7 +27,9 @@
       }
     ],
     "no-unused-vars": "off",
-    "unused-imports/no-unused-imports": "error",
+    "no-non-null-assertions": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "react-hooks/exhaustive-deps": "off",
     "unused-imports/no-unused-vars": [
       "warn",
       {

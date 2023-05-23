@@ -1,21 +1,10 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useAccount, useNetwork } from "wagmi";
+import { useState } from "react";
+
+import { useUserStore } from "@/lib/store";
 
 export default function Transactions() {
-  const [transactions, setTransactions] = useState<Transfer[]>([]);
-
-  const { address } = useAccount();
-  const { chain } = useNetwork();
-
-  useEffect(() => {
-    if (chain) {
-      fetch(`/api/transactions/${chain.id}/${address}`).then(async (res) => {
-        const { transactions } = await res.json();
-        setTransactions(transactions as Transfer[]);
-      });
-    }
-  }, [chain]);
+  const { transfers } = useUserStore();
 
   const [txnsState, setTxnsState] = useState("hidden");
   const renderTransactions = (txns: Transfer[]) =>
@@ -49,9 +38,7 @@ export default function Transactions() {
           />
         </button>
       </div>
-      <ul className={`mt-12 ${txnsState}`}>
-        {renderTransactions(transactions)}
-      </ul>
+      <ul className={`mt-12 ${txnsState}`}>{renderTransactions(transfers)}</ul>
     </div>
   );
 }

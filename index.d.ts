@@ -13,3 +13,7 @@ type Transfer = {
   from: string;
   to: string;
 };
+
+type Action = {
+  type: ActionType;
+};

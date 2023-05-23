@@ -8,13 +8,6 @@ export default async function handler(
 ) {
   const { chain, address } = req.query;
 
-  // TODO: [Rad] Add authorization, or NextCors
-  if (req.method !== "GET") {
-    return res.status(405).json({
-      message: "method not supported",
-    });
-  }
-
   if (typeof address !== "string" || typeof chain !== "string") {
     return res.status(405).json({
       message: "invalid req",
@@ -24,5 +17,5 @@ export default async function handler(
   const chainHex = `0x${parseInt(chain).toString(16)}`;
   const transactions = await fetchTransactions(address, chainHex);
 
-  return res.status(200).json({ transactions });
+  return res.status(200).json(transactions);
 }
