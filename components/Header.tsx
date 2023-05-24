@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { QRCodeSVG } from "qrcode.react";
 import { useContext, useEffect } from "react";
-import { useConnect, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
+import { useConnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
+
+import UserInfoModal from "./Modals/UserInfoModal";
 
 type Props = {
   address?: string;
@@ -12,7 +13,6 @@ type Props = {
 };
 export default function Header({ address, isConnected }: Props) {
   const { connect, connectors, isLoading } = useConnect();
-  const { disconnect } = useDisconnect();
   const { switchNetwork } = useSwitchNetwork();
   const { chain, chains } = useNetwork();
   const { openModal } = useContext(ModalContext);
@@ -25,38 +25,8 @@ export default function Header({ address, isConnected }: Props) {
     }
   }, []);
 
-  const receive = async () => {
-    openModal(
-      <div className="px-4">
-        <section className="flex items-center">
-          <div className="p-4 border-2">
-            <QRCodeSVG size={128} value={address!} />
-          </div>
-          <div className="ml-6">
-            <h3 className="text-l max-w-[50%] flex flex-wrap">
-              Wallet Address:
-            </h3>
-            <div className="copy pseudo-input-text">
-              <span>{address}</span>
-              <button
-                id="copy-deposit-address"
-                className="pl-2"
-                onClick={() => {
-                  navigator.clipboard.writeText(address);
-                }}
-              >
-                <Image src={`/copy.svg`} height={15} width={15} alt="" />
-              </button>
-            </div>
-          </div>
-        </section>
-        <section className="mt-4 flex justify-end">
-          <button className="primary-button" onClick={() => disconnect()}>
-            Log out
-          </button>
-        </section>
-      </div>
-    );
+  const receive = () => {
+    openModal(<UserInfoModal address={address} />);
   };
 
   return (

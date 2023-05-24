@@ -3,7 +3,7 @@ import localFont from "@next/font/local";
 import { goerli, polygonMumbai } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 
 import Analytics from "@/components/Analytics";
@@ -70,17 +70,6 @@ export default function App({ Component, pageProps }: AppProps) {
     dialogRef.current?.close();
   };
 
-  useEffect(() => {
-    const closeModalEvent = () => closeModal();
-    const stopPropagationEvent = (e: MouseEvent) => e.stopPropagation();
-    dialogRef.current?.addEventListener("click", closeModalEvent);
-    contentRef.current?.addEventListener("click", stopPropagationEvent);
-    return () => {
-      dialogRef.current?.removeEventListener("click", closeModalEvent);
-      contentRef.current?.removeEventListener("click", stopPropagationEvent);
-    };
-  }, [dialogRef]);
-
   return (
     <>
       <Analytics />
@@ -90,17 +79,17 @@ export default function App({ Component, pageProps }: AppProps) {
         <WagmiConfig client={client}>
           <ModalContext.Provider value={{ openModal, closeModal }}>
             <Component {...pageProps} />
+            <dialog className="modal" ref={dialogRef}>
+              <header className="flex justify-end">
+                <button className="right-0" onClick={() => closeModal()}>
+                  <Image alt="x" src="/x.svg" height={16} width={16} />
+                </button>
+              </header>
+              <div className="py-4" ref={contentRef}>
+                {modalContent}
+              </div>
+            </dialog>
           </ModalContext.Provider>
-          <dialog className="modal" ref={dialogRef}>
-            <header className="flex justify-end">
-              <button className="right-0" onClick={() => closeModal()}>
-                <Image alt="x" src="/x.svg" height={16} width={16} />
-              </button>
-            </header>
-            <main className="py-4" ref={contentRef}>
-              {modalContent}
-            </main>
-          </dialog>
         </WagmiConfig>
       </main>
     </>
