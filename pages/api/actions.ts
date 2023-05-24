@@ -1,7 +1,12 @@
-import { ActionType } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../lib/prisma";
+
+const DEFAULT_ACTIONS: Action[] = [
+  "SHARE_GLO",
+  "BUY_GLO_MERCH",
+  "JOIN_PROGRAM",
+].map((action) => ({ type: action } as Action));
 
 const getOrCreate = async (address: string) => {
   try {
@@ -19,22 +24,13 @@ const getOrCreate = async (address: string) => {
     });
     return user?.actions || [];
   } catch {
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         address,
       },
     });
 
-    const actionsData = Object.keys(ActionType).map((action) => ({
-      type: action as ActionType,
-      userId: user.id,
-    }));
-
-    await prisma.actions.createMany({
-      data: actionsData,
-    });
-
-    return actionsData;
+    return [];
   }
 };
 
@@ -46,5 +42,12 @@ export default async function handler(
 
   const actions = await getOrCreate(address);
 
-  return res.status(200).json(actions);
+  const userActions = actions.map((x) => x.type);
+
+  return res
+    .status(200)
+    .json([
+      ...actions,
+      ...DEFAULT_ACTIONS.filter((action) => !userActions.includes(action.type)),
+    ]);
 }

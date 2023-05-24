@@ -2,8 +2,7 @@ type ActionButton = {
   title?: string;
   description: string;
   iconPath: string;
-  link?: string;
-  action?: any;
+  action: any;
 };
 
 type Transfer = {
@@ -13,6 +12,8 @@ type Transfer = {
   from: string;
   to: string;
 };
+
+type ActionType = "SHARE_GLO" | "BUY_GLO_MERCH" | "JOIN_PROGRAM";
 
 type Action = {
   type: ActionType;

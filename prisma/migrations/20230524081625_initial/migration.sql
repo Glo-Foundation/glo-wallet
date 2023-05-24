@@ -1,6 +1,3 @@
--- CreateEnum
-CREATE TYPE "ActionType" AS ENUM ('BUY_GLO_MERCH', 'ASK_UNIQLO', 'SHARE_GLO');
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -16,7 +13,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Actions" (
     "id" TEXT NOT NULL,
     "isCompleted" BOOLEAN NOT NULL DEFAULT false,
-    "type" "ActionType" NOT NULL,
+    "type" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT NOT NULL,

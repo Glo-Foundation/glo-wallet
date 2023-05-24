@@ -18,17 +18,11 @@ model User {
 }
 
 model Actions {
-  id          String     @id @default(uuid())
-  isCompleted Boolean    @default(false)
-  type        ActionType
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  User        User       @relation(fields: [userId], references: [id])
+  id          String   @id @default(uuid())
+  isCompleted Boolean  @default(false)
+  type        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  User        User     @relation(fields: [userId], references: [id])
   userId      String
-}
-
-enum ActionType {
-  BUY_GLO_MERCH
-  ASK_UNIQLO
-  SHARE_GLO
 }
