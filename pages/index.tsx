@@ -26,7 +26,7 @@ export default function Home() {
         setActions(actions);
 
         const { data: transfers } = await api().get<Transfer[]>(
-          `/transfers/${chain?.id}/${address}`
+          `/transfers/${chain?.id}`
         );
         setTransfers(transfers);
       });

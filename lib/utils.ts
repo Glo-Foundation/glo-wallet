@@ -48,8 +48,8 @@ export const initApi = async (address: string) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userToken}`,
-        "Glo-app-pub-key": appPubKey,
-        "Glo-pub-address": address,
+        "glo-app-pub-key": appPubKey,
+        "glo-pub-address": address,
       },
     });
   }

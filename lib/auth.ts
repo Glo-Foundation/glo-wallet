@@ -3,8 +3,8 @@ import { NextRequest } from "next/server";
 
 export const isAuthenticated = async (req: NextRequest) => {
   const idToken = req.headers.get("authorization")?.split(" ")[1];
-  const appPubKey = req.headers.get("Glo-App-Pub-Key");
-  const address = req.headers.get("Glo-pub-address");
+  const appPubKey = req.headers.get("glo-app-pub-key");
+  const address = req.headers.get("glo-pub-address");
 
   if (!idToken || !address) {
     return false;

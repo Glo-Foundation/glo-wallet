@@ -6,7 +6,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { chain, address } = req.query;
+  const { chain } = req.query;
+  const address = req.headers["glo-pub-address"] as string;
 
   if (typeof address !== "string" || typeof chain !== "string") {
     return res.status(405).json({
