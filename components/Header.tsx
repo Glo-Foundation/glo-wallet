@@ -45,13 +45,7 @@ export default function Header({ address, isConnected }: Props) {
                   navigator.clipboard.writeText(address);
                 }}
               >
-                <Image
-                  layout="fixed"
-                  src={`/copy.svg`}
-                  height={15}
-                  width={15}
-                  alt=""
-                />
+                <Image src={`/copy.svg`} height={15} width={15} alt="" />
               </button>
             </div>
           </div>
