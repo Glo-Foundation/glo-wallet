@@ -5,7 +5,7 @@ import { useContract, useSigner } from "wagmi";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import { ModalContext } from "@/lib/context";
-import { torusPlugin } from "@/lib/web3uath";
+import { torusPlugin } from "@/lib/web3auth";
 
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({

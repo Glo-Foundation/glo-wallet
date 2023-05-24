@@ -8,7 +8,7 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 
 import Analytics from "@/components/Analytics";
 import { ModalContext } from "@/lib/context";
-import { Web3AuthConnectorInstance } from "@/lib/web3uath";
+import { Web3AuthConnectorInstance } from "@/lib/web3auth";
 
 import type { AppProps } from "next/app";
 
