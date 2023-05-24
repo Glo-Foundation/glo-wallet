@@ -7,7 +7,7 @@ import { useDisconnect } from "wagmi";
 import { ModalContext } from "@/lib/context";
 
 type Props = {
-  address: string;
+  address?: string;
 };
 export default function UserInfoModal({ address }: Props) {
   const { disconnect } = useDisconnect();
@@ -45,7 +45,7 @@ export default function UserInfoModal({ address }: Props) {
               id="copy-deposit-address"
               className="pl-2"
               onClick={() => {
-                navigator.clipboard.writeText(address);
+                navigator.clipboard.writeText(address!);
                 setIsCopiedTooltipOpen(true);
               }}
             >
