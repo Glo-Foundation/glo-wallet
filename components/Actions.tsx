@@ -72,13 +72,14 @@ export default function Actions() {
       return;
     }
 
-    await torusPlugin.initiateTopup("moonpay", {
-      selectedAddress: "wallet_address",
-      selectedCurrency: "USD", // Fiat currency
-      fiatValue: 100, // Fiat Value
-      selectedCryptoCurrency: "ETH", // Cryptocurreny `SOL`, `MATIC` etc.
-      chainNetwork: "mainnet", // Blockchain network
-    });
+    const torusWalletInstance = torusPlugin.torusWalletInstance;
+    // torusWalletInstance.torusWidgetVisibility = false;
+    // torusWalletInstance.hideTorusButton();
+    console.log("torus wallet: ", torusWalletInstance);
+    console.log(
+      "showing torus button false: ",
+      torusWalletInstance.hideTorusButton()
+    );
   };
 
   const scan = async () => {
