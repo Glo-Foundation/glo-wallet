@@ -41,6 +41,14 @@ body {
     @apply py-2 px-4 bg-cyan-600 text-pine-800 drop-shadow;
   }
 
+  .copy {
+    @apply text-sm text-pine-700;
+  }
+
+  .pseudo-input-text {
+    @apply border flex justify-between rounded-lg bg-pine-100 border-pine-400 p-2;
+  }
+
   .modal {
     @apply rounded-lg;
   }

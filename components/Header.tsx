@@ -27,18 +27,41 @@ export default function Header({ address, isConnected }: Props) {
 
   const receive = async () => {
     openModal(
-      <>
-        <div className="flex flex-col items-center">
-          <QRCodeSVG size={128} value={address!} />
-          <span className="pt-8 text-l max-w-[50%] flex flex-wrap">
-            Wallet Address:
-          </span>
-          <div>{address}</div>
-        </div>
-        <section>
-          <button className="primary-button">Log out</button>
+      <div className="px-4">
+        <section className="flex items-center">
+          <div className="p-4 border-2">
+            <QRCodeSVG size={128} value={address!} />
+          </div>
+          <div className="ml-6">
+            <h3 className="text-l max-w-[50%] flex flex-wrap">
+              Wallet Address:
+            </h3>
+            <div className="copy pseudo-input-text">
+              <span>{address}</span>
+              <button
+                id="copy-deposit-address"
+                className="pl-2"
+                onClick={() => {
+                  navigator.clipboard.writeText(address);
+                }}
+              >
+                <Image
+                  layout="fixed"
+                  src={`/copy.svg`}
+                  height={15}
+                  width={15}
+                  alt=""
+                />
+              </button>
+            </div>
+          </div>
         </section>
-      </>
+        <section className="mt-4 flex justify-end">
+          <button className="primary-button" onClick={() => disconnect()}>
+            Log out
+          </button>
+        </section>
+      </div>
     );
   };
 
@@ -52,7 +75,10 @@ export default function Header({ address, isConnected }: Props) {
       ) : isConnected ? (
         <>
           <span className="cursor-default">{sliceAddress(address!)}</span>
-          <button className="primary-button" onClick={() => receive()}>
+          <button
+            className="primary-button w-11 h-11"
+            onClick={() => receive()}
+          >
             👤
           </button>
         </>
