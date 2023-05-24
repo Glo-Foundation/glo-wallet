@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import { Tooltip } from "react-tooltip";
 import { useDisconnect } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
@@ -34,10 +35,19 @@ export default function UserInfoModal({ address }: Props) {
           <h3 className="text-l max-w-[50%] flex flex-wrap">wallet address:</h3>
           <div className="copy pseudo-input-text">
             <span>{address}</span>
+            <Tooltip
+              anchorId="copy-deposit-address"
+              content="Copied!"
+              noArrow={true}
+              isOpen={isCopiedTooltipOpen}
+            />
             <button
               id="copy-deposit-address"
               className="pl-2"
-              onClick={() => navigator.clipboard.writeText(address)}
+              onClick={() => {
+                navigator.clipboard.writeText(address);
+                setIsCopiedTooltipOpen(true);
+              }}
             >
               <Image src={`/copy.svg`} height={15} width={15} alt="" />
             </button>
