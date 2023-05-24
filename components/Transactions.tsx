@@ -9,7 +9,6 @@ export default function Transactions() {
   const { chain } = useNetwork();
 
   useEffect(() => {
-    console.log({ chain });
     if (chain) {
       fetch(`/api/transactions/${chain.id}/${address}`).then(async (res) => {
         const { transactions } = await res.json();
