@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { useUserStore } from "@/lib/store";
 
-const CTAs: { [key in ActionType]: ActionButton } = {
+const CTAs: { [key in CTAType]: ActionButton } = {
   ["SHARE_GLO"]: {
     title: "Share Glo with friends",
     iconPath: "/megahorn.svg",
