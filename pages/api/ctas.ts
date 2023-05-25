@@ -2,11 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../lib/prisma";
 
-const DEFAULT_ACTIONS: CTA[] = [
-  "SHARE_GLO",
-  "BUY_GLO_MERCH",
-  "JOIN_PROGRAM",
-].map((cta) => ({ type: cta } as CTA));
+const DEFAULT_CTAS: CTA[] = ["SHARE_GLO", "BUY_GLO_MERCH", "JOIN_PROGRAM"].map(
+  (cta) => ({ type: cta } as CTA)
+);
 
 const getOrCreate = async (address: string) => {
   try {
@@ -48,6 +46,6 @@ export default async function handler(
     .status(200)
     .json([
       ...ctas,
-      ...DEFAULT_ACTIONS.filter((cta) => !userCTAS.includes(cta.type)),
+      ...DEFAULT_CTAS.filter((cta) => !userCTAS.includes(cta.type)),
     ]);
 }
