@@ -2,11 +2,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../lib/prisma";
 
-const DEFAULT_ACTIONS: Action[] = [
+const DEFAULT_ACTIONS: CTA[] = [
   "SHARE_GLO",
   "BUY_GLO_MERCH",
   "JOIN_PROGRAM",
-].map((action) => ({ type: action } as Action));
+].map((cta) => ({ type: cta } as CTA));
 
 const getOrCreate = async (address: string) => {
   try {
@@ -15,14 +15,14 @@ const getOrCreate = async (address: string) => {
         address,
       },
       select: {
-        actions: {
+        ctas: {
           select: {
             type: true,
           },
         },
       },
     });
-    return user?.actions || [];
+    return user?.ctas || [];
   } catch {
     await prisma.user.create({
       data: {
@@ -40,14 +40,14 @@ export default async function handler(
 ) {
   const address = req.headers["glo-pub-address"] as string;
 
-  const actions = await getOrCreate(address);
+  const ctas = await getOrCreate(address);
 
-  const userActions = actions.map((x) => x.type);
+  const userCTAS = ctas.map((x) => x.type);
 
   return res
     .status(200)
     .json([
-      ...actions,
-      ...DEFAULT_ACTIONS.filter((action) => !userActions.includes(action.type)),
+      ...ctas,
+      ...DEFAULT_ACTIONS.filter((cta) => !userCTAS.includes(cta.type)),
     ]);
 }

@@ -26,10 +26,10 @@ const CTAs: { [key in ActionType]: ActionButton } = {
   },
 };
 
-const ActionButton = ({ action }: { action: ActionType }) => {
-  const cta = CTAs[action];
+const ActionButton = ({ ctaType }: { ctaType: CTAType }) => {
+  const cta = CTAs[ctaType];
   return (
-    <li key={`CTA${action}`}>
+    <li key={`CTA${ctaType}`}>
       <div
         className="flex cursor-pointer items-center py-4 border-y"
         onClick={cta.action}
@@ -60,7 +60,7 @@ const ActionButton = ({ action }: { action: ActionType }) => {
 };
 
 export default function CTA() {
-  const { actions } = useUserStore();
+  const { ctas } = useUserStore();
 
   return (
     <div className="bg-pine-50 rounded-[20px] p-8 transition-all">
@@ -68,8 +68,8 @@ export default function CTA() {
         <div className="font-semibold text-3xl">Let&apos;s Glo!</div>
       </div>
       <ul className={"mt-2"}>
-        {actions.map((action, index) => (
-          <ActionButton action={action.type} key={index} />
+        {ctas.map((cta, index) => (
+          <ActionButton ctaType={cta.type} key={index} />
         ))}
       </ul>
     </div>

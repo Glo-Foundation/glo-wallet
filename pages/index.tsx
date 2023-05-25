@@ -8,6 +8,7 @@ import Transactions from "@/components/Transactions";
 import { getSmartContractAddress } from "@/lib/config";
 import { useUserStore } from "@/lib/store";
 import { api, initApi } from "@/lib/utils";
+import { torusPlugin } from "@/lib/web3uath";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
@@ -17,13 +18,13 @@ export default function Home() {
     token: getSmartContractAddress(chain?.id),
   });
 
-  const { setTransfers, setActions } = useUserStore();
+  const { setTransfers, setCTAs } = useUserStore();
 
   useEffect(() => {
     if (isConnected) {
       initApi(address!).then(async () => {
-        const { data: actions } = await api().get<Action[]>(`/actions`);
-        setActions(actions);
+        const { data: ctas } = await api().get<CTA[]>(`/ctas`);
+        setCTAs(ctas);
 
         const { data: transfers } = await api().get<Transfer[]>(
           `/transfers/${chain?.id}`

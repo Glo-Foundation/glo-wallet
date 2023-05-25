@@ -5,6 +5,7 @@ import { useConnect, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
+import { torusPlugin } from "@/lib/web3uath";
 
 type Props = {
   address?: string;
@@ -63,9 +64,9 @@ export default function Header({ address, isConnected }: Props) {
       )}
       <button
         className="primary-button"
-        onClick={() =>
-          switchNetwork!(chains.filter((x) => x.id !== chain?.id)[0].id)
-        }
+        onClick={() => {
+          torusPlugin.torusWalletInstance.hideTorusButton();
+        }}
       >
         {chain?.name || "Chain..."}
       </button>

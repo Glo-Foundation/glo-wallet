@@ -84,6 +84,7 @@ export const Web3AuthConnectorInstance = (
     },
   });
   // Needed for Buy Glo, Scan buttons
+  torusPlugin.torusWalletInstance.buttonSize = 20;
   web3AuthInstance.addPlugin(torusPlugin); // Promise
 
   web3AuthInstance.configureAdapter(openloginAdapter);

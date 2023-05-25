@@ -9,15 +9,15 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  address   String    @unique
-  email     String?   @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  actions   Actions[]
+  id        String   @id @default(uuid())
+  address   String   @unique
+  email     String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ctas      CTAs[]
 }
 
-model Actions {
+model CTAs {
   id          String   @id @default(uuid())
   isCompleted Boolean  @default(false)
   type        String

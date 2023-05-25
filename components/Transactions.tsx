@@ -28,7 +28,7 @@ export default function Transactions() {
     <div className="bg-white rounded-[20px] p-8 transition-all">
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">Transactions</div>
-        {txnsState === "list-item" && (
+        {txnsState === "hidden" && (
           <button onClick={toggleDropdown}>
             <Image
               className="cursor-pointer"

@@ -2,13 +2,13 @@ import { create } from "zustand";
 
 interface UserStore {
   transfers: Transfer[];
-  actions: Action[];
+  ctas: CTA[];
   setTransfers: (transfers: Transfer[]) => void;
-  setActions: (actions: Action[]) => void;
+  setCTAs: (ctas: CTA[]) => void;
 }
 export const useUserStore = create<UserStore>((set) => ({
   transfers: [],
-  actions: [],
+  ctas: [],
   setTransfers: (transfers: Transfer[]) => set(() => ({ transfers })),
-  setActions: (actions: Action[]) => set(() => ({ actions })),
+  setCTAs: (ctas: CTA[]) => set(() => ({ ctas })),
 }));

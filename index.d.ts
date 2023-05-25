@@ -13,8 +13,8 @@ type Transfer = {
   to: string;
 };
 
-type ActionType = "SHARE_GLO" | "BUY_GLO_MERCH" | "JOIN_PROGRAM";
+type CTAType = "SHARE_GLO" | "BUY_GLO_MERCH" | "JOIN_PROGRAM";
 
-type Action = {
-  type: ActionType;
+type CTA = {
+  type: CTAType;
 };
