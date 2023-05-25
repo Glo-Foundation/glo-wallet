@@ -5,7 +5,7 @@ import { useConnect } from "wagmi";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transfer[]>([]);
-  const [txnsState, setTxnsState] = useState("hidden");
+  const [dropdown, setDropdown] = useState("hidden");
   const { connect, connectors } = useConnect();
   const { address } = useAccount();
   const { chain } = useNetwork();
@@ -16,12 +16,12 @@ export default function Transactions() {
       fetch(`/api/transactions/${chain.id}/${address}`).then(async (res) => {
         const { transactions } = await res.json();
         setTransactions(transactions as Transfer[]);
-        setTxnsState("list-item");
+        setDropdown("list-item");
       });
     }
   }, [chain]);
   const toggleDropdown = () =>
-    transactions.length ? setTxnsState("list-item") : setTxnsState("hidden");
+    transactions.length ? setDropdown("list-item") : setDropdown("hidden");
 
   const renderTransactions = (txns: Transfer[]) =>
     txns.map((txn, idx) => (
@@ -42,7 +42,7 @@ export default function Transactions() {
     <div className="bg-white rounded-[20px] p-8 transition-all">
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">Transactions</div>
-        {txnsState === "list-item" && (
+        {dropdown === "list-item" && (
           <button onClick={toggleDropdown}>
             <Image
               className="cursor-pointer"
@@ -54,9 +54,9 @@ export default function Transactions() {
           </button>
         )}
       </div>
-      {txnsState === "list-item" ? (
+      {dropdown === "list-item" ? (
         transactions.length ? (
-          <ul className={`mt-12 ${txnsState}`}>
+          <ul className={`mt-12 ${dropdown}`}>
             {renderTransactions(transactions)}
           </ul>
         ) : (
