@@ -5,20 +5,24 @@ import { useConnect } from "wagmi";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transfer[]>([]);
+  const [txnsState, setTxnsState] = useState("hidden");
   const { connect, connectors } = useConnect();
   const { address } = useAccount();
   const { chain } = useNetwork();
 
   useEffect(() => {
+    console.log({ chain });
     if (chain) {
       fetch(`/api/transactions/${chain.id}/${address}`).then(async (res) => {
         const { transactions } = await res.json();
         setTransactions(transactions as Transfer[]);
+        setTxnsState("list-item");
       });
     }
   }, [chain]);
+  const toggleDropdown = () =>
+    transactions.length ? setTxnsState("list-item") : setTxnsState("hidden");
 
-  const [txnsState, setTxnsState] = useState("hidden");
   const renderTransactions = (txns: Transfer[]) =>
     txns.map((txn, idx) => (
       <li key={idx} className="py-4 border-y">
@@ -33,8 +37,6 @@ export default function Transactions() {
         </div>
       </li>
     ));
-  const toggleDropdown = () =>
-    txnsState === "hidden" ? setTxnsState("list-item") : setTxnsState("hidden");
 
   return (
     <div className="bg-white rounded-[20px] p-8 transition-all">
