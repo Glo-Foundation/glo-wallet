@@ -10,4 +10,4 @@ export const isMainnetProd = () =>
 export const isMainnetDev = () =>
   NEXT_PUBLIC_URL === "https://wallet.glodollar.org";
 
-export const isLocal = () => NEXT_PUBLIC_URL.includes("http://localhost");
+export const isLocal = () => NEXT_PUBLIC_URL!.includes("http://localhost");

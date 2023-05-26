@@ -1,17 +1,16 @@
+import { isTestnetProd, isMainnetProd } from "@lib/constants";
 import pino from "pino";
-
-import { isMainnetProd } from "@/lib/constants";
 
 const pinoConfig = {
   level: process.env.LOG_LEVEL || "info",
   formatters: {
-    level: (label) => {
+    level: (label: string) => {
       return { level: label };
     },
   },
 };
 
-if (!(isTestProd() && isMainnetProd())) {
+if (!(isTestnetProd() && isMainnetProd())) {
   pinoConfig["transport"] = {
     target: "pino-pretty",
     options: {
