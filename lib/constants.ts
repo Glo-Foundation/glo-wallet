@@ -1,3 +1,5 @@
+const { NEXT_PUBLIC_URL } = process.env;
+
 export const isTestnetProd = () =>
   NEXT_PUBLIC_URL === "https://testnet.glodollar.org";
 export const isTestnetDev = () =>
