@@ -47,3 +47,6 @@ __tests__/.next/
 # Sentry
 .sentryclirc
 
+
+# Sentry Auth Token
+.sentryclirc
