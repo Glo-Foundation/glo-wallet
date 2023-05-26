@@ -63,9 +63,9 @@ export default function Header({ address, isConnected }: Props) {
       )}
       <button
         className="primary-button"
-        onClick={() =>
-          switchNetwork!(chains.filter((x) => x.id !== chain?.id)[0].id)
-        }
+        onClick={() => {
+          switchNetwork!(chains.filter((x) => x.id !== chain?.id)[0].id);
+        }}
       >
         {chain?.name || "Chain..."}
       </button>

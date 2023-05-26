@@ -6,13 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "postinstall": "prisma generate",
     "lint": "next lint",
     "prepare": "husky install",
-    "fmt": "prettier --write './**/*.{js,jsx}' './**/*.{ts,tsx}' './**/*.css' './**/*.json' './**/*.md' './**/*.yml'"
+    "fmt": "prettier --write './**/*.{js,jsx}' './**/*.{ts,tsx}' './**/*.css' './**/*.json' './**/*.md'"
   },
   "dependencies": {
     "@next/font": "13.1.6",
     "@sentry/nextjs": "^7.53.1",
+    "@prisma/client": "^4.13.0",
+    "@toruslabs/eccrypto": "^3.0.0",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
@@ -27,6 +30,7 @@
     "@web3auth/web3auth-wagmi-connector": "^3.0.2",
     "axios": "^1.4.0",
     "ethers": "^5.7.2",
+    "jose": "^4.14.4",
     "moralis": "^2.20.0",
     "next": "13.1.6",
     "pino": "^8.14.1",
@@ -51,6 +55,7 @@
     "pino-pretty": "^10.0.0",
     "postcss": "^8.4.21",
     "prettier": "2.8.3",
+    "prisma": "^4.13.0",
     "tailwindcss": "^3.2.4"
   }
 }
