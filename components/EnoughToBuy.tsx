@@ -1,4 +1,3 @@
-
 import { getImpactItems, isLiftPersonOutOfPovertyImpactItem } from "@/utils";
 
 type Props = {

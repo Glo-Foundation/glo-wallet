@@ -13,6 +13,7 @@ import { WalletConnectV1Adapter } from "@web3auth/wallet-connect-v1-adapter";
 import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { Chain } from "wagmi";
 
+export let web3AuthInstance: Web3Auth;
 export const torusPlugin = new TorusWalletConnectorPlugin({
   walletInitOptions: {
     whiteLabel: {
@@ -42,7 +43,7 @@ export const Web3AuthConnectorInstance = (
     ticker: chains[0].nativeCurrency?.symbol,
   };
 
-  const web3AuthInstance = new Web3Auth({
+  web3AuthInstance = new Web3Auth({
     clientId,
     authMode: "WALLET",
     uiConfig: {
@@ -83,6 +84,7 @@ export const Web3AuthConnectorInstance = (
     },
   });
   // Needed for Buy Glo, Scan buttons
+  torusPlugin.torusWalletInstance.buttonSize = 20;
   web3AuthInstance.addPlugin(torusPlugin); // Promise
 
   web3AuthInstance.configureAdapter(openloginAdapter);
