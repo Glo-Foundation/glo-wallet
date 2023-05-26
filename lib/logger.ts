@@ -1,7 +1,13 @@
-import { isTestnetProd, isMainnetProd } from "@lib/constants";
 import pino from "pino";
 
-const pinoConfig = {
+import { isTestnetProd, isMainnetProd } from "lib/constants";
+
+type PinoConfig = {
+  level: string;
+  formatters: any;
+  transport?: any;
+};
+const pinoConfig: PinoConfig = {
   level: process.env.LOG_LEVEL || "info",
   formatters: {
     level: (label: string) => {
