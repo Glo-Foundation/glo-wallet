@@ -63,22 +63,24 @@ const SendForm = ({ close }: { close: () => void }) => {
   );
 };
 
+const BuyGloModal = ({ close }: { close: () => void }) => {
+  return (
+    <main className="max-w-sm">
+      <h1 className="text-2xl font-bold">Coming soon</h1>
+      <br />
+      <p className="text-pine-700">
+        Glo is currently in beta. As soon as you can buy Glo, we&apos;ll let you
+        know via email.
+      </p>
+    </main>
+  );
+};
+
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
 
   const buy = async () => {
-    if (!torusPlugin.torusWalletInstance.isInitialized) {
-      console.log("Torus not initialized yet");
-      return;
-    }
-
-    await torusPlugin.initiateTopup("moonpay", {
-      selectedAddress: "wallet_address",
-      selectedCurrency: "USD", // Fiat currency
-      fiatValue: 100, // Fiat Value
-      selectedCryptoCurrency: "ETH", // Cryptocurreny `SOL`, `MATIC` etc.
-      chainNetwork: "mainnet", // Blockchain network
-    });
+    openModal(<BuyGloModal close={closeModal} />);
   };
 
   const scan = async () => {

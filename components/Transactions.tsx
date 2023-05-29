@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import { useAccount, useNetwork } from "wagmi";
 import { useConnect } from "wagmi";
 
+import { useUserStore } from "@/lib/store";
+
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transfer[]>([]);
   const [dropdown, setDropdown] = useState("hidden");
   const { connect, connectors } = useConnect();
   const { address } = useAccount();
   const { chain } = useNetwork();
+  const { transfers } = useUserStore();
 
   useEffect(() => {
     console.log({ chain });

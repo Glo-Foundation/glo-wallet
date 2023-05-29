@@ -12,3 +12,9 @@ type Transfer = {
   from: string;
   to: string;
 };
+
+type CTAType = "SHARE_GLO" | "BUY_GLO_MERCH" | "JOIN_PROGRAM";
+
+type CTA = {
+  type: CTAType;
+};
