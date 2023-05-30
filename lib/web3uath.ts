@@ -13,6 +13,8 @@ import { WalletConnectV1Adapter } from "@web3auth/wallet-connect-v1-adapter";
 import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
 import { Chain } from "wagmi";
 
+import { getNetwork } from "./utils";
+
 export let web3AuthInstance: Web3Auth;
 export const torusPlugin = new TorusWalletConnectorPlugin({
   walletInitOptions: {
@@ -53,7 +55,7 @@ export const Web3AuthConnectorInstance = (
         "https://dashboard-public-assets.s3.amazonaws.com/glo_icon_transparent.png",
       modalZIndex: "10000",
       primaryButton: "emailLogin",
-      web3AuthNetwork: "testnet",
+      web3AuthNetwork: getNetwork(),
       loginGridCol: 2,
     },
     chainConfig,
@@ -67,7 +69,7 @@ export const Web3AuthConnectorInstance = (
     },
 
     adapterSettings: {
-      network: "testnet",
+      network: getNetwork(),
       whiteLabel: {
         name: "Glo Wallet",
         logoLight:
@@ -102,7 +104,7 @@ export const Web3AuthConnectorInstance = (
     clientId,
     sessionTime: 3600, // 1 hour in seconds
     chainConfig,
-    web3AuthNetwork: "testnet",
+    web3AuthNetwork: getNetwork(),
   });
 
   web3AuthInstance.configureAdapter(coinbaseAdapter);
