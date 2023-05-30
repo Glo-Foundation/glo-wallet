@@ -62,4 +62,4 @@ export const api = () => apiInstance;
 export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
 export const getNetwork = (): OPENLOGIN_NETWORK_TYPE =>
-  isProd() ? "mainnet" : "testnet";
+  isProd() ? "cyan" : "testnet";
