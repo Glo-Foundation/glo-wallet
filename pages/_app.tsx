@@ -1,6 +1,12 @@
 import "@/styles/globals.css";
 import localFont from "@next/font/local";
-import { goerli, polygonMumbai } from "@wagmi/core/chains";
+import {
+  goerli,
+  polygon,
+  mainnet,
+  polygonMumbai,
+  Chain,
+} from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -8,12 +14,13 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 
 import Analytics from "@/components/Analytics";
 import { ModalContext } from "@/lib/context";
+import { isProd } from "@/lib/utils";
 import { Web3AuthConnectorInstance } from "@/lib/web3uath";
 
 import type { AppProps } from "next/app";
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [polygonMumbai, goerli],
+  isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
   [publicProvider()]
 );
 
