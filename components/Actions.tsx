@@ -1,7 +1,8 @@
+import { sequence } from "0xsequence";
 import { utils } from "ethers";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import { ModalContext } from "@/lib/context";
@@ -12,7 +13,6 @@ const SendForm = ({ close }: { close: () => void }) => {
     amount: "0.1",
   });
   const [hash, setHash] = useState<`0x${string}`>();
-
   const { config } = usePrepareContractWrite({
     address: process.env.NEXT_PUBLIC_USDGLO as `0x${string}`,
     abi: UsdgloContract,
@@ -79,12 +79,15 @@ const BuyGloModal = ({ close }: { close: () => void }) => {
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
 
+  const { connector } = useAccount();
+
   const buy = async () => {
     openModal(<BuyGloModal close={closeModal} />);
   };
 
   const scan = async () => {
-    console.log("scanner");
+    const wallet = sequence.getWallet();
+    wallet.openWallet("/wallet/scan");
   };
 
   const transfer = async () => {
@@ -106,13 +109,18 @@ export default function Actions() {
       iconPath: "/scan.svg",
       action: scan,
       description: "Scan",
+      disabled: connector?.name !== "Sequence",
     },
   ];
 
   const renderActionButtons = (buttons: ActionButton[]) =>
     buttons.map((button, idx) => (
       <li key={`actionButton${idx}`}>
-        <button className="action-button mb-4" onClick={() => button.action()}>
+        <button
+          className="action-button mb-4"
+          onClick={() => button.action()}
+          disabled={button.disabled}
+        >
           <Image
             src={button.iconPath}
             alt={button.description}
