@@ -73,7 +73,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
 
   useEffect(() => {
     const val = balance?.value;
-    if (val && !val.isZero()) {
+    if (val && val > 0) {
       setGlo(parseFloat(utils.formatEther(val)));
     }
   }, [balance]);
