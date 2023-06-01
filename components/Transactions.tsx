@@ -6,12 +6,21 @@ import { useConnect } from "wagmi";
 import { useUserStore } from "@/lib/store";
 
 export default function Transactions() {
-  const [transactions, setTransactions] = useState<Transfer[]>([]);
+  const { transfers } = useUserStore();
+  const [transactions, setTransactions] = useState<Transfer[]>(transfers);
   const [dropdown, setDropdown] = useState("hidden");
   const { connect, connectors } = useConnect();
   const { address } = useAccount();
   const { chain } = useNetwork();
-  const { transfers } = useUserStore();
+
+  useEffect(() => {
+    if (transfers) {
+      setDropdown("list-item");
+    }
+  }, transfers);
+
+  const toggleDropdown = () =>
+    dropdown === "list-item" ? setDropdown("hidden") : setDropdown("list-item");
 
   const renderTransactions = (txns: Transfer[]) =>
     txns.map((txn, idx) => {
@@ -60,7 +69,7 @@ export default function Transactions() {
         ) : (
           <span>
             Still no transactions because you don&rsquo;t have any Glo yet! why
-            not ping @gglucass for some? :D
+            not ping Garm | Glo #4654 for some over on Discord? :D
           </span>
         )
       ) : (
