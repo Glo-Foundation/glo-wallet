@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { SequenceConnector } from "@0xsequence/wagmi-connector";
 import localFont from "@next/font/local";
 import {
   goerli,
@@ -9,26 +10,48 @@ import {
 } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { useEffect, useRef, useState } from "react";
+import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import Analytics from "@/components/Analytics";
 import { ModalContext } from "@/lib/context";
 import { isProd } from "@/lib/utils";
-import { Web3AuthConnectorInstance } from "@/lib/web3uath";
 
 import type { AppProps } from "next/app";
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
   [publicProvider()]
 );
 
-const client = createClient({
+const config = createConfig({
   autoConnect: true,
-  connectors: [Web3AuthConnectorInstance(chains)],
-  provider,
-  webSocketProvider,
+  connectors: [
+    new SequenceConnector({
+      options: {
+        connect: {
+          app: "Glo wallet",
+          networkId: chains[0].id,
+        },
+      },
+      chains,
+    }) as unknown as Connector,
+
+    new MetaMaskConnector({
+      chains,
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+        showQrModal: true,
+      },
+    }),
+  ],
+  publicClient,
+  webSocketPublicClient,
 });
 
 const neueHaasGrotesk = localFont({
@@ -83,7 +106,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
-        <WagmiConfig client={client}>
+        <WagmiConfig config={config}>
           <ModalContext.Provider value={{ openModal, closeModal }}>
             <Component {...pageProps} />
             <dialog className="modal" ref={dialogRef}>

@@ -8,7 +8,6 @@ import Transactions from "@/components/Transactions";
 import { getSmartContractAddress } from "@/lib/config";
 import { useUserStore } from "@/lib/store";
 import { api, initApi } from "@/lib/utils";
-import { torusPlugin } from "@/lib/web3uath";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
@@ -16,6 +15,7 @@ export default function Home() {
   const { data: balance } = useBalance({
     address,
     token: getSmartContractAddress(chain?.id),
+    watch: true,
   });
 
   const { setTransfers, setCTAs } = useUserStore();

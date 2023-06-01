@@ -47,12 +47,28 @@ export default function Header({ address, isConnected }: Props) {
           </button>
         </>
       ) : (
-        <button
-          className="primary-button"
-          onClick={() => connect({ connector: connectors[0] })}
-        >
-          Log in
-        </button>
+        <>
+          <button
+            className="primary-button"
+            onClick={() => connect({ connector })}
+          >
+            Social
+          </button>
+
+          <button
+            className="primary-button"
+            onClick={() => connect({ connector: connectors[1] })}
+          >
+            Metamask
+          </button>
+
+          <button
+            className="primary-button"
+            onClick={() => connect({ connector: connectors[2] })}
+          >
+            WC
+          </button>
+        </>
       )}
     </nav>
   );
