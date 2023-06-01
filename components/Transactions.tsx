@@ -7,7 +7,6 @@ import { useUserStore } from "@/lib/store";
 
 export default function Transactions() {
   const { transfers } = useUserStore();
-  const [transactions, setTransactions] = useState<Transfer[]>(transfers);
   const [dropdown, setDropdown] = useState("hidden");
   const { connect, connectors } = useConnect();
   const { address, isConnected } = useAccount();
@@ -24,16 +23,18 @@ export default function Transactions() {
 
   const renderTransactions = (txns: Transfer[]) =>
     txns.map((txn, idx) => {
-      const dateTokens = new Date(txn.block_timestamp).split(" ");
+      const dateTokens = new Date(txn.block_timestamp)
+        .toDateString()
+        .split(" ");
       const txnDate = dateTokens[1] + " " + dateTokens[2];
       return (
         <li key={`txn-${idx}`} className="flex justify-between">
           <div>
-            <span>Money {txn.from_address === address ? "Sent" : added}</span>
+            <span>Money {txn.from_address === address ? "sent" : "added"}</span>
             <span className="copy">{txnDate}</span>
           </div>
           <div>
-            <span>{tx.from_address === address ? "-" : "+"}</span>
+            <span>{txn.from_address === address ? "-" : "+"}</span>
             <span>
               {new Intl.NumberFormat("en-En", {
                 style: "currency",
@@ -62,10 +63,8 @@ export default function Transactions() {
         )}
       </div>
       {dropdown === "list-item" ? (
-        <ul className={`mt-12 ${dropdown}`}>
-          {renderTransactions(transactions)}
-        </ul>
-      ) : isConnected && !transactions.length ? (
+        <ul className={`mt-12 ${dropdown}`}>{renderTransactions(transfers)}</ul>
+      ) : isConnected && !transfers.length ? (
         <p className="mt-6">
           Still no transactions because you don&rsquo;t have any Glo yet! why
           not ask{" "}
