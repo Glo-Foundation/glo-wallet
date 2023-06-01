@@ -16,8 +16,16 @@ export default function Transactions() {
   useEffect(() => {
     if (transfers.length) {
       setDropdown("list-item");
+      setCaretDir("up");
     }
   }, transfers);
+
+  useEffect(() => {
+    if (!isConnected) {
+      setDropdown("hidden");
+      setCaretDir("down");
+    }
+  }, isConnected);
 
   const toggleDropdown = () => {
     dropdown === "list-item" ? setDropdown("hidden") : setDropdown("list-item");
@@ -54,42 +62,34 @@ export default function Transactions() {
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">Transactions</div>
         <button onClick={toggleDropdown}>
-          <Image
-            className="cursor-pointer"
-            src={`/${caretDir}-caret.svg`}
-            width={16}
-            height={16}
-            alt="down-arrow"
-          />
+          {isConnected && (
+            <Image
+              className="cursor-pointer"
+              src={`/${caretDir}-caret.svg`}
+              width={16}
+              height={16}
+              alt="down-arrow"
+            />
+          )}
         </button>
       </div>
       {dropdown === "list-item" ? (
         <ul className={`mt-12 ${dropdown}`}>{renderTransactions(transfers)}</ul>
-      ) : isConnected && !transfers.length ? (
-        <p className="mt-6">
-          Still no transactions because you don&rsquo;t have any Glo yet! why
-          not ask{" "}
-          <span>
-            <a
-              href="https://discord.gg/nJv2xfys"
-              className="cursor-pointer hover:decoration-solid text-blue-500"
-            >
-              (Garm | Glo #4654)
-            </a>
-          </span>{" "}
-          for some over on Discord? :D
-        </p>
       ) : (
-        <div className="mt-6">
-          <span> No transactions to show; please </span>
-          <button
-            className="inline cursor-pointer hover:decoration-solid text-blue-500"
-            onClick={() => connect({ connector: connectors[0] })}
-          >
-            connect a wallet
-          </button>
-          <span> first</span>
-        </div>
+        <>
+          {!isConnected && (
+            <div className="mt-6">
+              <span> No transactions to show; please </span>
+              <button
+                className="inline cursor-pointer hover:decoration-solid text-blue-500"
+                onClick={() => connect({ connector: connectors[0] })}
+              >
+                connect a wallet
+              </button>
+              <span> first</span>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
