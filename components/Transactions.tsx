@@ -14,7 +14,7 @@ export default function Transactions() {
   const { chain } = useNetwork();
 
   useEffect(() => {
-    if (transfers) {
+    if (transfers.length) {
       setDropdown("list-item");
     }
   }, transfers);
@@ -62,16 +62,14 @@ export default function Transactions() {
         )}
       </div>
       {dropdown === "list-item" ? (
-        transactions.length ? (
-          <ul className={`mt-12 ${dropdown}`}>
-            {renderTransactions(transactions)}
-          </ul>
-        ) : (
-          <span>
-            Still no transactions because you don&rsquo;t have any Glo yet! why
-            not ping Garm | Glo #4654 for some over on Discord? :D
-          </span>
-        )
+        <ul className={`mt-12 ${dropdown}`}>
+          {renderTransactions(transactions)}
+        </ul>
+      ) : !transactions.length ? (
+        <span>
+          Still no transactions because you don&rsquo;t have any Glo yet! why
+          not ping <b>(Garm | Glo #4654)</b> for some over on Discord? :D
+        </span>
       ) : (
         <div className="mt-6">
           <span> No transactions to show; please </span>
