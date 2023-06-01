@@ -13,19 +13,6 @@ export default function Transactions() {
   const { chain } = useNetwork();
   const { transfers } = useUserStore();
 
-  useEffect(() => {
-    console.log({ chain });
-    if (chain) {
-      fetch(`/api/transactions/${chain.id}/${address}`).then(async (res) => {
-        const { transactions } = await res.json();
-        setTransactions(transactions as Transfer[]);
-        setDropdown("list-item");
-      });
-    }
-  }, [chain]);
-  const toggleDropdown = () =>
-    transactions.length ? setDropdown("list-item") : setDropdown("hidden");
-
   const renderTransactions = (txns: Transfer[]) =>
     txns.map((txn, idx) => (
       <li key={idx} className="py-4 border-y">

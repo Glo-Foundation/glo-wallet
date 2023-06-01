@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getPublicCompressed } from "@toruslabs/eccrypto";
+import { OPENLOGIN_NETWORK_TYPE } from "@toruslabs/openlogin";
 import { WALLET_ADAPTERS } from "@web3auth/base";
 import axios, { AxiosInstance } from "axios";
 
@@ -57,3 +58,8 @@ export const initApi = async (address: string) => {
 };
 
 export const api = () => apiInstance;
+
+export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
+
+export const getNetwork = (): OPENLOGIN_NETWORK_TYPE =>
+  isProd() ? "cyan" : "testnet";
