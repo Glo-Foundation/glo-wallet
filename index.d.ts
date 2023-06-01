@@ -6,10 +6,11 @@ type ActionButton = {
 };
 
 type Transfer = {
-  from_address: string;
-  to_address: string;
-  block_timestamp: string;
-  value: number;
+  type: string;
+  ts: string;
+  value: string;
+  from: string;
+  to: string;
 };
 
 type CTAType = "SHARE_GLO" | "BUY_GLO_MERCH" | "JOIN_PROGRAM";

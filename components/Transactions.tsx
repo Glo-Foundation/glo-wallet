@@ -7,10 +7,11 @@ import { useUserStore } from "@/lib/store";
 
 export default function Transactions() {
   const { transfers } = useUserStore();
-  const [dropdown, setDropdown] = useState("hidden");
   const { connect, connectors } = useConnect();
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
+  const [dropdown, setDropdown] = useState("hidden");
+  const [caretDir, setCaretDir] = useState("down");
 
   useEffect(() => {
     if (transfers.length) {
@@ -18,29 +19,31 @@ export default function Transactions() {
     }
   }, transfers);
 
-  const toggleDropdown = () =>
+  const toggleDropdown = () => {
     dropdown === "list-item" ? setDropdown("hidden") : setDropdown("list-item");
+    caretDir === "up" ? setCaretDir("down") : setCaretDir("up");
+  };
 
   const renderTransactions = (txns: Transfer[]) =>
     txns.map((txn, idx) => {
-      const dateTokens = new Date(txn.block_timestamp)
-        .toDateString()
-        .split(" ");
+      const dateTokens = new Date(txn.ts).toDateString().split(" ");
       const txnDate = dateTokens[1] + " " + dateTokens[2];
       return (
-        <li key={`txn-${idx}`} className="flex justify-between">
+        <li key={`txn-${idx}`} className="transaction-item">
           <div>
-            <span>Money {txn.from_address === address ? "sent" : "added"}</span>
-            <span className="copy">{txnDate}</span>
+            <p>Money {txn.type === "outgoing" ? "sent" : "added"}</p>
+            <p className="copy">{txnDate}</p>
           </div>
           <div>
-            <span>{txn.from_address === address ? "-" : "+"}</span>
-            <span>
-              {new Intl.NumberFormat("en-En", {
-                style: "currency",
-                currency: "USD",
-              }).format(transaction.value)}
-            </span>
+            <b>
+              <span>{txn.type === "outgoing" ? "-" : "+"}</span>
+              <span>
+                {new Intl.NumberFormat("en-En", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(txn.value)}
+              </span>
+            </b>
           </div>
         </li>
       );
@@ -50,17 +53,15 @@ export default function Transactions() {
     <div className="bg-white rounded-[20px] p-8 transition-all">
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">Transactions</div>
-        {dropdown === "list-item" && (
-          <button onClick={toggleDropdown}>
-            <Image
-              className="cursor-pointer"
-              src="/down-caret.svg"
-              width={16}
-              height={16}
-              alt="down-arrow"
-            />
-          </button>
-        )}
+        <button onClick={toggleDropdown}>
+          <Image
+            className="cursor-pointer"
+            src={`/${caretDir}-caret.svg`}
+            width={16}
+            height={16}
+            alt="down-arrow"
+          />
+        </button>
       </div>
       {dropdown === "list-item" ? (
         <ul className={`mt-12 ${dropdown}`}>{renderTransactions(transfers)}</ul>

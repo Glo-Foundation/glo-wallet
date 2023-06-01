@@ -16,9 +16,7 @@ export default async function handler(
   }
 
   const chainHex = `0x${parseInt(chain).toString(16)}`;
-  console.log({ chainHex });
   const transactions = await fetchTransactions(address, chainHex);
-  console.log({ transactions });
 
   return res.status(200).json(transactions);
 }
