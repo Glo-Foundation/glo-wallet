@@ -42,7 +42,7 @@ export default function Transactions() {
                 {new Intl.NumberFormat("en-En", {
                   style: "currency",
                   currency: "USD",
-                }).format(txn.value)}
+                }).format(txn.value as number)}
               </span>
             </b>
           </div>
