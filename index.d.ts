@@ -3,6 +3,7 @@ type ActionButton = {
   description: string;
   iconPath: string;
   action: any;
+  disabled?: boolean;
 };
 
 type Transfer = {

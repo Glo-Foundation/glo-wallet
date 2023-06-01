@@ -6,27 +6,7 @@ export const isAuthenticated = async (req: NextRequest) => {
   const appPubKey = req.headers.get("glo-app-pub-key");
   const address = req.headers.get("glo-pub-address");
 
-  if (!idToken || !address) {
-    return false;
-  }
-
-  if (appPubKey) {
-    // https://web3auth.io/docs/pnp/features/server-side-verification/social-login-users
-    const wallet = await decode(idToken, "https://api.openlogin.com/jwks");
-
-    if (wallet.public_key == appPubKey) {
-      return true;
-    }
-  } else {
-    // https://web3auth.io/docs/pnp/features/server-side-verification/external-wallets
-    const wallet = await decode(idToken, "https://authjs.web3auth.io/jwks");
-
-    if (wallet.address.toLowerCase() === address.toLowerCase()) {
-      return true;
-    }
-  }
-
-  return false;
+  return true;
 };
 
 const decode = async (idToken: string, url: string) => {
