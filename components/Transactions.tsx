@@ -8,24 +8,17 @@ import { useUserStore } from "@/lib/store";
 export default function Transactions() {
   const { transfers } = useUserStore();
   const { connect, connectors } = useConnect();
-  const { address, isConnected, isDisconnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const [dropdown, setDropdown] = useState("hidden");
   const [caretDir, setCaretDir] = useState("down");
 
   useEffect(() => {
-    if (transfers.length) {
+    if (transfers.length && isConnected) {
       setDropdown("list-item");
       setCaretDir("up");
     }
   }, transfers);
-
-  useEffect(() => {
-    if (isDisconnected) {
-      setDropdown("hidden");
-      setCaretDir("down");
-    }
-  }, isDisconnected);
 
   const toggleDropdown = () => {
     dropdown === "list-item" ? setDropdown("hidden") : setDropdown("list-item");
@@ -77,7 +70,7 @@ export default function Transactions() {
         <ul className={`mt-12 ${dropdown}`}>{renderTransactions(transfers)}</ul>
       ) : (
         <>
-          {isDisconnected && (
+          {!isConnected && (
             <div className="mt-6">
               <span> No transactions to show; please </span>
               <button
