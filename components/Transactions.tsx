@@ -10,7 +10,7 @@ export default function Transactions() {
   const [transactions, setTransactions] = useState<Transfer[]>(transfers);
   const [dropdown, setDropdown] = useState("hidden");
   const { connect, connectors } = useConnect();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
 
   useEffect(() => {
@@ -65,11 +65,20 @@ export default function Transactions() {
         <ul className={`mt-12 ${dropdown}`}>
           {renderTransactions(transactions)}
         </ul>
-      ) : !transactions.length ? (
-        <span>
+      ) : isConnected && !transactions.length ? (
+        <p className="mt-6">
           Still no transactions because you don&rsquo;t have any Glo yet! why
-          not ping <b>(Garm | Glo #4654)</b> for some over on Discord? :D
-        </span>
+          not ask{" "}
+          <span>
+            <a
+              href="https://discord.gg/nJv2xfys"
+              className="cursor-pointer hover:decoration-solid text-blue-500"
+            >
+              (Garm | Glo #4654)
+            </a>
+          </span>{" "}
+          for some over on Discord? :D
+        </p>
       ) : (
         <div className="mt-6">
           <span> No transactions to show; please </span>
