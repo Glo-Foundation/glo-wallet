@@ -5,7 +5,6 @@ import { useUserStore } from "@/lib/store";
 
 export default function Transactions() {
   const { transfers } = useUserStore();
-
   const [txnsState, setTxnsState] = useState("hidden");
   const renderTransactions = (txns: Transfer[]) =>
     txns.map((txn, idx) => (
