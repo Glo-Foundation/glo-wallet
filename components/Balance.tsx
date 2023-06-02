@@ -24,6 +24,8 @@ export default function Balance({
     illFormatMyOwnEther,
     totalDays
   );
+  const yearlyYieldFormatted =
+    yearlyYield > 0 ? "$0 - " + yearlyYield.toFixed(2) : "$" + yearlyYield;
 
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
@@ -61,7 +63,7 @@ export default function Balance({
               height={28}
               width={28}
             />
-            ${yearlyYield} / year
+            {yearlyYieldFormatted} / year
           </div>
           <EnoughToBuy yearlyYield={yearlyYield} />
         </div>
