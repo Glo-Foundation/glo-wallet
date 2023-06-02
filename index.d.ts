@@ -2,8 +2,9 @@ type ActionButton = {
   title?: string;
   description: string;
   iconPath: string;
-  action: any;
+  action?: any;
   disabled?: boolean;
+  url?: string;
 };
 
 type Transfer = {
