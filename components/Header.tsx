@@ -17,14 +17,6 @@ export default function Header({ address, isConnected }: Props) {
   const { chain, chains } = useNetwork();
   const { openModal } = useContext(ModalContext);
 
-  const connector = connectors[0];
-
-  useEffect(() => {
-    if (!isConnected && connector) {
-      connect({ connector });
-    }
-  }, []);
-
   const receive = () => {
     openModal(<UserInfoModal address={address} />);
   };
@@ -50,7 +42,7 @@ export default function Header({ address, isConnected }: Props) {
         <>
           <button
             className="primary-button"
-            onClick={() => connect({ connector })}
+            onClick={() => connect({ connector: connectors[0] })}
           >
             Social
           </button>
