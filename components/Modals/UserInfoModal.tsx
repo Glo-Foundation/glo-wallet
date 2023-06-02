@@ -5,6 +5,7 @@ import { Tooltip } from "react-tooltip";
 import { useDisconnect } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
+import { useUserStore } from "@/lib/store";
 
 type Props = {
   address?: string;
@@ -13,6 +14,7 @@ export default function UserInfoModal({ address }: Props) {
   const { disconnect } = useDisconnect();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+  const { setTransfers, setCTAs } = useUserStore();
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -22,6 +24,8 @@ export default function UserInfoModal({ address }: Props) {
 
   const handleLogout = () => {
     disconnect();
+    setTransfers([]);
+    setCTAs([]);
     closeModal();
   };
 

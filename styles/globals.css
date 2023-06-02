@@ -56,4 +56,8 @@ body {
   .form-group {
     @apply py-4 flex items-center justify-between;
   }
+
+  .transaction-item {
+    @apply flex justify-between border-b-2 mb-4 pb-4;
+  }
 }

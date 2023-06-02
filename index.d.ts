@@ -9,7 +9,7 @@ type ActionButton = {
 type Transfer = {
   type: string;
   ts: string;
-  value: string;
+  value: number | string;
   from: string;
   to: string;
 };
