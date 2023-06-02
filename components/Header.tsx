@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Tooltip } from "react-tooltip";
 import { useConnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
@@ -17,12 +18,16 @@ export default function Header({ address, isConnected }: Props) {
   const { switchNetwork } = useSwitchNetwork();
   const { chain, chains } = useNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
+  const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   useEffect(() => {
     if (isConnected) {
-      closeModal(<UserAuthModal />);
+      closeModal();
     }
-  }, [isConnected]);
+    if (isCopiedTooltipOpen) {
+      setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
+    }
+  }, [isConnected, isCopiedTooltipOpen]);
 
   const openUserInfoModal = () => {
     openModal(<UserInfoModal address={address} />);
@@ -41,7 +46,22 @@ export default function Header({ address, isConnected }: Props) {
         <button className="primary-button">Connecting... </button>
       ) : isConnected ? (
         <>
-          <span className="cursor-default">{sliceAddress(address!)}</span>
+          <Tooltip
+            anchorId="copy-deposit-address"
+            content="Copied!"
+            noArrow={true}
+            isOpen={isCopiedTooltipOpen}
+          />
+          <button
+            id="copy-deposit-address"
+            className=""
+            onClick={() => {
+              navigator.clipboard.writeText(address!);
+              setIsCopiedTooltipOpen(true);
+            }}
+          >
+            <span>{sliceAddress(address!)}</span>
+          </button>
           <button
             className="primary-button w-11 h-11"
             onClick={() => openUserInfoModal()}
