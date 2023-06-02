@@ -5,6 +5,7 @@ import { useConnect, useNetwork, useSwitchNetwork } from "wagmi";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 
+import UserAuthModal from "./Modals/UserAuthModal";
 import UserInfoModal from "./Modals/UserInfoModal";
 
 type Props = {
@@ -15,10 +16,20 @@ export default function Header({ address, isConnected }: Props) {
   const { connect, connectors, isLoading } = useConnect();
   const { switchNetwork } = useSwitchNetwork();
   const { chain, chains } = useNetwork();
-  const { openModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
-  const receive = () => {
+  useEffect(() => {
+    if (isConnected) {
+      closeModal(<UserAuthModal />);
+    }
+  }, [isConnected]);
+
+  const openUserInfoModal = () => {
     openModal(<UserInfoModal address={address} />);
+  };
+
+  const openUserAuthModal = () => {
+    openModal(<UserAuthModal />);
   };
 
   return (
@@ -33,7 +44,7 @@ export default function Header({ address, isConnected }: Props) {
           <span className="cursor-default">{sliceAddress(address!)}</span>
           <button
             className="primary-button w-11 h-11"
-            onClick={() => receive()}
+            onClick={() => openUserInfoModal()}
           >
             👤
           </button>
@@ -42,23 +53,9 @@ export default function Header({ address, isConnected }: Props) {
         <>
           <button
             className="primary-button"
-            onClick={() => connect({ connector: connectors[0] })}
+            onClick={() => openUserAuthModal()}
           >
-            Social
-          </button>
-
-          <button
-            className="primary-button"
-            onClick={() => connect({ connector: connectors[1] })}
-          >
-            Metamask
-          </button>
-
-          <button
-            className="primary-button"
-            onClick={() => connect({ connector: connectors[2] })}
-          >
-            WC
+            Log in
           </button>
         </>
       )}
