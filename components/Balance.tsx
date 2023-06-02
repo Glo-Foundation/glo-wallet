@@ -25,7 +25,7 @@ export default function Balance({
     totalDays
   );
   const yearlyYieldFormatted =
-    yearlyYield > 0 ? `$0 - {yearlyYield.toFixed(2)}` : "$0";
+    yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
 
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
