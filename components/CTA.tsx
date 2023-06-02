@@ -7,22 +7,23 @@ const CTAs: { [key in CTAType]: ActionButton } = {
     title: "Share Glo with friends",
     iconPath: "/megahorn.svg",
     description: "Tell even more friends. Share your invite link.",
-    action: () =>
-      window.location.replace("https://www.glodollar.org/refer-a-friend"),
+    url: "https://www.glodollar.org/refer-a-friend",
+    // action: () => open a modal in the future,
   },
   ["BUY_GLO_MERCH"]: {
     title: "Buy Glo Merch",
     description:
       "Glo is meant to be spent. Visit the Glo store and order a hoodie!",
     iconPath: "/buy.svg",
-    action: () => window.location.replace("https://merch.glodollar.org"),
+    url: "https://merch.glodollar.org",
+    // action: () => open a modal in the future,
   },
   ["JOIN_PROGRAM"]: {
     title: "Join the early adopter program",
     description: "Be the change you want to see in the world",
     iconPath: "/za-warudo.svg",
-    action: () =>
-      window.location.replace("https://www.glodollar.org/get-started"),
+    // action: () => open a modal in the future,
+    url: "https://www.glodollar.org/get-started",
   },
 };
 
@@ -30,9 +31,10 @@ const ActionButton = ({ ctaType }: { ctaType: CTAType }) => {
   const cta = CTAs[ctaType];
   return (
     <li key={`CTA${ctaType}`}>
-      <div
+      <a
         className="flex cursor-pointer items-center py-4 border-y"
-        onClick={cta.action}
+        href={cta.url}
+        target="_blank" rel="noreferrer"
       >
         <div className="mr-8 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
           <Image
@@ -54,7 +56,7 @@ const ActionButton = ({ ctaType }: { ctaType: CTAType }) => {
           height={100}
           alt="arrow-right"
         />
-      </div>
+      </a>
     </li>
   );
 };
