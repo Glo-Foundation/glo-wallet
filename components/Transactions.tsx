@@ -16,13 +16,18 @@ export default function Transactions() {
   const [dropdown, setDropdown] = useState("hidden");
   const [caretDir, setCaretDir] = useState("down");
   const { openModal, closeModal } = useContext(ModalContext);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (transfers.length && isConnected) {
       setDropdown("list-item");
       setCaretDir("up");
     }
-  }, transfers);
+  }, [transfers]);
 
   const toggleDropdown = () => {
     dropdown === "list-item" ? setDropdown("hidden") : setDropdown("list-item");
@@ -55,38 +60,44 @@ export default function Transactions() {
     });
 
   return (
-    <div className="bg-white rounded-[20px] p-8 transition-all">
-      <div className="flex justify-between cursor-default">
-        <div className="font-semibold text-3xl">Transactions</div>
-        <button onClick={toggleDropdown}>
-          {isConnected && (
-            <Image
-              className="cursor-pointer"
-              src={`/${caretDir}-caret.svg`}
-              width={16}
-              height={16}
-              alt="down-arrow"
-            />
+    <>
+      {isMounted && (
+        <div className="bg-white rounded-[20px] p-8 transition-all">
+          <div className="flex justify-between cursor-default">
+            <div className="font-semibold text-3xl">Transactions</div>
+            <button onClick={toggleDropdown}>
+              {isConnected && (
+                <Image
+                  className="cursor-pointer"
+                  src={`/${caretDir}-caret.svg`}
+                  width={16}
+                  height={16}
+                  alt="down-arrow"
+                />
+              )}
+            </button>
+          </div>
+          {dropdown === "list-item" ? (
+            <ul className={`mt-12 ${dropdown}`}>
+              {renderTransactions(transfers)}
+            </ul>
+          ) : (
+            <>
+              {!isConnected && (
+                <div className="mt-6">
+                  <span> No transactions to show - </span>
+                  <button
+                    className="inline cursor-pointer hover:decoration-solid text-blue-500"
+                    onClick={() => openModal(<UserAuthModal />)}
+                  >
+                    please log in
+                  </button>
+                </div>
+              )}
+            </>
           )}
-        </button>
-      </div>
-      {dropdown === "list-item" ? (
-        <ul className={`mt-12 ${dropdown}`}>{renderTransactions(transfers)}</ul>
-      ) : (
-        <>
-          {!isConnected && (
-            <div className="mt-6">
-              <span> No transactions to show - </span>
-              <button
-                className="inline cursor-pointer hover:decoration-solid text-blue-500"
-                onClick={() => openModal(<UserAuthModal />)}
-              >
-                please log in
-              </button>
-            </div>
-          )}
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }
