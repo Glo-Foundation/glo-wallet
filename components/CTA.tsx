@@ -3,13 +3,14 @@ import Image from "next/image";
 import { useUserStore } from "@/lib/store";
 
 const ActionButton = ({
+  CTA_MAP,
   ctaType,
   email,
 }: {
   ctaType: CTAType;
   email: string;
 }) => {
-  const cta = CTAs[ctaType];
+  const cta = CTA_MAP[ctaType];
   return (
     <li key={`CTA${ctaType}`}>
       <a
@@ -49,14 +50,16 @@ const ActionButton = ({
 export default function CTA() {
   const { ctas, email } = useUserStore();
 
-  const CTAs: { [key in CTAType]: ActionButton } = {
+  const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["SHARE_GLO"]: {
       title: "Share Glo with friends",
       iconPath: "/megahorn.svg",
       description: "Tell even more friends. Share your invite link.",
       action: (email: string) =>
         window.location.replace(
-          `https://www.glodollar.org/refer-a-friend?email1referrer=${email}`
+          `https://www.glodollar.org/refer-a-friend?email1referrer=${
+            email || ""
+          }`
         ),
     },
     ["BUY_GLO_MERCH"]: {
@@ -73,7 +76,7 @@ export default function CTA() {
       iconPath: "/za-warudo.svg",
       action: (email: string) =>
         window.location.replace(
-          `https://www.glodollar.org/get-started?email=${email}`
+          `https://www.glodollar.org/get-started?email=${email || ""}`
         ),
     },
   };
@@ -85,7 +88,12 @@ export default function CTA() {
       </div>
       <ul className={"mt-2"}>
         {ctas.map((cta, index) => (
-          <ActionButton email={email} ctaType={cta.type} key={`cta-${index}`} />
+          <ActionButton
+            CTA_MAP={CTA_MAP}
+            email={email}
+            ctaType={cta.type}
+            key={`cta-${index}`}
+          />
         ))}
       </ul>
     </div>

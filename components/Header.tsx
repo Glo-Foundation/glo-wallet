@@ -18,6 +18,7 @@ export default function Header({ address, isConnected }: Props) {
   const { switchNetwork } = useSwitchNetwork();
   const { chain, chains } = useNetwork();
   const { openModal } = useContext(ModalContext);
+  const { setEmail } = useUserStore();
 
   const receive = () => {
     openModal(<UserInfoModal address={address} />);
@@ -50,7 +51,7 @@ export default function Header({ address, isConnected }: Props) {
                 app: "Glo Wallet",
                 askForEmail: true,
               });
-              useUserStore.setEmail(connectDetails.email);
+              setEmail(connectDetails.email);
             }}
           >
             Social
