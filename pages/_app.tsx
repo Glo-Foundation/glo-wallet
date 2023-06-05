@@ -1,27 +1,57 @@
 import "@/styles/globals.css";
+import { SequenceConnector } from "@0xsequence/wagmi-connector";
 import localFont from "@next/font/local";
-import { goerli, polygonMumbai } from "@wagmi/core/chains";
+import {
+  goerli,
+  polygon,
+  mainnet,
+  polygonMumbai,
+  Chain,
+} from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import Analytics from "@/components/Analytics";
 import { ModalContext } from "@/lib/context";
-import { Web3AuthConnectorInstance } from "@/lib/web3uath";
+import { isProd } from "@/lib/utils";
 
 import type { AppProps } from "next/app";
 
-const { chains, provider, webSocketProvider } = configureChains(
-  [polygonMumbai, goerli],
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
   [publicProvider()]
 );
 
-const client = createClient({
+const config = createConfig({
   autoConnect: true,
-  connectors: [Web3AuthConnectorInstance(chains)],
-  provider,
-  webSocketProvider,
+  connectors: [
+    new SequenceConnector({
+      options: {
+        connect: {
+          app: "Glo wallet",
+          networkId: chains[0].id,
+        },
+      },
+      chains,
+    }) as unknown as Connector,
+
+    new MetaMaskConnector({
+      chains,
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+        showQrModal: true,
+      },
+    }),
+  ],
+  publicClient,
+  webSocketPublicClient,
 });
 
 const neueHaasGrotesk = localFont({
@@ -56,6 +86,11 @@ const polySans = localFont({
 
 export default function App({ Component, pageProps }: AppProps) {
   const [modalContent, setModalContent] = useState(<div />);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -70,38 +105,29 @@ export default function App({ Component, pageProps }: AppProps) {
     dialogRef.current?.close();
   };
 
-  useEffect(() => {
-    const closeModalEvent = () => closeModal();
-    const stopPropagationEvent = (e: MouseEvent) => e.stopPropagation();
-    dialogRef.current?.addEventListener("click", closeModalEvent);
-    contentRef.current?.addEventListener("click", stopPropagationEvent);
-    return () => {
-      dialogRef.current?.removeEventListener("click", closeModalEvent);
-      contentRef.current?.removeEventListener("click", stopPropagationEvent);
-    };
-  }, [dialogRef]);
-
   return (
     <>
       <Analytics />
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
-        <WagmiConfig client={client}>
-          <ModalContext.Provider value={{ openModal, closeModal }}>
-            <Component {...pageProps} />
-          </ModalContext.Provider>
-          <dialog className="modal" ref={dialogRef}>
-            <header className="flex justify-end">
-              <button className="right-0" onClick={() => closeModal()}>
-                <Image alt="x" src="/x.svg" height={16} width={16} />
-              </button>
-            </header>
-            <main className="py-4" ref={contentRef}>
-              {modalContent}
-            </main>
-          </dialog>
-        </WagmiConfig>
+        {isMounted && (
+          <WagmiConfig config={config}>
+            <ModalContext.Provider value={{ openModal, closeModal }}>
+              <Component {...pageProps} />
+              <dialog className="modal" ref={dialogRef}>
+                <header className="flex justify-end">
+                  <button className="right-0" onClick={() => closeModal()}>
+                    <Image alt="x" src="/x.svg" height={16} width={16} />
+                  </button>
+                </header>
+                <div className="py-4" ref={contentRef}>
+                  {modalContent}
+                </div>
+              </dialog>
+            </ModalContext.Provider>
+          </WagmiConfig>
+        )}
       </main>
     </>
   );

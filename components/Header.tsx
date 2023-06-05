@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { QRCodeSVG } from "qrcode.react";
 import { useContext, useEffect } from "react";
-import { useConnect, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
+import { useConnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
+
+import UserInfoModal from "./Modals/UserInfoModal";
 
 type Props = {
   address?: string;
@@ -12,29 +13,12 @@ type Props = {
 };
 export default function Header({ address, isConnected }: Props) {
   const { connect, connectors, isLoading } = useConnect();
-  const { disconnect } = useDisconnect();
   const { switchNetwork } = useSwitchNetwork();
   const { chain, chains } = useNetwork();
   const { openModal } = useContext(ModalContext);
 
-  const connector = connectors[0];
-
-  useEffect(() => {
-    if (!isConnected && connector) {
-      connect({ connector });
-    }
-  }, []);
-
-  const receive = async () => {
-    openModal(
-      <div className="flex flex-col items-center">
-        <QRCodeSVG size={128} value={address!} />
-        <span className="pt-8 text-l max-w-[50%] flex flex-wrap">
-          Wallet Address:
-        </span>
-        <div>{address}</div>
-      </div>
-    );
+  const receive = () => {
+    openModal(<UserInfoModal address={address} />);
   };
 
   return (
@@ -46,29 +30,38 @@ export default function Header({ address, isConnected }: Props) {
         <button className="primary-button">Connecting... </button>
       ) : isConnected ? (
         <>
-          <span className="cursor-pointer" onClick={() => receive()}>
-            {sliceAddress(address!)}
-          </span>
-          <button className="primary-button" onClick={() => disconnect()}>
-            Log out
+          <span className="cursor-default">{sliceAddress(address!)}</span>
+          <button
+            className="primary-button w-11 h-11"
+            onClick={() => receive()}
+          >
+            👤
           </button>
         </>
       ) : (
-        <button
-          className="primary-button"
-          onClick={() => connect({ connector: connectors[0] })}
-        >
-          Log in
-        </button>
+        <>
+          <button
+            className="primary-button"
+            onClick={() => connect({ connector: connectors[0] })}
+          >
+            Social
+          </button>
+
+          <button
+            className="primary-button"
+            onClick={() => connect({ connector: connectors[1] })}
+          >
+            Metamask
+          </button>
+
+          <button
+            className="primary-button"
+            onClick={() => connect({ connector: connectors[2] })}
+          >
+            WC
+          </button>
+        </>
       )}
-      <button
-        className="primary-button"
-        onClick={() => {
-          switchNetwork!(chains.filter((x) => x.id !== chain?.id)[0].id);
-        }}
-      >
-        {chain?.name || "Chain..."}
-      </button>
     </nav>
   );
 }

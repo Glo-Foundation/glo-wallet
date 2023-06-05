@@ -1,40 +1,40 @@
+import { sequence } from "0xsequence";
 import { utils } from "ethers";
 import Image from "next/image";
-import { useContext, useState } from "react";
-import { useContract, useSigner } from "wagmi";
+import { useContext, useEffect, useState } from "react";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import { ModalContext } from "@/lib/context";
-import { torusPlugin } from "@/lib/web3uath";
 
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
     address: "0x...",
     amount: "0.1",
   });
-  const [hash, setHash] = useState();
-
-  const { data: signer, isError, isLoading } = useSigner();
-  const contract = useContract({
-    address: process.env.NEXT_PUBLIC_USDGLO!,
+  const [hash, setHash] = useState<`0x${string}`>();
+  const { config } = usePrepareContractWrite({
+    address: process.env.NEXT_PUBLIC_USDGLO as `0x${string}`,
     abi: UsdgloContract,
-    signerOrProvider: signer,
+    functionName: "transfer",
+    args: [sendForm.address, utils.parseEther(sendForm.amount).toBigInt()],
+    enabled: utils.isAddress(sendForm.address),
   });
 
-  const send = async () => {
-    const x = await contract?.transfer(
-      sendForm.address,
-      utils.parseEther(sendForm.amount)
-    );
-    setHash(x.hash);
-  };
+  const { write: transfer, data } = useContractWrite(config);
+
+  useEffect(() => {
+    if (data?.hash) {
+      setHash(data?.hash);
+    }
+  }, [data]);
 
   return (
     <form
       className="flex flex-col"
       onSubmit={async (e) => {
         e.preventDefault();
-        await send();
+        transfer!();
       }}
     >
       <div className="form-group">
@@ -55,7 +55,7 @@ const SendForm = ({ close }: { close: () => void }) => {
           onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
         />
       </div>
-      <button className="mt-4 primary-button" disabled={hash!}>
+      <button className="mt-4 primary-button" disabled={!!hash}>
         Send
       </button>
       {hash && <div>Sent with hash {hash}</div>}
@@ -79,17 +79,15 @@ const BuyGloModal = ({ close }: { close: () => void }) => {
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
 
+  const { connector } = useAccount();
+
   const buy = async () => {
     openModal(<BuyGloModal close={closeModal} />);
   };
 
   const scan = async () => {
-    if (!torusPlugin.torusWalletInstance.isInitialized) {
-      console.log("Torus not initialized yet");
-      return;
-    }
-
-    await torusPlugin.showWalletConnectScanner();
+    const wallet = sequence.getWallet();
+    wallet.openWallet("/wallet/scan");
   };
 
   const transfer = async () => {
@@ -111,13 +109,18 @@ export default function Actions() {
       iconPath: "/scan.svg",
       action: scan,
       description: "Scan",
+      disabled: connector?.name !== "Sequence",
     },
   ];
 
   const renderActionButtons = (buttons: ActionButton[]) =>
     buttons.map((button, idx) => (
       <li key={`actionButton${idx}`}>
-        <button className="action-button mb-4" onClick={() => button.action()}>
+        <button
+          className="action-button mb-4"
+          onClick={() => button.action()}
+          disabled={button.disabled}
+        >
           <Image
             src={button.iconPath}
             alt={button.description}
