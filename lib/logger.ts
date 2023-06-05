@@ -1,6 +1,6 @@
 import pino from "pino";
 
-import { isTestnetProd, isMainnetProd } from "lib/constants";
+import { isProd } from "@/lib/utils";
 
 type PinoConfig = {
   level: string;
@@ -16,7 +16,7 @@ const pinoConfig: PinoConfig = {
   },
 };
 
-if (!(isTestnetProd() && isMainnetProd())) {
+if (!isProd()) {
   pinoConfig["transport"] = {
     target: "pino-pretty",
     options: {
