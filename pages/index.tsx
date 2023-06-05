@@ -22,7 +22,7 @@ export default function Home() {
     watch: true,
   });
 
-  const { setTransfers, setCTAs } = useUserStore();
+  const { setTransfers, setCTAs, setEmail } = useUserStore();
 
   useEffect(() => {
     if (isConnected) {
@@ -54,6 +54,9 @@ export default function Home() {
           `/transfers/${chain?.id}`
         );
         setTransfers(transfers);
+
+        const { data: email } = await api().get<string>(`/email`);
+        setEmail(email);
       });
     }
   }, [isConnected]);
