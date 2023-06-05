@@ -16,11 +16,6 @@ export default function Header() {
   const { chain, chains } = useNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal, closeModal } = useContext(ModalContext);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -37,57 +32,48 @@ export default function Header() {
   };
 
   return (
-    <>
-      {isMounted && (
-        <nav className="mb-9 mt-6 flex justify-between items-center">
-          <a href="https://glodollar.org/">
-            <Image
-              src="/glo-logo-text.svg"
-              alt="glo logo"
-              width={74}
-              height={26}
-            />
-          </a>
+    <nav className="mb-9 mt-6 flex justify-between items-center">
+      <a href="https://glodollar.org/">
+        <Image src="/glo-logo-text.svg" alt="glo logo" width={74} height={26} />
+      </a>
 
-          {isLoading ? (
-            <button className="primary-button">Connecting... </button>
-          ) : isConnected ? (
-            <>
-              <Tooltip
-                anchorId="copy-wallet-address"
-                content="Copied!"
-                noArrow={true}
-                isOpen={isCopiedTooltipOpen}
-              />
-              <button
-                id={"copy-wallet-address"}
-                className=""
-                onClick={() => {
-                  navigator.clipboard.writeText(address!);
-                  setIsCopiedTooltipOpen(true);
-                }}
-              >
-                {sliceAddress(address!)}
-              </button>
-              <button
-                className="primary-button w-11 h-11"
-                onClick={() => openUserInfoModal()}
-              >
-                👤
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="primary-button"
-                onClick={() => openUserAuthModal()}
-              >
-                Log in
-              </button>
-            </>
-          )}
-        </nav>
+      {isLoading ? (
+        <button className="primary-button">Connecting... </button>
+      ) : isConnected ? (
+        <>
+          <Tooltip
+            anchorId="copy-wallet-address"
+            content="Copied!"
+            noArrow={true}
+            isOpen={isCopiedTooltipOpen}
+          />
+          <button
+            id={"copy-wallet-address"}
+            className=""
+            onClick={() => {
+              navigator.clipboard.writeText(address!);
+              setIsCopiedTooltipOpen(true);
+            }}
+          >
+            {sliceAddress(address!)}
+          </button>
+          <button
+            className="primary-button w-11 h-11"
+            onClick={() => openUserInfoModal()}
+          >
+            👤
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            className="primary-button"
+            onClick={() => openUserAuthModal()}
+          >
+            Log in
+          </button>
+        </>
       )}
-    </>
+    </nav>
   );
 }
