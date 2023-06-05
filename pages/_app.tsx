@@ -86,6 +86,11 @@ const polySans = localFont({
 
 export default function App({ Component, pageProps }: AppProps) {
   const [modalContent, setModalContent] = useState(<div />);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -106,21 +111,23 @@ export default function App({ Component, pageProps }: AppProps) {
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
-        <WagmiConfig config={config}>
-          <ModalContext.Provider value={{ openModal, closeModal }}>
-            <Component {...pageProps} />
-            <dialog className="modal" ref={dialogRef}>
-              <header className="flex justify-end">
-                <button className="right-0" onClick={() => closeModal()}>
-                  <Image alt="x" src="/x.svg" height={16} width={16} />
-                </button>
-              </header>
-              <div className="py-4" ref={contentRef}>
-                {modalContent}
-              </div>
-            </dialog>
-          </ModalContext.Provider>
-        </WagmiConfig>
+        {isMounted && (
+          <WagmiConfig config={config}>
+            <ModalContext.Provider value={{ openModal, closeModal }}>
+              <Component {...pageProps} />
+              <dialog className="modal" ref={dialogRef}>
+                <header className="flex justify-end">
+                  <button className="right-0" onClick={() => closeModal()}>
+                    <Image alt="x" src="/x.svg" height={16} width={16} />
+                  </button>
+                </header>
+                <div className="py-4" ref={contentRef}>
+                  {modalContent}
+                </div>
+              </dialog>
+            </ModalContext.Provider>
+          </WagmiConfig>
+        )}
       </main>
     </>
   );
