@@ -12,6 +12,7 @@
     "fmt": "prettier --write './**/*.{js,jsx}' './**/*.{ts,tsx}' './**/*.css' './**/*.json' './**/*.md'"
   },
   "dependencies": {
+    "@0xsequence/ethauth": "^0.8.1",
     "@0xsequence/wagmi-connector": "^1.1.5",
     "@next/font": "13.1.6",
     "@prisma/client": "^4.15.0",
@@ -21,16 +22,15 @@
     "0xsequence": "^0.43.29",
     "axios": "^1.4.0",
     "ethers": "^5.7.2",
-    "jose": "^4.14.4",
     "moralis": "^2.20.0",
     "next": "13.1.6",
     "qrcode.react": "^3.1.0",
     "rc-slider": "^10.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-tooltip": "^5.13.1",
     "typescript": "5.0.4",
     "wagmi": "^1.0.9",
-    "react-tooltip": "^5.13.1",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

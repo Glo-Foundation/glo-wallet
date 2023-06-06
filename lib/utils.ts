@@ -1,3 +1,4 @@
+import { ConnectDetails } from "0xsequence/dist/declarations/src/provider";
 import axios, { AxiosInstance } from "axios";
 
 export const sliceAddress = (address: string) =>
@@ -5,17 +6,17 @@ export const sliceAddress = (address: string) =>
 
 export let apiInstance: AxiosInstance;
 
-// const isExternalWallet = () =>
-// WALLET_ADAPTERS.OPENLOGIN !== web3AuthInstance.connectedAdapterName;
-
 export const initApi = async (address: string) => {
+  const details: ConnectDetails = JSON.parse(
+    localStorage.getItem("glo-wallet")!
+  );
+
   if (!apiInstance) {
     apiInstance = axios.create({
       baseURL: "/api/",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${userToken}`,
-        // "glo-app-pub-key": appPubKey,
+        Authorization: `Bearer ${details.proof?.proofString}`,
         "glo-pub-address": address,
       },
     });
