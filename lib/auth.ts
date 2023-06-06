@@ -1,5 +1,4 @@
 import { sequence } from "0xsequence";
-import { ethers } from "ethers";
 import { NextRequest } from "next/server";
 
 import { signMsgContent } from "./utils";
@@ -14,23 +13,27 @@ export const isAuthenticated = async (req: NextRequest) => {
   }
 
   // More static Provider? + Different chains handling
-  const provider = new ethers.providers.JsonRpcProvider(
-    `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
-    parseInt(chainId)
-  );
-
   const signature = authorization.split(" ")[1];
 
   // https://docs.sequence.xyz/wallet/guides/sign-message
-  const isValid = await sequence.utils.isValidMessageSignature(
-    address,
-    signMsgContent,
-    signature,
-    provider,
-    parseInt(chainId)
-  );
+  const api = new sequence.api.SequenceAPIClient("https://api.sequence.app");
 
-  console.log({ address, isValid });
+  const { isValid } = await api.isValidMessageSignature({
+    chainId,
+    walletAddress: address,
+    message: signMsgContent,
+    signature,
+  });
+
+  // No idea why it doesn't work on backend for Seq wallet only
+  // Worked for metamask without issues
+  // const isValid = await sequence.utils.isValidMessageSignature(
+  //   address,
+  //   signMsgContent,
+  //   signature,
+  //   provider,
+  //   parseInt(chainId)
+  // );
 
   return isValid;
 };

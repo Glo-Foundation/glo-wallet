@@ -25,7 +25,6 @@ export default function Home() {
   const { setTransfers, setCTAs } = useUserStore();
 
   useEffect(() => {
-    console.log({ status });
     if (isConnected) {
       const key = `glo-wallet-${address}`;
 
