@@ -1,6 +1,7 @@
 import { sequence } from "0xsequence";
 import { mainnetNetworks, testnetNetworks } from "@0xsequence/network";
 import { Wallet } from "@0xsequence/provider";
+import Cookies from "js-cookie";
 import { createWalletClient, custom, UserRejectedRequestError } from "viem";
 import {
   Connector,
@@ -36,8 +37,8 @@ export class GloSequenceConnector extends Connector<
     if (!this.wallet.isConnected()) {
       this?.emit("message", { type: "connecting" });
       const e = await this.wallet.connect(this.options?.connect);
-      // const address = await this.wallet.getAddress();
-      // localStorage.setItem(`glo-wallet-${address}`, JSON.stringify(e));
+
+      Cookies.set("glo-email", e.email || "");
 
       if (e.error) {
         throw new UserRejectedRequestError(new Error(e.error));
