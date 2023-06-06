@@ -36,7 +36,8 @@ export class GloSequenceConnector extends Connector<
     if (!this.wallet.isConnected()) {
       this?.emit("message", { type: "connecting" });
       const e = await this.wallet.connect(this.options?.connect);
-      localStorage.setItem("glo-wallet", JSON.stringify(e));
+      // const address = await this.wallet.getAddress();
+      // localStorage.setItem(`glo-wallet-${address}`, JSON.stringify(e));
 
       if (e.error) {
         throw new UserRejectedRequestError(new Error(e.error));

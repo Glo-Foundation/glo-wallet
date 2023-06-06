@@ -12,7 +12,6 @@
     "fmt": "prettier --write './**/*.{js,jsx}' './**/*.{ts,tsx}' './**/*.css' './**/*.json' './**/*.md'"
   },
   "dependencies": {
-    "@0xsequence/ethauth": "^0.8.1",
     "@0xsequence/wagmi-connector": "^1.1.5",
     "@next/font": "13.1.6",
     "@prisma/client": "^4.15.0",

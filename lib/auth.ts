@@ -1,25 +1,36 @@
-import { ETHAuth } from "@0xsequence/ethauth";
+import { sequence } from "0xsequence";
+import { ethers } from "ethers";
 import { NextRequest } from "next/server";
 
-const ethAuth = new ETHAuth();
+import { signMsgContent } from "./utils";
 
 export const isAuthenticated = async (req: NextRequest) => {
   const authorization = req.headers.get("authorization");
   const address = req.headers.get("glo-pub-address");
+  const chainId = req.headers.get("glo-chain-id");
 
-  if (!authorization || !address) {
+  if (!authorization || !address || !chainId) {
     return false;
   }
 
-  const proofString = authorization.split(" ")[1];
+  // More static Provider? + Different chains handling
+  const provider = new ethers.providers.JsonRpcProvider(
+    `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
+    parseInt(chainId)
+  );
 
-  if (!ethAuth.provider) {
-    // await ethAuth.configJsonRpcProvider(
-    //   `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`
-    // );
-  }
+  const signature = authorization.split(" ")[1];
 
-  const decodedProof = await ethAuth.decodeProof(proofString!, true);
+  // https://docs.sequence.xyz/wallet/guides/sign-message
+  const isValid = await sequence.utils.isValidMessageSignature(
+    address,
+    signMsgContent,
+    signature,
+    provider,
+    parseInt(chainId)
+  );
 
-  return address?.toLowerCase() === decodedProof.address.toLowerCase();
+  console.log({ address, isValid });
+
+  return isValid;
 };

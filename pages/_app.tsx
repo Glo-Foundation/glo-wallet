@@ -32,8 +32,7 @@ export const gloSequenceConnector = new GloSequenceConnector({
     connect: {
       app: "Glo wallet",
       networkId: chains[0].id,
-      //https://docs.sequence.xyz/wallet/guides/auth-address/#authenticate-wallet
-      authorize: true,
+      // askForEmail: true,
     },
   },
   chains,
