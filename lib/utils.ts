@@ -4,19 +4,22 @@ export const sliceAddress = (address: string) =>
   `${address?.slice(0, 5)}...${address?.slice(-3)}`;
 
 export let apiInstance: AxiosInstance;
+let apiInstanceWallet = "";
 
-// const isExternalWallet = () =>
-// WALLET_ADAPTERS.OPENLOGIN !== web3AuthInstance.connectedAdapterName;
-
-export const initApi = async (address: string) => {
-  if (!apiInstance) {
+export const initApi = async (
+  address: string,
+  chainId: number,
+  signature: string
+) => {
+  if (!apiInstance || apiInstanceWallet !== address) {
+    apiInstanceWallet = address;
     apiInstance = axios.create({
       baseURL: "/api/",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${userToken}`,
-        // "glo-app-pub-key": appPubKey,
+        Authorization: `Bearer ${signature}`,
         "glo-pub-address": address,
+        "glo-chain-id": chainId,
       },
     });
   }
@@ -26,3 +29,5 @@ export const initApi = async (address: string) => {
 export const api = () => apiInstance;
 
 export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
+
+export const signMsgContent = "glo-wallet";

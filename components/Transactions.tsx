@@ -18,7 +18,7 @@ export default function Transactions() {
       setDropdown("list-item");
       setCaretDir("up");
     }
-  }, transfers);
+  }, [transfers]);
 
   const toggleDropdown = () => {
     dropdown === "list-item" ? setDropdown("hidden") : setDropdown("list-item");
