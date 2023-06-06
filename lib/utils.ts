@@ -7,6 +7,7 @@ export const sliceAddress = (address: string) =>
 export let apiInstance: AxiosInstance;
 
 export const initApi = async (address: string) => {
+  // TODO: [RAD] Consider disconnecting wallet if missing
   const details: ConnectDetails = JSON.parse(
     localStorage.getItem("glo-wallet")!
   );

@@ -22,7 +22,6 @@ export class GloSequenceConnector extends Connector<
 > {
   id = "sequence";
   name = "Sequence";
-  // chains = chainConfigList
   ready = true;
   provider: Web3Provider | null = null;
   wallet: Wallet | null = null;

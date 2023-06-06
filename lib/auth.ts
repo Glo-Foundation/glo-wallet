@@ -13,13 +13,7 @@ export const isAuthenticated = async (req: NextRequest) => {
 
   const proofString = authorization.split(" ")[1];
 
-  console.log({ address, proofString });
-
   if (!ethAuth.provider) {
-    console.log(
-      "procvider",
-      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`
-    );
     // await ethAuth.configJsonRpcProvider(
     //   `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`
     // );
