@@ -1,24 +1,39 @@
-import * as jose from "jose";
+import { sequence } from "0xsequence";
 import { NextRequest } from "next/server";
 
+import { signMsgContent } from "./utils";
+
 export const isAuthenticated = async (req: NextRequest) => {
-  const idToken = req.headers.get("authorization")?.split(" ")[1];
-  const appPubKey = req.headers.get("glo-app-pub-key");
+  const authorization = req.headers.get("authorization");
   const address = req.headers.get("glo-pub-address");
+  const chainId = req.headers.get("glo-chain-id");
 
-  return true;
-};
+  if (!authorization || !address || !chainId) {
+    return false;
+  }
 
-const decode = async (idToken: string, url: string) => {
-  const jwks = jose.createRemoteJWKSet(new URL(url));
+  // More static Provider? + Different chains handling
+  const signature = authorization.split(" ")[1];
 
-  const jwtDecoded = await jose.jwtVerify(idToken, jwks, {
-    algorithms: ["ES256"],
+  // https://docs.sequence.xyz/wallet/guides/sign-message
+  const api = new sequence.api.SequenceAPIClient("https://api.sequence.app");
+
+  const { isValid } = await api.isValidMessageSignature({
+    chainId,
+    walletAddress: address,
+    message: signMsgContent,
+    signature,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (jwtDecoded.payload as any).wallets[0] as {
-    address: string;
-    public_key: string;
-  };
+  // No idea why it doesn't work on backend for Seq wallet only
+  // Worked for metamask without issues
+  // const isValid = await sequence.utils.isValidMessageSignature(
+  //   address,
+  //   signMsgContent,
+  //   signature,
+  //   provider,
+  //   parseInt(chainId)
+  // );
+
+  return isValid;
 };
