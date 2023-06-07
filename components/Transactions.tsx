@@ -32,7 +32,10 @@ export default function Transactions() {
       return (
         <li key={`txn-${idx}`} className="transaction-item">
           <div>
-            <p>Money {txn.type === "outgoing" ? "sent" : "added"}</p>
+            <p>
+              {txn.type === "outgoing" ? "Sent to " : "Received from"}{" "}
+              {txn.type === "outgoing" ? txn.to : txn.from}
+            </p>
             <p className="copy">{txnDate}</p>
           </div>
           <div>
