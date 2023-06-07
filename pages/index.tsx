@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
 
 import Balance from "@/components/Balance";
