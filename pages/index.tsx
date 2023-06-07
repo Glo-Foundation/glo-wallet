@@ -47,7 +47,6 @@ export default function Home() {
         try {
           const { data: ctas } = await api().get<CTA[]>(`/ctas`);
           setCTAs(ctas);
-          console.log({ ctas });
         } catch (err) {
           console.log("Invalid signature disconnecting wallet");
           localStorage.removeItem(key);
