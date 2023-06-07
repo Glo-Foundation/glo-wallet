@@ -3,41 +3,42 @@ import Image from "next/image";
 
 import { useUserStore } from "@/lib/store";
 
-const ActionButton = ({ CTA_MAP, ctaType }: { ctaType: CTAType }) => {
+const ActionButton = ({
+  CTA_MAP,
+  email,
+  ctaType,
+}: {
+  CTA_MAP: CTAType[];
+  email: string;
+  ctaType: CTAType;
+}) => {
   const cta = CTA_MAP[ctaType];
   return (
-    <li key={`CTA${ctaType}`}>
-      <a
-        className={`flex cursor-pointer items-center py-4 ${
-          idx === Object.keys(CTAs).length ? "" : "border-b-2"
-        }`}
-        href={cta.url}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <div className="mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
-          <Image
-            src={cta.iconPath}
-            width={16}
-            height={16}
-            alt="call to action"
-          />
-        </div>
-        <div className="flex-col w-56">
-          <h2>{cta.title}</h2>
-          <p className="font-thin text-sm text-pine-700 leading-6">
-            {cta.description}
-          </p>
-        </div>
-        <Image
-          src="/arrow-right.svg"
-          width={25}
-          height={25}
-          alt="arrow-right"
-          className="ml-2 flex w-25px max-w-25px h-25px max-h-25px"
-        />
-      </a>
-    </li>
+    <button
+      className={`flex cursor-pointer items-center py-4 ${
+        ctaType ? "" : "border-b-2"
+      }`}
+      onClick={() => cta.action(email)}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <div className="mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
+        <Image src={cta.iconPath} width={16} height={16} alt="call to action" />
+      </div>
+      <div className="flex-col w-56">
+        <h2>{cta.title}</h2>
+        <p className="font-thin text-sm text-pine-700 leading-6">
+          {cta.description}
+        </p>
+      </div>
+      <Image
+        src="/arrow-right.svg"
+        width={25}
+        height={25}
+        alt="arrow-right"
+        className="ml-2 flex w-25px max-w-25px h-25px max-h-25px"
+      />
+    </button>
   );
 };
 
@@ -82,12 +83,9 @@ export default function CTA() {
       </div>
       <ul className={"mt-2"}>
         {ctas.map((cta, index) => (
-          <ActionButton
-            CTA_MAP={CTA_MAP}
-            email={email}
-            ctaType={cta.type}
-            key={`cta-${index}`}
-          />
+          <li key={`CTA-${index}`}>
+            <ActionButton CTA_MAP={CTA_MAP} email={email} ctaType={cta.type} />
+          </li>
         ))}
       </ul>
     </div>
