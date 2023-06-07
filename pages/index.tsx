@@ -5,6 +5,7 @@ import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
+import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Transactions from "@/components/Transactions";
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
@@ -14,7 +15,7 @@ import { api, initApi, signMsgContent } from "@/lib/utils";
 export default function Home() {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { closeModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
   const { signMessageAsync, status } = useSignMessage({
     message: signMsgContent,
   });
@@ -26,6 +27,11 @@ export default function Home() {
   });
 
   const { setTransfers, setCTAs } = useUserStore();
+
+  useEffect(() => {
+    closeModal();
+    openModal(<UserAuthModal />);
+  }, []);
 
   useEffect(() => {
     if (isConnected) {
@@ -40,8 +46,7 @@ export default function Home() {
         // }
 
         // const signature = await signMessageAsync();
-        // localStorage.setItem(key, signature);
-        // return signature;
+        // localStorage.setItem(key, signature); return signature;
       };
 
       sign().then(async (signature: string) => {
