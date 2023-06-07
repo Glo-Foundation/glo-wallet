@@ -39,22 +39,27 @@ export default function Home() {
         return signature;
       };
 
-      sign().then(async (signature: string) => {
-        await initApi(address!, chain!.id, signature);
-        try {
-          const { data: ctas } = await api().get<CTA[]>(`/ctas`);
-          setCTAs(ctas);
-        } catch (err) {
-          // Invalid signature disconnecting wallet
-          localStorage.removeItem(key);
-          return;
-        }
+      sign()
+        .then(async (signature: string) => {
+          await initApi(address!, chain!.id, signature);
+          try {
+            const { data: ctas } = await api().get<CTA[]>(`/ctas`);
+            setCTAs(ctas);
+            console.log({ ctas });
+          } catch (err) {
+            console.log("Invalid signature disconnecting wallet");
+            localStorage.removeItem(key);
+            return;
+          }
 
-        const { data: transfers } = await api().get<Transfer[]>(
-          `/transfers/${chain?.id}`
-        );
-        setTransfers(transfers);
-      });
+          const { data: transfers } = await api().get<Transfer[]>(
+            `/transfers/${chain?.id}`
+          );
+          setTransfers(transfers);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [isConnected]);
 

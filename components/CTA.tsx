@@ -1,15 +1,9 @@
+import Cookies from "js-cookie";
 import Image from "next/image";
 
 import { useUserStore } from "@/lib/store";
 
-const ActionButton = ({
-  CTA_MAP,
-  ctaType,
-  email,
-}: {
-  ctaType: CTAType;
-  email: string;
-}) => {
+const ActionButton = ({ CTA_MAP, ctaType }: { ctaType: CTAType }) => {
   const cta = CTA_MAP[ctaType];
   return (
     <li key={`CTA${ctaType}`}>
@@ -48,8 +42,8 @@ const ActionButton = ({
 };
 
 export default function CTA() {
-  const { ctas, email } = useUserStore();
-
+  const { ctas } = useUserStore();
+  const email = Cookies.get("glo-email");
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["SHARE_GLO"]: {
       title: "Share Glo with friends",
