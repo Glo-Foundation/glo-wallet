@@ -122,7 +122,7 @@ export default function App({ Component, pageProps }: AppProps) {
                     <Image alt="x" src="/x.svg" height={16} width={16} />
                   </button>
                 </header>
-                <div className="py-4 border-2xl" ref={contentRef}>
+                <div className="py-4" ref={contentRef}>
                   {modalContent}
                 </div>
               </dialog>
