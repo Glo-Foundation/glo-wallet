@@ -5,6 +5,7 @@ type ActionButton = {
   action?: any;
   disabled?: boolean;
   url?: string;
+  slug?: string;
 };
 
 type Transfer = {
