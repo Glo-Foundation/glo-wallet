@@ -13,12 +13,13 @@ const ActionButton = ({
   ctaType: CTAType;
 }) => {
   const cta = CTA_MAP[ctaType];
+  console.log({ email });
   return (
     <a
       className={`flex cursor-pointer items-center py-4 ${
         ctaType ? "" : "border-b-2"
       }`}
-      onClick={() => cta.action(email)}
+      href={cta.url + email}
     >
       <div className="mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
         <Image src={cta.iconPath} width={16} height={16} alt="call to action" />
@@ -48,12 +49,7 @@ export default function CTA() {
       title: "Share Glo with friends",
       iconPath: "/megahorn.svg",
       description: "Ask your friends to join Glo. Share your invite link.",
-      action: (email: string) =>
-        window.location.replace(
-          `https://www.glodollar.org/refer-a-friend?email1referrer=${
-            email || ""
-          }`
-        ),
+      url: "https://www.glodollar.org/refer-a-friend?email1referrer=",
     },
     ["BUY_GLO_MERCH"]: {
       title: "Buy Glo Merch",
@@ -67,10 +63,7 @@ export default function CTA() {
       title: "Join as early adopter",
       description: "Be the change you want to see in the world",
       iconPath: "/za-warudo.svg",
-      action: (email: string) =>
-        window.location.replace(
-          `https://www.glodollar.org/get-started?email=${email || ""}`
-        ),
+      url: "https://www.glodollar.org/get-started?email=",
     },
   };
 
