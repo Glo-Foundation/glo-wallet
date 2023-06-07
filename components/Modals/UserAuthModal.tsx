@@ -17,7 +17,7 @@ export default function UserAuthModal() {
             className="auth-button"
             onClick={() => connect({ connector: connectors[0] })}
           >
-            Social
+            Social Login
           </button>
 
           <button
@@ -31,7 +31,7 @@ export default function UserAuthModal() {
             className="auth-button"
             onClick={() => connect({ connector: connectors[2] })}
           >
-            WC
+            WalletConnect
           </button>
         </div>
       </section>
