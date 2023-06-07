@@ -15,12 +15,10 @@ const ActionButton = ({
   const cta = CTA_MAP[ctaType];
   return (
     <a
-      className={`flex cursor-pointer items-center py-4 ${
-        ctaType ? "" : "border-b-2"
-      }`}
+      className={"flex cursor-pointer items-center py-4"}
       href={cta.url! + (email && cta.slug + email)}
     >
-      <div className="mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
+      <div className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
         <Image src={cta.iconPath} width={16} height={16} alt="call to action" />
       </div>
       <div className="flex-col w-56">
@@ -75,7 +73,7 @@ export default function CTA() {
       </div>
       <ul className="mt-2">
         {ctas.map((cta, index) => (
-          <li key={`CTA-${index}`}>
+          <li key={`CTA-${index}`} className="border-b-2 last:border-none">
             <ActionButton CTA_MAP={CTA_MAP} email={email} ctaType={cta.type} />
           </li>
         ))}
