@@ -16,7 +16,7 @@ const pinoConfig: PinoConfig = {
   },
 };
 
-if (!isProd()) {
+if (isProd()) {
   pinoConfig["transport"] = {
     target: "pino-pretty",
     options: {

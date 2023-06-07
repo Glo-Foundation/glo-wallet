@@ -16,7 +16,6 @@
     "@next/font": "13.1.6",
     "@sentry/nextjs": "^7.53.1",
     "@prisma/client": "^4.15.0",
-    "@toruslabs/eccrypto": "^3.0.0",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
