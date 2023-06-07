@@ -8,8 +8,8 @@ const ActionButton = ({
   email,
   ctaType,
 }: {
-  CTA_MAP: CTAType[];
-  email: string;
+  CTA_MAP: { [key in CTAType]: ActionButton };
+  email: string | undefined;
   ctaType: CTAType;
 }) => {
   const cta = CTA_MAP[ctaType];
@@ -19,8 +19,6 @@ const ActionButton = ({
         ctaType ? "" : "border-b-2"
       }`}
       onClick={() => cta.action(email)}
-      target="_blank"
-      rel="noreferrer"
     >
       <div className="mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200">
         <Image src={cta.iconPath} width={16} height={16} alt="call to action" />

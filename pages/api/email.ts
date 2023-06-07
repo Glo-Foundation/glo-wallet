@@ -12,11 +12,7 @@ export default async function handler(
       address,
     },
     select: {
-      email: {
-        select: {
-          type: true,
-        },
-      },
+      email: true,
     },
   });
   return res.status(200).json(user?.email || "");

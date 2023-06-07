@@ -23,7 +23,7 @@ export default function Home() {
     watch: true,
   });
 
-  const { setTransfers, setCTAs, setEmail } = useUserStore();
+  const { setTransfers, setCTAs } = useUserStore();
 
   useEffect(() => {
     if (isConnected) {

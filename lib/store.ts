@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 interface UserStore {
-  email: string;
+  email: string | undefined;
   transfers: Transfer[];
   ctas: CTA[];
   setTransfers: (transfers: Transfer[]) => void;
