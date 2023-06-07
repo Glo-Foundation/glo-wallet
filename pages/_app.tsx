@@ -27,21 +27,19 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [publicProvider()]
 );
 
-export const gloSequenceConnector = new GloSequenceConnector({
-  options: {
-    connect: {
-      app: "Glo wallet",
-      networkId: chains[0].id,
-      askForEmail: true,
-    },
-  },
-  chains,
-});
-
 const config = createConfig({
   autoConnect: true,
   connectors: [
-    gloSequenceConnector as unknown as Connector,
+    new GloSequenceConnector({
+      options: {
+        connect: {
+          app: "Glo wallet",
+          networkId: chains[0].id,
+          askForEmail: true,
+        },
+      },
+      chains,
+    }) as unknown as Connector,
     new MetaMaskConnector({
       chains,
     }),

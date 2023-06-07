@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
 
@@ -29,37 +30,38 @@ export default function Home() {
       const key = `glo-wallet-${address}`;
 
       const sign = async () => {
-        const storedSignature = localStorage.getItem(key);
-        if (storedSignature) {
-          return storedSignature;
-        }
+        return "public-signature";
+        // Temporary disabled
+        // const storedSignature = localStorage.getItem(key);
+        // if (storedSignature) {
+        //   return storedSignature;
+        // }
 
-        const signature = await signMessageAsync();
-        localStorage.setItem(key, signature);
-        return signature;
+        // const signature = await signMessageAsync();
+        // localStorage.setItem(key, signature);
+        // return signature;
       };
 
-      sign()
-        .then(async (signature: string) => {
-          await initApi(address!, chain!.id, signature);
-          try {
-            const { data: ctas } = await api().get<CTA[]>(`/ctas`);
-            setCTAs(ctas);
-            console.log({ ctas });
-          } catch (err) {
-            console.log("Invalid signature disconnecting wallet");
-            localStorage.removeItem(key);
-            return;
-          }
+      sign().then(async (signature: string) => {
+        await initApi(address!, chain!.id, signature);
+        try {
+          const { data: ctas } = await api().get<CTA[]>(`/ctas`);
+          setCTAs(ctas);
+          console.log({ ctas });
+        } catch (err) {
+          console.log("Invalid signature disconnecting wallet");
+          localStorage.removeItem(key);
+          return;
+        }
 
-          const { data: transfers } = await api().get<Transfer[]>(
-            `/transfers/${chain?.id}`
-          );
-          setTransfers(transfers);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        const { data: transfers } = await api().get<Transfer[]>(
+          `/transfers/${chain?.id}`
+        );
+        setTransfers(transfers);
+      });
+    } else {
+      Cookies.remove("glo-email");
+      Cookies.remove("glo-proof");
     }
   }, [isConnected]);
 
