@@ -14,6 +14,7 @@
   "dependencies": {
     "@0xsequence/wagmi-connector": "^1.1.5",
     "@next/font": "13.1.6",
+    "@sentry/nextjs": "^7.53.1",
     "@prisma/client": "^4.15.0",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
@@ -24,6 +25,7 @@
     "js-cookie": "^3.0.5",
     "moralis": "^2.20.0",
     "next": "13.1.6",
+    "pino": "^8.14.1",
     "qrcode.react": "^3.1.0",
     "rc-slider": "^10.1.1",
     "react": "18.2.0",
@@ -44,6 +46,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
+    "pino-pretty": "^10.0.0",
     "postcss": "^8.4.21",
     "prettier": "2.8.3",
     "prisma": "^4.15.0",

@@ -114,25 +114,27 @@ export default function Actions() {
   ];
 
   const renderActionButtons = (buttons: ActionButton[]) =>
-    buttons.map((button, idx) => (
-      <li key={`actionButton${idx}`}>
-        <button
-          className="action-button mb-4"
-          onClick={() => button.action()}
-          disabled={button.disabled}
-        >
-          <Image
-            src={button.iconPath}
-            alt={button.description}
-            width={24}
-            height={24}
-          />
-        </button>
-        <span className="cursor-default w-full flex justify-center">
-          {button.description}
-        </span>
-      </li>
-    ));
+    buttons
+      .filter((button) => !button.disabled)
+      .map((button, idx) => (
+        <li key={`actionButton${idx}`}>
+          <button
+            className="action-button mb-4"
+            onClick={() => button.action()}
+          >
+            <Image
+              src={button.iconPath}
+              alt={button.description}
+              width={24}
+              height={24}
+            />
+          </button>
+
+          <span className="cursor-default w-full flex justify-center">
+            {button.description}
+          </span>
+        </li>
+      ));
 
   return (
     <ul className="flex justify-around w-full px-4 mt-4 mb-8">
