@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
 
@@ -29,14 +30,16 @@ export default function Home() {
       const key = `glo-wallet-${address}`;
 
       const sign = async () => {
-        const storedSignature = localStorage.getItem(key);
-        if (storedSignature) {
-          return storedSignature;
-        }
+        return "public-signature";
+        // Temporary disabled
+        // const storedSignature = localStorage.getItem(key);
+        // if (storedSignature) {
+        //   return storedSignature;
+        // }
 
-        const signature = await signMessageAsync();
-        localStorage.setItem(key, signature);
-        return signature;
+        // const signature = await signMessageAsync();
+        // localStorage.setItem(key, signature);
+        // return signature;
       };
 
       sign().then(async (signature: string) => {
@@ -55,6 +58,9 @@ export default function Home() {
         );
         setTransfers(transfers);
       });
+    } else {
+      Cookies.remove("glo-email");
+      Cookies.remove("glo-proof");
     }
   }, [isConnected]);
 
