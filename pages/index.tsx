@@ -54,9 +54,6 @@ export default function Home() {
           `/transfers/${chain?.id}`
         );
         setTransfers(transfers);
-
-        const { data: email } = await api().get<string>(`/email`);
-        setEmail(email);
       });
     }
   }, [isConnected]);

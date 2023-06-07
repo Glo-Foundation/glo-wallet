@@ -51,7 +51,6 @@ export default function Header({ address, isConnected }: Props) {
                 app: "Glo Wallet",
                 askForEmail: true,
               });
-              setEmail(connectDetails.email);
             }}
           >
             Social

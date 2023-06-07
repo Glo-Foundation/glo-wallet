@@ -31,3 +31,9 @@ export const api = () => apiInstance;
 export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
 export const signMsgContent = "glo-wallet";
+
+export const readCookie = (key) => {
+  const val = document.cookie.match(`${key}`);
+  // val is first[0]
+  return result[0];
+};
