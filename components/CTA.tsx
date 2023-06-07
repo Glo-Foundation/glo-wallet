@@ -2,32 +2,13 @@ import Image from "next/image";
 
 import { useUserStore } from "@/lib/store";
 
-const CTAs: { [key in CTAType]: ActionButton } = {
-  ["SHARE_GLO"]: {
-    title: "Share Glo with friends",
-    iconPath: "/megahorn.svg",
-    description: "Ask your friends to join Glo. Share your invite link.",
-    url: "https://www.glodollar.org/refer-a-friend",
-    // action: () => open a modal in the future,
-  },
-  ["BUY_GLO_MERCH"]: {
-    title: "Buy Glo Merch",
-    description:
-      "Glo is meant to be spent. Visit the Glo store and order a hoodie!",
-    iconPath: "/buy.svg",
-    url: "https://merch.glodollar.org",
-    // action: () => open a modal in the future,
-  },
-  ["JOIN_PROGRAM"]: {
-    title: "Join as early adopter",
-    description: "Be the change you want to see in the world.",
-    iconPath: "/za-warudo.svg",
-    // action: () => open a modal in the future,
-    url: "https://www.glodollar.org/get-started",
-  },
-};
-
-const ActionButton = ({ ctaType, idx }: { ctaType: CTAType; idx: number }) => {
+const ActionButton = ({
+  ctaType,
+  email,
+}: {
+  ctaType: CTAType;
+  email: string;
+}) => {
   const cta = CTAs[ctaType];
   return (
     <li key={`CTA${ctaType}`}>
@@ -66,7 +47,36 @@ const ActionButton = ({ ctaType, idx }: { ctaType: CTAType; idx: number }) => {
 };
 
 export default function CTA() {
-  const { ctas } = useUserStore();
+  const { ctas, email } = useUserStore();
+
+  const CTAs: { [key in CTAType]: ActionButton } = {
+    ["SHARE_GLO"]: {
+      title: "Share Glo with friends",
+      iconPath: "/megahorn.svg",
+      description: "Tell even more friends. Share your invite link.",
+      action: (email: string) =>
+        window.location.replace(
+          `https://www.glodollar.org/refer-a-friend?email1referrer=${email}`
+        ),
+    },
+    ["BUY_GLO_MERCH"]: {
+      title: "Buy Glo Merch",
+      description:
+        "Glo is meant to be spent. Visit the Glo store and order a hoodie!",
+      iconPath: "/buy.svg",
+      url: "https://merch.glodollar.org",
+      // action: () => open a modal in the future,
+    },
+    ["JOIN_PROGRAM"]: {
+      title: "Join the early adopter program",
+      description: "Be the change you want to see in the world",
+      iconPath: "/za-warudo.svg",
+      action: (email: string) =>
+        window.location.replace(
+          `https://www.glodollar.org/get-started?email=${email}`
+        ),
+    },
+  };
 
   return (
     <div className="bg-pine-50 rounded-[20px] p-8 transition-all">
@@ -75,7 +85,7 @@ export default function CTA() {
       </div>
       <ul className={"mt-2"}>
         {ctas.map((cta, index) => (
-          <ActionButton ctaType={cta.type} key={index} idx={index + 1} />
+          <ActionButton email={email} ctaType={cta.type} key={`cta-${index}`} />
         ))}
       </ul>
     </div>

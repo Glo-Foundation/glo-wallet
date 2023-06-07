@@ -1,8 +1,10 @@
+import { sequence } from "0xsequence";
 import Image from "next/image";
 import { useContext, useEffect } from "react";
 import { useConnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
+import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
 import UserInfoModal from "./Modals/UserInfoModal";
@@ -42,7 +44,14 @@ export default function Header({ address, isConnected }: Props) {
         <>
           <button
             className="primary-button"
-            onClick={() => connect({ connector: connectors[0] })}
+            onClick={async () => {
+              const wallet = await sequence.initWallet("mumbai");
+              const connectDetails = await wallet.connect({
+                app: "Glo Wallet",
+                askForEmail: true,
+              });
+              useUserStore.setEmail(connectDetails.email);
+            }}
           >
             Social
           </button>
