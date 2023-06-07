@@ -14,7 +14,7 @@ const ActionButton = ({
 }) => {
   const cta = CTA_MAP[ctaType];
   return (
-    <button
+    <a
       className={`flex cursor-pointer items-center py-4 ${
         ctaType ? "" : "border-b-2"
       }`}
@@ -36,7 +36,7 @@ const ActionButton = ({
         alt="arrow-right"
         className="ml-2 flex w-25px max-w-25px h-25px max-h-25px"
       />
-    </button>
+    </a>
   );
 };
 
@@ -47,7 +47,7 @@ export default function CTA() {
     ["SHARE_GLO"]: {
       title: "Share Glo with friends",
       iconPath: "/megahorn.svg",
-      description: "Tell even more friends. Share your invite link.",
+      description: "Ask your friends to join Glo. Share your invite link.",
       action: (email: string) =>
         window.location.replace(
           `https://www.glodollar.org/refer-a-friend?email1referrer=${
@@ -64,7 +64,7 @@ export default function CTA() {
       // action: () => open a modal in the future,
     },
     ["JOIN_PROGRAM"]: {
-      title: "Join the early adopter program",
+      title: "Join as early adopter",
       description: "Be the change you want to see in the world",
       iconPath: "/za-warudo.svg",
       action: (email: string) =>
@@ -79,7 +79,7 @@ export default function CTA() {
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">🌟 Help Grow Glo!</div>
       </div>
-      <ul className={"mt-2"}>
+      <ul className="mt-2">
         {ctas.map((cta, index) => (
           <li key={`CTA-${index}`}>
             <ActionButton CTA_MAP={CTA_MAP} email={email} ctaType={cta.type} />
