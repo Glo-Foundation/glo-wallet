@@ -16,7 +16,7 @@ body {
 
 @layer base {
   h2 {
-    @apply text-xl font-bold;
+    @apply text-lg font-bold;
   }
 
   button {

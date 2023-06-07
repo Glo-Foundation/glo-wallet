@@ -1,5 +1,5 @@
-import { useEffect, useContext } from "react";
-import { useAccount, useBalance, useNetwork } from "wagmi";
+import { useEffect } from "react";
+import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
@@ -8,12 +8,16 @@ import Transactions from "@/components/Transactions";
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { api, initApi } from "@/lib/utils";
+import { api, initApi, signMsgContent } from "@/lib/utils";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const { closeModal } = useContext(ModalContext);
+  const { signMessageAsync, status } = useSignMessage({
+    message: signMsgContent,
+  });
+
   const { data: balance } = useBalance({
     address,
     token: getSmartContractAddress(chain?.id),
@@ -24,9 +28,29 @@ export default function Home() {
 
   useEffect(() => {
     if (isConnected) {
-      initApi(address!).then(async () => {
-        const { data: ctas } = await api().get<CTA[]>(`/ctas`);
-        setCTAs(ctas);
+      const key = `glo-wallet-${address}`;
+
+      const sign = async () => {
+        const storedSignature = localStorage.getItem(key);
+        if (storedSignature) {
+          return storedSignature;
+        }
+
+        const signature = await signMessageAsync();
+        localStorage.setItem(key, signature);
+        return signature;
+      };
+
+      sign().then(async (signature: string) => {
+        await initApi(address!, chain!.id, signature);
+        try {
+          const { data: ctas } = await api().get<CTA[]>(`/ctas`);
+          setCTAs(ctas);
+        } catch (err) {
+          // Invalid signature disconnecting wallet
+          localStorage.removeItem(key);
+          return;
+        }
 
         const { data: transfers } = await api().get<Transfer[]>(
           `/transfers/${chain?.id}`

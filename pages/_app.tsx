@@ -1,5 +1,4 @@
 import "@/styles/globals.css";
-import { SequenceConnector } from "@0xsequence/wagmi-connector";
 import localFont from "@next/font/local";
 import {
   goerli,
@@ -17,7 +16,9 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import Analytics from "@/components/Analytics";
 import { ModalContext } from "@/lib/context";
-import { isProd } from "@/lib/utils";
+import { GloSequenceConnector } from "@/lib/sequence-connector";
+
+import { isProd } from "../lib/utils";
 
 import type { AppProps } from "next/app";
 
@@ -26,19 +27,21 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [publicProvider()]
 );
 
+export const gloSequenceConnector = new GloSequenceConnector({
+  options: {
+    connect: {
+      app: "Glo wallet",
+      networkId: chains[0].id,
+      askForEmail: true,
+    },
+  },
+  chains,
+});
+
 const config = createConfig({
   autoConnect: true,
   connectors: [
-    new SequenceConnector({
-      options: {
-        connect: {
-          app: "Glo wallet",
-          networkId: chains[0].id,
-        },
-      },
-      chains,
-    }) as unknown as Connector,
-
+    gloSequenceConnector as unknown as Connector,
     new MetaMaskConnector({
       chains,
     }),
