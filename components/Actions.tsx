@@ -7,6 +7,8 @@ import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import UsdgloContract from "@/abi/usdglo.json";
 import { ModalContext } from "@/lib/context";
 
+import BuyGloModal from "./Modals/BuyGloModal";
+
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
     address: "0x...",
@@ -60,19 +62,6 @@ const SendForm = ({ close }: { close: () => void }) => {
       </button>
       {hash && <div>Sent with hash {hash}</div>}
     </form>
-  );
-};
-
-const BuyGloModal = ({ close }: { close: () => void }) => {
-  return (
-    <main className="max-w-sm">
-      <h1 className="text-2xl font-bold">Coming soon</h1>
-      <br />
-      <p className="text-pine-700">
-        Glo is currently in beta. As soon as you can buy Glo, we&apos;ll let you
-        know via email.
-      </p>
-    </main>
   );
 };
 
