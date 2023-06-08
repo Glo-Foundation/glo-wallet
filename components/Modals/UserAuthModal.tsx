@@ -1,3 +1,4 @@
+import { sequence } from "0xsequence";
 import Image from "next/image";
 import { useContext } from "react";
 import { useConnect } from "wagmi";
@@ -19,8 +20,12 @@ export default function UserAuthModal() {
         <div>
           <button
             className="auth-button"
-            onClick={() => {
-              connect({ connector: connectors[0] });
+            onClick={async () => {
+              const wallet = await sequence.initWallet("mumbai");
+              const connectDetails = await wallet.connect({
+                app: "Glo Wallet",
+                askForEmail: true,
+              });
               closeModal();
             }}
           >
