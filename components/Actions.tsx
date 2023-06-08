@@ -80,7 +80,17 @@ export default function Actions() {
   };
 
   const transfer = async () => {
-    openModal(<SendForm close={closeModal} />);
+    openModal(
+      <div className="p-4">
+        <div className="flex flex-row justify-between">
+          <div></div>
+          <button className="" onClick={() => closeModal()}>
+            <Image alt="x" src="/x.svg" height={16} width={16} />
+          </button>
+        </div>
+        <SendForm close={closeModal} />
+      </div>
+    );
   };
 
   const buttons: ActionButton[] = [
