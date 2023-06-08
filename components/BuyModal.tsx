@@ -3,7 +3,7 @@ import { useState } from "react";
 import BuyingGuide from "@/components/BuyingGuide";
 import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import Holdings from "@/components/Holdings";
-import { getTotalYield } from "@/utils";
+import { getTotalYield, getUSFormattedNumber } from "@/utils";
 
 export default function BuyModal({ close }: { close: () => any }) {
   const [glo, setGlo] = useState<number>(1000);
@@ -12,6 +12,7 @@ export default function BuyModal({ close }: { close: () => any }) {
   const totalDays = 365;
   const yearlyInterestRate = 0.027;
   const yearlyYield = getTotalYield(yearlyInterestRate, glo, totalDays);
+  const formattedGlo = getUSFormattedNumber(glo);
 
   if (flipped) {
     return (
@@ -21,7 +22,7 @@ export default function BuyModal({ close }: { close: () => any }) {
           className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6"
           onClick={() => setFlipped(false)}
         >
-          Buy ${glo} Glo on Uniswap
+          Buy ${formattedGlo} Glo on Uniswap
         </button>
       </div>
     );
@@ -40,7 +41,7 @@ export default function BuyModal({ close }: { close: () => any }) {
         className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6 mt-11 mb-7"
         onClick={() => setFlipped(true)}
       >
-        Buy ${glo} Glo on Uniswap
+        Buy ${formattedGlo} Glo on Uniswap
       </button>
     </div>
   );
