@@ -45,10 +45,6 @@ body {
     @apply w-full my-4 py-2 px-4 bg-gray-200 my-2 text-2xl;
   }
 
-  #sign-in-with-email {
-    min-width: 65%;
-  }
-
   .primary-button {
     @apply py-2 px-4 bg-cyan-600 text-pine-800 drop-shadow;
   }

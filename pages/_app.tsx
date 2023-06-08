@@ -36,10 +36,6 @@ const config = createConfig({
           app: "Glo wallet",
           networkId: chains[0].id,
           askForEmail: true,
-          settings: {
-            theme: "light",
-            bannerUrl: "https://i.imgur.com/P8l8pFh.png",
-          },
         },
       },
       chains,
