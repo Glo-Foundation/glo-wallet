@@ -15,7 +15,7 @@ export default function BuyModal({ close }: { close: () => any }) {
 
   if (flipped) {
     return (
-      <div className="flex flex-col max-w-[343px] min-h-[600px] mb-7">
+      <div className="flex flex-col max-w-[343px] mb-7">
         <BuyingGuide glo={glo} closeModal={close} />
         <button
           className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6"
@@ -28,7 +28,7 @@ export default function BuyModal({ close }: { close: () => any }) {
   }
 
   return (
-    <div className="flex flex-col max-w-[343px] min-h-[700px]">
+    <div className="flex flex-col max-w-[343px]">
       <Holdings
         glo={glo}
         setGlo={setGlo}
