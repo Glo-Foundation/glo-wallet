@@ -58,6 +58,14 @@ body {
   }
 
   .transaction-item {
-    @apply flex justify-between border-b-2 mb-4 pb-4;
+    @apply flex justify-between border-b-2 mb-4 pb-4 last:pb-0 last:mb-0 last:border-none;
+  }
+
+  .cta {
+    @apply border-b-2 last:mb-0 last:border-none;
+  }
+
+  .cta-icon {
+    @apply mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200;
   }
 }
