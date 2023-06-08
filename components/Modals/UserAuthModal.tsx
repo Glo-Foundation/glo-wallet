@@ -20,12 +20,8 @@ export default function UserAuthModal() {
         <div>
           <button
             className="auth-button"
-            onClick={async () => {
-              const wallet = await sequence.initWallet("mumbai");
-              const connectDetails = await wallet.connect({
-                app: "Glo Wallet",
-                askForEmail: true,
-              });
+            onClick={() => {
+              connect({ connector: connectors[0] });
               closeModal();
             }}
           >
