@@ -44,13 +44,7 @@ export default function Header({ address, isConnected }: Props) {
         <>
           <button
             className="primary-button"
-            onClick={async () => {
-              const wallet = await sequence.initWallet("mumbai");
-              const connectDetails = await wallet.connect({
-                app: "Glo Wallet",
-                askForEmail: true,
-              });
-            }}
+            onClick={() => connect({ connector: connectors[0] })}
           >
             Social
           </button>
