@@ -5,8 +5,10 @@ import { useContext, useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 
 import UsdgloContract from "@/abi/usdglo.json";
+import BuyModal from "@/components/BuyModal";
 import { ModalContext } from "@/lib/context";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,unused-imports/no-unused-vars
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
     address: "0x...",
@@ -63,26 +65,13 @@ const SendForm = ({ close }: { close: () => void }) => {
   );
 };
 
-const BuyGloModal = ({ close }: { close: () => void }) => {
-  return (
-    <main className="max-w-sm">
-      <h1 className="text-2xl font-bold">Coming soon</h1>
-      <br />
-      <p className="text-pine-700">
-        Glo is currently in beta. As soon as you can buy Glo, we&apos;ll let you
-        know via email.
-      </p>
-    </main>
-  );
-};
-
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
 
   const { connector } = useAccount();
 
   const buy = async () => {
-    openModal(<BuyGloModal close={closeModal} />);
+    openModal(<BuyModal close={closeModal} />);
   };
 
   const scan = async () => {

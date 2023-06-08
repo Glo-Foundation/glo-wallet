@@ -50,7 +50,8 @@ body {
   }
 
   .modal {
-    @apply rounded-lg;
+    @apply rounded-[20px];
+    @apply p-0;
   }
 
   .form-group {
