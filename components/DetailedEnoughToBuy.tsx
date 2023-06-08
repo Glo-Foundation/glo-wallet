@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { getImpactItems, isLiftPersonOutOfPovertyImpactItem } from "@/utils";
+import {
+  getUSFormattedNumber,
+  getImpactItems,
+  isLiftPersonOutOfPovertyImpactItem,
+} from "@/utils";
 
 type Props = {
   yearlyYield: number;
@@ -62,11 +66,14 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
   };
 
   if (flipped) {
+    const formattedGlo = getUSFormattedNumber(glo);
+    const formattedYearlyYield = getUSFormattedNumber(yearlyYield);
+
     return (
       <div className="flex flex-col bg-white rounded-[20px] p-6 space-y-6">
         <div className="flex flex-row justify-between">
           <div className="font-semibold text-xl">
-            WHAT DOES $0 - ${yearlyYield} MEAN?
+            WHAT DOES $0 - ${formattedYearlyYield} MEAN?
           </div>
           <div
             className="bg-pine-900/[0.1] h-8 w-8 px-2.5 py-2.5 rounded-full cursor-pointer"
@@ -81,10 +88,10 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
             backing the Glo Dollar.
           </div>
           <div>
-            How much money we make per ${glo} of Glo Dollar adoption depends.
-            During Bootstrap Phase, it&apos;s closer to the lower end of the
-            spectrum ($0). At scale, we aim to move towards the higher end of
-            the spectrum (${yearlyYield}).
+            How much money we make per ${formattedGlo} of Glo Dollar adoption
+            depends. During Bootstrap Phase, it&apos;s closer to the lower end
+            of the spectrum ($0). At scale, we aim to move towards the higher
+            end of the spectrum (${formattedYearlyYield}).
           </div>
         </div>
         <div className="flex flex-col space-y-4">

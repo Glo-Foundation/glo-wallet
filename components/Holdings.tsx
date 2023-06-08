@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
+import { getUSFormattedNumber } from "@/utils";
 
 type Props = {
   glo: number;
@@ -39,11 +40,8 @@ export default function Holdings({
     }
   };
 
-  const formattedGlo = new Intl.NumberFormat("en-US").format(glo);
-  const formattedYearlyYield = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 1,
-  }).format(yearlyYield);
+  const formattedGlo = getUSFormattedNumber(glo);
+  const formattedYearlyYield = getUSFormattedNumber(yearlyYield);
 
   const getTextWidth: any = (el: HTMLInputElement): number => {
     // TODO: fix function type signature
