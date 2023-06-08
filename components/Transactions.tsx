@@ -6,6 +6,7 @@ import { useConnect } from "wagmi";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 
+import BuyGloModal from "./Modals/BuyGloModal";
 import UserAuthModal from "./Modals/UserAuthModal";
 
 export default function Transactions() {
@@ -73,7 +74,7 @@ export default function Transactions() {
           )}
         </button>
       </div>
-      {dropdown === "list-item" ? (
+      {dropdown === "list-item" && transfers.length ? (
         <ul className={`mt-12 ${dropdown}`}>{renderTransactions(transfers)}</ul>
       ) : (
         <>
@@ -85,6 +86,18 @@ export default function Transactions() {
                 onClick={() => openModal(<UserAuthModal />)}
               >
                 please log in
+              </button>
+            </div>
+          )}
+
+          {isConnected && (
+            <div className="mt-6">
+              <span> No transactions yet - </span>
+              <button
+                className="inline cursor-pointer hover:decoration-solid text-blue-500"
+                onClick={() => openModal(<BuyGloModal />)}
+              >
+                buy some Glo?
               </button>
             </div>
           )}
