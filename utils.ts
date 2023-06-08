@@ -94,7 +94,7 @@ export const isLiftPersonOutOfPovertyImpactItem = (
   return impactItem.description === "Person out of extreme poverty";
 };
 
-export const getUSFormattedNumber = (num) => {
+export const getUSFormattedNumber = (num: number) => {
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
