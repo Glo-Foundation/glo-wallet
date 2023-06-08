@@ -5,7 +5,7 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import Holdings from "@/components/Holdings";
 import { getTotalYield } from "@/utils";
 
-export default function BuyModal({ close }: { close: () => void }) {
+export default function BuyModal({ close }: { close: () => any }) {
   const [glo, setGlo] = useState<number>(1000);
   const [flipped, setFlipped] = useState<boolean>(false);
 
@@ -35,7 +35,7 @@ export default function BuyModal({ close }: { close: () => void }) {
         yearlyYield={yearlyYield}
         closeModal={close}
       />
-      <DetailedEnoughToBuy yearlyYield={yearlyYield} />
+      <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
       <button
         className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6 mt-11 mb-7"
         onClick={() => setFlipped(true)}

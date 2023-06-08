@@ -11,7 +11,7 @@ type Props = {
   glo: number;
   setGlo: React.Dispatch<React.SetStateAction<number>>;
   yearlyYield: number;
-  closeModal: never;
+  closeModal: any;
 };
 
 export default function Holdings({
@@ -20,7 +20,7 @@ export default function Holdings({
   yearlyYield,
   closeModal,
 }: Props) {
-  const gloOnInputChange = (e: { target: { value: never } }) => {
+  const gloOnInputChange = (e: { target: { value: any } }) => {
     let newGloQuantity = e.target.value;
 
     if (newGloQuantity) {
@@ -45,7 +45,7 @@ export default function Holdings({
     maximumFractionDigits: 1,
   }).format(yearlyYield);
 
-  const getTextWidth: never = (el: HTMLInputElement): number => {
+  const getTextWidth: any = (el: HTMLInputElement): number => {
     // TODO: fix function type signature
     // Refer: https://stackoverflow.com/a/50360743/1851428
 

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 type Props = {
   glo: number;
-  closeModal: never;
+  closeModal: any;
 };
 
 export default function BuyingGuide({ glo, closeModal }: Props) {
