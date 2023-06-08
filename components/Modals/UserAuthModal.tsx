@@ -1,9 +1,21 @@
 import { sequence } from "0xsequence";
+import {
+  goerli,
+  polygon,
+  mainnet,
+  polygonMumbai,
+  Chain,
+} from "@wagmi/core/chains";
+import { publicProvider } from "@wagmi/core/providers/public";
 import Image from "next/image";
 import { useContext, useState } from "react";
 import { useConnect } from "wagmi";
+import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
+import { GloSequenceConnector } from "@/lib/sequence-connector";
+
+import { isProd } from "../../lib/utils";
 
 export default function UserAuthModal() {
   const { connect, connectors } = useConnect();
@@ -13,7 +25,27 @@ export default function UserAuthModal() {
   });
 
   const signInWithEmail = async () => {
-    console.log("we're signing in with email: ", sendForm.email);
+    const { chains, publicClient, webSocketPublicClient } = configureChains(
+      isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
+      [publicProvider()]
+    );
+    const emailConnector = new GloSequenceConnector({
+      options: {
+        connect: {
+          app: "Glo wallet",
+          networkId: chains[0].id,
+          askForEmail: true,
+          settings: {
+            theme: "light",
+            bannerUrl: "https://i.imgur.com/P8l8pFh.png",
+            signInWithEmail: sendForm.email,
+          },
+        },
+      },
+      chains,
+    });
+    connect({ connector: emailConnector });
+    closeModal();
   };
 
   return (
