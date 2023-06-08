@@ -4,6 +4,7 @@ import { Tooltip } from "react-tooltip";
 import { useConnect, useNetwork, useSwitchNetwork, useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
+import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
 import UserAuthModal from "./Modals/UserAuthModal";
