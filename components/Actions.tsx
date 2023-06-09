@@ -5,9 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 
 import UsdgloContract from "@/abi/usdglo.json";
+import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
-
-import BuyGloModal from "./Modals/BuyGloModal";
 
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
@@ -71,7 +70,7 @@ export default function Actions() {
   const { connector } = useAccount();
 
   const buy = async () => {
-    openModal(<BuyGloModal close={closeModal} />);
+    openModal(<BuyGloModal />);
   };
 
   const scan = async () => {
@@ -80,7 +79,17 @@ export default function Actions() {
   };
 
   const transfer = async () => {
-    openModal(<SendForm close={closeModal} />);
+    openModal(
+      <div className="p-4">
+        <div className="flex flex-row justify-between">
+          <div></div>
+          <button className="" onClick={() => closeModal()}>
+            <Image alt="x" src="/x.svg" height={16} width={16} />
+          </button>
+        </div>
+        <SendForm close={closeModal} />
+      </div>
+    );
   };
 
   const buttons: ActionButton[] = [
