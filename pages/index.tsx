@@ -33,7 +33,7 @@ export default function Home() {
     if (!showedLogin) {
       closeModal();
       openModal(<UserAuthModal />);
-      localStorage.setItem("showedLogin", true);
+      localStorage.setItem("showedLogin", "true");
     }
   }, []);
 
@@ -68,7 +68,7 @@ export default function Home() {
           `/transfers/${chain?.id}`
         );
         setTransfers(transfers);
-        localStorage.setItem("showedLogin", true);
+        localStorage.setItem("showedLogin", "true");
       });
     } else {
       Cookies.remove("glo-email");
@@ -78,7 +78,7 @@ export default function Home() {
         closeModal();
         openModal(<UserAuthModal />);
       }
-      localStorage.setItem("showedLogin", true);
+      localStorage.setItem("showedLogin", "true");
     }
   }, [isConnected]);
 
