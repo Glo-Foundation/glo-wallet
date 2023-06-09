@@ -16,7 +16,7 @@ body {
 
 @layer base {
   h1 {
-    @apply text-2xl font-black py-4;
+    @apply text-4xl text-pine-900 font-black py-4;
   }
 
   h2 {
@@ -62,7 +62,7 @@ body {
   }
 
   .modal {
-    @apply rounded-2xl;
+    @apply rounded-2xl overflow-visible p-0;
   }
 
   .form-group {
