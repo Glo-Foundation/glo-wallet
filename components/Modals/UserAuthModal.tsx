@@ -50,7 +50,7 @@ export default function UserAuthModal() {
 
   return (
     <>
-      <section className="py-4 px-6 flex flex-col items-center">
+      <section className="pt-0 p-8 flex flex-col items-center">
         <Image
           className="absolute top-[-50px] border-2 rounded-full border-cyan-600"
           src="/jeff.svg"
@@ -59,28 +59,30 @@ export default function UserAuthModal() {
           height={100}
         />
         <h1 className="">👋 Hey it’s Jeff</h1>
-        <p className="copy text-2xl">
+        <p className="copy text-xl">
           Thanks for being part of the Glo movement!
         </p>
       </section>
-      <section className="bg-pine-100">
-        <h1 className="flex justify-center">Sign in</h1>
+      <section className="p-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
+        <h2 className="flex justify-center">Sign up</h2>
         <div>
           <div className="p-0 form-group flex justify-center">
-            <input
-              id="sign-in-with-email"
-              placeholder={"email"}
-              value={sendForm.email}
-              onChange={(e) =>
-                setSendForm({ ...sendForm, email: e.target.value })
-              }
-            />
-            <button
-              className="my-0 auth-button"
-              onClick={() => signInWithEmail()}
-            >
-              Submit
-            </button>
+            <div className="input-container inline">
+              <input
+                id="sign-in-with-email"
+                placeholder={"Email"}
+                value={sendForm.email}
+                onChange={(e) =>
+                  setSendForm({ ...sendForm, email: e.target.value })
+                }
+              />
+              <button
+                className="right-0 primary-button"
+                onClick={() => signInWithEmail()}
+              >
+                Submit
+              </button>
+            </div>
           </div>
           <button
             className="auth-button"
