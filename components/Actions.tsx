@@ -70,7 +70,7 @@ export default function Actions() {
   const { connector } = useAccount();
 
   const buy = async () => {
-    openModal(<BuyGloModal close={closeModal} />);
+    openModal(<BuyGloModal />);
   };
 
   const scan = async () => {
