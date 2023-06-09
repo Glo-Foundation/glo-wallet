@@ -68,13 +68,16 @@ export default function Home() {
           `/transfers/${chain?.id}`
         );
         setTransfers(transfers);
+        localStorage.setItem("showedLogin", true);
       });
     } else {
       Cookies.remove("glo-email");
       Cookies.remove("glo-proof");
 
-      closeModal();
-      openModal(<UserAuthModal />);
+      if (!localStorage.getItem("showedLogin")) {
+        closeModal();
+        openModal(<UserAuthModal />);
+      }
       localStorage.setItem("showedLogin", true);
     }
   }, [isConnected]);

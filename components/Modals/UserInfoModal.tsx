@@ -26,6 +26,7 @@ export default function UserInfoModal({ address }: Props) {
     disconnect();
     setTransfers([]);
     setCTAs([]);
+    localStorage.setItem("showedLogin", true);
     closeModal();
   };
 
