@@ -58,7 +58,7 @@ export default function UserInfoModal({ address }: Props) {
           </div>
         </div>
       </section>
-      <section className="mt-4 flex justify-end">
+      <section className="my-4 flex justify-end">
         <button className="primary-button" onClick={() => handleLogout()}>
           Log out
         </button>
