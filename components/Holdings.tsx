@@ -2,25 +2,22 @@ import { utils } from "ethers";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
+import { ModalContext } from "@/lib/context";
 import { getUSFormattedNumber } from "@/utils";
 
 type Props = {
   glo: number;
   setGlo: React.Dispatch<React.SetStateAction<number>>;
   yearlyYield: number;
-  closeModal: any;
 };
 
-export default function Holdings({
-  glo,
-  setGlo,
-  yearlyYield,
-  closeModal,
-}: Props) {
+export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
+  const { closeModal } = useContext(ModalContext);
+
   const gloOnInputChange = (e: { target: { value: any } }) => {
     let newGloQuantity = e.target.value;
 

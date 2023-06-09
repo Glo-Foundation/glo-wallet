@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getTotalYield } from "@/utils";
@@ -14,6 +15,7 @@ export default function Balance({
   balance = { formatted: "0", value: 0 },
 }: Props) {
   const { isConnected } = useAccount();
+
   const totalDays = 365;
   const yearlyInterestRate = 0.027;
 

@@ -5,7 +5,7 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import Holdings from "@/components/Holdings";
 import { getTotalYield, getUSFormattedNumber } from "@/utils";
 
-export default function BuyModal({ close }: { close: () => any }) {
+export default function BuyGloModal() {
   const [glo, setGlo] = useState<number>(1000);
   const [flipped, setFlipped] = useState<boolean>(false);
 
@@ -17,7 +17,7 @@ export default function BuyModal({ close }: { close: () => any }) {
   if (flipped) {
     return (
       <div className="flex flex-col max-w-[343px] mb-7">
-        <BuyingGuide glo={glo} closeModal={close} />
+        <BuyingGuide glo={glo} />
         <button
           className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6"
           onClick={() => setFlipped(false)}
@@ -30,12 +30,7 @@ export default function BuyModal({ close }: { close: () => any }) {
 
   return (
     <div className="flex flex-col max-w-[343px]">
-      <Holdings
-        glo={glo}
-        setGlo={setGlo}
-        yearlyYield={yearlyYield}
-        closeModal={close}
-      />
+      <Holdings glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
       <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
       <button
         className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6 mt-11 mb-7"

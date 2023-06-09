@@ -1,9 +1,13 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useAccount, useNetwork } from "wagmi";
 import { useConnect } from "wagmi";
 
+import BuyGloModal from "@/components/Modals/BuyGloModal";
+import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
+
+import UserAuthModal from "./Modals/UserAuthModal";
 
 export default function Transactions() {
   const { transfers } = useUserStore();
@@ -12,6 +16,7 @@ export default function Transactions() {
   const { chain } = useNetwork();
   const [dropdown, setDropdown] = useState("hidden");
   const [caretDir, setCaretDir] = useState("down");
+  const { openModal, closeModal } = useContext(ModalContext);
 
   useEffect(() => {
     if (transfers.length && isConnected) {
@@ -69,20 +74,31 @@ export default function Transactions() {
           )}
         </button>
       </div>
-      {dropdown === "list-item" ? (
+      {dropdown === "list-item" && transfers.length ? (
         <ul className={`mt-12 ${dropdown}`}>{renderTransactions(transfers)}</ul>
       ) : (
         <>
           {!isConnected && (
             <div className="mt-6">
-              <span> No transactions to show; please </span>
+              <span> No transactions to show - </span>
               <button
                 className="inline cursor-pointer hover:decoration-solid text-blue-500"
-                onClick={() => connect({ connector: connectors[0] })}
+                onClick={() => openModal(<UserAuthModal />)}
               >
-                connect a wallet
+                please log in
               </button>
-              <span> first</span>
+            </div>
+          )}
+
+          {isConnected && (
+            <div className="mt-6">
+              <span> No transactions yet - </span>
+              <button
+                className="inline cursor-pointer hover:decoration-solid text-blue-500"
+                onClick={() => openModal(<BuyGloModal close={closeModal} />)}
+              >
+                buy some Glo?
+              </button>
             </div>
           )}
         </>

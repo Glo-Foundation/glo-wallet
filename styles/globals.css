@@ -15,6 +15,10 @@ body {
 }
 
 @layer base {
+  h1 {
+    @apply text-2xl font-black py-4;
+  }
+
   h2 {
     @apply text-lg font-bold;
   }
@@ -35,6 +39,14 @@ body {
 @layer components {
   .action-button {
     @apply min-w-[64px] min-h-[64px] bg-pine-200;
+  }
+
+  .auth-button {
+    @apply w-full my-4 py-2 px-4 bg-gray-200 my-2 text-2xl;
+  }
+
+  #sign-in-with-email {
+    min-width: 65%;
   }
 
   .primary-button {
@@ -59,6 +71,14 @@ body {
   }
 
   .transaction-item {
-    @apply flex justify-between border-b-2 mb-4 pb-4;
+    @apply flex justify-between border-b-2 mb-4 pb-4 last:pb-0 last:mb-0 last:border-none;
+  }
+
+  .cta {
+    @apply border-b-2 last:mb-0 last:border-none;
+  }
+
+  .cta-icon {
+    @apply mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200;
   }
 }

@@ -1,15 +1,17 @@
 import Image from "next/image";
+import { useContext } from "react";
 import { useAccount } from "wagmi";
 
+import { ModalContext } from "@/lib/context";
 import { getUSFormattedNumber } from "@/utils";
 
 type Props = {
   glo: number;
-  closeModal: any;
 };
 
-export default function BuyingGuide({ glo, closeModal }: Props) {
+export default function BuyingGuide({ glo }: Props) {
   const { address } = useAccount();
+  const { closeModal } = useContext(ModalContext);
   const formattedGlo = getUSFormattedNumber(glo);
 
   return (
