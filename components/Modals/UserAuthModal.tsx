@@ -77,7 +77,7 @@ export default function UserAuthModal() {
                 }
               />
               <button
-                className="absolute top-[27px] right-1 primary-button py-3 px-6 drop-shadow-none"
+                className="absolute top-[10px] right-1 primary-button py-3 px-6 drop-shadow-none"
                 onClick={() => signInWithEmail()}
               >
                 Submit
@@ -92,6 +92,11 @@ export default function UserAuthModal() {
             }}
           >
             Social Login
+            <div className="social-icons flex">
+              <Image src="/apple.svg" width={35} height={35} />
+              <Image src="/facebook.svg" width={35} height={35} />
+              <Image src="/google.svg" width={35} height={35} />
+            </div>
           </button>
 
           <button
@@ -102,6 +107,7 @@ export default function UserAuthModal() {
             }}
           >
             Metamask
+            <Image src="/metamask.svg" width={35} height={35} />
           </button>
 
           <button
@@ -112,6 +118,7 @@ export default function UserAuthModal() {
             }}
           >
             WalletConnect
+            <Image src="/walletconnect.svg" width={35} height={35} />
           </button>
         </div>
       </section>

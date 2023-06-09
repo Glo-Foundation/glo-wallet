@@ -42,11 +42,11 @@ body {
   }
 
   .auth-button {
-    @apply w-full my-3 py-2 px-4 bg-pine-900/10 py-4 my-3 text-xl font-normal;
+    @apply w-full my-3 py-2 px-4 bg-pine-900/10 py-4 px-8 my-3 text-xl font-normal flex justify-between items-center;
   }
 
   #sign-in-with-email {
-    @apply w-full mt-5 mb-7;
+    @apply w-full mt-1 mb-7;
   }
 
   .primary-button {
