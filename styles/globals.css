@@ -46,7 +46,7 @@ body {
   }
 
   #sign-in-with-email {
-    min-width: 65%;
+    @apply w-full mt-5 mb-7;
   }
 
   .primary-button {

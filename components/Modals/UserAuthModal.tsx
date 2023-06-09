@@ -67,7 +67,7 @@ export default function UserAuthModal() {
         <h2 className="flex justify-center">Sign up</h2>
         <div>
           <div className="p-0 form-group flex justify-center">
-            <div className="input-container inline">
+            <div className="input-container relative inline w-full">
               <input
                 id="sign-in-with-email"
                 placeholder={"Email"}
@@ -77,7 +77,7 @@ export default function UserAuthModal() {
                 }
               />
               <button
-                className="right-0 primary-button"
+                className="absolute top-[27px] right-1 primary-button py-3 px-6 drop-shadow-none"
                 onClick={() => signInWithEmail()}
               >
                 Submit
