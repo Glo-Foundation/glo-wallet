@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import { isAuthenticated } from "./lib/auth";
 
 export async function middleware(req: NextRequest) {
-  if (req.method !== "GET") {
+  if (!["GET", "POST"].includes(req.method)) {
     return _error(401, "method not supported");
   }
 
