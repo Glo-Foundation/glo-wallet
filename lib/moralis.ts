@@ -18,10 +18,12 @@ const instance = axios.create({
 export const fetchTransactions = async (
   address: string,
   chainHex: string,
+  cursor?: string,
   limit = 5
 ): Promise<Transfer[]> => {
   const transfers = await instance.get<EvmErc20TransfersResponseJSON>(
-    `erc20/transfers?contract_addresses%5B0%5D=${process.env.NEXT_PUBLIC_USDGLO}&wallet_addresses%5B0%5D=${address}&chain=${chainHex}&limit=${limit}`
+    `erc20/transfers?contract_addresses%5B0%5D=${process.env.NEXT_PUBLIC_USDGLO}&wallet_addresses%5B0%5D=${address}&chain=${chainHex}&limit=${limit}` +
+      (cursor || "")
   );
 
   return (

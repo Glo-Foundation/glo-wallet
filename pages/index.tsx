@@ -54,7 +54,12 @@ export default function Home() {
         }
 
         const { data: transfers } = await api().get<Transfer[]>(
-          `/transfers/${chain?.id}`
+          `/transfers/${chain?.id}`,
+          {
+            params: {
+              cursor: null,
+            },
+          }
         );
         setTransfers(transfers);
       });
