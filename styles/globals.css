@@ -16,11 +16,11 @@ body {
 
 @layer base {
   h1 {
-    @apply text-2xl font-black py-4;
+    @apply text-4xl text-pine-900 font-black py-6;
   }
 
   h2 {
-    @apply text-lg font-bold;
+    @apply text-2xl font-bold py-4;
   }
 
   button {
@@ -28,7 +28,7 @@ body {
   }
 
   input {
-    @apply border rounded-lg bg-pine-100 border-pine-400 p-[.4rem];
+    @apply rounded-full bg-white py-4 px-6 text-xl;
   }
 
   label {
@@ -42,11 +42,11 @@ body {
   }
 
   .auth-button {
-    @apply w-full my-4 py-2 px-4 bg-gray-200 my-2 text-2xl;
+    @apply w-full my-3 py-2 px-4 bg-pine-900/10 py-4 px-8 my-3 text-xl font-normal flex justify-between items-center;
   }
 
   #sign-in-with-email {
-    min-width: 65%;
+    @apply w-full mt-1 mb-7;
   }
 
   .primary-button {
@@ -62,8 +62,7 @@ body {
   }
 
   .modal {
-    @apply rounded-[20px];
-    @apply p-0;
+    @apply rounded-3xl overflow-visible p-0;
   }
 
   .form-group {
