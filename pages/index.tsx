@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
 
 import Balance from "@/components/Balance";
@@ -28,12 +28,14 @@ export default function Home() {
   });
 
   const { setTransfers, setCTAs } = useUserStore();
+  const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();
 
   useEffect(() => {
-    if (!isConnected && asPath === "/sign-in") {
+    if (!isConnected && !showedLogin && asPath === "/sign-in") {
       openModal(<UserAuthModal />);
+      localStorage.setItem("showedLogin", "true");
       push("/");
     }
   }, []);
@@ -75,6 +77,12 @@ export default function Home() {
     } else {
       Cookies.remove("glo-email");
       Cookies.remove("glo-proof");
+
+      if (!localStorage.getItem("showedLogin")) {
+        closeModal();
+        openModal(<UserAuthModal />);
+      }
+      localStorage.setItem("showedLogin", "true");
     }
   }, [isConnected]);
 
