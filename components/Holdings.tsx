@@ -2,10 +2,12 @@ import { utils } from "ethers";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
+import { ModalContext } from "@/lib/context";
+import { getUSFormattedNumber } from "@/utils";
 
 type Props = {
   glo: number;
@@ -14,6 +16,8 @@ type Props = {
 };
 
 export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
+  const { closeModal } = useContext(ModalContext);
+
   const gloOnInputChange = (e: { target: { value: any } }) => {
     let newGloQuantity = e.target.value;
 
@@ -33,11 +37,8 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
     }
   };
 
-  const formattedGlo = new Intl.NumberFormat("en-US").format(glo);
-  const formattedYearlyYield = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 1,
-  }).format(yearlyYield);
+  const formattedGlo = getUSFormattedNumber(glo);
+  const formattedYearlyYield = getUSFormattedNumber(yearlyYield);
 
   const getTextWidth: any = (el: HTMLInputElement): number => {
     // TODO: fix function type signature
@@ -57,7 +58,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
     if (context) {
       context.font = font;
       const textMeasurement = context.measureText(text);
-      return textMeasurement.width;
+      return textMeasurement.width + 10;
     }
     console.error("Unable to calculate input width");
     // Fallback value enough for 4 digits
@@ -87,9 +88,14 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
   }, [formattedGlo, getTextWidth]);
 
   return (
-    <div className="bg-white rounded-[20px] pt-4">
-      <div className="flex flex-col space-y-2 p-4">
-        <div>Own</div>
+    <>
+      <div className="flex flex-col space-y-2 px-4 pt-4">
+        <div className="flex flex-row justify-between">
+          <div>Buy</div>
+          <button className="right-0" onClick={() => closeModal()}>
+            <Image alt="x" src="/x.svg" height={16} width={16} />
+          </button>
+        </div>
         <div className="flex flex-row font-semibold justify-between">
           <div className="flex flex-row text-[2.625rem] items-baseline">
             <div>$</div>
@@ -101,7 +107,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
               inputMode="numeric"
               onChange={gloOnInputChange}
             />
-            <div className="text-base">Glo</div>
+            <div className="text-base">Glo Dollar</div>
           </div>
           <div
             className="bg-pine-900/[0.1] min-h-fit min-w-fit px-2.5 py-2.5 rounded-full self-center cursor-pointer"
@@ -136,7 +142,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
           />
         </div>
       </div>
-      <div className="flex flex-col bg-cyan-600 rounded-[16px] mx-1 mb-1 px-5 py-6 pt-0">
+      <div className="flex flex-col bg-cyan-600 mb-1 px-6 py-6 pt-0">
         <div className="overflow-hidden inline-block">
           <div className="h-2.5 w-2.5 bg-white -rotate-45 transform origin-top-left translate-x-36"></div>
         </div>
@@ -144,12 +150,12 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
           <div className="font-normal text-base">To create basic income of</div>
           <div className="flex flex-row space-x-1 font-semibold items-baseline">
             <div className="text-[2.625rem] leading-[2.625rem] break-all font-neuehaasgrotesk">
-              ${formattedYearlyYield}
+              $0 - ${formattedYearlyYield}
             </div>
             <div className="text-base">/ year</div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
