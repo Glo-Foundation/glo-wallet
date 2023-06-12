@@ -31,7 +31,13 @@ export default function UserInfoModal({ address }: Props) {
   };
 
   return (
-    <div className="px-4">
+    <div className="p-8">
+      <div className="flex flex-row justify-between">
+        <div></div>
+        <button className="" onClick={() => closeModal()}>
+          <Image alt="x" src="/x.svg" height={16} width={16} />
+        </button>
+      </div>
       <section className="flex items-center">
         <div className="p-4 border-2">
           <QRCodeSVG size={128} value={address!} />
@@ -59,7 +65,7 @@ export default function UserInfoModal({ address }: Props) {
           </div>
         </div>
       </section>
-      <section className="mt-4 flex justify-end">
+      <section className="my-4 flex justify-end">
         <button className="primary-button" onClick={() => handleLogout()}>
           Log out
         </button>

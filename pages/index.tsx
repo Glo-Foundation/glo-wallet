@@ -55,20 +55,21 @@ export default function Home() {
 
       sign().then(async (signature: string) => {
         await initApi(address!, chain!.id, signature);
-        try {
-          const { data: ctas } = await api().get<CTA[]>(`/ctas`);
-          setCTAs(ctas);
-        } catch (err) {
-          console.log("Invalid signature disconnecting wallet");
-          localStorage.removeItem(key);
-          return;
-        }
+        const email = Cookies.get("glo-email");
 
-        const { data: transfers } = await api().get<Transfer[]>(
-          `/transfers/${chain?.id}`
-        );
-        setTransfers(transfers);
-        localStorage.setItem("showedLogin", "true");
+        const { data: userId } = await api().post<string>(`/sign-in`, {
+          email,
+        });
+
+        Cookies.set("glo-user", userId);
+
+        api()
+          .get<CTA[]>(`/ctas`)
+          .then((res) => setCTAs(res.data));
+
+        api()
+          .get<Transfer[]>(`/transfers/${chain?.id}`)
+          .then((res) => setTransfers(res.data));
       });
     } else {
       Cookies.remove("glo-email");

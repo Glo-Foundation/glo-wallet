@@ -3,10 +3,10 @@ import { useEffect, useState, useContext } from "react";
 import { useAccount, useNetwork } from "wagmi";
 import { useConnect } from "wagmi";
 
+import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 
-import BuyGloModal from "./Modals/BuyGloModal";
 import UserAuthModal from "./Modals/UserAuthModal";
 
 export default function Transactions() {
@@ -95,7 +95,7 @@ export default function Transactions() {
               <span> No transactions yet - </span>
               <button
                 className="inline cursor-pointer hover:decoration-solid text-blue-500"
-                onClick={() => openModal(<BuyGloModal close={closeModal} />)}
+                onClick={() => openModal(<BuyGloModal />)}
               >
                 buy some Glo?
               </button>

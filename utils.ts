@@ -77,7 +77,7 @@ export const getImpactItems = (amount: number): GetImpactItem[] => {
     },
   ].sort((item1, item2) => item2.cost - item1.cost);
 
-  let impactItems = [];
+  const impactItems = [];
   for (let idx = 0; amount > 0 && idx < possibleImpactItems.length; idx++) {
     const possibleImpactItem = possibleImpactItems[idx];
     if (amount >= possibleImpactItem.cost) {
@@ -92,4 +92,11 @@ export const isLiftPersonOutOfPovertyImpactItem = (
   impactItem: GetImpactItem
 ): boolean => {
   return impactItem.description === "Person out of extreme poverty";
+};
+
+export const getUSFormattedNumber = (num: number) => {
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(num);
 };
