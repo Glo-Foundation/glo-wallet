@@ -8,6 +8,7 @@ import {
   Chain,
 } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
+import Image from "next/app";
 import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
