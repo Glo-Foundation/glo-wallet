@@ -50,28 +50,39 @@ export default function UserAuthModal() {
 
   return (
     <>
-      <section className="flex items-center border-b-2 p-8 bg-pine-100 rounded-xl">
-        <Image src="/jeff.svg" alt="glo logo" width={150} height={150} />
-        <h1 className="pl-8 text-2xl font-thin">Hey it’s Jeff 👋</h1>
+      <section className="pt-0 p-8 flex flex-col items-center">
+        <Image
+          className="absolute top-[-50px] border-2 rounded-full border-cyan-600"
+          src="/jeff.svg"
+          alt="glo logo"
+          width={100}
+          height={100}
+        />
+        <h1 className="">👋 Hey it’s Jeff</h1>
+        <p className="copy text-xl">
+          Thanks for being part of the Glo movement!
+        </p>
       </section>
-      <section>
-        <h1 className="flex justify-center">Sign in</h1>
+      <section className="p-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
+        <h2 className="flex justify-center">Sign up</h2>
         <div>
           <div className="p-0 form-group flex justify-center">
-            <input
-              id="sign-in-with-email"
-              placeholder={"email"}
-              value={sendForm.email}
-              onChange={(e) =>
-                setSendForm({ ...sendForm, email: e.target.value })
-              }
-            />
-            <button
-              className="my-0 auth-button"
-              onClick={() => signInWithEmail()}
-            >
-              Submit
-            </button>
+            <div className="input-container relative inline w-full">
+              <input
+                id="sign-in-with-email"
+                placeholder={"Email"}
+                value={sendForm.email}
+                onChange={(e) =>
+                  setSendForm({ ...sendForm, email: e.target.value })
+                }
+              />
+              <button
+                className="absolute top-[10px] right-1 primary-button py-3 px-6 drop-shadow-none"
+                onClick={() => signInWithEmail()}
+              >
+                Submit
+              </button>
+            </div>
           </div>
           <button
             className="auth-button"
@@ -81,6 +92,16 @@ export default function UserAuthModal() {
             }}
           >
             Social Login
+            <div className="social-icons flex">
+              <Image alt="apple" src="/apple.svg" width={35} height={35} />
+              <Image
+                alt="facebook"
+                src="/facebook.svg"
+                width={35}
+                height={35}
+              />
+              <Image alt="google" src="/google.svg" width={35} height={35} />
+            </div>
           </button>
 
           <button
@@ -91,6 +112,7 @@ export default function UserAuthModal() {
             }}
           >
             Metamask
+            <Image alt="metamask" src="/metamask.svg" width={35} height={35} />
           </button>
 
           <button
@@ -101,6 +123,12 @@ export default function UserAuthModal() {
             }}
           >
             WalletConnect
+            <Image
+              alt="walletconnect"
+              src="/walletconnect.svg"
+              width={35}
+              height={35}
+            />
           </button>
         </div>
       </section>
