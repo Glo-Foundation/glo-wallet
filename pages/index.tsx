@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
 
 import Balance from "@/components/Balance";
@@ -27,10 +27,14 @@ export default function Home() {
   });
 
   const { setTransfers, setCTAs } = useUserStore();
+  const showedLogin = localStorage.getItem("showedLogin");
 
   useEffect(() => {
-    closeModal();
-    openModal(<UserAuthModal />);
+    if (!showedLogin) {
+      closeModal();
+      openModal(<UserAuthModal />);
+      localStorage.setItem("showedLogin", "true");
+    }
   }, []);
 
   useEffect(() => {
@@ -70,6 +74,12 @@ export default function Home() {
     } else {
       Cookies.remove("glo-email");
       Cookies.remove("glo-proof");
+
+      if (!localStorage.getItem("showedLogin")) {
+        closeModal();
+        openModal(<UserAuthModal />);
+      }
+      localStorage.setItem("showedLogin", "true");
     }
   }, [isConnected]);
 
