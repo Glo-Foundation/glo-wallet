@@ -58,7 +58,7 @@ body {
   }
 
   .modal {
-    @apply rounded-3xl overflow-visible p-0;
+    @apply rounded-3xl p-0;
   }
 
   .form-group {
