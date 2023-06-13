@@ -12,6 +12,14 @@ const nextConfig = {
         source: "/pl/api/event",
         destination: "https://plausible.io/api/event",
       },
+      {
+        source: "/buy",
+        destination: "/",
+      },
+      {
+        source: "/sign-in",
+        destination: "/",
+      },
     ];
   },
 };

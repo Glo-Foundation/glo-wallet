@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
 import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
 
@@ -29,11 +30,13 @@ export default function Home() {
   const { setTransfers, setCTAs } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
 
+  const { asPath, push } = useRouter();
+
   useEffect(() => {
-    if (!showedLogin) {
-      closeModal();
+    if (!isConnected && !showedLogin && asPath === "/sign-in") {
       openModal(<UserAuthModal />);
       localStorage.setItem("showedLogin", "true");
+      push("/");
     }
   }, []);
 

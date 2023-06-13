@@ -1,6 +1,7 @@
 import { sequence } from "0xsequence";
 import { utils } from "ethers";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 
@@ -67,11 +68,19 @@ const SendForm = ({ close }: { close: () => void }) => {
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
 
-  const { connector } = useAccount();
+  const { connector, isConnected } = useAccount();
+  const { asPath, push } = useRouter();
 
   const buy = async () => {
     openModal(<BuyGloModal />);
   };
+
+  useEffect(() => {
+    if (isConnected && asPath === "/buy") {
+      buy();
+      push("/");
+    }
+  }, []);
 
   const scan = async () => {
     const wallet = sequence.getWallet();

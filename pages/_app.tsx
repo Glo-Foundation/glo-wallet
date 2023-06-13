@@ -101,6 +101,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const openModal = (content: JSX.Element) => {
+    closeModal();
     setModalContent(content);
     dialogRef.current?.showModal();
   };
