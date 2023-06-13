@@ -50,9 +50,9 @@ export default function UserAuthModal() {
 
   return (
     <>
-      <section className="pt-0 p-8 flex flex-col items-center">
+      <section className="p-8 flex flex-col items-center">
         <Image
-          className="absolute top-[-50px] border-2 rounded-full border-cyan-600"
+          className="border-2 rounded-full border-cyan-600"
           src="/jeff.svg"
           alt="glo logo"
           width={100}
