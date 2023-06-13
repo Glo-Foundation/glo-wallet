@@ -70,6 +70,7 @@ export default function UserAuthModal() {
             <div className="input-container relative inline w-full">
               <input
                 id="sign-in-with-email"
+                className="rounded-full bg-white py-4 px-6 text-xl"
                 placeholder={"Email"}
                 value={sendForm.email}
                 onChange={(e) =>

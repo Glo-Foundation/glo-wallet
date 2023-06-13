@@ -27,10 +27,6 @@ body {
     @apply flex justify-center items-center rounded-full font-black;
   }
 
-  input {
-    @apply rounded-full bg-white py-4 px-6 text-xl;
-  }
-
   label {
     @apply font-black mr-4;
   }
