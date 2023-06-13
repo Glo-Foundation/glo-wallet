@@ -15,8 +15,12 @@ body {
 }
 
 @layer base {
+  h1 {
+    @apply text-4xl text-pine-900 font-black py-6;
+  }
+
   h2 {
-    @apply text-lg font-bold;
+    @apply text-2xl font-bold py-4;
   }
 
   button {
@@ -24,7 +28,7 @@ body {
   }
 
   input {
-    @apply border rounded-lg bg-pine-100 border-pine-400 p-[.4rem];
+    @apply rounded-full bg-white py-4 px-6 text-xl;
   }
 
   label {
@@ -35,6 +39,14 @@ body {
 @layer components {
   .action-button {
     @apply min-w-[64px] min-h-[64px] bg-pine-200;
+  }
+
+  .auth-button {
+    @apply w-full my-3 py-2 px-4 bg-pine-900/10 py-4 px-8 my-3 text-xl font-normal flex justify-between items-center;
+  }
+
+  #sign-in-with-email {
+    @apply w-full mt-1 mb-7;
   }
 
   .primary-button {
@@ -50,7 +62,7 @@ body {
   }
 
   .modal {
-    @apply rounded-lg;
+    @apply rounded-3xl overflow-visible p-0;
   }
 
   .form-group {
@@ -58,6 +70,14 @@ body {
   }
 
   .transaction-item {
-    @apply flex justify-between border-b-2 mb-4 pb-4;
+    @apply flex justify-between border-b-2 mb-4 pb-4 last:pb-0 last:mb-0 last:border-none;
+  }
+
+  .cta {
+    @apply border-b-2 last:mb-0 last:border-none;
+  }
+
+  .cta-icon {
+    @apply mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200;
   }
 }

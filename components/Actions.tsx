@@ -1,10 +1,12 @@
 import { sequence } from "0xsequence";
 import { utils } from "ethers";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 
 import UsdgloContract from "@/abi/usdglo.json";
+import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 
 const SendForm = ({ close }: { close: () => void }) => {
@@ -63,27 +65,22 @@ const SendForm = ({ close }: { close: () => void }) => {
   );
 };
 
-const BuyGloModal = ({ close }: { close: () => void }) => {
-  return (
-    <main className="max-w-sm">
-      <h1 className="text-2xl font-bold">Coming soon</h1>
-      <br />
-      <p className="text-pine-700">
-        Glo is currently in beta. As soon as you can buy Glo, we&apos;ll let you
-        know via email.
-      </p>
-    </main>
-  );
-};
-
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
 
-  const { connector } = useAccount();
+  const { connector, isConnected } = useAccount();
+  const { asPath, push } = useRouter();
 
   const buy = async () => {
-    openModal(<BuyGloModal close={closeModal} />);
+    openModal(<BuyGloModal />);
   };
+
+  useEffect(() => {
+    if (isConnected && asPath === "/buy") {
+      buy();
+      push("/");
+    }
+  }, []);
 
   const scan = async () => {
     const wallet = sequence.getWallet();
@@ -91,7 +88,17 @@ export default function Actions() {
   };
 
   const transfer = async () => {
-    openModal(<SendForm close={closeModal} />);
+    openModal(
+      <div className="p-4">
+        <div className="flex flex-row justify-between">
+          <div></div>
+          <button className="" onClick={() => closeModal()}>
+            <Image alt="x" src="/x.svg" height={16} width={16} />
+          </button>
+        </div>
+        <SendForm close={closeModal} />
+      </div>
+    );
   };
 
   const buttons: ActionButton[] = [

@@ -36,6 +36,10 @@ const config = createConfig({
           app: "Glo wallet",
           networkId: chains[0].id,
           askForEmail: true,
+          settings: {
+            theme: "light",
+            bannerUrl: "https://i.imgur.com/P8l8pFh.png",
+          },
         },
       },
       chains,
@@ -97,6 +101,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const openModal = (content: JSX.Element) => {
+    closeModal();
     setModalContent(content);
     dialogRef.current?.showModal();
   };
@@ -118,13 +123,11 @@ export default function App({ Component, pageProps }: AppProps) {
               <Component {...pageProps} />
               <dialog className="modal" ref={dialogRef}>
                 <header className="flex justify-end">
-                  <button className="right-0" onClick={() => closeModal()}>
+                  <button className="right-0 m-4" onClick={() => closeModal()}>
                     <Image alt="x" src="/x.svg" height={16} width={16} />
                   </button>
                 </header>
-                <div className="py-4" ref={contentRef}>
-                  {modalContent}
-                </div>
+                <div ref={contentRef}>{modalContent}</div>
               </dialog>
             </ModalContext.Provider>
           </WagmiConfig>
