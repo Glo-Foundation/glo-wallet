@@ -90,7 +90,7 @@ export default function Transactions() {
             </div>
           )}
 
-          {isConnected && (
+          {isConnected && !transfers.length && (
             <div className="mt-6">
               <span> No transactions yet - </span>
               <button

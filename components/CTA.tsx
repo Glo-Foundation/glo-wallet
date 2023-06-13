@@ -20,7 +20,7 @@ const ActionButton = ({
         <Image src={cta.iconPath} width={16} height={16} alt="call to action" />
       </div>
       <div className="flex-col w-56">
-        <h2>{cta.title}</h2>
+        <h3 className="font-bold text-lg">{cta.title}</h3>
         <p className="font-thin text-sm text-pine-700 leading-6">
           {cta.description}
         </p>
@@ -50,7 +50,7 @@ export default function CTA() {
     ["BUY_GLO_MERCH"]: {
       title: "Buy Glo Merch",
       description:
-        "Glo is meant to be spent. Visit the Glo store and order a hoodie!",
+        "Glo is meant to be spent. Go to the Glo store and get a hoodie!",
       iconPath: "/buy.svg",
       url: "https://merch.glodollar.org",
       // action: () => open a modal in the future,
