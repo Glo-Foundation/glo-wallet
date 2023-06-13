@@ -71,7 +71,7 @@ export default function Home() {
           .then((res) => setCTAs(res.data));
 
         api()
-          .get<Transfer[]>(`/transfers/${chain?.id}`, {
+          .get<TransfersPage>(`/transfers/${chain?.id}`, {
             params: {
               cursor: null,
             },
