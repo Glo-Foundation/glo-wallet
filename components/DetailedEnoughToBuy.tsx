@@ -72,9 +72,7 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
     return (
       <div className="flex flex-col bg-white rounded-[20px] p-6 space-y-6">
         <div className="flex flex-row justify-between">
-          <div className="font-semibold text-xl">
-            WHAT DOES $0 - ${formattedYearlyYield} MEAN?
-          </div>
+          <div className="font-semibold text-xl">About the numbers</div>
           <div
             className="bg-pine-900/[0.1] h-8 w-8 px-2.5 py-2.5 rounded-full cursor-pointer"
             onClick={() => setFlipped(false)}
@@ -84,14 +82,14 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
         </div>
         <div className="flex flex-col space-y-4">
           <div>
-            We fund basic incomes with the money we make from the reserves
-            backing the Glo Dollar.
+            We fund basic incomes with money made from reserves backing Glo
+            Dollar.
           </div>
           <div>
-            How much money we make per ${formattedGlo} of Glo Dollar adoption
-            depends. During Bootstrap Phase, it&apos;s closer to the lower end
-            of the spectrum ($0). At scale, we aim to move towards the higher
-            end of the spectrum (${formattedYearlyYield}).
+            How much money we make changes as Glo adoption grows. During
+            Bootstrap Phase, it&apos;s closer to the lower end of this range
+            ($0). At scale, we aim to be at the higher end of this range ($
+            {formattedYearlyYield}).
           </div>
         </div>
         <div className="flex flex-col space-y-4">
