@@ -16,7 +16,7 @@ export default function Transactions() {
   const { chain } = useNetwork();
   const [dropdown, setDropdown] = useState("hidden");
   const [caretDir, setCaretDir] = useState("down");
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { openModal } = useContext(ModalContext);
 
   useEffect(() => {
     if (transfers.length && isConnected) {
