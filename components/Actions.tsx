@@ -43,6 +43,7 @@ const SendForm = ({ close }: { close: () => void }) => {
         <label htmlFor="send-address">Send Address</label>
         <input
           id="send-address"
+          className="rounded-full bg-white py-4 px-6 text-xl"
           value={sendForm.address}
           onChange={(e) =>
             setSendForm({ ...sendForm, address: e.target.value })
@@ -53,6 +54,7 @@ const SendForm = ({ close }: { close: () => void }) => {
         <label htmlFor="send-amount">Amount</label>
         <input
           id="send-amount"
+          className="rounded-full bg-white py-4 px-6 text-xl"
           value={sendForm.amount}
           onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
         />

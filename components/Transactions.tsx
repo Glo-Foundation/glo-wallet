@@ -18,7 +18,7 @@ export default function Transactions() {
   const { chain } = useNetwork();
   const [dropdown, setDropdown] = useState("hidden");
   const [caretDir, setCaretDir] = useState("down");
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { openModal } = useContext(ModalContext);
 
   useEffect(() => {
     if (transfers.length && isConnected) {
@@ -54,9 +54,9 @@ export default function Transactions() {
           {transfersCursor && (
             <li
               onClick={() => openModal(<TransfersModal />)}
-              className="cursor-pointer"
+              className="underline cursor-pointer"
             >
-              View all
+              View all transactions
             </li>
           )}
         </ul>
@@ -74,7 +74,7 @@ export default function Transactions() {
             </div>
           )}
 
-          {isConnected && (
+          {isConnected && !transfers.length && (
             <div className="mt-6">
               <span> No transactions yet - </span>
               <button

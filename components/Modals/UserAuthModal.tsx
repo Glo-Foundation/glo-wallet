@@ -50,9 +50,9 @@ export default function UserAuthModal() {
 
   return (
     <>
-      <section className="pt-0 p-8 flex flex-col items-center">
+      <section className="p-8 flex flex-col items-center">
         <Image
-          className="absolute top-[-50px] border-2 rounded-full border-cyan-600"
+          className="border-2 rounded-full border-cyan-600"
           src="/jeff.svg"
           alt="glo logo"
           width={100}
@@ -70,6 +70,7 @@ export default function UserAuthModal() {
             <div className="input-container relative inline w-full">
               <input
                 id="sign-in-with-email"
+                className="rounded-full bg-white py-4 px-6 text-xl"
                 placeholder={"Email"}
                 value={sendForm.email}
                 onChange={(e) =>

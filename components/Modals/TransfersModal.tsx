@@ -37,7 +37,7 @@ export default function TransfersModal() {
         <TransactionsList txns={transfers} />
 
         {transfersCursor && (
-          <li onClick={loadMore} className="cursor-pointer">
+          <li onClick={loadMore} className="underline cursor-pointer">
             Load more
           </li>
         )}

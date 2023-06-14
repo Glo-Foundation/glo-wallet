@@ -122,11 +122,6 @@ export default function App({ Component, pageProps }: AppProps) {
             <ModalContext.Provider value={{ openModal, closeModal }}>
               <Component {...pageProps} />
               <dialog className="modal" ref={dialogRef}>
-                <header className="flex justify-end">
-                  <button className="right-0 m-4" onClick={() => closeModal()}>
-                    <Image alt="x" src="/x.svg" height={16} width={16} />
-                  </button>
-                </header>
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
             </ModalContext.Provider>
