@@ -25,7 +25,7 @@ export default function UserInfoModal({ address }: Props) {
 
   const handleLogout = () => {
     disconnect();
-    setTransfers([]);
+    setTransfers({ transfers: [] });
     setCTAs([]);
     localStorage.setItem("showedLogin", "true");
     closeModal();

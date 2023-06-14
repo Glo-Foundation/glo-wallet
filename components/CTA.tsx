@@ -18,7 +18,8 @@ const ActionButton = ({
     <a
       className={"flex cursor-pointer items-center py-4"}
       href={link}
-      target="_blank" rel="noreferrer"
+      target="_blank"
+      rel="noreferrer"
     >
       <div className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
         <Image src={cta.iconPath} width={16} height={16} alt="call to action" />
