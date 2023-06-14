@@ -29,7 +29,7 @@ export default function BuyGloModal() {
   }
 
   return (
-    <div className="flex flex-col max-w-[343px]">
+    <div className="modal-body flex flex-col max-w-[343px]">
       <Holdings glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
       <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
       <button

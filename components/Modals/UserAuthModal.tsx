@@ -52,7 +52,7 @@ export default function UserAuthModal() {
     <>
       <section className="p-8 flex flex-col items-center">
         <Image
-          className="border-2 rounded-full border-cyan-600"
+          className="absolute top-[-50px] border-2 rounded-full border-cyan-600"
           src="/jeff.svg"
           alt="glo logo"
           width={100}
@@ -63,7 +63,7 @@ export default function UserAuthModal() {
           Thanks for being part of the Glo movement!
         </p>
       </section>
-      <section className="p-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
+      <section className="modal-body p-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
         <h2 className="flex justify-center">Sign up</h2>
         <div>
           <div className="p-0 form-group flex justify-center">
