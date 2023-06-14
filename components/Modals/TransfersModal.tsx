@@ -1,6 +1,8 @@
-import { useState } from "react";
+import Image from "next/image";
+import { useContext, useState } from "react";
 import { useNetwork } from "wagmi";
 
+import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 import { api } from "@/lib/utils";
 
@@ -9,6 +11,8 @@ import { TransactionsList } from "../TransactionsList";
 export default function TransfersModal() {
   const { chain } = useNetwork();
   const [isLoading, setIsLoading] = useState(false);
+
+  const { closeModal } = useContext(ModalContext);
 
   const { transfers, transfersCursor, setTransfers } = useUserStore();
 
@@ -32,16 +36,24 @@ export default function TransfersModal() {
   };
 
   return (
-    <section className="pt-0 p-8 flex flex-col items-center">
-      <ul className={`mt-12 `}>
-        <TransactionsList txns={transfers} />
+    <div className="p-8">
+      <div className="flex flex-row justify-between">
+        <div></div>
+        <button onClick={() => closeModal()}>
+          <Image alt="x" src="/x.svg" height={16} width={16} />
+        </button>
+      </div>
+      <section className="flex flex-col items-center">
+        <ul className={`mt-12 `}>
+          <TransactionsList txns={transfers} />
 
-        {transfersCursor && (
-          <li onClick={loadMore} className="underline cursor-pointer">
-            Load more
-          </li>
-        )}
-      </ul>
-    </section>
+          {transfersCursor && (
+            <li onClick={loadMore} className="underline cursor-pointer">
+              Load more
+            </li>
+          )}
+        </ul>
+      </section>
+    </div>
   );
 }
