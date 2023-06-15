@@ -58,7 +58,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
     if (context) {
       context.font = font;
       const textMeasurement = context.measureText(text);
-      return textMeasurement.width + 10;
+      return textMeasurement.width;
     }
     console.error("Unable to calculate input width");
     // Fallback value enough for 4 digits
@@ -107,7 +107,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
               inputMode="numeric"
               onChange={gloOnInputChange}
             />
-            <div className="text-base">Glo Dollar</div>
+            <div className="text-base ml-1">Glo Dollar</div>
           </div>
           <div
             className="bg-pine-900/[0.1] min-h-fit min-w-fit px-2.5 py-2.5 rounded-full self-center cursor-pointer"
@@ -119,7 +119,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
         <div className="py-4 px-2">
           <Slider
             min={0}
-            max={18000}
+            max={20000}
             step={100}
             onChange={gloOnSliderChange}
             defaultValue={1000}
@@ -150,9 +150,13 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
           <div className="font-normal text-base">To create basic income of</div>
           <div className="flex flex-row space-x-1 font-semibold items-baseline">
             <div className="text-[2.625rem] leading-[2.625rem] break-all font-neuehaasgrotesk">
-              $0 - ${formattedYearlyYield}
+              {yearlyYield === 0 ? "$0" : `$0-$${formattedYearlyYield}`}
             </div>
             <div className="text-base">/ year</div>
+          </div>
+          <div className="text-xs pt-2">
+            Current impact on the lower end of this range because Glo Dollar is
+            bootstrapping. Adoption helps grow impact.
           </div>
         </div>
       </div>
