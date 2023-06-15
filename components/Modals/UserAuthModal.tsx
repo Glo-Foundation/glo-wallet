@@ -58,7 +58,7 @@ export default function UserAuthModal() {
           width={100}
           height={100}
         />
-        <h1 className="">👋 Hey it’s Jeff</h1>
+        <h1 className="">👋 Hey, it’s Jeff</h1>
         <p className="copy text-xl">
           Thanks for being part of the Glo movement!
         </p>
