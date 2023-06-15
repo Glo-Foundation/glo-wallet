@@ -7,7 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.query.key !== process.env.WEBHOOK_KEY) {
+  if (req.query.key !== process.env.VERCEL_WEBHOOK_KEY) {
     return res.status(401).end();
   }
 
