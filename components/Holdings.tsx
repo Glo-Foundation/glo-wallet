@@ -154,7 +154,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
             </div>
             <div className="text-base">/ year</div>
           </div>
-          <div className="text-xs pt-2">
+          <div className="text-xs text-[11px] pt-2">
             Current impact on the lower end of this range because Glo Dollar is
             bootstrapping. Adoption helps grow impact.
           </div>
