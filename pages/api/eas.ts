@@ -49,5 +49,5 @@ export default async function handler(
 
   console.log(`Created JOIN_PROGRAM for ${result.count} users`);
 
-  return res.status(200).json({ success: true });
+  return res.status(200).json({ success: true, result: result.count });
 }
