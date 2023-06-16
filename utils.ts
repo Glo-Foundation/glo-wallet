@@ -96,9 +96,16 @@ export const isLiftPersonOutOfPovertyImpactItem = (
   return impactItem.description === "Person out of extreme poverty";
 };
 
-export const getUSFormattedNumber = (num: number) => {
+export const getUSFormattedNumber = (num: number): string => {
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(num);
+};
+
+export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
+  const usdcContractAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+  const usdGloContractAddress = "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3";
+
+  return `https://app.uniswap.org/#/swap?inputCurrency=${usdcContractAddress}&outputCurrency=${usdGloContractAddress}&exactAmount=${amount}&exactField=input`;
 };
