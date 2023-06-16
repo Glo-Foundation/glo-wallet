@@ -93,7 +93,7 @@ export default function BuyingGuide({ glo }: Props) {
               target="_blank"
               rel="noreferrer"
             >
-              app.uniswap.com
+              app.uniswap.org
             </a>
           </li>
           <li>Click “connect” and choose WalletConnect</li>
