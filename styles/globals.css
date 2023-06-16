@@ -32,7 +32,7 @@ body {
   }
 
   dialog {
-    @apply overflow-visible rounded-3xl p-0 max-h-[80vh];
+    @apply rounded-3xl p-0 max-h-[80vh];
   }
 }
 
@@ -79,5 +79,13 @@ body {
 
   .cta-icon {
     @apply mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200;
+  }
+
+  .jeffs-floating-head {
+    @apply z-50 fixed left-[37vw] top-[2vh] border-2 rounded-full border-cyan-600
+    min-[400px]:top-[6vh] min-[400px]:left-[39vw]
+    md:top-[12vh] md:left-[44vw]
+    lg:top-[8vh] lg:left-[46vw]
+    2xl:left-[47.67vw];
   }
 }

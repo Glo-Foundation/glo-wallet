@@ -50,14 +50,14 @@ export default function UserAuthModal() {
 
   return (
     <>
-      <section className="p-8 flex flex-col items-center">
-        <Image
-          className="absolute top-[-50px] border-2 rounded-full border-cyan-600"
-          src="/jeff.svg"
-          alt="glo logo"
-          width={100}
-          height={100}
-        />
+      <Image
+        className="jeffs-floating-head"
+        src="/jeff.svg"
+        alt="glo logo"
+        width={100}
+        height={100}
+      />
+      <section className="sticky p-8 flex flex-col items-center">
         <h1 className="">👋 Hey it’s Jeff</h1>
         <p className="copy text-xl">
           Thanks for being part of the Glo movement!
