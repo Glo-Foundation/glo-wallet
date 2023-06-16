@@ -10,7 +10,7 @@ export default function BuyGloModal() {
   const [flipped, setFlipped] = useState<boolean>(false);
 
   const totalDays = 365;
-  const yearlyInterestRate = 0.027;
+  const yearlyInterestRate = 0.024;
   const yearlyYield = getTotalYield(yearlyInterestRate, glo, totalDays);
   const formattedGlo = getUSFormattedNumber(glo);
 
@@ -29,7 +29,7 @@ export default function BuyGloModal() {
   }
 
   return (
-    <div className="flex flex-col max-w-[343px]">
+    <div className="flex flex-col max-w-[343px] text-pine-900">
       <Holdings glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
       <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
       <button
