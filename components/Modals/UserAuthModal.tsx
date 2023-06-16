@@ -60,7 +60,7 @@ export default function UserAuthModal() {
         />
       </section>
       <section className="sticky p-8 flex flex-col items-center bg-white rounded-t-3xl">
-        <h1 className="">👋 Hey it’s Jeff</h1>
+        <h1 className="">👋 Hey, it’s Jeff</h1>
         <p className="copy text-xl">
           Thanks for being part of the Glo movement!
         </p>
