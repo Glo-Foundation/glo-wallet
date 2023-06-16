@@ -94,7 +94,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            Social Login
+            <h3>Social Login</h3>
             <div className="social-icons flex">
               <Image alt="apple" src="/apple.svg" width={35} height={35} />
               <Image
@@ -114,7 +114,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            Metamask
+            <h3>Metamask</h3>
             <Image alt="metamask" src="/metamask.svg" width={35} height={35} />
           </button>
 
@@ -125,7 +125,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            WalletConnect
+            <h3>WalletConnect</h3>
             <Image
               alt="walletconnect"
               src="/walletconnect.svg"

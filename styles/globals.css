@@ -16,11 +16,15 @@ body {
 
 @layer base {
   h1 {
-    @apply text-4xl text-pine-900 font-black py-6;
+    @apply text-3xl text-pine-900 font-black py-6;
   }
 
   h2 {
     @apply text-2xl font-bold py-4;
+  }
+
+  h3 {
+    @apply text-lg;
   }
 
   button {
