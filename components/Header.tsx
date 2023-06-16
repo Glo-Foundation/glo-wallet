@@ -29,7 +29,7 @@ export default function Header() {
   };
 
   const openUserAuthModal = () => {
-    openModal(<UserAuthModal />);
+    openModal(<UserAuthModal className="bg-transparent" />, "bg-transparent");
   };
 
   return (

@@ -49,15 +49,17 @@ export default function UserAuthModal() {
   };
 
   return (
-    <>
-      <Image
-        className="jeffs-floating-head"
-        src="/jeff.svg"
-        alt="glo logo"
-        width={100}
-        height={100}
-      />
-      <section className="sticky p-8 flex flex-col items-center">
+    <div>
+      <section className="sticky flex flex-col items-center pt-8 jeffs-floating-head">
+        <Image
+          className="border-cyan-600 border-2 rounded-full"
+          src="/jeff.svg"
+          alt="glo logo"
+          width={100}
+          height={100}
+        />
+      </section>
+      <section className="sticky p-8 flex flex-col items-center bg-white rounded-t-3xl">
         <h1 className="">👋 Hey it’s Jeff</h1>
         <p className="copy text-xl">
           Thanks for being part of the Glo movement!
@@ -133,6 +135,6 @@ export default function UserAuthModal() {
           </button>
         </div>
       </section>
-    </>
+    </div>
   );
 }
