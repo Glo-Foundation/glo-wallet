@@ -105,7 +105,7 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
           <div className="bg-pine-900/[0.1] rounded-full h-12">
             <a
               className="block text-center leading-[3rem] font-semibold"
-              href="https://docs.google.com/spreadsheets/d/1ft-DnIJ58M__xHBr0tl3Cux2SNUwwvhixE2wq04Z8CY/edit#gid=434329432"
+              href="https://www.glodollar.org/articles/glo-dollar-impact-for-any-amount-held"
               target="_blank"
               rel="noopener noreferrer"
             >
