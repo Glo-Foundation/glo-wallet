@@ -14,6 +14,7 @@ type Props = {
 
 export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
   const [flipped, setFlipped] = useState<boolean>(false);
+  const formattedYearlyYield = getUSFormattedNumber(yearlyYield);
 
   let yearlyImpactItems = getImpactItems(yearlyYield).slice(0, 2);
   const enoughToLiftPersonOutOfPoverty =
@@ -70,8 +71,6 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
   };
 
   if (flipped) {
-    const formattedYearlyYield = getUSFormattedNumber(yearlyYield);
-
     return (
       <div className="flex flex-col bg-white rounded-[20px] p-6 space-y-6">
         <div className="flex flex-row justify-between">
@@ -132,7 +131,8 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
     <div className="flex flex-col bg-white rounded-[20px] space-y-6">
       <div className="flex flex-row justify-between p-6 pb-0">
         <div className="text-xl font-semibold">
-          Enough to {enoughToLiftPersonOutOfPoverty ? "lift" : "buy"}:
+          ${formattedYearlyYield} is enough to{" "}
+          {enoughToLiftPersonOutOfPoverty ? "lift" : "buy"}:
         </div>
         <div
           className="bg-pine-900/[0.1] h-8 w-8 px-2 py-2 rounded-full cursor-pointer"
