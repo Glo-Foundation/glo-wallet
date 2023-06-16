@@ -50,7 +50,12 @@ export default function BuyingGuide({ glo }: Props) {
           <ul className="font-bold">Buy USDC on Coinbase</ul>
           <li>
             Create an account with{" "}
-            <a href="coinbase.com" target="_blank" className="underline">
+            <a
+              href="https://www.coinbase.com/"
+              className="underline"
+              target="_blank"
+              rel="noreferrer"
+            >
               Coinbase
             </a>
           </li>
@@ -82,8 +87,13 @@ export default function BuyingGuide({ glo }: Props) {
           <ul className="font-bold mt-3">Connect wallet to Uniswap</ul>
           <li>
             Go to{" "}
-            <a href="app.uniswap.com" target="_blank" className="underline">
-              app.uniswap.com
+            <a
+              href="https://app.uniswap.org/"
+              className="underline"
+              target="_blank"
+              rel="noreferrer"
+            >
+              app.uniswap.org
             </a>
           </li>
           <li>Click “connect” and choose WalletConnect</li>
