@@ -1,3 +1,4 @@
+import confetti from "canvas-confetti";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { useEffect, useRef } from "react";
 
@@ -9,9 +10,10 @@ const variants = {
       ease: "easeOut",
       type: "tween",
     },
-    backGround: 1,
+    opacity: 1,
+    scale: [0, 1, 1.5, 1],
   },
-  hidden: { pathLength: 0 },
+  hidden: { pathLength: 0, opacity: 0 },
 };
 
 export const AnimatedCheckIcon = () => {
@@ -21,6 +23,20 @@ export const AnimatedCheckIcon = () => {
   useEffect(() => {
     if (isInView) {
       controls.start("visible");
+      confetti({
+        particleCount: 200,
+        spread: 70,
+        angle: 60,
+        startVelocity: 60,
+        origin: { y: 0.99, x: 0 },
+      });
+      confetti({
+        particleCount: 200,
+        spread: 70,
+        angle: 120,
+        startVelocity: 60,
+        origin: { y: 0.99, x: 1 },
+      });
     }
   }, [isInView]);
 
@@ -40,9 +56,9 @@ export const AnimatedCheckIcon = () => {
           initial="hidden"
           d="M1 5.26667L4.73333 9L12.7333 1"
           stroke="#133D38"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

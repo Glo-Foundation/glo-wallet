@@ -22,6 +22,7 @@
     "@types/react-dom": "18.0.10",
     "0xsequence": "^0.43.30",
     "axios": "^1.4.0",
+    "canvas-confetti": "^1.6.0",
     "ethers": "^5.7.2",
     "framer-motion": "^10.12.16",
     "google-spreadsheet": "^3.3.0",
@@ -40,6 +41,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.6.0",
     "@types/google-spreadsheet": "^3.3.2",
     "@types/js-cookie": "^3.0.3",
     "@types/react-modal": "^3.16.0",
