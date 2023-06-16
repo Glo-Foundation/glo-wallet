@@ -50,9 +50,9 @@ export default function UserAuthModal() {
 
   return (
     <div>
-      <section className="sticky flex flex-col items-center pt-8 jeffs-floating-head">
+      <section className="flex flex-col items-center">
         <Image
-          className="border-cyan-600 border-2 rounded-full"
+          className="border-cyan-600 border-2 rounded-full mb-[-6vh] z-50"
           src="/jeff.svg"
           alt="glo logo"
           width={100}

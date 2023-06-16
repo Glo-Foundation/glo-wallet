@@ -76,8 +76,4 @@ body {
   .cta-icon {
     @apply mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200;
   }
-
-  .jeffs-floating-head {
-    @apply z-50 fixed top-[3vh];
-  }
 }
