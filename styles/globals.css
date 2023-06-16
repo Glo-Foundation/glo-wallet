@@ -61,10 +61,6 @@ body {
     @apply border flex justify-between rounded-lg bg-pine-100 border-pine-400 p-2;
   }
 
-  .modal-body {
-    @apply overflow-y-auto;
-  }
-
   .form-group {
     @apply py-4 flex items-center justify-between;
   }
