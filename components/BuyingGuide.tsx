@@ -59,7 +59,8 @@ export default function BuyingGuide({ glo }: Props) {
             <a
               href="https://www.coinbase.com/how-to-buy/usdc"
               target="_blank"
-              className="underline" rel="noreferrer"
+              className="underline"
+              rel="noreferrer"
             >
               USDC
             </a>{" "}
@@ -94,7 +95,7 @@ export default function BuyingGuide({ glo }: Props) {
           <ul className="font-bold mt-3">
             Swap USDC for Glo Dollar on Uniswap
           </ul>
-          <li>Click “Buy Glo on Uniswap” button below 👇</li>
+          <li>Click “Buy Glo on Uniswap” button below👇</li>
           <li>Input ${formattedGlo} USDC and click “Swap”</li>
           <li>Complete the steps to swap USDC for Glo</li>
         </ol>
