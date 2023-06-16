@@ -34,6 +34,10 @@ body {
   label {
     @apply font-black mr-4;
   }
+
+  dialog {
+    @apply rounded-3xl p-0 max-h-[80vh];
+  }
 }
 
 @layer components {
@@ -59,10 +63,6 @@ body {
 
   .pseudo-input-text {
     @apply border flex justify-between rounded-lg bg-pine-100 border-pine-400 p-2;
-  }
-
-  .modal {
-    @apply rounded-3xl p-0;
   }
 
   .form-group {
