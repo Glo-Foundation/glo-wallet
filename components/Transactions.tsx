@@ -7,10 +7,12 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 
+import TransfersModal from "./Modals/TransfersModal";
 import UserAuthModal from "./Modals/UserAuthModal";
+import { TransactionsList } from "./TransactionsList";
 
 export default function Transactions() {
-  const { transfers } = useUserStore();
+  const { transfers, transfersCursor } = useUserStore();
   const { connect, connectors } = useConnect();
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
@@ -30,34 +32,6 @@ export default function Transactions() {
     caretDir === "up" ? setCaretDir("down") : setCaretDir("up");
   };
 
-  const renderTransactions = (txns: Transfer[]) =>
-    txns.map((txn, idx) => {
-      const dateTokens = new Date(txn.ts).toDateString().split(" ");
-      const txnDate = dateTokens[1] + " " + dateTokens[2];
-      return (
-        <li key={`txn-${idx}`} className="transaction-item">
-          <div>
-            <p>
-              {txn.type === "outgoing" ? "Sent to " : "Received from"}{" "}
-              {txn.type === "outgoing" ? txn.to : txn.from}
-            </p>
-            <p className="copy">{txnDate}</p>
-          </div>
-          <div>
-            <b>
-              <span>{txn.type === "outgoing" ? "-" : "+"}</span>
-              <span>
-                {new Intl.NumberFormat("en-En", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(txn.value as number)}
-              </span>
-            </b>
-          </div>
-        </li>
-      );
-    });
-
   return (
     <div className="bg-white rounded-[20px] p-8 transition-all">
       <div className="flex justify-between cursor-default">
@@ -75,7 +49,17 @@ export default function Transactions() {
         </button>
       </div>
       {dropdown === "list-item" && transfers.length ? (
-        <ul className={`mt-12 ${dropdown}`}>{renderTransactions(transfers)}</ul>
+        <ul className={`mt-12 ${dropdown}`}>
+          <TransactionsList txns={transfers.slice(0, 5)} />
+          {transfersCursor && (
+            <li
+              onClick={() => openModal(<TransfersModal />)}
+              className="underline cursor-pointer"
+            >
+              View all transactions
+            </li>
+          )}
+        </ul>
       ) : (
         <>
           {!isConnected && (

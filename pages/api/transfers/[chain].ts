@@ -6,7 +6,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { chain } = req.query;
+  const { chain, cursor } = req.query;
+
   const address = req.headers["glo-pub-address"] as string;
 
   if (typeof address !== "string" || typeof chain !== "string") {
@@ -16,7 +17,11 @@ export default async function handler(
   }
 
   const chainHex = `0x${parseInt(chain).toString(16)}`;
-  const transactions = await fetchTransactions(address, chainHex);
+  const transactions = await fetchTransactions(
+    address,
+    chainHex,
+    cursor as string
+  );
 
   return res.status(200).json(transactions);
 }

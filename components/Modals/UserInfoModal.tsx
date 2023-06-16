@@ -2,7 +2,7 @@ import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useContext } from "react";
 import { Tooltip } from "react-tooltip";
-import { useDisconnect } from "wagmi";
+import { useDisconnect, useNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
@@ -12,6 +12,7 @@ type Props = {
 };
 export default function UserInfoModal({ address }: Props) {
   const { disconnect } = useDisconnect();
+  const { chain } = useNetwork();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs } = useUserStore();
@@ -24,7 +25,7 @@ export default function UserInfoModal({ address }: Props) {
 
   const handleLogout = () => {
     disconnect();
-    setTransfers([]);
+    setTransfers({ transfers: [] });
     setCTAs([]);
     localStorage.setItem("showedLogin", "true");
     closeModal();
@@ -43,6 +44,10 @@ export default function UserInfoModal({ address }: Props) {
           <QRCodeSVG size={128} value={address!} />
         </div>
         <div className="ml-6">
+          <h3 className="text-l flex flex-wrap">
+            network: {chain?.name} ({chain?.id})
+          </h3>
+
           <h3 className="text-l max-w-[50%] flex flex-wrap">wallet address:</h3>
           <div className="copy pseudo-input-text">
             <span>{address}</span>

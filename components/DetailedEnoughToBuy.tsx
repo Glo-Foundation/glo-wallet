@@ -22,7 +22,11 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
 
   const getFormattedImpactItems = (): JSX.Element => {
     if (yearlyImpactItems.length === 0) {
-      return <></>;
+      return (
+        <div className="text-pine-900">
+          Pick a value above $0 to see how much impact you could make.
+        </div>
+      );
     }
 
     if (enoughToLiftPersonOutOfPoverty) {
@@ -45,11 +49,11 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
           return (
             <div className="flex flex-col space-y-4" key={idx}>
               <div className="flex flex-row">
+                <div className="mr-2">{impactItem.count}</div>
+                <div className="mr-2 text-xs leading-6">&#10005;</div>
                 <div className="mr-2 text-2xl leading-6">
                   {impactItem.emoji}
                 </div>
-                <div className="mr-2 text-xs leading-6">&#10005;</div>
-                <div className="mr-2">{impactItem.count}</div>
                 <div>
                   {impactItem.description}
                   {!isLiftPersonOutOfPovertyImpactItem(impactItem) && (
@@ -66,7 +70,6 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
   };
 
   if (flipped) {
-    const formattedGlo = getUSFormattedNumber(glo);
     const formattedYearlyYield = getUSFormattedNumber(yearlyYield);
 
     return (
@@ -85,12 +88,19 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
             We fund basic incomes with money made from reserves backing Glo
             Dollar.
           </div>
-          <div>
-            How much money we make changes as Glo adoption grows. During
-            Bootstrap Phase, it&apos;s closer to the lower end of this range
-            ($0). At scale, we aim to be at the higher end of this range ($
-            {formattedYearlyYield}).
-          </div>
+
+          {yearlyYield === 0 ? (
+            <div>
+              Pick a value above $0 to see how much impact you could make.
+            </div>
+          ) : (
+            <div>
+              How much money we make changes as Glo adoption grows. During
+              Bootstrap Phase, it&apos;s closer to the lower end of this range
+              ($0). At scale, we aim to be at the higher end of this range ($
+              {formattedYearlyYield}).
+            </div>
+          )}
         </div>
         <div className="flex flex-col space-y-4">
           <div className="bg-pine-900/[0.1] rounded-full h-12">

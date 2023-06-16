@@ -1,7 +1,13 @@
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";
-import { useAccount, useBalance, useNetwork, useSignMessage } from "wagmi";
+import {
+  useAccount,
+  useBalance,
+  useNetwork,
+  useSignMessage,
+  useSwitchNetwork,
+} from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
@@ -15,7 +21,8 @@ import { api, initApi, signMsgContent } from "@/lib/utils";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
-  const { chain } = useNetwork();
+  const { chain, chains } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
   const { signMessageAsync, status } = useSignMessage({
     message: signMsgContent,
@@ -31,14 +38,36 @@ export default function Home() {
   const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();
-
   useEffect(() => {
-    if (!isConnected && !showedLogin && asPath === "/sign-in") {
+    if ((!isConnected && !showedLogin) || asPath === "/sign-in") {
       openModal(<UserAuthModal />);
       localStorage.setItem("showedLogin", "true");
       push("/");
     }
   }, []);
+
+  useEffect(() => {
+    const defaultChainId = chains[0]?.id;
+    if (
+      isConnected &&
+      chain?.id !== defaultChainId &&
+      defaultChainId &&
+      switchNetwork
+    ) {
+      switchNetwork(defaultChainId);
+    }
+  }, [switchNetwork]);
+
+  const onChainSwitch = async () => {
+    const res = await api().get<TransfersPage>(`/transfers/${chain?.id}`);
+    setTransfers(res.data);
+  };
+
+  useEffect(() => {
+    if (api()) {
+      onChainSwitch();
+    }
+  }, [chain]);
 
   useEffect(() => {
     if (isConnected) {
@@ -66,13 +95,12 @@ export default function Home() {
 
         Cookies.set("glo-user", userId);
 
+        // Parallel requests
+        onChainSwitch();
+
         api()
           .get<CTA[]>(`/ctas`)
           .then((res) => setCTAs(res.data));
-
-        api()
-          .get<Transfer[]>(`/transfers/${chain?.id}`)
-          .then((res) => setTransfers(res.data));
       });
     } else {
       Cookies.remove("glo-email");
