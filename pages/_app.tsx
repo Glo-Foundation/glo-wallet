@@ -101,10 +101,10 @@ export default function App({ Component, pageProps }: AppProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const openModal = (content: JSX.Element, className: string) => {
+  const openModal = (content: JSX.Element, className: string | undefined) => {
     closeModal();
     setModalContent(content);
-    setModalClassName(className);
+    setModalClassName(className || "");
     dialogRef.current?.showModal();
   };
 
