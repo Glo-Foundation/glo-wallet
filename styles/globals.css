@@ -82,7 +82,7 @@ body {
   }
 
   .jeffs-floating-head {
-    @apply z-50 fixed left-[37vw] top-[2vh] border-2 rounded-full border-cyan-600
+    @apply z-50 fixed left-[38vw] top-[2vh] border-2 rounded-full border-cyan-600
     min-[400px]:top-[6vh] min-[400px]:left-[39vw]
     md:top-[12vh] md:left-[44vw]
     lg:top-[8vh] lg:left-[46vw]
