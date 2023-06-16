@@ -20,6 +20,7 @@ export default async function handler(
       ctas: {
         select: {
           type: true,
+          isCompleted: true,
         },
       },
     },

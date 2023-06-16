@@ -23,6 +23,7 @@
     "0xsequence": "^0.43.30",
     "axios": "^1.4.0",
     "ethers": "^5.7.2",
+    "framer-motion": "^10.12.16",
     "google-spreadsheet": "^3.3.0",
     "js-cookie": "^3.0.5",
     "moralis": "^2.20.0",
