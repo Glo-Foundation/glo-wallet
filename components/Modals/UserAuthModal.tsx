@@ -58,7 +58,7 @@ export default function UserAuthModal() {
           width={100}
           height={100}
         />
-        <h1 className="text-3xl">👋 Hey, it’s Jeff</h1>
+        <h1>👋 Hey, it’s Jeff</h1>
         <p className="copy text-lg text-center">
           Thanks for being part of the Glo movement!
         </p>
@@ -92,7 +92,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            <div className="text-lg">Social Login</div>
+            <h3>Social Login</h3>
             <div className="social-icons flex">
               <Image alt="apple" src="/apple.svg" width={35} height={35} />
               <Image
@@ -112,7 +112,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            <div className="text-lg">Metamask</div>
+            <h3>Metamask</h3>
             <Image alt="metamask" src="/metamask.svg" width={35} height={35} />
           </button>
 
@@ -123,7 +123,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            <div className="text-lg">WalletConnect</div>
+            <h3>WalletConnect</h3>
             <Image
               alt="walletconnect"
               src="/walletconnect.svg"
