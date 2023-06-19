@@ -66,14 +66,20 @@ export default function Header() {
           </button>
         </div>
       ) : (
-        <>
+        <div className="flex">
           <button
-            className="primary-button"
+            className="primary-button mr-2"
             onClick={() => openUserAuthModal()}
           >
             Log in
           </button>
-        </>
+          <a
+            target="_blank"
+            href="https://www.notion.so/Glo-FAQ-946e21901e934fc19992df43a3008077" rel="noreferrer"
+          >
+            <button className="secondary-button">?</button>
+          </a>
+        </div>
       )}
     </nav>
   );
