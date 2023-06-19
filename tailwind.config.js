@@ -21,6 +21,8 @@ module.exports = {
         "pine-700": "#597572",
         "pine-800": "#2B504C",
         "pine-900": "#133D38",
+        "impact-bg": "#24E5DF",
+        "impact-fg": "#123C38",
       },
       fontFamily: {
         polysans: ["var(--font-polysans)"],
