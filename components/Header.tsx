@@ -41,7 +41,7 @@ export default function Header() {
       {isLoading ? (
         <button className="primary-button">Connecting... </button>
       ) : isConnected ? (
-        <>
+        <div className="flex">
           <Tooltip
             anchorId="copy-wallet-address"
             content="Copied!"
@@ -50,7 +50,7 @@ export default function Header() {
           />
           <button
             id={"copy-wallet-address"}
-            className=""
+            className="mr-4"
             onClick={() => {
               navigator.clipboard.writeText(address!);
               setIsCopiedTooltipOpen(true);
@@ -64,7 +64,7 @@ export default function Header() {
           >
             👤
           </button>
-        </>
+        </div>
       ) : (
         <>
           <button
