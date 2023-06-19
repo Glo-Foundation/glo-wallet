@@ -29,7 +29,7 @@ export default function Header() {
   };
 
   const openUserAuthModal = () => {
-    openModal(<UserAuthModal />);
+    openModal(<UserAuthModal />, "bg-transparent max-h-[100vh]");
   };
 
   return (

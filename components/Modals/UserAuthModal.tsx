@@ -49,21 +49,23 @@ export default function UserAuthModal() {
   };
 
   return (
-    <>
-      <section className="p-8 flex flex-col items-center">
+    <div>
+      <section className="flex flex-col items-center">
         <Image
-          className="border-2 rounded-full border-cyan-600"
+          className="border-cyan-600 border-2 rounded-full mb-[-50px] z-50"
           src="/jeff.svg"
           alt="glo logo"
           width={100}
           height={100}
         />
-        <h1 className="">👋 Hey it’s Jeff</h1>
+      </section>
+      <section className="sticky p-8 flex flex-col items-center bg-white rounded-t-3xl">
+        <h1 className="">👋 Hey, it’s Jeff</h1>
         <p className="copy text-xl">
           Thanks for being part of the Glo movement!
         </p>
       </section>
-      <section className="p-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
+      <section className="modal-body p-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
         <h2 className="flex justify-center">Sign up</h2>
         <div>
           <div className="p-0 form-group flex justify-center">
@@ -92,7 +94,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            Social Login
+            <h3>Social Login</h3>
             <div className="social-icons flex">
               <Image alt="apple" src="/apple.svg" width={35} height={35} />
               <Image
@@ -112,7 +114,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            Metamask
+            <h3>Metamask</h3>
             <Image alt="metamask" src="/metamask.svg" width={35} height={35} />
           </button>
 
@@ -123,7 +125,7 @@ export default function UserAuthModal() {
               closeModal();
             }}
           >
-            WalletConnect
+            <h3>WalletConnect</h3>
             <Image
               alt="walletconnect"
               src="/walletconnect.svg"
@@ -133,6 +135,6 @@ export default function UserAuthModal() {
           </button>
         </div>
       </section>
-    </>
+    </div>
   );
 }
