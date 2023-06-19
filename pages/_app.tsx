@@ -123,7 +123,10 @@ export default function App({ Component, pageProps }: AppProps) {
           <WagmiConfig config={config}>
             <ModalContext.Provider value={{ openModal, closeModal }}>
               <Component {...pageProps} />
-              <dialog ref={dialogRef} className={modalClassName}>
+              <dialog
+                ref={dialogRef}
+                className={`${modalClassName} outline-none`}
+              >
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
             </ModalContext.Provider>
