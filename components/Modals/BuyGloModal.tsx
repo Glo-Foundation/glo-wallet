@@ -38,11 +38,7 @@ export default function BuyGloModal() {
         Buy ${formattedGlo} Glo on Uniswap
       </button>
       <div className="mb-7">
-        <DetailedEnoughToBuy
-          className="mt-11 mb-7"
-          yearlyYield={yearlyYield}
-          glo={glo}
-        />
+        <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
       </div>
     </div>
   );
