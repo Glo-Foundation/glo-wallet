@@ -41,7 +41,7 @@ export default function Balance({
   return (
     <div className="bg-white rounded-[20px] pt-4">
       <div className="flex flex-col space-y-2 p-4">
-        <div className="self-center text-[1.1rem] text-pine-700/90">
+        <div className="self-center text-[1.1rem] text-pine-700/90 mb-0.5">
           Balance
         </div>
         <div className="flex flex-row font-semibold justify-center">
