@@ -31,13 +31,19 @@ export default function BuyGloModal() {
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900">
       <Holdings glo={glo} setGlo={setGlo} yearlyYield={yearlyYield} />
-      <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
       <button
-        className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6 mt-11 mb-7"
+        className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6 mt-6"
         onClick={() => setFlipped(true)}
       >
         Buy ${formattedGlo} Glo on Uniswap
       </button>
+      <div className="mb-7">
+        <DetailedEnoughToBuy
+          className="mt-11 mb-7"
+          yearlyYield={yearlyYield}
+          glo={glo}
+        />
+      </div>
     </div>
   );
 }
