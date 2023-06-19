@@ -1,27 +1,32 @@
 import confetti from "canvas-confetti";
 import { motion, useAnimation, useInView } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const variants = {
   visible: {
     pathLength: 1,
     transition: {
+      delay: 1,
       duration: 1.2,
       ease: "easeOut",
       type: "tween",
     },
     opacity: 1,
-    scale: [0, 1, 1.5, 1],
+    scale: [0, 1, 1.2, 1],
   },
   hidden: { pathLength: 0, opacity: 0 },
 };
 
 export const AnimatedCheckIcon = () => {
+  const [shown, setShown] = useState(false);
+
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref);
+
   useEffect(() => {
-    if (isInView) {
+    if (isInView && !shown) {
+      setShown(true);
       controls.start("visible");
       confetti({
         particleCount: 200,
