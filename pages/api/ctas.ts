@@ -2,9 +2,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../lib/prisma";
 
-const DEFAULT_CTAS: CTA[] = ["SHARE_GLO", "BUY_GLO_MERCH", "JOIN_PROGRAM"].map(
-  (cta) => ({ type: cta } as CTA)
-);
+const DEFAULT_CTAS: CTA[] = [
+  "SHARE_GLO",
+  "BUY_GLO_MERCH",
+  "JOIN_PROGRAM",
+  "SHARE_IMPACT",
+].map((cta) => ({ type: cta } as CTA));
 
 export default async function handler(
   req: NextApiRequest,

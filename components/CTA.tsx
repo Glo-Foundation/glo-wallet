@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 
 import { useUserStore } from "@/lib/store";
+import { getImpactItems, getTotalYield } from "@/utils";
 
 import { AnimatedCheckIcon } from "./AnimatedCheckIcon";
 
@@ -13,7 +14,6 @@ const Icon = ({ path }: { path: string }) => (
 
 const ActionButton = ({
   CTA_MAP,
-  email,
   ctaType,
   isCompleted,
 }: {
@@ -23,7 +23,7 @@ const ActionButton = ({
   isCompleted?: boolean;
 }) => {
   const cta = CTA_MAP[ctaType];
-  const link = email ? cta.url! + cta.slug + email : cta.url;
+  const link = cta.url + (cta.slug || "");
   return (
     <a
       className={"flex cursor-pointer items-center py-4"}
@@ -50,10 +50,15 @@ const ActionButton = ({
   );
 };
 
-export default function CTA() {
+export default function CTA({ balance }: { balance?: string }) {
   const { ctas } = useUserStore();
+  const totalYield = getTotalYield(Number(balance));
+  const item = getImpactItems(totalYield)[0];
+  const icons = item ? `${item.emoji} x ${item.count}` : "?";
 
   const email = Cookies.get("glo-email");
+
+  const shareImpactText = `I just bought $${balance} of @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
 
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["SHARE_GLO"]: {
@@ -61,7 +66,7 @@ export default function CTA() {
       iconPath: "/megahorn.svg",
       description: "Ask your friends to join Glo. Share your invite link.",
       url: "https://www.glodollar.org/refer-a-friend",
-      slug: "?email1referrer=",
+      slug: `?email1referrer=${email}`,
     },
     ["BUY_GLO_MERCH"]: {
       title: "Buy Glo Merch",
@@ -76,7 +81,14 @@ export default function CTA() {
       description: "Be the change you want to see in the world",
       iconPath: "/za-warudo.svg",
       url: "https://www.glodollar.org/get-started",
-      slug: "?email=",
+      slug: `?email=${email}`,
+    },
+    ["SHARE_IMPACT"]: {
+      title: "Share impact",
+      iconPath: "/megahorn.svg",
+      description: shareImpactText,
+      url: "https://twitter.com/intent/tweet",
+      slug: `?text=${encodeURI(shareImpactText)}`,
     },
   };
 
