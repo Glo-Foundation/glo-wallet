@@ -40,6 +40,7 @@ export default function BuyGloModal() {
       <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
       <button
         className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6 mt-11 mb-7"
+        disabled={glo === 0}
         onClick={() => setFlipped(true)}
       >
         Buy ${formattedGlo} Glo on Uniswap

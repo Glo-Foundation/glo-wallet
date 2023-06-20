@@ -103,9 +103,11 @@ export const getUSFormattedNumber = (num: number): string => {
   }).format(num);
 };
 
-export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
-  const usdcContractAddress = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
-  const usdGloContractAddress = "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3";
+const USDC_POLYGON_CONTRACT_ADDRESS =
+  "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+const USDGLO_POLYGON_CONTRACT_ADDRESS =
+  "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3";
 
-  return `https://app.uniswap.org/#/swap?inputCurrency=${usdcContractAddress}&outputCurrency=${usdGloContractAddress}&exactAmount=${amount}&exactField=input&network=polygon`;
+export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
+  return `https://app.uniswap.org/#/swap?inputCurrency=${USDC_POLYGON_CONTRACT_ADDRESS}&outputCurrency=${USDGLO_POLYGON_CONTRACT_ADDRESS}&exactAmount=${amount}&exactField=input&network=polygon`;
 };
