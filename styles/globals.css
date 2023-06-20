@@ -24,7 +24,15 @@ body {
   }
 
   h3 {
+    @apply font-semibold text-xl;
+  }
+
+  h4 {
     @apply text-lg;
+  }
+
+  h5 {
+    @apply font-semibold;
   }
 
   button {
@@ -42,7 +50,7 @@ body {
 
 @layer components {
   .action-button {
-    @apply min-w-[64px] min-h-[64px] bg-pine-200;
+    @apply w-[48px] h-[48px] bg-pine-100;
   }
 
   .auth-button {

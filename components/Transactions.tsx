@@ -35,14 +35,14 @@ export default function Transactions() {
   return (
     <div className="bg-white rounded-[20px] p-8 transition-all">
       <div className="flex justify-between cursor-default">
-        <div className="font-semibold text-3xl">Transactions</div>
+        <h3>Transactions</h3>
         <button onClick={toggleDropdown}>
           {isConnected && (
             <Image
               className="cursor-pointer"
               src={`/${caretDir}-caret.svg`}
-              width={16}
-              height={16}
+              width={14}
+              height={14}
               alt="down-arrow"
             />
           )}

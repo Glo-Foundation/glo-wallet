@@ -25,10 +25,8 @@ const ActionButton = ({
         <Image src={cta.iconPath} width={16} height={16} alt="call to action" />
       </div>
       <div className="flex-col w-56">
-        <h3 className="font-bold text-lg">{cta.title}</h3>
-        <p className="font-thin text-sm text-pine-700 leading-6">
-          {cta.description}
-        </p>
+        <h5>{cta.title}</h5>
+        <p className="mt-1 text-xs text-pine-700">{cta.description}</p>
       </div>
       <Image
         src="/arrow-right.svg"
@@ -70,9 +68,9 @@ export default function CTA() {
   };
 
   return (
-    <div className="bg-pine-50 rounded-[20px] p-8 transition-all">
+    <div className="bg-pine-50 rounded-[20px] p-6 transition-all">
       <div className="flex justify-between cursor-default">
-        <div className="font-semibold text-3xl">🌟 Help Grow Glo!</div>
+        <h3>🌟 Help Grow Glo!</h3>
       </div>
       <ul className="mt-2">
         {ctas.map((cta, index) => (
