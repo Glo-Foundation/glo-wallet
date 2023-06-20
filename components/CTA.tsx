@@ -52,13 +52,15 @@ const ActionButton = ({
 
 export default function CTA({ balance }: { balance?: string }) {
   const { ctas } = useUserStore();
-  const totalYield = getTotalYield(Number(balance));
+
+  const gloBalance = balance || 1000;
+  const totalYield = getTotalYield(Number(gloBalance));
   const item = getImpactItems(totalYield)[0];
   const icons = item ? `${item.emoji} x ${item.count}` : "?";
 
-  const email = Cookies.get("glo-email");
+  const email = Cookies.get("glo-email") || "";
 
-  const shareImpactText = `I just bought $${balance} of @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
+  const shareImpactText = `I just bought $${gloBalance} of @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
 
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["SHARE_GLO"]: {
@@ -92,13 +94,18 @@ export default function CTA({ balance }: { balance?: string }) {
     },
   };
 
+  const ctaList: CTA[] =
+    ctas.length > 0
+      ? ctas
+      : Object.keys(CTA_MAP).map((x) => ({ type: x } as CTA));
+
   return (
     <div className="bg-pine-50 rounded-[20px] p-8 transition-all">
       <div className="flex justify-between cursor-default">
         <div className="font-semibold text-3xl">🌟 Help Grow Glo!</div>
       </div>
       <ul className="mt-2">
-        {ctas.map((cta, index) => (
+        {ctaList.map((cta, index) => (
           <li key={`CTA-${index}`} className="border-b-2 last:border-none">
             <ActionButton
               CTA_MAP={CTA_MAP}
