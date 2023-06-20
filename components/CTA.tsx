@@ -6,9 +6,9 @@ import { useUserStore } from "@/lib/store";
 import { AnimatedCheckIcon } from "./AnimatedCheckIcon";
 
 const Icon = ({ path }: { path: string }) => (
-  <div className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
+  <button className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
     <Image src={path} width={16} height={16} alt="call to action" />
-  </div>
+  </button>
 );
 
 const ActionButton = ({
