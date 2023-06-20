@@ -10,6 +10,7 @@ module.exports = {
       colors: {
         white: "#FFFFFF",
         "cyan-600": "#24E5DF",
+        "cyan-700": "#3DF4EF",
         "pine-50": "#F4F9F8",
         "pine-100": "#EAF2F1",
         "pine-200": "#D9E5E3",
@@ -20,6 +21,8 @@ module.exports = {
         "pine-700": "#597572",
         "pine-800": "#2B504C",
         "pine-900": "#133D38",
+        "impact-bg": "#24E5DF",
+        "impact-fg": "#123C38",
       },
       fontFamily: {
         polysans: ["var(--font-polysans)"],
