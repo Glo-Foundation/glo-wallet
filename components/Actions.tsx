@@ -126,7 +126,7 @@ export default function Actions() {
     buttons
       .filter((button) => !button.disabled)
       .map((button, idx) => (
-        <li key={`actionButton${idx}`}>
+        <li className="flex flex-col items-center" key={`actionButton${idx}`}>
           <button
             className="action-button mb-4"
             onClick={() => button.action()}
@@ -134,8 +134,8 @@ export default function Actions() {
             <Image
               src={button.iconPath}
               alt={button.description}
-              width={24}
-              height={24}
+              width={16}
+              height={16}
             />
           </button>
 

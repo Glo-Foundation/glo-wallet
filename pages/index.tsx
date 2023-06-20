@@ -115,9 +115,9 @@ export default function Home() {
   }, [isConnected]);
 
   return (
-    <div className="mt-4 px-2.5">
+    <div className="mt-4 px-6">
       <Header />
-      <div className="flex flex-col space-y-10">
+      <div className="flex flex-col space-y-2">
         <Balance balance={balance} />
         <Transactions />
         <CTA />
