@@ -117,7 +117,7 @@ export default function Home() {
   return (
     <div className="mt-4 px-2.5">
       <Header />
-      <div className="flex flex-col space-y-10">
+      <div className="flex flex-col space-y-2">
         <Balance balance={balance} />
         <Transactions />
         <CTA />
