@@ -91,6 +91,7 @@ const polySans = localFont({
 
 export default function App({ Component, pageProps }: AppProps) {
   const [modalContent, setModalContent] = useState(<div />);
+  const [modalClassName, setModalClassName] = useState("");
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -100,9 +101,10 @@ export default function App({ Component, pageProps }: AppProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const openModal = (content: JSX.Element) => {
+  const openModal = (content: JSX.Element, className: string | undefined) => {
     closeModal();
     setModalContent(content);
+    setModalClassName(className || "");
     dialogRef.current?.showModal();
   };
 
@@ -121,7 +123,10 @@ export default function App({ Component, pageProps }: AppProps) {
           <WagmiConfig config={config}>
             <ModalContext.Provider value={{ openModal, closeModal }}>
               <Component {...pageProps} />
-              <dialog className="modal" ref={dialogRef}>
+              <dialog
+                ref={dialogRef}
+                className={`${modalClassName} outline-none`}
+              >
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
             </ModalContext.Provider>

@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 type Actions = {
-  openModal: (_content: JSX.Element) => void;
+  openModal: (_content: JSX.Element, _className?: string) => void;
   closeModal: () => void;
 };
 

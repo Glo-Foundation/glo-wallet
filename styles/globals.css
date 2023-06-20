@@ -16,11 +16,15 @@ body {
 
 @layer base {
   h1 {
-    @apply text-4xl text-pine-900 font-black py-6;
+    @apply text-3xl text-pine-900 font-black py-6;
   }
 
   h2 {
     @apply text-2xl font-bold py-4;
+  }
+
+  h3 {
+    @apply text-lg;
   }
 
   button {
@@ -29,6 +33,10 @@ body {
 
   label {
     @apply font-black mr-4;
+  }
+
+  dialog {
+    @apply rounded-3xl p-0 max-h-[80vh];
   }
 }
 
@@ -55,10 +63,6 @@ body {
 
   .pseudo-input-text {
     @apply border flex justify-between rounded-lg bg-pine-100 border-pine-400 p-2;
-  }
-
-  .modal {
-    @apply rounded-3xl p-0;
   }
 
   .form-group {

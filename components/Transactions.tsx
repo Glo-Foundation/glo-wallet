@@ -67,7 +67,9 @@ export default function Transactions() {
               <span> No transactions to show - </span>
               <button
                 className="inline cursor-pointer hover:decoration-solid text-blue-500"
-                onClick={() => openModal(<UserAuthModal />)}
+                onClick={() =>
+                  openModal(<UserAuthModal />, "bg-transparent max-h-[100vh]")
+                }
               >
                 please log in
               </button>
