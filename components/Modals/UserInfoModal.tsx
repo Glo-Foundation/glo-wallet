@@ -6,6 +6,7 @@ import { useDisconnect, useNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
+import { sliceAddress } from "@/lib/utils";
 
 type Props = {
   address?: string;
@@ -32,25 +33,28 @@ export default function UserInfoModal({ address }: Props) {
   };
 
   return (
-    <div className="p-8">
+    <div className="py-6 px-10">
       <div className="flex flex-row justify-between">
         <div></div>
         <button className="" onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <section className="flex items-center">
-        <div className="p-4 border-2">
-          <QRCodeSVG size={128} value={address!} />
+      <section className="flex flex-col items-center">
+        <div className="my-4 p-4 border-2">
+          <QRCodeSVG size={169} value={address!} />
         </div>
-        <div className="ml-6">
-          <h3 className="text-l flex flex-wrap">
-            network: {chain?.name} ({chain?.id})
-          </h3>
+        <div>
+          <h5>Network:</h5>
+          <div className="copy pseudo-input-text text-sm">
+            <span>
+              {chain?.name} ({chain?.id})
+            </span>
+          </div>
 
-          <h3 className="text-l max-w-[50%] flex flex-wrap">wallet address:</h3>
-          <div className="copy pseudo-input-text">
-            <span>{address}</span>
+          <h5 className="mt-6">Wallet Address:</h5>
+          <div className="copy pseudo-input-text text-sm">
+            <span>{sliceAddress(address!, 9)}</span>
             <Tooltip
               anchorId="copy-deposit-address"
               content="Copied!"
@@ -70,7 +74,7 @@ export default function UserInfoModal({ address }: Props) {
           </div>
         </div>
       </section>
-      <section className="my-4 flex justify-end">
+      <section className="mt-8 flex justify-end">
         <button className="primary-button" onClick={() => handleLogout()}>
           Log out
         </button>
