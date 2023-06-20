@@ -109,5 +109,5 @@ const USDGLO_POLYGON_CONTRACT_ADDRESS =
   "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3";
 
 export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
-  return `https://app.uniswap.org/#/swap?inputCurrency=${USDC_POLYGON_CONTRACT_ADDRESS}&outputCurrency=${USDGLO_POLYGON_CONTRACT_ADDRESS}&exactAmount=${amount}&exactField=input&network=polygon`;
+  return `https://app.uniswap.org/#/swap?inputCurrency=${USDC_POLYGON_CONTRACT_ADDRESS}&outputCurrency=${USDGLO_POLYGON_CONTRACT_ADDRESS}&exactAmount=${amount}&exactField=input&chain=polygon`;
 };
