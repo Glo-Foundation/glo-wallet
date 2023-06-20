@@ -49,7 +49,7 @@ export default function UserAuthModal() {
   };
 
   return (
-    <div>
+    <>
       <section className="flex flex-col items-center">
         <Image
           className="border-cyan-600 border-2 rounded-full mb-[-50px] z-50"
@@ -135,6 +135,6 @@ export default function UserAuthModal() {
           </button>
         </div>
       </section>
-    </div>
+    </>
   );
 }

@@ -3,14 +3,24 @@ import Image from "next/image";
 
 import { useUserStore } from "@/lib/store";
 
+import { AnimatedCheckIcon } from "./AnimatedCheckIcon";
+
+const Icon = ({ path }: { path: string }) => (
+  <div className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
+    <Image src={path} width={16} height={16} alt="call to action" />
+  </div>
+);
+
 const ActionButton = ({
   CTA_MAP,
   email,
   ctaType,
+  isCompleted,
 }: {
   CTA_MAP: { [key in CTAType]: ActionButton };
   email: string | undefined;
   ctaType: CTAType;
+  isCompleted?: boolean;
 }) => {
   const cta = CTA_MAP[ctaType];
   const link = email ? cta.url! + cta.slug + email : cta.url;
@@ -21,13 +31,12 @@ const ActionButton = ({
       target="_blank"
       rel="noreferrer"
     >
-      <div className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
-        <Image src={cta.iconPath} width={16} height={16} alt="call to action" />
-      </div>
+      {isCompleted ? <AnimatedCheckIcon /> : <Icon path={cta.iconPath} />}
       <div className="flex-col w-56">
         <h5>{cta.title}</h5>
         <p className="mt-1 text-xs text-pine-700">{cta.description}</p>
       </div>
+
       <Image
         src="/arrow-right.svg"
         width={25}
@@ -41,7 +50,9 @@ const ActionButton = ({
 
 export default function CTA() {
   const { ctas } = useUserStore();
+
   const email = Cookies.get("glo-email");
+
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["SHARE_GLO"]: {
       title: "Share Glo with friends",
@@ -75,7 +86,12 @@ export default function CTA() {
       <ul className="mt-2">
         {ctas.map((cta, index) => (
           <li key={`CTA-${index}`} className="border-b-2 last:border-none">
-            <ActionButton CTA_MAP={CTA_MAP} email={email} ctaType={cta.type} />
+            <ActionButton
+              CTA_MAP={CTA_MAP}
+              email={email}
+              ctaType={cta.type}
+              isCompleted={cta.isCompleted}
+            />
           </li>
         ))}
       </ul>
