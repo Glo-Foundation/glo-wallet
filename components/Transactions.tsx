@@ -63,7 +63,7 @@ export default function Transactions() {
       ) : (
         <>
           {!isConnected && (
-            <div className="mt-3">
+            <div className="mt-3 text-sm">
               <span> No transactions to show - </span>
               <button
                 className="inline cursor-pointer hover:decoration-solid text-blue-500"
@@ -77,7 +77,7 @@ export default function Transactions() {
           )}
 
           {isConnected && !transfers.length && (
-            <div className="mt-6">
+            <div className="mt-6 text-sm">
               <span> No transactions yet - </span>
               <button
                 className="inline cursor-pointer hover:decoration-solid text-blue-500"
