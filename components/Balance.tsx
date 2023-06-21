@@ -34,7 +34,7 @@ export default function Balance({
   return (
     <div className="bg-white rounded-[20px] pt-4">
       <div className="flex flex-col space-y-2 p-4">
-        <div className="self-center text-[1.1rem] text-pine-700/90">
+        <div className="self-center text-sm text-pine-700/90 mb-1.5">
           Balance
         </div>
         <div className="flex flex-row font-semibold justify-center">
@@ -45,9 +45,9 @@ export default function Balance({
         </div>
       </div>
       {isConnected && <Actions />}
-      <div className="flex flex-col bg-cyan-600/20 rounded-[24px] mx-1 mb-1 px-5 pb-3">
+      <div className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-5 pb-3">
         <div className="overflow-hidden">
-          <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-36"></div>
+          <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-32"></div>
         </div>
         <div className="flex w-full justify-between items-center space-y-2">
           <div className="flex items-center">

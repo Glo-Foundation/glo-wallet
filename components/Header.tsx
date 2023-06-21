@@ -29,11 +29,11 @@ export default function Header() {
   };
 
   const openUserAuthModal = () => {
-    openModal(<UserAuthModal />, "bg-transparent max-h-[100vh]");
+    openModal(<UserAuthModal />, "bg-transparent");
   };
 
   return (
-    <nav className="mb-9 mt-6 flex justify-between items-center">
+    <nav className="mt-4 mb-6 flex justify-between items-center">
       <a href="https://glodollar.org/">
         <Image src="/glo-logo-text.svg" alt="glo logo" width={74} height={26} />
       </a>
@@ -41,7 +41,7 @@ export default function Header() {
       {isLoading ? (
         <button className="primary-button">Connecting... </button>
       ) : isConnected ? (
-        <>
+        <div className="flex">
           <Tooltip
             anchorId="copy-wallet-address"
             content="Copied!"
@@ -50,7 +50,7 @@ export default function Header() {
           />
           <button
             id={"copy-wallet-address"}
-            className=""
+            className="text-sm text-pine-800 mr-3 font-normal"
             onClick={() => {
               navigator.clipboard.writeText(address!);
               setIsCopiedTooltipOpen(true);
@@ -59,21 +59,28 @@ export default function Header() {
             {sliceAddress(address!)}
           </button>
           <button
-            className="primary-button w-11 h-11"
+            className="primary-button w-9 h-9"
             onClick={() => openUserInfoModal()}
           >
             👤
           </button>
-        </>
+        </div>
       ) : (
-        <>
+        <div className="flex">
           <button
-            className="primary-button"
+            className="primary-button mr-2"
             onClick={() => openUserAuthModal()}
           >
             Log in
           </button>
-        </>
+          <a
+            target="_blank"
+            href="https://www.notion.so/Glo-FAQ-946e21901e934fc19992df43a3008077"
+            rel="noreferrer"
+          >
+            <button className="secondary-button">?</button>
+          </a>
+        </div>
       )}
     </nav>
   );

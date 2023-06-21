@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
-export const sliceAddress = (address: string) =>
-  `${address?.slice(0, 5)}...${address?.slice(-3)}`;
+export const sliceAddress = (address: string, amt = 3) =>
+  `${address?.slice(0, amt + 2)}...${address?.slice(amt * -1)}`;
 
 export let apiInstance: AxiosInstance;
 let apiInstanceWallet = "";

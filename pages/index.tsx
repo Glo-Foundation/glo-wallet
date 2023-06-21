@@ -40,7 +40,7 @@ export default function Home() {
   const { asPath, push } = useRouter();
   useEffect(() => {
     if ((!isConnected && !showedLogin) || asPath === "/sign-in") {
-      openModal(<UserAuthModal />, "bg-transparent max-h-[100vh]");
+      openModal(<UserAuthModal />, "bg-transparent");
       localStorage.setItem("showedLogin", "true");
       push("/");
     }
@@ -108,16 +108,16 @@ export default function Home() {
 
       if (!localStorage.getItem("showedLogin")) {
         closeModal();
-        openModal(<UserAuthModal />, "bg-transparent max-h-[100vh]");
+        openModal(<UserAuthModal />, "bg-transparent");
       }
       localStorage.setItem("showedLogin", "true");
     }
   }, [isConnected]);
 
   return (
-    <div className="mt-4 px-2.5">
+    <div className="mt-4 px-6">
       <Header />
-      <div className="flex flex-col space-y-10">
+      <div className="flex flex-col space-y-2">
         <Balance balance={balance} />
         <Transactions />
         <CTA balance={balance?.formatted} />
