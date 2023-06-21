@@ -38,7 +38,7 @@ const ActionButton = ({
       rel="noreferrer"
     >
       {ctaData.isCompleted ? (
-        <AnimatedCheckIcon />
+        <AnimatedCheckIcon name={`cta-${ctaData.type}`} />
       ) : (
         <Icon path={cta.iconPath} />
       )}
