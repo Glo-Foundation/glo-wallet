@@ -31,3 +31,10 @@ export const api = () => apiInstance;
 export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
 export const signMsgContent = "glo-wallet";
+
+export const DEFAULT_CTAS: CTA[] = [
+  "SHARE_GLO",
+  "BUY_GLO_MERCH",
+  "JOIN_PROGRAM",
+  "SHARE_IMPACT",
+].map((cta) => ({ type: cta } as CTA));

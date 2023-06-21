@@ -1,10 +1,14 @@
 import Cookies from "js-cookie";
 import Image from "next/image";
+import { useContext } from "react";
 
+import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
+import { DEFAULT_CTAS } from "@/lib/utils";
 import { getImpactItems, getTotalYield } from "@/utils";
 
 import { AnimatedCheckIcon } from "./AnimatedCheckIcon";
+import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
   <div className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
@@ -14,24 +18,30 @@ const Icon = ({ path }: { path: string }) => (
 
 const ActionButton = ({
   CTA_MAP,
-  ctaType,
-  isCompleted,
+  ctaData,
 }: {
   CTA_MAP: { [key in CTAType]: ActionButton };
   email: string | undefined;
-  ctaType: CTAType;
-  isCompleted?: boolean;
+  ctaData: CTA;
 }) => {
-  const cta = CTA_MAP[ctaType];
-  const link = cta.url + (cta.slug || "");
+  const cta = CTA_MAP[ctaData.type];
+  const { action } = cta;
+
+  const link = cta.url ? cta.url + (cta.slug || "") : undefined;
+
   return (
     <a
       className={"flex cursor-pointer items-center py-4"}
       href={link}
+      onClick={() => (action ? action() : undefined)}
       target="_blank"
       rel="noreferrer"
     >
-      {isCompleted ? <AnimatedCheckIcon /> : <Icon path={cta.iconPath} />}
+      {ctaData.isCompleted ? (
+        <AnimatedCheckIcon />
+      ) : (
+        <Icon path={cta.iconPath} />
+      )}
       <div className="flex-col w-56">
         <h3 className="font-bold text-lg">{cta.title}</h3>
         <p className="font-thin text-sm text-pine-700 leading-6">
@@ -52,6 +62,7 @@ const ActionButton = ({
 
 export default function CTA({ balance }: { balance?: string }) {
   const { ctas } = useUserStore();
+  const { openModal } = useContext(ModalContext);
 
   const gloBalance = balance || 1000;
   const totalYield = getTotalYield(Number(gloBalance));
@@ -61,7 +72,6 @@ export default function CTA({ balance }: { balance?: string }) {
   const email = Cookies.get("glo-email") || "";
 
   const shareImpactText = `I just bought $${gloBalance} of @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
-
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["SHARE_GLO"]: {
       title: "Share Glo with friends",
@@ -89,15 +99,12 @@ export default function CTA({ balance }: { balance?: string }) {
       title: "Share impact",
       iconPath: "/megahorn.svg",
       description: shareImpactText,
-      url: "https://twitter.com/intent/tweet",
-      slug: `?text=${encodeURI(shareImpactText)}`,
+      action: () =>
+        openModal(<TweetModal tweetText={encodeURI(shareImpactText)} />),
     },
   };
 
-  const ctaList: CTA[] =
-    ctas.length > 0
-      ? ctas
-      : Object.keys(CTA_MAP).map((x) => ({ type: x } as CTA));
+  const ctaList: CTA[] = ctas.length > 0 ? ctas : DEFAULT_CTAS;
 
   return (
     <div className="bg-pine-50 rounded-[20px] p-8 transition-all">
@@ -107,12 +114,7 @@ export default function CTA({ balance }: { balance?: string }) {
       <ul className="mt-2">
         {ctaList.map((cta, index) => (
           <li key={`CTA-${index}`} className="border-b-2 last:border-none">
-            <ActionButton
-              CTA_MAP={CTA_MAP}
-              email={email}
-              ctaType={cta.type}
-              isCompleted={cta.isCompleted}
-            />
+            <ActionButton CTA_MAP={CTA_MAP} email={email} ctaData={cta} />
           </li>
         ))}
       </ul>

@@ -1,13 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import prisma from "../../lib/prisma";
+import { DEFAULT_CTAS } from "@/lib/utils";
 
-const DEFAULT_CTAS: CTA[] = [
-  "SHARE_GLO",
-  "BUY_GLO_MERCH",
-  "JOIN_PROGRAM",
-  "SHARE_IMPACT",
-].map((cta) => ({ type: cta } as CTA));
+import prisma from "../../lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,

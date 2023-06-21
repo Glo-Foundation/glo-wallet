@@ -6,6 +6,7 @@ type ActionButton = {
   disabled?: boolean;
   url?: string;
   slug?: string;
+  action?: () => void;
 };
 
 type Transfer = {
