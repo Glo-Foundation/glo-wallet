@@ -8,6 +8,11 @@ import { api } from "@/lib/utils";
 
 const POPUP_PROPS =
   "toolbar=1,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1,width=900, height=800,top=0";
+const BUTTON_CLASS_NAME = "bg-pine-100 text-pine-900 h-[52px] py-3.5 m-1 p-10";
+
+const TwitterLogo = () => (
+  <Image className="mr-3" alt="" src="/twitter.svg" height={32} width={32} />
+);
 
 export default function TweetModal({ tweetText }: { tweetText: string }) {
   const { closeModal } = useContext(ModalContext);
@@ -43,7 +48,6 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
     const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
     window.open(tweetUrl, "twitter-tweet", POPUP_PROPS);
   };
-
   return (
     <div className="p-8">
       <div className="flex flex-row justify-between">
@@ -53,9 +57,18 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
         </button>
       </div>
       <section className="flex flex-col items-center">
-        <button onClick={() => tweet()}>Tweet</button>
-        <button onClick={() => verify()}>
-          {tweetVerified ? "Verified!" : "Verify"}
+        <h2>Two steps:</h2>
+        <button onClick={() => tweet()} className={BUTTON_CLASS_NAME}>
+          <TwitterLogo />
+          1. Post Tweet
+        </button>
+        <button
+          disabled={tweetVerified}
+          onClick={() => verify()}
+          className={BUTTON_CLASS_NAME}
+        >
+          <TwitterLogo />
+          2. Verify Tweet
         </button>
       </section>
     </div>
