@@ -59,8 +59,10 @@ export default function Home() {
   }, [switchNetwork]);
 
   const onChainSwitch = async () => {
-    const res = await api().get<TransfersPage>(`/transfers/${chain?.id}`);
-    setTransfers(res.data);
+    if (chain?.id) {
+      const res = await api().get<TransfersPage>(`/transfers/${chain.id}`);
+      setTransfers(res.data);
+    }
   };
 
   useEffect(() => {

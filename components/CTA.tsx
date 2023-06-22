@@ -28,7 +28,7 @@ const ActionButton = ({
   const cta = CTA_MAP[ctaData.type];
   const { action } = cta;
 
-  const link = cta.url ? cta.url + (cta.slug || "") : undefined;
+  const link = cta?.url ? cta.url + (cta.slug || "") : undefined;
 
   return (
     <a
