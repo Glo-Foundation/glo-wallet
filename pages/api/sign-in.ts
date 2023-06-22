@@ -49,5 +49,5 @@ export default async function handler(
 
   const userId = await getOrCreate(address, email);
 
-  return res.status(200).json({ userId });
+  return res.status(200).json(userId);
 }

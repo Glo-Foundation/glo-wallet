@@ -16,16 +16,9 @@ export default function Balance({
 }: Props) {
   const { isConnected } = useAccount();
 
-  const totalDays = 365;
-  const yearlyInterestRate = 0.027;
-
   // ethers and typescript don't like each other
   const illFormatMyOwnEther = Number(balance.formatted);
-  const yearlyYield = getTotalYield(
-    yearlyInterestRate,
-    illFormatMyOwnEther,
-    totalDays
-  );
+  const yearlyYield = getTotalYield(illFormatMyOwnEther);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
 
