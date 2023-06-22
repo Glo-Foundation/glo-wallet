@@ -15,6 +15,17 @@ export default async function handler(
     });
   }
 
+  const cta = await prisma.cTAs.findFirst({
+    where: {
+      userId,
+      type: "TWEEET_IMPACT" as CTAType,
+    },
+  });
+
+  if (cta) {
+    return res.status(200).json({ success: true });
+  }
+
   const token = Buffer.from(
     `${process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`,
     "utf8"

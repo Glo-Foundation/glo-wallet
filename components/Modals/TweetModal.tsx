@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
@@ -16,9 +16,18 @@ const TwitterLogo = () => (
 
 export default function TweetModal({ tweetText }: { tweetText: string }) {
   const { closeModal } = useContext(ModalContext);
-  const { setCTAs } = useUserStore();
+  const { ctas, setCTAs } = useUserStore();
 
   const [tweetVerified, setTweetVerified] = useState(false);
+
+  useEffect(() => {
+    const isCompleted = ctas.find(
+      (x) => x.type === "TWEEET_IMPACT" && x.isCompleted
+    );
+    if (isCompleted) {
+      setTweetVerified(true);
+    }
+  }, []);
 
   const verify = () => {
     const bc = new BroadcastChannel("glo-channel");
