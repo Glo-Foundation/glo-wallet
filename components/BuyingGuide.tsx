@@ -85,6 +85,7 @@ export default function BuyingGuide({ glo }: Props) {
             </button>
           </li>
           <ul className="font-bold mt-3">Connect wallet to Uniswap</ul>
+          <li>Switch your wallet to Polygon</li>
           <li>
             Go to{" "}
             <a
