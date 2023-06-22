@@ -50,7 +50,7 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
 
     const redirectUri = `${window.location.origin}/oauth2/twitter`;
 
-    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID}&redirect_uri=${redirectUri}?userId=${userId}&scope=tweet.read%20users.read&state=state&code_challenge=challenge&code_challenge_method=plain`;
+    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID}&redirect_uri=${redirectUri}?userId=${userId}&scope=tweet.read%20users.read&state=state&code_challenge=${process.env.NEXT_PUBLIC_CODE_CHALLENGE}&code_challenge_method=plain`;
 
     window.open(authUrl, "twitter-oauth2", POPUP_PROPS);
   };
