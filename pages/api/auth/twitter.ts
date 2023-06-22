@@ -79,7 +79,7 @@ export default async function handler(
 
     if (
       text.includes("@glodollar") &&
-      (text.includes("$") || text.includes("Hello"))
+      (text.includes("$") || text.includes("bought"))
     ) {
       await prisma.cTAs.create({
         data: {
