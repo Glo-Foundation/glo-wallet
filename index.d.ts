@@ -22,7 +22,7 @@ type TransfersPage = {
   cursor?: string;
 };
 
-type CTAType = "SHARE_GLO" | "BUY_GLO_MERCH" | "JOIN_PROGRAM" | "SHARE_IMPACT";
+type CTAType = "SHARE_GLO" | "BUY_GLO_MERCH" | "JOIN_PROGRAM" | "TWEEET_IMPACT";
 
 type CTA = {
   type: CTAType;

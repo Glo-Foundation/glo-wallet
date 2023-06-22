@@ -29,7 +29,7 @@ export default async function handler(
   return res
     .status(200)
     .json([
-      ...ctas,
       ...DEFAULT_CTAS.filter((cta) => !userCTAS.includes(cta.type)),
+      ...ctas,
     ]);
 }

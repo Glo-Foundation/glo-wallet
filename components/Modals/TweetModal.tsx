@@ -39,7 +39,9 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
 
     const userId = Cookies.get("glo-user");
 
-    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_TWITTER_REDIRECT_URI}?userId=${userId}&scope=tweet.read%20users.read&state=state&code_challenge=challenge&code_challenge_method=plain`;
+    const redirectUri = `${window.location.origin}/oauth2/twitter`;
+
+    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID}&redirect_uri=${redirectUri}?userId=${userId}&scope=tweet.read%20users.read&state=state&code_challenge=challenge&code_challenge_method=plain`;
 
     window.open(authUrl, "twitter-oauth2", POPUP_PROPS);
   };

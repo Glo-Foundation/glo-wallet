@@ -36,5 +36,5 @@ export const DEFAULT_CTAS: CTA[] = [
   "SHARE_GLO",
   "BUY_GLO_MERCH",
   "JOIN_PROGRAM",
-  "SHARE_IMPACT",
+  "TWEEET_IMPACT",
 ].map((cta) => ({ type: cta } as CTA));

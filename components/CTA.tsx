@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { useContext } from "react";
@@ -44,7 +45,9 @@ const ActionButton = ({
       )}
       <div className="flex-col w-56">
         <h5>{cta.title}</h5>
-        <p className="mt-1 text-xs text-pine-700">{cta.description}</p>
+        <p className="mt-1 text-xs text-pine-700 whitespace-pre-line">
+          {cta.description}
+        </p>
       </div>
 
       <Image
@@ -70,6 +73,8 @@ export default function CTA({ balance }: { balance?: string }) {
   const email = Cookies.get("glo-email") || "";
 
   const shareImpactText = `I just bought $${gloBalance} of @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
+  const shareImpactTextShort = `${shareImpactText.split(" someone")[0]}...`;
+
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["SHARE_GLO"]: {
       title: "Share Glo with friends",
@@ -93,10 +98,10 @@ export default function CTA({ balance }: { balance?: string }) {
       url: "https://www.glodollar.org/get-started",
       slug: `?email=${email}`,
     },
-    ["SHARE_IMPACT"]: {
-      title: "Share impact",
+    ["TWEEET_IMPACT"]: {
+      title: "Tweet your impact",
       iconPath: "/megahorn.svg",
-      description: shareImpactText,
+      description: shareImpactTextShort,
       action: () =>
         openModal(<TweetModal tweetText={encodeURI(shareImpactText)} />),
     },
@@ -104,16 +109,23 @@ export default function CTA({ balance }: { balance?: string }) {
 
   const ctaList: CTA[] = ctas.length > 0 ? ctas : DEFAULT_CTAS;
 
+  const spring = {
+    type: "spring",
+    damping: 25,
+    stiffness: 120,
+    duration: 0.1,
+  };
+
   return (
     <div className="bg-pine-50 rounded-[20px] p-6 transition-all">
       <div className="flex justify-between cursor-default">
         <h3>🌟 Help Grow Glo!</h3>
       </div>
       <ul className="mt-2">
-        {ctaList.map((cta, index) => (
-          <li key={`CTA-${index}`} className="border-b-2 last:border-none">
+        {ctaList.map((cta) => (
+          <motion.div key={cta.type} layout transition={spring}>
             <ActionButton CTA_MAP={CTA_MAP} email={email} ctaData={cta} />
-          </li>
+          </motion.div>
         ))}
       </ul>
     </div>

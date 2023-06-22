@@ -20,11 +20,15 @@ export default async function handler(
     "utf8"
   ).toString("base64");
 
+  const { host } = req.headers;
+
+  const isLocalhost = host?.includes("localhost") ? "" : "s";
+
   const result = await axios.post(
     "https://api.twitter.com/2/oauth2/token",
     {
       code,
-      redirect_uri: `${process.env.NEXT_PUBLIC_TWITTER_REDIRECT_URI}?userId=${userId}`,
+      redirect_uri: `http${isLocalhost}://${req.headers.host}/oauth2/twitter?userId=${userId}`,
       grant_type: "authorization_code",
       client_id: process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID,
       code_verifier: process.env.NEXT_PUBLIC_CODE_CHALLENGE,
@@ -64,11 +68,11 @@ export default async function handler(
 
     if (
       text.includes("@glodollar") &&
-      (text.includes("$") || text.includes("bought"))
+      (text.includes("$") || text.includes("Hello"))
     ) {
       await prisma.cTAs.create({
         data: {
-          type: "SHARE_IMPACT" as CTAType,
+          type: "TWEEET_IMPACT" as CTAType,
           userId,
           isCompleted: true,
         },
