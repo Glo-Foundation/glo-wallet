@@ -111,3 +111,18 @@ const USDGLO_POLYGON_CONTRACT_ADDRESS =
 export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
   return `https://app.uniswap.org/#/swap?inputCurrency=${USDC_POLYGON_CONTRACT_ADDRESS}&outputCurrency=${USDGLO_POLYGON_CONTRACT_ADDRESS}&exactAmount=${amount}&exactField=input&chain=polygon`;
 };
+
+import { BigNumber, ethers } from "ethers";
+
+export const getBalance = async (address: string): Promise<BigNumber> => {
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.POLYGON_RPC_URL
+  );
+  const abi = ["function balanceOf(address account) view returns (uint256)"];
+  const usdgloContract = new ethers.Contract(
+    USDGLO_POLYGON_CONTRACT_ADDRESS,
+    abi,
+    provider
+  );
+  return await usdgloContract.balanceOf(address);
+};
