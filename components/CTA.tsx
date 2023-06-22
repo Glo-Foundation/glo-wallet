@@ -72,8 +72,10 @@ export default function CTA({ balance }: { balance?: string }) {
 
   const email = Cookies.get("glo-email") || "";
 
-  const shareImpactText = `I just bought $${gloBalance} of @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
-  const shareImpactTextShort = `${shareImpactText.split(" someone")[0]}...`;
+  const shareImpactText = `I just bought $${gloBalance} @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
+  const shareImpactTextShort = `${
+    shareImpactText.split(" someone")[0]
+  }...`.replace("\n\n", "\n");
 
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["SHARE_GLO"]: {
