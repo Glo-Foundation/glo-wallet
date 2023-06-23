@@ -97,10 +97,10 @@ export default function Actions() {
         <div className="flex flex-row justify-between">
           <div></div>
           <button className="" onClick={() => closeModal()}>
-            <SendForm close={closeModal} />
             <Image alt="x" src="/x.svg" height={16} width={16} />
           </button>
         </div>
+        <SendForm close={closeModal} />
       </div>
     );
   };
