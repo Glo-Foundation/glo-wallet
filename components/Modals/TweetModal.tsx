@@ -19,6 +19,7 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
   const { ctas, setCTAs } = useUserStore();
 
   const [tweetVerified, setTweetVerified] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const isCompleted = ctas.find(
@@ -30,6 +31,7 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
   }, []);
 
   const verify = () => {
+    setError(false);
     const bc = new BroadcastChannel("glo-channel");
     bc.onmessage = (event) => {
       console.log("Popup closed");
@@ -42,7 +44,10 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
           .then((res) => {
             setCTAs(res.data);
             setTweetVerified(true);
+            closeModal();
           });
+      } else {
+        setError(true);
       }
     };
 
@@ -56,11 +61,14 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
   };
 
   const tweet = () => {
-    const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURI(
+      tweetText
+    )}`;
     window.open(tweetUrl, "twitter-tweet", POPUP_PROPS);
   };
+
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-[343px]">
       <div className="flex flex-row justify-between">
         <div></div>
         <button onClick={() => closeModal()}>
@@ -71,8 +79,17 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
         <h2>Two steps:</h2>
         <button onClick={() => tweet()} className={BUTTON_CLASS_NAME}>
           <TwitterLogo />
-          1. Post Tweet
+          1. Tweet your impact
         </button>
+        <p className="py-5">Click the button to tweet the following message:</p>
+        <p className="copy pseudo-input-text text-sm p-2 whitespace-pre-line">
+          {tweetText}
+        </p>
+
+        <p className="py-5">
+          and then verify that you posted with the bottom button to complete
+          this action.
+        </p>
         <button
           disabled={tweetVerified}
           onClick={() => verify()}
@@ -81,6 +98,11 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
           <TwitterLogo />
           2. Verify Tweet
         </button>
+        {error && (
+          <p className="py-5 text-red-300">
+            Could not verify the Tweet. Try again.
+          </p>
+        )}
       </section>
     </div>
   );
