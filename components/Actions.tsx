@@ -40,7 +40,9 @@ const SendForm = ({ close }: { close: () => void }) => {
       }}
     >
       <div className="form-group">
-        <label htmlFor="send-address">Send Address</label>
+        <label htmlFor="send-address" className="text-sm">
+          Send Address
+        </label>
         <input
           id="send-address"
           className="rounded-full bg-white py-4 px-6 text-xl"
@@ -95,10 +97,10 @@ export default function Actions() {
         <div className="flex flex-row justify-between">
           <div></div>
           <button className="" onClick={() => closeModal()}>
+            <SendForm close={closeModal} />
             <Image alt="x" src="/x.svg" height={16} width={16} />
           </button>
         </div>
-        <SendForm close={closeModal} />
       </div>
     );
   };
@@ -126,7 +128,10 @@ export default function Actions() {
     buttons
       .filter((button) => !button.disabled)
       .map((button, idx) => (
-        <li className="flex flex-col items-center" key={`actionButton${idx}`}>
+        <li
+          className="flex flex-col justify-center"
+          key={`actionButton${idx} || 0`}
+        >
           <button
             className="action-button mb-4"
             onClick={() => button.action()}

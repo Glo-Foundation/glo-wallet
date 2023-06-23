@@ -43,6 +43,14 @@ body {
     @apply font-black mr-4;
   }
 
+  input[type="text"] {
+    @apply border rounded-lg bg-pine-400 border-pine-300 p-[.4rem];
+  }
+
+  input[type="number"] {
+    @apply border rounded-lg bg-pine-400 border-pine-300 p-2;
+  }
+
   dialog {
     @apply rounded-3xl p-0 max-h-[80vh];
   }

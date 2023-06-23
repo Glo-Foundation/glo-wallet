@@ -32,7 +32,8 @@ export default function Balance({
 
   const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
-  const fmtBalanceCentPart = splitFmtBalance[1];
+  let fmtBalanceCentPart = splitFmtBalance[1];
+  if (fmtBalanceCentPart?.length === 1) fmtBalanceCentPart += "0";
 
   return (
     <div className="bg-white rounded-[20px] pt-4">
