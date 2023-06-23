@@ -51,7 +51,7 @@ export default function Balance({
       {isConnected && <Actions />}
 
       <button
-        className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-5 pb-3 w-full font-normal items-baseline"
+        className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mb-1 px-5 pb-3 w-full font-normal items-baseline"
         onClick={() => openModal(<BuyGloModal />)}
       >
         <div className="">
