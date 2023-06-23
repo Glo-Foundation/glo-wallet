@@ -68,7 +68,9 @@ export default function CTA({ balance }: { balance?: string }) {
   const gloBalance = balance || 1000;
   const totalYield = getTotalYield(Number(gloBalance));
   const item = getImpactItems(totalYield)[0];
-  const icons = item ? `${item.emoji} x ${item.count}` : "?";
+  const icons = item
+    ? `${item.emoji} x ${item.count} ${item.description}`
+    : "?";
 
   const email = Cookies.get("glo-email") || "";
 
@@ -104,8 +106,7 @@ export default function CTA({ balance }: { balance?: string }) {
       title: "Tweet your impact",
       iconPath: "/megahorn.svg",
       description: shareImpactTextShort,
-      action: () =>
-        openModal(<TweetModal tweetText={encodeURI(shareImpactText)} />),
+      action: () => openModal(<TweetModal tweetText={shareImpactText} />),
     },
   };
 
