@@ -36,30 +36,17 @@ const SendForm = ({ close }: { close: () => void }) => {
       className="flex flex-col"
       onSubmit={async (e) => {
         e.preventDefault();
+        setSendForm({ ...sendForm, address: e.target.value });
         transfer!();
       }}
     >
       <div className="form-group">
-        <label htmlFor="send-address" className="text-sm">
-          Send Address
-        </label>
-        <input
-          id="send-address"
-          className="rounded-full bg-white py-4 px-6 text-xl"
-          value={sendForm.address}
-          onChange={(e) =>
-            setSendForm({ ...sendForm, address: e.target.value })
-          }
-        />
+        <label htmlFor="send-address">Send Address</label>
+        <input id="send-address" type="text" value={sendForm.address} />
       </div>
       <div className="form-group">
         <label htmlFor="send-amount">Amount</label>
-        <input
-          id="send-amount"
-          className="rounded-full bg-white py-4 px-6 text-xl"
-          value={sendForm.amount}
-          onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
-        />
+        <input id="send-amount" type="text" value={sendForm.amount} />
       </div>
       <button className="mt-4 primary-button" disabled={!!hash}>
         Send

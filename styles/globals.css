@@ -44,11 +44,11 @@ body {
   }
 
   input[type="text"] {
-    @apply border rounded-lg bg-pine-400 border-pine-300 p-[.4rem];
+    @apply border flex justify-between rounded-lg bg-pine-100 border-pine-400 p-2;
   }
 
   input[type="number"] {
-    @apply border rounded-lg bg-pine-400 border-pine-300 p-2;
+    @apply border flex justify-between rounded-lg bg-pine-100 border-pine-400 p-2;
   }
 
   dialog {
