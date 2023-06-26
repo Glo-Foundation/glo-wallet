@@ -1,3 +1,5 @@
+import { BigNumber, ethers } from "ethers";
+
 export const getTotalYield = (
   yearlyInterestRate: number,
   amount: number,
@@ -111,8 +113,6 @@ const USDGLO_POLYGON_CONTRACT_ADDRESS =
 export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
   return `https://app.uniswap.org/#/swap?inputCurrency=${USDC_POLYGON_CONTRACT_ADDRESS}&outputCurrency=${USDGLO_POLYGON_CONTRACT_ADDRESS}&exactAmount=${amount}&exactField=input&chain=polygon`;
 };
-
-import { BigNumber, ethers } from "ethers";
 
 export const getBalance = async (address: string): Promise<BigNumber> => {
   const provider = new ethers.providers.JsonRpcProvider(
