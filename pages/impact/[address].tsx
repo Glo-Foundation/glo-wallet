@@ -1,10 +1,15 @@
+import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
 import EnoughToBuy from "@/components/EnoughToBuy";
 import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
 
-export default function Impact({ balance }) {
+type Props = {
+  balance: number;
+};
+
+export default function Impact({ balance }: Props) {
   const router = useRouter();
   const { address } = router.query;
 
@@ -57,10 +62,12 @@ export default function Impact({ balance }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const { address } = context.params;
-  const balance = await getBalance(address);
-  const formattedBalance = balance.div(10n ** 18n).toString();
+export async function getServerSideProps({
+  params,
+}: GetServerSidePropsContext) {
+  const { address } = params;
+  const balance = await getBalance(address as string);
+  const formattedBalance = balance.div(10n ** 18n).toNumber();
   return {
     props: {
       balance: formattedBalance,
