@@ -104,7 +104,7 @@ export const getUSFormattedNumber = (num: number): string => {
 
 const USDC_POLYGON_CONTRACT_ADDRESS =
   "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
-const USDGLO_POLYGON_CONTRACT_ADDRESS =
+export const USDGLO_POLYGON_CONTRACT_ADDRESS =
   "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3";
 
 export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
