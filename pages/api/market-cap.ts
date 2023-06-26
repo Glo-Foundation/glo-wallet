@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { USDGLO_POLYGON_CONTRACT_ADDRESS } from "../../utils";
+import { USDGLO_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
 const getMarketCap = async (url: string, regex: RegExp) => {
   const result = await axios.get(url);
