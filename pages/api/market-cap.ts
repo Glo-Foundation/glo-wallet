@@ -9,7 +9,7 @@ const getMarketCap = async (url: string, regex: RegExp) => {
   try {
     const matches = result.data.match(regex);
 
-    return Number(matches[0].split("$")[1].replace(",", ""));
+    return Number(matches[0].split("'")[1].replace(", ", ""));
   } catch (err) {
     console.log(`Could not fetch market cap - ${url} - ${regex}`);
     return 0;
@@ -23,11 +23,11 @@ export default async function handler(
   const result = await Promise.all([
     getMarketCap(
       `https://polygonscan.com/token/${USDGLO_POLYGON_CONTRACT_ADDRESS}`,
-      /\$\d+\,\d+\.\d+/g
+      /title=\'\d+\, \d+/g
     ),
     getMarketCap(
       `https://etherscan.io/token/${USDGLO_POLYGON_CONTRACT_ADDRESS}`,
-      /<div>\n\$\d+\,\d+\.\d+/g
+      /title=\'\d+\, \d+/g
     ),
   ]);
 
