@@ -67,7 +67,7 @@ export async function getServerSideProps({
 }: GetServerSidePropsContext) {
   const address = params?.address;
   const balance = await getBalance(address as string);
-  const decimals = 10 ** 18;
+  const decimals = BigInt(1000000000000000000);
   const formattedBalance = balance.div(decimals).toNumber();
   return {
     props: {
