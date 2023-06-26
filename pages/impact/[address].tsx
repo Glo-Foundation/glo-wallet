@@ -65,9 +65,10 @@ export default function Impact({ balance }: Props) {
 export async function getServerSideProps({
   params,
 }: GetServerSidePropsContext) {
-  const { address } = params;
+  const address = params?.address;
   const balance = await getBalance(address as string);
-  const formattedBalance = balance.div(10n ** 18n).toNumber();
+  const decimals = 10 ** 18;
+  const formattedBalance = balance.div(decimals).toNumber();
   return {
     props: {
       balance: formattedBalance,
