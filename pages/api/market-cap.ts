@@ -4,13 +4,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { USDGLO_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
 const getMarketCap = async (url: string, regex: RegExp) => {
-  const result = await axios.get(url);
-
   try {
+    const result = await axios.get(url);
     const matches = result.data.match(regex);
 
     return Number(matches[0].split("'")[1].replace(", ", ""));
   } catch (err) {
+    console.error(err);
     console.log(`Could not fetch market cap - ${url} - ${regex}`);
     return 0;
   }
