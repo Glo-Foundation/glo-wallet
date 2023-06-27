@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/lib/prisma";
-import { fetchEarlyAdoptersEmails } from "@/lib/spreadsheet";
+import { fetchEarlyAdoptersEmails, getReferrer } from "@/lib/spreadsheet";
 
 const getOrCreate = async (address: string, email: string) => {
   try {
@@ -34,6 +34,24 @@ const getOrCreate = async (address: string, email: string) => {
           isCompleted: true,
         },
       });
+    }
+
+    if (email) {
+      const referrerEmail = await getReferrer(email);
+      const referrer = await prisma.user.findUnique({
+        where: {
+          email: referrerEmail,
+        },
+      });
+      if (referrer) {
+        await prisma.cTAs.create({
+          data: {
+            type: "SHARE_GLO" as CTAType,
+            userId: referrer.id,
+            isCompleted: true,
+          },
+        });
+      }
     }
 
     return user.id;
