@@ -16,11 +16,11 @@ export const getSmartContractAddress = (chainId?: number) =>
 
 const chainRPCUrl: { [id: number]: string } = {
   // Mainnets
-  [polygon.id]: process.env.POLYGON_RPC_URL,
-  [mainnet.id]: process.env.MAINNET_RPC_URL,
+  [polygon.id]: process.env.POLYGON_RPC_URL as string,
+  [mainnet.id]: process.env.MAINNET_RPC_URL as string,
   // Testnets
-  [polygonMumbai.id]: process.env.MUMBAI_RPC_URL,
-  [goerli.id]: process.env.GOERLI_RPC_URL,
+  [polygonMumbai.id]: process.env.MUMBAI_RPC_URL as string,
+  [goerli.id]: process.env.GOERLI_RPC_URL as string,
 };
 
 export const getChainRPCUrl = (chainId?: number) => {
