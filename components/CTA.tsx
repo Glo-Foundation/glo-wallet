@@ -61,6 +61,12 @@ const ActionButton = ({
   );
 };
 
+const nf = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
+
 export default function CTA({ balance }: { balance?: string }) {
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
@@ -74,8 +80,8 @@ export default function CTA({ balance }: { balance?: string }) {
 
   const email = Cookies.get("glo-email") || "";
 
-  const shareImpactText = `I just bought $${gloBalance.toFixed(
-    0
+  const shareImpactText = `I just bought ${nf.format(
+    gloBalance
   )} @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
   const shareImpactTextShort = `${
     shareImpactText.split(" someone")[0]
