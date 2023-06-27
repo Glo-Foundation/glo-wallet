@@ -13,3 +13,16 @@ const defaultChainId = polygonMumbai.id;
 
 export const getSmartContractAddress = (chainId?: number) =>
   chainConfig[chainId || defaultChainId];
+
+const chainRPCUrl: { [id: number]: string } = {
+  // Mainnets
+  [polygon.id]: process.env.POLYGON_RPC_URL,
+  [mainnet.id]: process.env.MAINNET_RPC_URL,
+  // Testnets
+  [polygonMumbai.id]: process.env.MUMBAI_RPC_URL,
+  [goerli.id]: process.env.GOERLI_RPC_URL,
+};
+
+export const getChainRPCUrl = (chainId?: number) => {
+  return chainRPCUrl[chainId || defaultChainId];
+};

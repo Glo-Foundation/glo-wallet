@@ -1,4 +1,7 @@
+import { polygon } from "@wagmi/core/chains";
 import { BigNumber, ethers } from "ethers";
+
+import { getChainRPCUrl, getSmartContractAddress } from "@/lib/config";
 
 export const getTotalYield = (
   yearlyInterestRate: number,
@@ -107,20 +110,23 @@ export const getUSFormattedNumber = (num: number): string => {
 
 const USDC_POLYGON_CONTRACT_ADDRESS =
   "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
-const USDGLO_POLYGON_CONTRACT_ADDRESS =
-  "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3";
 
 export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
-  return `https://app.uniswap.org/#/swap?inputCurrency=${USDC_POLYGON_CONTRACT_ADDRESS}&outputCurrency=${USDGLO_POLYGON_CONTRACT_ADDRESS}&exactAmount=${amount}&exactField=input&chain=polygon`;
+  return `https://app.uniswap.org/#/swap?inputCurrency=${USDC_POLYGON_CONTRACT_ADDRESS}&outputCurrency=${getSmartContractAddress(
+    polygon.id
+  )}&exactAmount=${amount}&exactField=input&chain=polygon`;
 };
 
-export const getBalance = async (address: string): Promise<BigNumber> => {
+export const getBalance = async (
+  address: string,
+  chainId?: number
+): Promise<BigNumber> => {
   const provider = new ethers.providers.JsonRpcProvider(
-    process.env.POLYGON_RPC_URL
+    getChainRPCUrl(chainId)
   );
   const abi = ["function balanceOf(address account) view returns (uint256)"];
   const usdgloContract = new ethers.Contract(
-    USDGLO_POLYGON_CONTRACT_ADDRESS,
+    getSmartContractAddress(chainId),
     abi,
     provider
   );

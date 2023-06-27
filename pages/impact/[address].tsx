@@ -1,3 +1,4 @@
+import { getNetwork } from "@wagmi/core";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -65,8 +66,9 @@ export default function Impact({ balance }: Props) {
 export async function getServerSideProps({
   params,
 }: GetServerSidePropsContext) {
+  const { chain } = getNetwork();
   const address = params?.address;
-  const balance = await getBalance(address as string);
+  const balance = await getBalance(address as string, chain?.id);
   const decimals = BigInt(1000000000000000000);
   const formattedBalance = balance.div(decimals).toNumber();
   return {
