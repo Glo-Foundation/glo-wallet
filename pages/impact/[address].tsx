@@ -2,8 +2,11 @@ import { getNetwork } from "@wagmi/core";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 
 import EnoughToBuy from "@/components/EnoughToBuy";
+import BuyGloModal from "@/components/Modals/BuyGloModal";
+import { ModalContext } from "@/lib/context";
 import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
 
 type Props = {
@@ -11,6 +14,7 @@ type Props = {
 };
 
 export default function Impact({ balance }: Props) {
+  const { openModal } = useContext(ModalContext);
   const router = useRouter();
   const { address } = router.query;
 
@@ -40,9 +44,12 @@ export default function Impact({ balance }: Props) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-5 pb-3">
+        <div
+          className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-5 pb-3 cursor-pointer"
+          onClick={() => openModal(<BuyGloModal />)}
+        >
           <div className="overflow-hidden">
-            <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-40"></div>
+            <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-32"></div>
           </div>
           <div className="flex w-full justify-between items-center space-y-2">
             <div className="flex items-center">
