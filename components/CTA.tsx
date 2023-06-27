@@ -61,18 +61,28 @@ const ActionButton = ({
   );
 };
 
+const nf = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
+
 export default function CTA({ balance }: { balance?: string }) {
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
 
-  const gloBalance = balance || 1000;
-  const totalYield = getTotalYield(Number(gloBalance));
+  const gloBalance = Number(balance) || 1000;
+  const totalYield = getTotalYield(gloBalance);
   const item = getImpactItems(totalYield)[0];
-  const icons = item ? `${item.emoji} x ${item.count}` : "?";
+  const icons = item
+    ? `${item.emoji} x ${item.count} ${item.description}`
+    : "?";
 
   const email = Cookies.get("glo-email") || "";
 
-  const shareImpactText = `I just bought $${gloBalance} @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
+  const shareImpactText = `I just bought ${nf.format(
+    gloBalance
+  )} @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
   const shareImpactTextShort = `${
     shareImpactText.split(" someone")[0]
   }...`.replace("\n\n", "\n");
@@ -104,8 +114,7 @@ export default function CTA({ balance }: { balance?: string }) {
       title: "Tweet your impact",
       iconPath: "/megahorn.svg",
       description: shareImpactTextShort,
-      action: () =>
-        openModal(<TweetModal tweetText={encodeURI(shareImpactText)} />),
+      action: () => openModal(<TweetModal tweetText={shareImpactText} />),
     },
   };
 
