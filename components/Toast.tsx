@@ -4,10 +4,7 @@ import Sheet from "react-modal-sheet";
 
 import { useToastStore } from "@/lib/store";
 
-interface Props {
-  mainRef: { current: HTMLMainElement };
-}
-export default function Toast({ mainRef }: Props) {
+export default function Toast() {
   const [open, setOpen] = useState(false);
 
   // Ensure it animates in when loaded
@@ -20,7 +17,6 @@ export default function Toast({ mainRef }: Props) {
       isOpen={open}
       onClose={() => setOpen(false)}
       detent="content-height"
-      mountPoint={mainRef.current}
       style={{ maxWidth: "500px", left: "0", right: "0", margin: "auto" }}
       tweenConfig={{ ease: "easeInOut", duration: 1.5 }}
     >
