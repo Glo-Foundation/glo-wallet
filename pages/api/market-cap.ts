@@ -1,41 +1,34 @@
+import { mainnet, polygon } from "@wagmi/core/chains";
+import { BigNumber, utils } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { USDGLO_POLYGON_CONTRACT_ADDRESS } from "@/utils";
+import * as cache from "@/lib/cache";
+import { getMarketCap } from "@/lib/utils";
 
-const getMarketCap = async (url: string, regex: RegExp) => {
-  try {
-    const result = await fetch(url, {
-      next: {
-        revalidate: 5 * 60, // 5 minutes
-      },
-    });
-    const text = await result.text();
-    const matches = text.match(regex);
-
-    return matches ? Number(matches[0].split("'")[1].replace(", ", "")) : 0;
-  } catch (err) {
-    console.error(err);
-    console.log(`Could not fetch market cap - ${url} - ${regex}`);
-    return 0;
-  }
-};
-
+const CACHE_KEY = "market-cap";
 export default async function handler(
-  req: NextApiRequest,
+  _req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const cached = cache.get(CACHE_KEY);
+
+  if (cached) {
+    return res.status(200).json(Number(cached));
+  }
+
   const result = await Promise.all([
-    getMarketCap(
-      `https://polygonscan.com/token/${USDGLO_POLYGON_CONTRACT_ADDRESS}`,
-      /title=\'\d+\, \d+/g
-    ),
-    getMarketCap(
-      `https://etherscan.io/token/${USDGLO_POLYGON_CONTRACT_ADDRESS}`,
-      /title=\'\d+\, \d+/g
-    ),
+    getMarketCap(mainnet.id),
+    getMarketCap(polygon.id),
   ]);
 
-  const totalMarketCap = result.reduce((acc, cur) => acc + cur, 0);
+  const totalMarketCap = result.reduce(
+    (acc, cur) => acc.add(cur),
+    BigNumber.from(0)
+  );
 
-  return res.status(200).json(totalMarketCap);
+  const value = utils.formatEther(totalMarketCap).split(".")[0];
+
+  cache.set(CACHE_KEY, value, 5 * 60);
+
+  return res.status(200).json(Number(value));
 }
