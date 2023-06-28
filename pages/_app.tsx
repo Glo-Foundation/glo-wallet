@@ -130,6 +130,8 @@ export default function App({ Component, pageProps }: AppProps) {
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
             </ModalContext.Provider>
+
+            <div id="toasts-portal"></div>
           </WagmiConfig>
         )}
       </main>
