@@ -18,9 +18,7 @@ export default function Impact({ balance }: Props) {
   const router = useRouter();
   const { address } = router.query;
 
-  const totalDays = 365;
-  const yearlyInterestRate = 0.024;
-  const yearlyYield = getTotalYield(yearlyInterestRate, balance, totalDays);
+  const yearlyYield = getTotalYield(balance);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(2)}` : "$0";
   const formattedBalance = getUSFormattedNumber(balance);

@@ -1,7 +1,9 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useAccount } from "wagmi";
 
+import BuyGloModal from "@/components/Modals/BuyGloModal";
+import { ModalContext } from "@/lib/context";
 import { getTotalYield } from "@/utils";
 
 import Actions from "./Actions";
@@ -15,17 +17,11 @@ export default function Balance({
   balance = { formatted: "0", value: 0 },
 }: Props) {
   const { isConnected } = useAccount();
-
-  const totalDays = 365;
-  const yearlyInterestRate = 0.027;
+  const { openModal } = useContext(ModalContext);
 
   // ethers and typescript don't like each other
   const illFormatMyOwnEther = Number(balance.formatted);
-  const yearlyYield = getTotalYield(
-    yearlyInterestRate,
-    illFormatMyOwnEther,
-    totalDays
-  );
+  const yearlyYield = getTotalYield(illFormatMyOwnEther);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
 
@@ -52,8 +48,12 @@ export default function Balance({
         </div>
       </div>
       {isConnected && <Actions />}
-      <div className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-5 pb-3">
-        <div className="overflow-hidden">
+
+      <button
+        className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-5 pb-3 w-full font-normal items-baseline"
+        onClick={() => openModal(<BuyGloModal />)}
+      >
+        <div className="">
           <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-32"></div>
         </div>
         <div className="flex w-full justify-between items-center space-y-2">
@@ -69,7 +69,7 @@ export default function Balance({
           </div>
           <EnoughToBuy yearlyYield={yearlyYield} />
         </div>
-      </div>
+      </button>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import confetti from "canvas-confetti";
 import { motion, useAnimation, useInView } from "framer-motion";
+import Cookies from "js-cookie";
 import { useEffect, useRef, useState } from "react";
 
 const variants = {
@@ -17,7 +18,7 @@ const variants = {
   hidden: { pathLength: 0, opacity: 0 },
 };
 
-export const AnimatedCheckIcon = () => {
+export const AnimatedCheckIcon = ({ name }: { name: string }) => {
   const [shown, setShown] = useState(false);
 
   const controls = useAnimation();
@@ -28,20 +29,27 @@ export const AnimatedCheckIcon = () => {
     if (isInView && !shown) {
       setShown(true);
       controls.start("visible");
-      confetti({
-        particleCount: 200,
-        spread: 70,
-        angle: 60,
-        startVelocity: 60,
-        origin: { y: 0.99, x: 0 },
-      });
-      confetti({
-        particleCount: 200,
-        spread: 70,
-        angle: 120,
-        startVelocity: 60,
-        origin: { y: 0.99, x: 1 },
-      });
+
+      const hasBeenPlayed = Cookies.get(name);
+
+      if (!hasBeenPlayed) {
+        Cookies.set(name, "1");
+
+        confetti({
+          particleCount: 200,
+          spread: 70,
+          angle: 60,
+          startVelocity: 60,
+          origin: { y: 0.99, x: 0 },
+        });
+        confetti({
+          particleCount: 200,
+          spread: 70,
+          angle: 120,
+          startVelocity: 60,
+          origin: { y: 0.99, x: 1 },
+        });
+      }
     }
   }, [isInView]);
 

@@ -3,12 +3,11 @@ import { BigNumber, ethers } from "ethers";
 
 import { getChainRPCUrl, getSmartContractAddress } from "@/lib/config";
 
-export const getTotalYield = (
-  yearlyInterestRate: number,
-  amount: number,
-  totalDays: number
-): number => {
-  return (amount * yearlyInterestRate * totalDays) / 365;
+const TOTAL_DAYS = 365;
+const ANNUAL_INTEREST_RATE = 0.024;
+
+export const getTotalYield = (amount: number): number => {
+  return (amount * ANNUAL_INTEREST_RATE * TOTAL_DAYS) / 365;
 };
 
 export interface GetImpactItem {

@@ -1,7 +1,8 @@
+import { polygon } from "@wagmi/chains";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
@@ -16,6 +17,11 @@ export default function BuyingGuide({ glo }: Props) {
   const { closeModal } = useContext(ModalContext);
   const formattedGlo = getUSFormattedNumber(glo);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+
+  const { chain } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
+
+  const userIsOnPolygon = chain?.id === polygon.id;
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -85,6 +91,14 @@ export default function BuyingGuide({ glo }: Props) {
             </button>
           </li>
           <ul className="font-bold mt-3">Connect wallet to Uniswap</ul>
+          {!userIsOnPolygon && (
+            <li
+              className="cursor-pointer underline"
+              onClick={() => switchNetwork && switchNetwork(polygon.id)}
+            >
+              Switch your wallet to Polygon
+            </li>
+          )}
           <li>
             Go to{" "}
             <a

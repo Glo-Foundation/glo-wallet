@@ -13,9 +13,7 @@ export default function BuyGloModal() {
   const [glo, setGlo] = useState<number>(1000);
   const [flipped, setFlipped] = useState<boolean>(false);
 
-  const totalDays = 365;
-  const yearlyInterestRate = 0.024;
-  const yearlyYield = getTotalYield(yearlyInterestRate, glo, totalDays);
+  const yearlyYield = getTotalYield(glo);
   const formattedGlo = getUSFormattedNumber(glo);
 
   if (flipped) {
