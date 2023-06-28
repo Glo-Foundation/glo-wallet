@@ -15,6 +15,7 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import Analytics from "@/components/Analytics";
+import Toast from "@/components/Toast";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
@@ -130,8 +131,6 @@ export default function App({ Component, pageProps }: AppProps) {
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
             </ModalContext.Provider>
-
-            <div id="toasts-portal"></div>
           </WagmiConfig>
         )}
       </main>

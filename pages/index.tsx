@@ -13,6 +13,7 @@ import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
+import Toast from "@/components/Toast";
 import Transactions from "@/components/Transactions";
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
@@ -124,6 +125,7 @@ export default function Home() {
         <Transactions />
         <CTA balance={balance?.formatted} />
       </div>
+      <Toast />
     </div>
   );
 }
