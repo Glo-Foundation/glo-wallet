@@ -14,6 +14,33 @@ const defaultChainId = polygonMumbai.id;
 export const getSmartContractAddress = (chainId?: number) =>
   chainConfig[chainId || defaultChainId];
 
+// https://en.wikipedia.org/wiki/ISO_3166-1
+export const PROHIBITED_COUNTRIES = [
+  "BY", // Belarus
+  "BA", // Bosnia And Herzegovina
+  "BI", // Burundi
+  "CF", // Central African Republic
+  "CD", // Congo, The Democratic Republic Of The
+  "CU", // Cuba
+  "IR", // Iran, Islamic Republic Of
+  "IQ", // Iraq
+  "KP", // Korea, Democratic People's Republic Of
+  "XK", // Kosovo
+  "LB", // Lebanon
+  "LY", // Libya
+  "MK", // Macedonia
+  "NI", // Nicaragua
+  "RU", // Russian Federation
+  "SO", // Somalia
+  "SS", // South Sudan
+  "SD", // Sudan
+  "SY", // Syrian Arab Republic
+  "UA", // Ukraine
+  "VE", // Venezuela
+  "YE", // Yemen
+  "ZW", // Zimbabwe
+];
+
 const chainRPCUrl: { [id: number]: string } = {
   // Mainnets
   [polygon.id]: process.env.POLYGON_RPC_URL as string,
