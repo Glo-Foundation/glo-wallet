@@ -11,10 +11,13 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 
 const SendForm = ({ close }: { close: () => void }) => {
-  const [sendForm, setSendForm] = useState({});
-  const [message, setMessage] = useState();
+  const [sendForm, setSendForm] = useState({
+    address: "",
+    amount: "",
+  });
+  const [message, setMessage] = useState<string>();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     try {
@@ -26,13 +29,12 @@ const SendForm = ({ close }: { close: () => void }) => {
           sendForm.address,
           utils.parseEther(sendForm.amount || "0").toBigInt(),
         ],
-        enabled: utils.isAddress(sendForm.address),
       });
       const { hash } = await writeContract(request);
       if (hash) {
         setMessage(`Sent with hash ${hash}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       setMessage(err.message);
     }
   };
@@ -60,7 +62,7 @@ const SendForm = ({ close }: { close: () => void }) => {
             setSendForm({ ...sendForm, address: e.target.value })
           }
           value={sendForm.address}
-          placeHolder="0x..."
+          placeholder="0x..."
           pattern="0x[a-fA-F0-9]+"
         />
       </div>
@@ -70,7 +72,7 @@ const SendForm = ({ close }: { close: () => void }) => {
           id="send-amount"
           required
           pattern="\d*(\.\d{1,18})?"
-          placeHolder="0.1"
+          placeholder="0.1"
           tabIndex={0}
           onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
           value={sendForm.amount}
