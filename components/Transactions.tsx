@@ -7,7 +7,7 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 
-import TransfersModal from "./Modals/TransfersModal";
+import AllTransactionsModal from "./Modals/AllTransactionsModal";
 import UserAuthModal from "./Modals/UserAuthModal";
 import { TransactionsList } from "./TransactionsList";
 
@@ -53,7 +53,7 @@ export default function Transactions() {
           <TransactionsList txns={transfers.slice(0, 5)} />
           {transfersCursor && (
             <li
-              onClick={() => openModal(<TransfersModal />)}
+              onClick={() => openModal(<AllTransactionsModal />)}
               className="underline cursor-pointer"
             >
               View all transactions

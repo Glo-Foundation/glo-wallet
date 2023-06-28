@@ -32,7 +32,8 @@ export default function Balance({
 
   const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
-  const fmtBalanceCentPart = splitFmtBalance[1];
+  let fmtBalanceCentPart = splitFmtBalance[1];
+  if (fmtBalanceCentPart?.length === 1) fmtBalanceCentPart += "0";
 
   return (
     <div className="bg-white rounded-[20px] pt-4">
@@ -50,7 +51,7 @@ export default function Balance({
       {isConnected && <Actions />}
 
       <button
-        className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-5 pb-3 w-full font-normal items-baseline"
+        className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mb-1 px-5 pb-3 w-full font-normal items-baseline"
         onClick={() => openModal(<BuyGloModal />)}
       >
         <div className="">
