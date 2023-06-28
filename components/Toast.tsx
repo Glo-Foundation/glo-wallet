@@ -1,9 +1,13 @@
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import Sheet from "react-modal-sheet";
 
 import { useToastStore } from "@/lib/store";
 
-export default function Toast() {
+interface Props {
+  mainRef: { current: HTMLMainElement };
+}
+export default function Toast({ mainRef }: Props) {
   const [open, setOpen] = useState(false);
 
   // Ensure it animates in when loaded
@@ -12,17 +16,25 @@ export default function Toast() {
   }, []);
 
   return (
-    <Sheet isOpen={open}>
+    <Sheet
+      isOpen={open}
+      onClose={() => setOpen(false)}
+      detent="content-height"
+      mountPoint={mainRef.current}
+      style={{ maxWidth: "500px", left: "0", right: "0", margin: "auto" }}
+      tweenConfig={{ ease: "easeInOut", duration: 1.5 }}
+    >
       <Sheet.Container>
-        <Sheet.Header />
+        <Sheet.Header
+          style={{ cursor: "pointer" }}
+          onTap={() => setOpen(false)}
+        />
         <Sheet.Content>
-          gud news, hullo everyone
-          <button className="secondary-button" onClick={() => setOpen(false)}>
-            Dismiss
-          </button>
+          <div className="flex justify-between items-center pb-6 px-8">
+            <span>gud news, hullo everyone</span>
+          </div>
         </Sheet.Content>
       </Sheet.Container>
-      <Sheet.Backdrop />
     </Sheet>
   );
 }

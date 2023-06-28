@@ -101,6 +101,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HtmlMainElement>(null);
 
   const openModal = (content: JSX.Element, className: string | undefined) => {
     closeModal();
@@ -119,6 +120,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Analytics />
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
+        ref={mainRef}
       >
         {isMounted && (
           <WagmiConfig config={config}>
@@ -131,7 +133,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
             </ModalContext.Provider>
-            <Toast />
+            <Toast mainRef={mainRef} />
           </WagmiConfig>
         )}
       </main>
