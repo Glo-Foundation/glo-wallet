@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
@@ -11,58 +12,74 @@ import { ModalContext } from "@/lib/context";
 
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
-    address: "0x...",
-    amount: "0.1",
+    address: "",
+    amount: "",
   });
-  const [hash, setHash] = useState<`0x${string}`>();
-  const { config } = usePrepareContractWrite({
-    address: process.env.NEXT_PUBLIC_USDGLO as `0x${string}`,
-    abi: UsdgloContract,
-    functionName: "transfer",
-    args: [sendForm.address, utils.parseEther(sendForm.amount).toBigInt()],
-    enabled: utils.isAddress(sendForm.address),
-  });
+  const [message, setMessage] = useState<string>();
 
-  const { write: transfer, data } = useContractWrite(config);
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
 
-  useEffect(() => {
-    if (data?.hash) {
-      setHash(data?.hash);
+    try {
+      const { request } = await prepareWriteContract({
+        address: process.env.NEXT_PUBLIC_USDGLO as `0x${string}`,
+        abi: UsdgloContract,
+        functionName: "transfer",
+        args: [
+          sendForm.address,
+          utils.parseEther(sendForm.amount || "0").toBigInt(),
+        ],
+      });
+      const { hash } = await writeContract(request);
+      if (hash) {
+        setMessage(`Sent with hash ${hash}`);
+      }
+    } catch (err: any) {
+      setMessage(err.message);
     }
-  }, [data]);
-
+  };
   return (
-    <form
-      className="flex flex-col"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        transfer!();
-      }}
-    >
+    <form className="flex flex-col w-[275px]" onSubmit={handleSubmit}>
+      <h3>Transfer</h3>
+      <div className="copy">
+        <p>Send a transaction to someone else!</p>
+        <p>
+          Accepted values: address must start with 0x and contain only
+          hexadecimal values (0-9, a-f)
+        </p>
+        <p>
+          Amount must be greater than 0 and cannot contain more than 18 decimal
+          places.
+        </p>
+      </div>
       <div className="form-group">
         <label htmlFor="send-address">Send Address</label>
         <input
           id="send-address"
-          className="rounded-full bg-white py-4 px-6 text-xl"
-          value={sendForm.address}
+          type="text"
+          required
           onChange={(e) =>
             setSendForm({ ...sendForm, address: e.target.value })
           }
+          value={sendForm.address}
+          placeholder="0x..."
+          pattern="0x[a-fA-F0-9]+"
         />
       </div>
       <div className="form-group">
         <label htmlFor="send-amount">Amount</label>
         <input
           id="send-amount"
-          className="rounded-full bg-white py-4 px-6 text-xl"
-          value={sendForm.amount}
+          required
+          pattern="\d*(\.\d{1,18})?"
+          placeholder="0.1"
+          tabIndex={0}
           onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
+          value={sendForm.amount}
         />
       </div>
-      <button className="mt-4 primary-button" disabled={!!hash}>
-        Send
-      </button>
-      {hash && <div>Sent with hash {hash}</div>}
+      <button className="mt-4 primary-button">Send</button>
+      {message && <div>{message}</div>}
     </form>
   );
 };
@@ -126,7 +143,10 @@ export default function Actions() {
     buttons
       .filter((button) => !button.disabled)
       .map((button, idx) => (
-        <li className="flex flex-col items-center" key={`actionButton${idx}`}>
+        <li
+          className="flex flex-col justify-center"
+          key={`actionButton${idx} || 0`}
+        >
           <button
             className="action-button mb-4"
             onClick={() => button.action()}

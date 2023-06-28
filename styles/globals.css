@@ -35,12 +35,21 @@ body {
     @apply font-semibold;
   }
 
+  p {
+    @apply my-4;
+  }
+
   button {
     @apply flex justify-center items-center rounded-full font-black;
   }
 
   label {
-    @apply font-black mr-4;
+    @apply text-sm mr-4;
+  }
+
+  input {
+    @apply border flex justify-between rounded-lg border-pine-400 p-2 text-sm
+    invalid:border-pink-500 invalid:text-pink-600;
   }
 
   dialog {
@@ -62,7 +71,8 @@ body {
   }
 
   .primary-button {
-    @apply py-2 px-4 bg-cyan-600 text-pine-800 text-[0.9rem];
+    @apply py-2 px-4 bg-cyan-600 text-pine-800 text-[0.9rem]
+    disabled:bg-cyan-600/50 disabled:text-pine-800/50;
   }
 
   .secondary-button {
@@ -78,7 +88,7 @@ body {
   }
 
   .form-group {
-    @apply py-4 flex items-center justify-between;
+    @apply py-4 flex flex-col justify-between;
   }
 
   .transaction-item {
