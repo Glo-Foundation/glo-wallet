@@ -1,6 +1,7 @@
+import { polygon } from "@wagmi/core/chains";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { USDGLO_POLYGON_CONTRACT_ADDRESS } from "@/utils";
+import { getSmartContractAddress } from "@/lib/config";
 
 const getMarketCap = async (url: string, regex: RegExp) => {
   try {
@@ -24,6 +25,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const USDGLO_POLYGON_CONTRACT_ADDRESS = getSmartContractAddress(polygon.id);
   const result = await Promise.all([
     getMarketCap(
       `https://polygonscan.com/token/${USDGLO_POLYGON_CONTRACT_ADDRESS}`,

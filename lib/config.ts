@@ -40,3 +40,16 @@ export const PROHIBITED_COUNTRIES = [
   "YE", // Yemen
   "ZW", // Zimbabwe
 ];
+
+const chainRPCUrl: { [id: number]: string } = {
+  // Mainnets
+  [polygon.id]: process.env.POLYGON_RPC_URL as string,
+  [mainnet.id]: process.env.MAINNET_RPC_URL as string,
+  // Testnets
+  [polygonMumbai.id]: process.env.MUMBAI_RPC_URL as string,
+  [goerli.id]: process.env.GOERLI_RPC_URL as string,
+};
+
+export const getChainRPCUrl = (chainId?: number) => {
+  return chainRPCUrl[chainId || defaultChainId];
+};
