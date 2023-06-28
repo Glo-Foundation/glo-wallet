@@ -4,54 +4,80 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 
 const SendForm = ({ close }: { close: () => void }) => {
-  const [sendForm, setSendForm] = useState({
-    address: "0x...",
-    amount: "0.1",
-  });
-  const [hash, setHash] = useState<`0x${string}`>();
-  const { config } = usePrepareContractWrite({
-    address: process.env.NEXT_PUBLIC_USDGLO as `0x${string}`,
-    abi: UsdgloContract,
-    functionName: "transfer",
-    args: [sendForm.address, utils.parseEther(sendForm.amount).toBigInt()],
-    enabled: utils.isAddress(sendForm.address),
-  });
+  const [sendForm, setSendForm] = useState({});
+  const [message, setMessage] = useState();
 
-  const { write: transfer, data } = useContractWrite(config);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  useEffect(() => {
-    if (data?.hash) {
-      setHash(data?.hash);
+    try {
+      const { request } = await prepareWriteContract({
+        address: process.env.NEXT_PUBLIC_USDGLO as `0x${string}`,
+        abi: UsdgloContract,
+        functionName: "transfer",
+        args: [
+          sendForm.address,
+          utils.parseEther(sendForm.amount || "0").toBigInt(),
+        ],
+        enabled: utils.isAddress(sendForm.address),
+      });
+      const { hash } = await writeContract(request);
+      if (hash) {
+        setMessage(`Sent with hash ${hash}`);
+      }
+    } catch (err) {
+      setMessage(err.message);
     }
-  }, [data]);
-
+  };
   return (
-    <form
-      className="flex flex-col"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setSendForm({ ...sendForm, address: e.target.value });
-        transfer!();
-      }}
-    >
+    <form className="flex flex-col w-[275px]" onSubmit={handleSubmit}>
+      <h3>Transfer</h3>
+      <div className="copy">
+        <p>Send a transaction to someone else!</p>
+        <p>
+          Accepted values: address must start with 0x and contain only
+          hexadecimal values (0-9, a-f)
+        </p>
+        <p>
+          Amount must be greater than 0 and cannot contain more than 18 decimal
+          places.
+        </p>
+      </div>
       <div className="form-group">
         <label htmlFor="send-address">Send Address</label>
-        <input id="send-address" type="text" value={sendForm.address} />
+        <input
+          id="send-address"
+          type="text"
+          required
+          onChange={(e) =>
+            setSendForm({ ...sendForm, address: e.target.value })
+          }
+          value={sendForm.address}
+          placeHolder="0x..."
+          pattern="0x[a-fA-F0-9]+"
+        />
       </div>
       <div className="form-group">
         <label htmlFor="send-amount">Amount</label>
-        <input id="send-amount" type="text" value={sendForm.amount} />
+        <input
+          id="send-amount"
+          required
+          pattern="\d*(\.\d{1,18})?"
+          placeHolder="0.1"
+          tabIndex={0}
+          onChange={(e) => setSendForm({ ...sendForm, amount: e.target.value })}
+          value={sendForm.amount}
+        />
       </div>
-      <button className="mt-4 primary-button" disabled={!!hash}>
-        Send
-      </button>
-      {hash && <div>Sent with hash {hash}</div>}
+      <button className="mt-4 primary-button">Send</button>
+      {message && <div>{message}</div>}
     </form>
   );
 };
