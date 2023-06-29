@@ -24,6 +24,17 @@ export default function UserAuthModal() {
     email: "",
   });
 
+  const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(null);
+
+  const requireUserAgreed = (callback: () => void) => {
+    if (!hasUserAgreed) {
+      setHasUserAgreed(false);
+      return;
+    }
+
+    callback();
+  };
+
   const signInWithEmail = async () => {
     const { chains, publicClient, webSocketPublicClient } = configureChains(
       isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
@@ -46,6 +57,13 @@ export default function UserAuthModal() {
     });
     connect({ connector: emailConnector });
     closeModal();
+  };
+
+  const connectWithConnector = (index: number) => {
+    requireUserAgreed(() => {
+      connect({ connector: connectors[index] });
+      closeModal();
+    });
   };
 
   return (
@@ -81,7 +99,7 @@ export default function UserAuthModal() {
               />
               <button
                 className="absolute top-[10px] right-1 primary-button py-3 px-6 drop-shadow-none"
-                onClick={() => signInWithEmail()}
+                onClick={() => requireUserAgreed(signInWithEmail)}
               >
                 Submit
               </button>
@@ -89,10 +107,7 @@ export default function UserAuthModal() {
           </div>
           <button
             className="auth-button"
-            onClick={() => {
-              connect({ connector: connectors[0] });
-              closeModal();
-            }}
+            onClick={() => connectWithConnector(0)}
           >
             <h4>Social Login</h4>
             <div className="social-icons flex">
@@ -109,10 +124,7 @@ export default function UserAuthModal() {
 
           <button
             className="auth-button"
-            onClick={() => {
-              connect({ connector: connectors[1] });
-              closeModal();
-            }}
+            onClick={() => connectWithConnector(1)}
           >
             <h4>Metamask</h4>
             <Image alt="metamask" src="/metamask.svg" width={35} height={35} />
@@ -120,10 +132,7 @@ export default function UserAuthModal() {
 
           <button
             className="auth-button"
-            onClick={() => {
-              connect({ connector: connectors[2] });
-              closeModal();
-            }}
+            onClick={() => connectWithConnector(2)}
           >
             <h4>WalletConnect</h4>
             <Image
@@ -133,6 +142,33 @@ export default function UserAuthModal() {
               height={35}
             />
           </button>
+        </div>
+        <div className="p-2 flex justify-center items-center">
+          <input
+            type="checkbox"
+            value=""
+            className={`w-5 h-5 rounded accent-cyan-600 outline-none bg-white ${
+              hasUserAgreed ? "" : "appearance-none"
+            } ${hasUserAgreed === false ? "border border-red-400" : ""}`}
+            onChange={() => setHasUserAgreed(!hasUserAgreed)}
+          />
+          <span className="ml-2">
+            I agree with Glo&apos;s{" "}
+            <a className="underline" href="https://sequence.xyz/">
+              Terms of Service
+            </a>
+          </span>
+        </div>
+        {hasUserAgreed === false && (
+          <div className="p-2 text-center text-red-400">
+            Please accept our Terms of Service to sign up
+          </div>
+        )}
+        <div className="p-2 text-center copy">
+          Email and social login{" "}
+          <a className="underline" href="https://sequence.xyz/">
+            Powered by Sequence
+          </a>
         </div>
       </section>
     </>
