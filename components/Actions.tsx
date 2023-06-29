@@ -35,7 +35,7 @@ const SendForm = ({ close }: { close: () => void }) => {
       if (hash) {
         setShowToast({
           showToast: true,
-          message: `Sent with hash ${sliceAddress(hash(8), 5)}`,
+          message: `Sent with hash ${sliceAddress(hash, 8)}`,
         });
       }
     } catch (err: any) {

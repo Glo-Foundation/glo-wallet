@@ -21,7 +21,7 @@ export const useUserStore = create<UserStore>((set) => ({
 
 interface ToastType {
   showToast: boolean;
-  message: string;
+  message?: string;
 }
 
 interface ToastStore extends ToastType {
@@ -29,8 +29,8 @@ interface ToastStore extends ToastType {
 }
 
 export const defaultToastValues = {
-  showToast: true,
-  message: "uh",
+  showToast: false,
+  message: "",
 };
 
 export const useToastStore = create<ToastStore>((set, get) => ({
