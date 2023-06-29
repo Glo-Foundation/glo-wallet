@@ -158,7 +158,7 @@ export default function UserAuthModal() {
           />
           <span className="ml-2">
             I agree with Glo&apos;s{" "}
-            <a className="underline" href="https://sequence.xyz/">
+            <a className="underline" href="https://glodollar.org/tos">
               Terms of Service
             </a>
           </span>
