@@ -7,6 +7,7 @@ import {
   Chain,
 } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
+import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useState } from "react";
 import { useConnect } from "wagmi";
@@ -25,6 +26,7 @@ export default function UserAuthModal() {
   });
 
   const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(null);
+  const userRejected = hasUserAgreed === false;
 
   const requireUserAgreed = (callback: () => void) => {
     if (!hasUserAgreed) {
@@ -147,9 +149,11 @@ export default function UserAuthModal() {
           <input
             type="checkbox"
             value=""
-            className={`w-5 h-5 rounded accent-cyan-600 outline-none bg-white ${
-              hasUserAgreed ? "" : "appearance-none"
-            } ${hasUserAgreed === false ? "border border-red-400" : ""}`}
+            className={clsx(
+              "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
+              !hasUserAgreed && "appearance-none",
+              userRejected && "border border-red-400"
+            )}
             onChange={() => setHasUserAgreed(!hasUserAgreed)}
           />
           <span className="ml-2">
@@ -159,7 +163,7 @@ export default function UserAuthModal() {
             </a>
           </span>
         </div>
-        {hasUserAgreed === false && (
+        {userRejected && (
           <div className="p-2 text-center text-red-400">
             Please accept our Terms of Service to sign up
           </div>
