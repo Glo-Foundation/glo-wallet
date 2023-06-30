@@ -97,7 +97,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
           </button>
         </div>
         <div className="flex flex-row font-semibold justify-between">
-          <div className="flex flex-row items-baseline">
+          <div className="flex flex-row text-[2.625rem] items-baseline">
             <div>$</div>
             <input
               id="gloInput"
