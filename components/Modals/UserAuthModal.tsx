@@ -8,6 +8,7 @@ import {
 } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import clsx from "clsx";
+import Cookies from "js-cookie";
 import Image from "next/image";
 import { useContext, useState } from "react";
 import { useConnect } from "wagmi";
@@ -18,6 +19,17 @@ import { GloSequenceConnector } from "@/lib/sequence-connector";
 
 import { isProd } from "../../lib/utils";
 
+const TOS_COOKIE = "tos-agreed";
+
+const ToS = () => (
+  <a
+    className="underline"
+    href="https://www.glodollar.org/articles/terms-of-service"
+  >
+    Terms of Service
+  </a>
+);
+
 export default function UserAuthModal() {
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
@@ -25,7 +37,11 @@ export default function UserAuthModal() {
     email: "",
   });
 
-  const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(null);
+  const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
+
+  const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(
+    tosAlreadyAgreed ? true : null
+  );
   const userRejected = hasUserAgreed === false;
 
   const requireUserAgreed = (callback: () => void) => {
@@ -33,6 +49,8 @@ export default function UserAuthModal() {
       setHasUserAgreed(false);
       return;
     }
+
+    Cookies.set(TOS_COOKIE, "1");
 
     callback();
   };
@@ -145,27 +163,27 @@ export default function UserAuthModal() {
             />
           </button>
         </div>
-        <div className="p-2 flex justify-center items-center">
-          <input
-            type="checkbox"
-            value=""
-            className={clsx(
-              "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
-              !hasUserAgreed && "appearance-none",
-              userRejected && "border border-red-400"
-            )}
-            onChange={() => setHasUserAgreed(!hasUserAgreed)}
-          />
-          <span className="ml-2">
-            I agree with Glo&apos;s{" "}
-            <a
-              className="underline"
-              href="https://www.glodollar.org/articles/terms-of-service"
-            >
-              Terms of Service
-            </a>
-          </span>
-        </div>
+        {tosAlreadyAgreed ? (
+          <div className="p-2 text-center copy">
+            By signing up, you agree with our <ToS />
+          </div>
+        ) : (
+          <div className="p-2 flex justify-center items-center">
+            <input
+              type="checkbox"
+              value=""
+              className={clsx(
+                "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
+                !hasUserAgreed && "appearance-none",
+                userRejected && "border border-red-400"
+              )}
+              onChange={() => setHasUserAgreed(!hasUserAgreed)}
+            />
+            <span className="ml-2">
+              I agree with Glo&apos;s <ToS />
+            </span>
+          </div>
+        )}
         {userRejected && (
           <div className="p-2 text-center text-red-400">
             Please accept our Terms of Service to sign up
