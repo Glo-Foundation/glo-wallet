@@ -47,11 +47,6 @@ body {
     @apply text-sm mr-4;
   }
 
-  input {
-    @apply border flex justify-between rounded-lg border-pine-400 p-2 text-sm
-    invalid:border-pink-500 invalid:text-pink-600;
-  }
-
   dialog {
     @apply rounded-3xl p-0 max-h-[80vh];
   }
@@ -87,8 +82,17 @@ body {
     @apply border flex justify-between rounded-lg bg-pine-100 border-pine-400 p-2;
   }
 
+  .impact-input {
+    @apply border-none font-neuehaasgrotesk max-w-[226px] text-[2.625rem];
+  }
+
   .form-group {
     @apply py-4 flex flex-col justify-between;
+  }
+
+  .form-input {
+    @apply border flex justify-between rounded-lg border-pine-400 p-2 text-sm
+    focus:outline-none invalid:border-pink-500 invalid:text-pink-600;
   }
 
   .transaction-item {

@@ -101,7 +101,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
             <div>$</div>
             <input
               id="gloInput"
-              className="font-neuehaasgrotesk max-w-[226px]"
+              className="max-w-[226px]"
               value={formattedGlo}
               type="text"
               inputMode="numeric"
