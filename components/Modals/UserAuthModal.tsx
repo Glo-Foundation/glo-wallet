@@ -23,8 +23,10 @@ const TOS_COOKIE = "tos-agreed";
 
 const ToS = () => (
   <a
+    target="_blank"
     className="underline"
     href="https://www.glodollar.org/articles/terms-of-service"
+    rel="noreferrer"
   >
     Terms of Service
   </a>
@@ -191,7 +193,12 @@ export default function UserAuthModal() {
         )}
         <div className="p-2 text-center copy">
           Email and social login{" "}
-          <a className="underline" href="https://sequence.xyz/">
+          <a
+            className="underline"
+            target="_blank"
+            href="https://sequence.xyz/"
+            rel="noreferrer"
+          >
             Powered by Sequence
           </a>
         </div>
