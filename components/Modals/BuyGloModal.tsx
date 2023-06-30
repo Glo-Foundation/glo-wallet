@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAccount } from "wagmi";
 
 import BuyingGuide from "@/components/BuyingGuide";
 import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
@@ -10,6 +11,9 @@ import {
 } from "@/utils";
 
 export default function BuyGloModal() {
+  const { connector } = useAccount();
+  const isSequenceWallet = connector?.id === "sequence";
+
   const [glo, setGlo] = useState<number>(1000);
   const [flipped, setFlipped] = useState<boolean>(false);
 
@@ -38,7 +42,11 @@ export default function BuyGloModal() {
       <button
         className="bg-pine-100 text-pine-900 h-[52px] py-3.5 mx-6 mt-6"
         disabled={glo === 0}
-        onClick={() => setFlipped(true)}
+        onClick={() =>
+          isSequenceWallet
+            ? setFlipped(true)
+            : window.open(getUSDCToUSDGLOUniswapDeeplink(glo), "_blank")
+        }
       >
         Buy ${formattedGlo} Glo on Uniswap
       </button>
