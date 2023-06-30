@@ -7,6 +7,8 @@ import {
   Chain,
 } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
+import clsx from "clsx";
+import Cookies from "js-cookie";
 import Image from "next/image";
 import { useContext, useState } from "react";
 import { useConnect } from "wagmi";
@@ -17,12 +19,43 @@ import { GloSequenceConnector } from "@/lib/sequence-connector";
 
 import { isProd } from "../../lib/utils";
 
+const TOS_COOKIE = "tos-agreed";
+
+const ToS = () => (
+  <a
+    target="_blank"
+    className="underline"
+    href="https://www.glodollar.org/articles/terms-of-service"
+    rel="noreferrer"
+  >
+    Terms of Service
+  </a>
+);
+
 export default function UserAuthModal() {
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
   const [sendForm, setSendForm] = useState({
     email: "",
   });
+
+  const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
+
+  const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(
+    tosAlreadyAgreed ? true : null
+  );
+  const userRejected = hasUserAgreed === false;
+
+  const requireUserAgreed = (callback: () => void) => {
+    if (!hasUserAgreed) {
+      setHasUserAgreed(false);
+      return;
+    }
+
+    Cookies.set(TOS_COOKIE, "1");
+
+    callback();
+  };
 
   const signInWithEmail = async () => {
     const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -46,6 +79,13 @@ export default function UserAuthModal() {
     });
     connect({ connector: emailConnector });
     closeModal();
+  };
+
+  const connectWithConnector = (index: number) => {
+    requireUserAgreed(() => {
+      connect({ connector: connectors[index] });
+      closeModal();
+    });
   };
 
   return (
@@ -81,7 +121,7 @@ export default function UserAuthModal() {
               />
               <button
                 className="absolute top-[10px] right-1 primary-button py-3 px-6 drop-shadow-none"
-                onClick={() => signInWithEmail()}
+                onClick={() => requireUserAgreed(signInWithEmail)}
               >
                 Submit
               </button>
@@ -89,10 +129,7 @@ export default function UserAuthModal() {
           </div>
           <button
             className="auth-button"
-            onClick={() => {
-              connect({ connector: connectors[0] });
-              closeModal();
-            }}
+            onClick={() => connectWithConnector(0)}
           >
             <h4>Social Login</h4>
             <div className="social-icons flex">
@@ -109,10 +146,7 @@ export default function UserAuthModal() {
 
           <button
             className="auth-button"
-            onClick={() => {
-              connect({ connector: connectors[1] });
-              closeModal();
-            }}
+            onClick={() => connectWithConnector(1)}
           >
             <h4>Metamask</h4>
             <Image alt="metamask" src="/metamask.svg" width={35} height={35} />
@@ -120,10 +154,7 @@ export default function UserAuthModal() {
 
           <button
             className="auth-button"
-            onClick={() => {
-              connect({ connector: connectors[2] });
-              closeModal();
-            }}
+            onClick={() => connectWithConnector(2)}
           >
             <h4>WalletConnect</h4>
             <Image
@@ -133,6 +164,43 @@ export default function UserAuthModal() {
               height={35}
             />
           </button>
+        </div>
+        {tosAlreadyAgreed ? (
+          <div className="p-2 text-center copy">
+            By signing up, you agree with our <ToS />
+          </div>
+        ) : (
+          <div className="p-2 flex justify-center items-center">
+            <input
+              type="checkbox"
+              value=""
+              className={clsx(
+                "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
+                !hasUserAgreed && "appearance-none",
+                userRejected && "border border-red-400"
+              )}
+              onChange={() => setHasUserAgreed(!hasUserAgreed)}
+            />
+            <span className="ml-2">
+              I agree with Glo&apos;s <ToS />
+            </span>
+          </div>
+        )}
+        {userRejected && (
+          <div className="p-2 text-center text-red-400">
+            Please accept our Terms of Service to sign up
+          </div>
+        )}
+        <div className="p-2 text-center copy">
+          Email and social login{" "}
+          <a
+            className="underline"
+            target="_blank"
+            href="https://sequence.xyz/"
+            rel="noreferrer"
+          >
+            Powered by Sequence
+          </a>
         </div>
       </section>
     </>
