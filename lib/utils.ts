@@ -1,4 +1,9 @@
 import axios, { AxiosInstance } from "axios";
+import { BigNumber, ethers } from "ethers";
+
+import UsdgloContract from "@/abi/usdglo.json";
+
+import { getChainRPCUrl, getSmartContractAddress } from "./config";
 
 export const sliceAddress = (address: string, amt = 3) =>
   `${address?.slice(0, amt + 2)}...${address?.slice(amt * -1)}`;
@@ -38,3 +43,16 @@ export const DEFAULT_CTAS: CTA[] = [
   "JOIN_PROGRAM",
   "TWEEET_IMPACT",
 ].map((cta) => ({ type: cta } as CTA));
+
+export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
+  const provider = new ethers.providers.JsonRpcProvider(
+    getChainRPCUrl(chainId)
+  );
+
+  const usdgloContract = new ethers.Contract(
+    getSmartContractAddress(chainId),
+    UsdgloContract,
+    provider
+  );
+  return await usdgloContract.totalSupply();
+};
