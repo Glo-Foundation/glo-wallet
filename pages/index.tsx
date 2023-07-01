@@ -125,6 +125,7 @@ export default function Home() {
         <Transactions />
         <CTA balance={balance?.formatted} />
       </div>
+      <Toast />
     </div>
   );
 }

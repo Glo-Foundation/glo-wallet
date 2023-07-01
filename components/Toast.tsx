@@ -1,15 +1,8 @@
-import Image from "next/image";
-import { useState, useEffect } from "react";
 import Sheet from "react-modal-sheet";
 
 import { useToastStore } from "@/lib/store";
 
 export default function Toast() {
-  const [toastDetails, showToast, setShowToast] = useToastStore((state) => [
-    state,
-    state.showToast,
-    state.setShowToast,
-  ]);
   const [open, setOpen] = useState(false);
 
   // Ensure it animates in when loaded
