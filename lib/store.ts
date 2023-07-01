@@ -28,7 +28,7 @@ interface ToastStore extends ToastType {
   setShowToast: (values: ToastType) => void;
 }
 
-export const defaultToastValues = {
+const defaultToastValues = {
   showToast: false,
   message: "",
 };
