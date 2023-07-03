@@ -102,4 +102,8 @@ body {
   .cta-icon {
     @apply mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200;
   }
+
+  .react-modal-sheet-container {
+    @apply shadow-xl !important;
+  }
 }
