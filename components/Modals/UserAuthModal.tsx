@@ -1,4 +1,3 @@
-import { sequence } from "0xsequence";
 import {
   goerli,
   polygon,
@@ -10,9 +9,9 @@ import { publicProvider } from "@wagmi/core/providers/public";
 import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useConnect } from "wagmi";
-import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
+import { configureChains } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
@@ -45,10 +44,12 @@ export default function UserAuthModal() {
     tosAlreadyAgreed ? true : null
   );
   const userRejected = hasUserAgreed === false;
+  const tosRef = useRef<HTMLDivElement>(null);
 
   const requireUserAgreed = (callback: () => void) => {
     if (!hasUserAgreed) {
       setHasUserAgreed(false);
+      tosRef.current?.scrollIntoView({ behavior: "smooth" });
       return;
     }
 
@@ -58,7 +59,7 @@ export default function UserAuthModal() {
   };
 
   const signInWithEmail = async () => {
-    const { chains, publicClient, webSocketPublicClient } = configureChains(
+    const { chains } = configureChains(
       isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
       [publicProvider()]
     );
@@ -101,11 +102,11 @@ export default function UserAuthModal() {
       </section>
       <section className="sticky p-8 flex flex-col items-center bg-white rounded-t-3xl">
         <h1 className="">👋 Hey, it’s Jeff</h1>
-        <p className="copy text-xl">
+        <p className="copy text-xl m-0">
           Thanks for being part of the Glo movement!
         </p>
       </section>
-      <section className="modal-body p-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
+      <section className="modal-body px-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
         <h2 className="flex justify-center">Sign up</h2>
         <div>
           <div className="p-0 form-group flex justify-center">
@@ -170,7 +171,7 @@ export default function UserAuthModal() {
             By signing up, you agree with our <ToS />
           </div>
         ) : (
-          <div className="p-2 flex justify-center items-center">
+          <div ref={tosRef} className="p-2 flex justify-center items-center">
             <input
               type="checkbox"
               value=""

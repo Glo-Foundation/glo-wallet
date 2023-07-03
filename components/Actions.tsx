@@ -60,6 +60,7 @@ const SendForm = ({ close }: { close: () => void }) => {
       <div className="form-group">
         <label htmlFor="send-address">Send Address</label>
         <input
+          className="form-input"
           id="send-address"
           type="text"
           required
@@ -74,6 +75,7 @@ const SendForm = ({ close }: { close: () => void }) => {
       <div className="form-group">
         <label htmlFor="send-amount">Amount</label>
         <input
+          className="form-input"
           id="send-amount"
           required
           pattern="\d*(\.\d{1,18})?"
