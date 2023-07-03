@@ -10,6 +10,8 @@ import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 
+import PaymentOptionModal from "./Modals/PaymentOptionModal";
+
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
     address: "",
@@ -93,7 +95,8 @@ export default function Actions() {
   const { asPath, push } = useRouter();
 
   const buy = async () => {
-    openModal(<BuyGloModal />);
+    // TEMP replaced
+    openModal(<PaymentOptionModal />);
   };
 
   useEffect(() => {
