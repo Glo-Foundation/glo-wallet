@@ -16,8 +16,8 @@ export default function Transactions() {
   const { connect, connectors } = useConnect();
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const [dropdown, setDropdown] = useState("hidden");
-  const [caretDir, setCaretDir] = useState("down");
+  const [dropdown, setDropdown] = useState("list-item");
+  const [caretDir, setCaretDir] = useState("up");
   const { openModal } = useContext(ModalContext);
 
   useEffect(() => {
@@ -33,10 +33,13 @@ export default function Transactions() {
   };
 
   return (
-    <div className="bg-white rounded-[20px] p-8 transition-all">
+    <div
+      className="bg-white rounded-[20px] p-8 transition-all"
+      onClick={toggleDropdown}
+    >
       <div className="flex justify-between cursor-default">
         <h3>Transactions</h3>
-        <button onClick={toggleDropdown}>
+        <button>
           {isConnected && (
             <Image
               className="cursor-pointer"
