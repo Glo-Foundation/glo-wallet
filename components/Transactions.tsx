@@ -16,16 +16,9 @@ export default function Transactions() {
   const { connect, connectors } = useConnect();
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const [dropdown, setDropdown] = useState("list-item");
-  const [caretDir, setCaretDir] = useState("up");
+  const [dropdown, setDropdown] = useState("hidden");
+  const [caretDir, setCaretDir] = useState("down");
   const { openModal } = useContext(ModalContext);
-
-  useEffect(() => {
-    if (transfers.length && isConnected) {
-      setDropdown("list-item");
-      setCaretDir("up");
-    }
-  }, [transfers]);
 
   const toggleDropdown = () => {
     dropdown === "list-item" ? setDropdown("hidden") : setDropdown("list-item");
