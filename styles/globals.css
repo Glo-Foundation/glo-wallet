@@ -106,4 +106,8 @@ body {
   .react-modal-sheet-container {
     @apply shadow-xl !important;
   }
+
+  .animated-impact-list {
+    @apply m-0 h-[24px] overflow-hidden !important;
+  }
 }
