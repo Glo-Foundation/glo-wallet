@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import { getImpactItems, isLiftPersonOutOfPovertyImpactItem } from "@/utils";
 
+import type { getImpactItem } from "@/utils";
+
 type Props = {
   yearlyYield: number;
 };
@@ -10,8 +12,6 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
   const enoughToLiftPersonOutOfPoverty =
     yearlyImpactItems[0] &&
     isLiftPersonOutOfPovertyImpactItem(yearlyImpactItems[0]);
-  const [fadein, setFadein] = useState(false);
-  const [scroll, setScroll] = useState(false);
   const [style, setStyle] = useState({
     transform: `translateY(-${(yearlyImpactItems.length - 1) * 24}px)`,
     opacity: "0",
@@ -38,7 +38,7 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
     };
   }, []);
 
-  const renderImpactItemList = (impactItemList) =>
+  const renderImpactItemList = (impactItemList: getImpactItem[]) =>
     yearlyImpactItems.map((item, idx) => (
       <li key={`eb-idx${idx}`}>
         {item.emoji} &#10005; {item.count}
