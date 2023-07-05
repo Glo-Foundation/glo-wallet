@@ -30,7 +30,7 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
         opacity: "1",
         transform: "translateY(0px)",
       });
-    }, 1500);
+    }, 1800);
 
     return () => {
       clearTimeout(fadeinTimer);
