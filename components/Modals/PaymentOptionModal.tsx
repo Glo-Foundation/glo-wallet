@@ -1,4 +1,6 @@
 import { RatioButton } from "@ratio.me/ratiokit-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useContext } from "react";
 import { useAccount, useNetwork, useSignMessage } from "wagmi";
 
@@ -27,11 +29,9 @@ export default function PaymentOptionModal() {
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900">
-      {isConnected ? (
+      {isConnected && (
         <RatioButton
-          text={"Buy with Ratio"}
-          // TODO: Adjust redirect uri
-          redirectUri={"https://yoursite.com/plaid/oauth"}
+          text="Buy with Ratio"
           fetchSessionToken={async () => {
             if (isConnected) {
               return await fetchSessionToken();
@@ -44,7 +44,7 @@ export default function PaymentOptionModal() {
             });
           }}
         />
-      ) : null}
+      )}
     </div>
   );
 }
