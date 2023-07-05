@@ -95,8 +95,6 @@ export const getImpactItems = (amount: number): GetImpactItem[] => {
   return impactItems;
 };
 
-export const getImpactItemList = (): GetImpactItem[] => possibleImpactItems;
-
 export const isLiftPersonOutOfPovertyImpactItem = (
   impactItem: GetImpactItem
 ): boolean => {

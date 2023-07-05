@@ -1,21 +1,20 @@
-import {
-  getImpactItems,
-  getImpactItemList,
-  isLiftPersonOutOfPovertyImpactItem,
-} from "@/utils";
+import { getImpactItems, isLiftPersonOutOfPovertyImpactItem } from "@/utils";
 
 type Props = {
   yearlyYield: number;
 };
 export default function EnoughToBuy({ yearlyYield }: Props) {
-  const impactItem = getImpactItemList();
-  const yearlyImpactItem = getImpactItems(yearlyYield)[0];
+  const yearlyImpactItems = getImpactItems(yearlyYield);
   const enoughToLiftPersonOutOfPoverty =
-    yearlyImpactItem && isLiftPersonOutOfPovertyImpactItem(yearlyImpactItem);
+    yearlyImpactItems[0] &&
+    isLiftPersonOutOfPovertyImpactItem(yearlyImpactItems[0]);
 
-  return (
-    <>
-      {yearlyImpactItem?.emoji} &#10005; {yearlyImpactItem?.count}
-    </>
-  );
+  const renderImpactItemList = (impactItemList) =>
+    yearlyImpactItems.map((item, idx) => (
+      <li key={`eb-idx${idx}`}>
+        {item.emoji} &#10005; {item.count}
+      </li>
+    ));
+
+  return <ul>{renderImpactItemList(yearlyImpactItems)}</ul>;
 }
