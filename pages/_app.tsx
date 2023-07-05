@@ -14,6 +14,7 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import Analytics from "@/components/Analytics";
+import RatioWrapper from "@/components/RatioWrapper";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
@@ -128,6 +129,7 @@ export default function App({ Component, pageProps }: AppProps) {
               >
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
+              <RatioWrapper />
             </ModalContext.Provider>
           </WagmiConfig>
         )}
