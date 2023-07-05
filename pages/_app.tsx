@@ -110,8 +110,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const closeModal = () => {
     setModalContent(<div />);
+    setModalClassName("");
     dialogRef.current?.close();
   };
+
+  const isPaymentDialogOpen = modalClassName.includes("payment-dialog");
 
   return (
     <>
@@ -129,7 +132,7 @@ export default function App({ Component, pageProps }: AppProps) {
               >
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
-              <RatioWrapper />
+              {isPaymentDialogOpen && <RatioWrapper />}
             </ModalContext.Provider>
           </WagmiConfig>
         )}

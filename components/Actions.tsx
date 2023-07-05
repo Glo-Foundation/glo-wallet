@@ -96,7 +96,7 @@ export default function Actions() {
 
   const buy = async () => {
     // TEMP replaced
-    openModal(<PaymentOptionModal />);
+    openModal(<PaymentOptionModal />, "payment-dialog");
   };
 
   useEffect(() => {
