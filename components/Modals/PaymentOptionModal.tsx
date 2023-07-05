@@ -25,7 +25,7 @@ export default function PaymentOptionModal() {
             const parent = document.getElementById("ratio-button-parent");
             const button = parent?.firstChild as HTMLButtonElement;
             if (button) {
-              // closeModal();
+              closeModal();
               button.click();
             }
           }}

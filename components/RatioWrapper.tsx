@@ -1,13 +1,17 @@
 import { RatioButton } from "@ratio.me/ratiokit-react";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { useAccount, useNetwork, useSignMessage } from "wagmi";
 
+import { ModalContext } from "@/lib/context";
 import { api } from "@/lib/utils";
 
 export default function RatioWrapper() {
   const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
   const { signMessageAsync } = useSignMessage();
+
+  const { setModalClass } = useContext(ModalContext);
+  const cleanModal = () => setModalClass("");
 
   const fetchSessionToken = useCallback(async (): Promise<string | null> => {
     try {
@@ -37,6 +41,9 @@ export default function RatioWrapper() {
             message: challenge,
           });
         }}
+        onClose={cleanModal}
+        onError={cleanModal}
+        onTransactionComplete={cleanModal}
       />
     </div>
   );
