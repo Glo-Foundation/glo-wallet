@@ -5,11 +5,16 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 
 import EnoughToBuy from "./EnoughToBuy";
 
+type Props = {
+  openModal: any;
+  yearlyYield: number;
+  yearlyYieldFormatted: string;
+};
 export default function ImpactInset({
   openModal,
   yearlyYield,
   yearlyYieldFormatted,
-}) {
+}: Props) {
   const [style, setStyle] = useState({
     opacity: "0",
     transition: "all 1s",
@@ -21,13 +26,6 @@ export default function ImpactInset({
         opacity: "1",
       });
     }, 500);
-    const scrollTimer = setTimeout(() => {
-      setStyle({
-        ...style,
-        opacity: "1",
-        transform: "translateY(0px)",
-      });
-    }, 1800);
   }, []);
   return (
     <div className="m-1">

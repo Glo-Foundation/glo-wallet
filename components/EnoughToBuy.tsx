@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { getImpactItems, isLiftPersonOutOfPovertyImpactItem } from "@/utils";
 
-import type { getImpactItem } from "@/utils";
+import type { GetImpactItem } from "@/utils";
 
 type Props = {
   yearlyYield: number;
@@ -38,7 +38,7 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
     };
   }, []);
 
-  const renderImpactItemList = (impactItemList: getImpactItem[]) =>
+  const renderImpactItemList = (impactItemList: GetImpactItem[]) =>
     yearlyImpactItems.map((item, idx) => (
       <li key={`eb-idx${idx}`}>
         {item.emoji} &#10005; {item.count}
