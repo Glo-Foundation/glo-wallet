@@ -17,8 +17,14 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
     ));
 
   return (
-    <ul className="animated-impact-list">
-      {renderImpactItemList(yearlyImpactItems)}
-    </ul>
+    <div className="animated-impact-list">
+      <ul
+        style={{
+          transform: `translateY(-${(yearlyImpactItems.length - 1) * 24}px)`,
+        }}
+      >
+        {renderImpactItemList(yearlyImpactItems)}
+      </ul>
+    </div>
   );
 }
