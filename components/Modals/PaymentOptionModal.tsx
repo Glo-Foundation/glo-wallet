@@ -35,7 +35,9 @@ export default function PaymentOptionModal() {
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <Link href={"/ratio"}>GO TO RATIO (NEW PAGE)</Link>
+      <Link href={"/ratio"} target="_blank">
+        GO TO RATIO (NEW PAGE)
+      </Link>
 
       {isConnected && (
         <RatioButton

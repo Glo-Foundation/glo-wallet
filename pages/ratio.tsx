@@ -36,7 +36,7 @@ export default function RatioPage() {
       <Link href={"/"}>GO BACK</Link>
       {isConnected && (
         <RatioButton
-          text="Buy with Ratio"
+          text="Continue with Ratio"
           fetchSessionToken={async () => {
             if (isConnected) {
               return await fetchSessionToken();
