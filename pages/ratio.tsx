@@ -1,18 +1,22 @@
 import { RatioButton } from "@ratio.me/ratiokit-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useAccount, useNetwork, useSignMessage } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { api } from "@/lib/utils";
 
-export default function PaymentOptionModal() {
+export default function RatioPage() {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const { signMessageAsync } = useSignMessage();
 
   const { closeModal } = useContext(ModalContext);
+
+  useEffect(() => {
+    closeModal();
+  }, []);
 
   const fetchSessionToken = useCallback(async (): Promise<string | null> => {
     try {
@@ -29,17 +33,10 @@ export default function PaymentOptionModal() {
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900">
-      <div className="flex flex-row justify-between">
-        <div></div>
-        <button className="" onClick={() => closeModal()}>
-          <Image alt="x" src="/x.svg" height={16} width={16} />
-        </button>
-      </div>
-      <Link href={"/ratio"}>GO TO RATIO (NEW PAGE)</Link>
-
+      <Link href={"/"}>GO BACK</Link>
       {isConnected && (
         <RatioButton
-          text="Buy with Ratio (MODAL)"
+          text="Buy with Ratio"
           fetchSessionToken={async () => {
             if (isConnected) {
               return await fetchSessionToken();
