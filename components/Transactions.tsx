@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState, useContext } from "react";
-import { useAccount, useNetwork } from "wagmi";
-import { useConnect } from "wagmi";
+import { useAccount, useConnect, useNetwork } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
@@ -44,45 +43,53 @@ export default function Transactions() {
           )}
         </button>
       </div>
-      {dropdown === "list-item" && transfers.length ? (
-        <ul className={`mt-12 ${dropdown}`}>
-          <TransactionsList txns={transfers.slice(0, 5)} />
-          {transfersCursor && (
-            <li
-              onClick={() => openModal(<AllTransactionsModal />)}
-              className="underline cursor-pointer"
+      <div
+        className={`${
+          isConnected && !transfers.length
+            ? "mt-6 max-h-6 opacity-100"
+            : "max-h-0 invisible opacity-0"
+        }
+        text-sm transition-all duration-500`}
+      >
+        <span> No transactions yet - </span>
+        <button
+          className="inline cursor-pointer hover:decoration-solid text-blue-500"
+          onClick={() => openModal(<BuyGloModal />)}
+        >
+          buy some Glo?
+        </button>
+      </div>
+      <ul
+        className={`${
+          dropdown === "list-item" && transfers.length
+            ? "max-h-[414px] mt-12 opacity-100"
+            : "max-h-0 invisible opacity-0"
+        }
+        transition-all duration-500`}
+      >
+        <TransactionsList txns={transfers.slice(0, 5)} />
+        {transfersCursor && (
+          <li
+            onClick={() => openModal(<AllTransactionsModal />)}
+            className="underline cursor-pointer"
+          >
+            View all transactions
+          </li>
+        )}
+      </ul>
+      <>
+        {!isConnected && (
+          <div className="mt-3 text-sm">
+            <span> No transactions to show - </span>
+            <button
+              className="inline cursor-pointer hover:decoration-solid text-blue-500"
+              onClick={() => openModal(<UserAuthModal />, "bg-transparent")}
             >
-              View all transactions
-            </li>
-          )}
-        </ul>
-      ) : (
-        <>
-          {!isConnected && (
-            <div className="mt-3 text-sm">
-              <span> No transactions to show - </span>
-              <button
-                className="inline cursor-pointer hover:decoration-solid text-blue-500"
-                onClick={() => openModal(<UserAuthModal />, "bg-transparent")}
-              >
-                please log in
-              </button>
-            </div>
-          )}
-
-          {isConnected && !transfers.length && (
-            <div className="mt-6 text-sm">
-              <span> No transactions yet - </span>
-              <button
-                className="inline cursor-pointer hover:decoration-solid text-blue-500"
-                onClick={() => openModal(<BuyGloModal />)}
-              >
-                buy some Glo?
-              </button>
-            </div>
-          )}
-        </>
-      )}
+              please log in
+            </button>
+          </div>
+        )}
+      </>
     </div>
   );
 }
