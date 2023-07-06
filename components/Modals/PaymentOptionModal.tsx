@@ -16,6 +16,7 @@ export default function PaymentOptionModal() {
     const bc = new BroadcastChannel("glo-channel-purchased");
     bc.onmessage = () => {
       console.log("Popup closed - reloading...");
+      // Refetch balance, ctas etc.
     };
   }, []);
 
