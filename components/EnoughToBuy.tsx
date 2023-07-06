@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAccount } from "wagmi";
 
 import { getImpactItems, isLiftPersonOutOfPovertyImpactItem } from "@/utils";
 
@@ -12,31 +13,40 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
   const enoughToLiftPersonOutOfPoverty =
     yearlyImpactItems[0] &&
     isLiftPersonOutOfPovertyImpactItem(yearlyImpactItems[0]);
+  const impactItemOffset = (yearlyImpactItems.length - 1) * 24;
   const [style, setStyle] = useState({
-    transform: `translateY(-${(yearlyImpactItems.length - 1) * 24}px)`,
+    transform: `translateY(-${impactItemOffset}px)`,
     opacity: "0",
     transition: "all 1s",
   });
+  const { isConnected } = useAccount();
   useEffect(() => {
-    const fadeinTimer = setTimeout(() => {
-      setStyle({
-        ...style,
-        opacity: "1",
-      });
-    }, 500);
-    const scrollTimer = setTimeout(() => {
-      setStyle({
-        ...style,
-        opacity: "1",
-        transform: "translateY(0px)",
-      });
-    }, 1800);
+    if (isConnected) {
+      const fadeinTimer = setTimeout(() => {
+        setStyle({
+          ...style,
+          opacity: "1",
+        });
+      }, 500);
+      const scrollTimer = setTimeout(() => {
+        setStyle({
+          ...style,
+          opacity: "1",
+          transform: "translateY(0px)",
+        });
+      }, 1800);
 
-    return () => {
-      clearTimeout(fadeinTimer);
-      clearTimeout(scrollTimer);
-    };
-  }, []);
+      return () => {
+        setStyle({
+          transform: `translateY(-${impactItemOffset}px)`,
+          opacity: "0",
+          transition: "all 1s",
+        });
+        clearTimeout(fadeinTimer);
+        clearTimeout(scrollTimer);
+      };
+    }
+  }, [isConnected]);
 
   const renderImpactItemList = (impactItemList: GetImpactItem[]) =>
     yearlyImpactItems.map((item, idx) => (
@@ -47,9 +57,7 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
 
   return (
     <div className="animated-impact-list">
-      <ul className="opaque descroll" style={style}>
-        {renderImpactItemList(yearlyImpactItems)}
-      </ul>
+      <ul style={style}>{renderImpactItemList(yearlyImpactItems)}</ul>
     </div>
   );
 }
