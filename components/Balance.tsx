@@ -36,7 +36,7 @@ export default function Balance({
   if (fmtBalanceCentPart?.length === 1) fmtBalanceCentPart += "0";
 
   return (
-    <div className="bg-white rounded-[20px] pt-4">
+    <div className="bg-white rounded-[20px] pt-4 transition-all" style={{}}>
       <div className="flex flex-col space-y-2 p-4">
         <div className="self-center text-sm text-pine-700/90 mb-1.5">
           Balance
@@ -48,12 +48,30 @@ export default function Balance({
           </div>
         </div>
       </div>
-      {isConnected && <Actions />}
-      <ImpactInset
-        openModal={openModal}
-        yearlyYield={yearlyYield}
-        yearlyYieldFormatted={yearlyYieldFormatted}
-      />
+      <div
+        className={`${
+          isConnected
+            ? "max-h-[88px] px-4 mt-4 mb-8 opacity-100"
+            : "max-h-[0px] opacity-0 invisible"
+        }
+        transition-all duration-1000`}
+      >
+        <Actions />
+      </div>
+      <div
+        className={`${
+          isConnected
+            ? "max-h-[88px] opacity-100"
+            : "max-h-[0px] opacity-0 invisible"
+        }
+        transition-all duration-1000`}
+      >
+        <ImpactInset
+          openModal={openModal}
+          yearlyYield={yearlyYield}
+          yearlyYieldFormatted={yearlyYieldFormatted}
+        />
+      </div>
     </div>
   );
 }
