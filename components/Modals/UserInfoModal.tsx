@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useContext } from "react";
@@ -17,6 +18,8 @@ export default function UserInfoModal({ address }: Props) {
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs } = useUserStore();
+
+  const email = Cookies.get("glo-email");
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -72,6 +75,15 @@ export default function UserInfoModal({ address }: Props) {
               <Image src={`/copy.svg`} height={15} width={15} alt="" />
             </button>
           </div>
+
+          {email && (
+            <>
+              <h5 className="mt-6">Email:</h5>
+              <div className="copy pseudo-input-text text-sm">
+                <span>{email}</span>
+              </div>
+            </>
+          )}
         </div>
       </section>
       <section className="mt-8 flex justify-end">
