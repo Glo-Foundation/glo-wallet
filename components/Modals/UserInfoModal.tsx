@@ -58,14 +58,10 @@ export default function UserInfoModal({ address }: Props) {
           <h5 className="mt-6">Wallet Address:</h5>
           <div className="copy pseudo-input-text text-sm">
             <span>{sliceAddress(address!, 9)}</span>
-            <Tooltip
-              anchorId="copy-deposit-address"
-              content="Copied!"
-              noArrow={true}
-              isOpen={isCopiedTooltipOpen}
-            />
+            <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
             <button
-              id="copy-deposit-address"
+              data-tooltip-id="copy-deposit-tooltip"
+              data-tooltip-content="Copied!"
               className="pl-2"
               onClick={() => {
                 navigator.clipboard.writeText(address!);

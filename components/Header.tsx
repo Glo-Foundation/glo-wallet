@@ -43,13 +43,13 @@ export default function Header() {
       ) : isConnected ? (
         <div className="flex">
           <Tooltip
-            anchorId="copy-wallet-address"
+            id="copy-wallet-tooltip"
             content="Copied!"
-            noArrow={true}
             isOpen={isCopiedTooltipOpen}
           />
           <button
-            id={"copy-wallet-address"}
+            data-tooltip-id="copy-wallet-tooltip"
+            data-tooltip-content="Copied!"
             className="text-sm text-pine-800 mr-3 font-normal"
             onClick={() => {
               navigator.clipboard.writeText(address!);
