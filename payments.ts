@@ -7,7 +7,7 @@ export const buyWithTransak = (address: string) => {
 
   window.open(
     `${process.env.NEXT_PUBLIC_TRANSAK_URL}&${params}`,
-    "twitter-oauth2",
+    "transak",
     POPUP_PROPS
   );
 };
