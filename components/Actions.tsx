@@ -100,6 +100,7 @@ export default function Actions() {
 
   const buy = async () => {
     // TEMP replaced
+    // openModal(<BuyGloModal />);
     openModal(<PaymentOptionModal />, "payment-dialog");
   };
 

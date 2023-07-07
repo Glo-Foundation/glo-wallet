@@ -117,6 +117,8 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const setModalClass = (className = "") => setModalClassName(className);
 
+  // Might be redundant after adjusting global css
+  // margin: 0 auto 40px !important;
   const isPaymentDialogOpen = modalClassName.includes("payment-dialog");
 
   return (
@@ -137,9 +139,9 @@ export default function App({ Component, pageProps }: AppProps) {
               >
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
-              {isPaymentDialogOpen && <RatioWrapper />}
             </ModalContext.Provider>
             <Toast />
+            {isPaymentDialogOpen && <RatioWrapper />}
           </WagmiConfig>
         )}
       </main>

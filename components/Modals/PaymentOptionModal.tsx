@@ -42,7 +42,7 @@ export default function PaymentOptionModal() {
           >
             Buy with Ratio
           </button>
-          <button onClick={() => buyWithTransak(address)}>
+          <button onClick={() => buyWithTransak(1000, address)}>
             Buy with Transak
           </button>
         </>
