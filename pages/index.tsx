@@ -1,3 +1,4 @@
+import "react-tooltip/dist/react-tooltip.css";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useState, useEffect, useContext } from "react";

@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "react-tooltip/dist/react-tooltip.css";
 import localFont from "@next/font/local";
 import {
   goerli,
