@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "react-tooltip/dist/react-tooltip.css";
 import localFont from "@next/font/local";
 import {
   goerli,
@@ -15,6 +16,7 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import Analytics from "@/components/Analytics";
 import RatioWrapper from "@/components/RatioWrapper";
+import Toast from "@/components/Toast";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
@@ -137,6 +139,7 @@ export default function App({ Component, pageProps }: AppProps) {
               </dialog>
               {isPaymentDialogOpen && <RatioWrapper />}
             </ModalContext.Provider>
+            <Toast />
           </WagmiConfig>
         )}
       </main>

@@ -6,7 +6,6 @@ import * as cache from "@/lib/cache";
 import { getMarketCap } from "@/lib/utils";
 
 const CACHE_KEY = "market-cap";
-
 export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse

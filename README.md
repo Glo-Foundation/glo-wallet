@@ -39,3 +39,12 @@ For transparency, please tag each feature request with one of the following:
 3. Friction reduction
 4. Community activation
 5. Lovable
+
+## Styleguide
+
+We use Tailwind for styling. As a rule of thumb we use use **component scoped styling** per [Tailwind guidelines](https://tailwindcss.com/docs/adding-custom-styles#layers-and-per-component-css). That means you can do the following:
+
+- use inline styling for each React component
+- add a reusable Tailwind component directive in `globals.css`
+
+_Avoid modifying the @base layer in `globals.css` (such as `span`, `p`, etc.) unless absolutely necessary. If doing so, make sure to smoke test element in app thoroughly to catch breaking changes._

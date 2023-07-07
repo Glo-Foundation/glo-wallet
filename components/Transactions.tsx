@@ -20,23 +20,19 @@ export default function Transactions() {
   const [caretDir, setCaretDir] = useState("down");
   const { openModal } = useContext(ModalContext);
 
-  useEffect(() => {
-    if (transfers.length && isConnected) {
-      setDropdown("list-item");
-      setCaretDir("up");
-    }
-  }, [transfers]);
-
   const toggleDropdown = () => {
     dropdown === "list-item" ? setDropdown("hidden") : setDropdown("list-item");
     caretDir === "up" ? setCaretDir("down") : setCaretDir("up");
   };
 
   return (
-    <div className="bg-white rounded-[20px] p-8 transition-all">
+    <div
+      className="bg-white rounded-[20px] p-8 transition-all"
+      onClick={toggleDropdown}
+    >
       <div className="flex justify-between cursor-default">
         <h3>Transactions</h3>
-        <button onClick={toggleDropdown}>
+        <button>
           {isConnected && (
             <Image
               className="cursor-pointer"

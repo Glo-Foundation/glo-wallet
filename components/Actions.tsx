@@ -3,12 +3,14 @@ import { utils } from "ethers";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useAccount } from "wagmi";
 import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
+import { useToastStore } from "@/lib/store";
+import { sliceAddress } from "@/lib/utils";
 
 import PaymentOptionModal from "./Modals/PaymentOptionModal";
 
@@ -17,8 +19,7 @@ const SendForm = ({ close }: { close: () => void }) => {
     address: "",
     amount: "",
   });
-  const [message, setMessage] = useState<string>();
-
+  const [setShowToast] = useToastStore((state) => [state.setShowToast]);
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
@@ -34,11 +35,15 @@ const SendForm = ({ close }: { close: () => void }) => {
       });
       const { hash } = await writeContract(request);
       if (hash) {
-        setMessage(`Sent with hash ${hash}`);
+        setShowToast({
+          showToast: true,
+          message: `Sent with hash ${sliceAddress(hash, 8)}`,
+        });
       }
     } catch (err: any) {
-      setMessage(err.message);
+      setShowToast({ showToast: true, message: err.message.split(".")[0] });
     }
+    close();
   };
   return (
     <form className="flex flex-col w-[275px]" onSubmit={handleSubmit}>
@@ -83,7 +88,6 @@ const SendForm = ({ close }: { close: () => void }) => {
         />
       </div>
       <button className="mt-4 primary-button">Send</button>
-      {message && <div>{message}</div>}
     </form>
   );
 };
