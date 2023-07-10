@@ -8,6 +8,9 @@ import { getChainRPCUrl, getSmartContractAddress } from "./config";
 export const sliceAddress = (address: string, amt = 3) =>
   `${address?.slice(0, amt + 2)}...${address?.slice(amt * -1)}`;
 
+export const lastSliceAddress = (address: string | string[], amt = 4) =>
+  `${address?.slice(amt * -1)}`;
+
 export let apiInstance: AxiosInstance;
 let apiInstanceWallet = "";
 
