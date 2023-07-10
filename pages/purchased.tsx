@@ -5,7 +5,7 @@ export default function PurchasedCallback() {
   useEffect(() => {
     const bc = new BroadcastChannel("glo-channel-purchased");
     bc.postMessage({ success: true });
-    window.close();
+    // window.close();
   }, []);
 
   // Fallback in case window is not closed automagically
