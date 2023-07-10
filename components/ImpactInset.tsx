@@ -1,3 +1,4 @@
+import { loadAnimation } from "lottie-web";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
@@ -25,6 +26,14 @@ export default function ImpactInset({
         ...style,
         opacity: "1",
       });
+      const logoContainer = document.getElementById("spinny-logo");
+      loadAnimation({
+        container: logoContainer,
+        renderer: "html",
+        loop: true,
+        autoplay: true,
+        path: "/Glo_Logo Animation_LightGrey_Symbol.mp4.lottie.json",
+      });
     }, 500);
   }, []);
   return (
@@ -38,13 +47,14 @@ export default function ImpactInset({
         </div>
         <div className="flex w-full justify-between items-center space-y-2">
           <div className="flex items-center" style={style}>
-            <Image
-              className="pb-[2px] mr-2"
-              src="/glo-logo.svg"
-              alt="glo"
-              height={28}
-              width={28}
-            />
+            <div id="spinny-logo" className="h-[28px] w-[28-px]" />
+            {/* <Image */}
+            {/*   className="pb-[2px] mr-2" */}
+            {/*   src="/glo-logo.svg" */}
+            {/*   alt="glo" */}
+            {/*   height={28} */}
+            {/*   width={28} */}
+            {/* /> */}
             {yearlyYieldFormatted} / year
           </div>
           <EnoughToBuy yearlyYield={yearlyYield} />

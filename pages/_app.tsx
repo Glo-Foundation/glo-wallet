@@ -9,6 +9,7 @@ import {
   Chain,
 } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
+import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
@@ -135,6 +136,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </WagmiConfig>
         )}
       </main>
+      <Script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" />
     </>
   );
 }
