@@ -15,8 +15,7 @@ import { configureChains } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
-
-import { isProd } from "../../lib/utils";
+import { isProd } from "@/lib/utils";
 
 const TOS_COOKIE = "tos-agreed";
 
