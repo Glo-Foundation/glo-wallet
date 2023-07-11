@@ -1,3 +1,4 @@
+import { motion, useAnimate, stagger } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 
@@ -13,38 +14,17 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
   const enoughToLiftPersonOutOfPoverty =
     yearlyImpactItems[0] &&
     isLiftPersonOutOfPovertyImpactItem(yearlyImpactItems[0]);
-  const impactItemOffset = (yearlyImpactItems.length - 1) * 24;
-  const [style, setStyle] = useState({
-    transform: `translateY(-${impactItemOffset}px)`,
-    opacity: "0",
-    transition: "all 1s",
-  });
+  const impactItemOffset = (yearlyImpactItems.length - 1) * -24;
+  const [scope, animate] = useAnimate();
   const { isConnected } = useAccount();
+
   useEffect(() => {
     if (isConnected) {
-      const fadeinTimer = setTimeout(() => {
-        setStyle({
-          ...style,
-          opacity: "1",
-        });
-      }, 500);
-      const scrollTimer = setTimeout(() => {
-        setStyle({
-          ...style,
-          opacity: "1",
-          transform: "translateY(0px)",
-        });
-      }, 1800);
-
-      return () => {
-        setStyle({
-          transform: `translateY(-${impactItemOffset}px)`,
-          opacity: "0",
-          transition: "all 1s",
-        });
-        clearTimeout(fadeinTimer);
-        clearTimeout(scrollTimer);
+      const animation = async () => {
+        await animate("ul", { opacity: 1 }, { duration: 1, delay: 0.5 });
+        animate("ul", { y: "0px" }, { duration: 1 });
       };
+      animation();
     }
   }, [isConnected]);
 
@@ -56,8 +36,10 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
     ));
 
   return (
-    <div className="animated-impact-list">
-      <ul style={style}>{renderImpactItemList(yearlyImpactItems)}</ul>
+    <div ref={scope} className="animated-impact-list">
+      <motion.ul initial={{ y: `${impactItemOffset}px`, opacity: "0" }}>
+        {renderImpactItemList(yearlyImpactItems)}
+      </motion.ul>
     </div>
   );
 }
