@@ -1,4 +1,4 @@
-import { motion, useAnimate, stagger } from "framer-motion";
+import { motion, useAnimate } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 
@@ -17,13 +17,12 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
   const impactItemOffset = (yearlyImpactItems.length - 1) * -24;
   const [scope, animate] = useAnimate();
   const { isConnected } = useAccount();
-  const animation = async () => {
-    await animate("ul", { opacity: 1 }, { duration: 1 });
-    animate("ul", { y: "0px" }, { duration: 1.5, ease: "easeInOut" });
-  };
-
   useEffect(() => {
     if (isConnected) {
+      const animation = async () => {
+        await animate("ul", { opacity: 1 }, { duration: 1 });
+        animate("ul", { y: "0px" }, { duration: 1.25, ease: "easeInOut" });
+      };
       animation();
     }
   }, [isConnected]);
@@ -37,12 +36,11 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
 
   return (
     <div ref={scope} className="animated-impact-list">
-      <motion.ul
-        initial={{ y: `${impactItemOffset}px`, opacity: "0" }}
-        style={{ y: `${impactItemOffset}px`, opacity: "0" }}
-      >
-        {renderImpactItemList(yearlyImpactItems)}
-      </motion.ul>
+      {isConnected && (
+        <motion.ul initial={{ y: `${impactItemOffset}px`, opacity: "0" }}>
+          {renderImpactItemList(yearlyImpactItems)}
+        </motion.ul>
+      )}
     </div>
   );
 }
