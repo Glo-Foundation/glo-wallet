@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect } from "react";
 import { useAccount } from "wagmi";
@@ -19,8 +20,16 @@ export default function PaymentOptionModal() {
     };
   }, []);
 
-  const Double = ({ label, value }: { label: string; value: string }) => (
-    <div className="mr-5">
+  const Double = ({
+    label,
+    value,
+    className,
+  }: {
+    label: string;
+    value: string;
+    className: string;
+  }) => (
+    <div className={clsx("mr-5", className)}>
       <div className="text-pine-700 font-bold">{label}</div>
       <div className="text-black font-bold"> {value}</div>
     </div>
@@ -51,9 +60,9 @@ export default function PaymentOptionModal() {
         <h3 className="px-3">{name}</h3>
       </div>
       <div className="flex">
-        <Double label="Fees" value={`${fees}%`} />
-        <Double label="Works for" value={worksFor} />
-        <Double label="Delay" value={delay} />
+        <Double className="min-w-[15%]" label="Fees" value={`${fees}%`} />
+        <Double className="min-w-[40%]" label="Works for" value={worksFor} />
+        <Double className="min-w-[40%]" label="Delay" value={delay} />
       </div>
     </div>
   );
