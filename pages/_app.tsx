@@ -15,6 +15,7 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import Analytics from "@/components/Analytics";
+import RatioWrapper from "@/components/RatioWrapper";
 import Toast from "@/components/Toast";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
@@ -114,6 +115,12 @@ export default function App({ Component, pageProps }: AppProps) {
     dialogRef.current?.close();
   };
 
+  const setModalClass = (className = "") => setModalClassName(className);
+
+  // Might be redundant after adjusting global css
+  // margin: 0 auto 40px !important;
+  const isPaymentDialogOpen = modalClassName.includes("payment-dialog");
+
   return (
     <>
       <Analytics />
@@ -122,7 +129,9 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         {isMounted && (
           <WagmiConfig config={config}>
-            <ModalContext.Provider value={{ openModal, closeModal }}>
+            <ModalContext.Provider
+              value={{ openModal, closeModal, setModalClass }}
+            >
               <Component {...pageProps} />
               <dialog
                 ref={dialogRef}
@@ -132,6 +141,7 @@ export default function App({ Component, pageProps }: AppProps) {
               </dialog>
             </ModalContext.Provider>
             <Toast />
+            {isPaymentDialogOpen && <RatioWrapper />}
           </WagmiConfig>
         )}
       </main>
