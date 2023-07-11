@@ -21,8 +21,8 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
   useEffect(() => {
     if (isConnected) {
       const animation = async () => {
-        await animate("ul", { opacity: 1 }, { duration: 1, delay: 0.5 });
-        animate("ul", { y: "0px" }, { duration: 1 });
+        await animate("ul", { opacity: 1 }, { duration: 1 });
+        animate("ul", { y: "0px" }, { duration: 1.5, ease: "easeInOut" });
       };
       animation();
     }

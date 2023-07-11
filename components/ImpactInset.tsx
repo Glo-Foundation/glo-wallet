@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
@@ -15,18 +16,6 @@ export default function ImpactInset({
   yearlyYield,
   yearlyYieldFormatted,
 }: Props) {
-  const [style, setStyle] = useState({
-    opacity: "0",
-    transition: "all 1s",
-  });
-  useEffect(() => {
-    const fadeinTimer = setTimeout(() => {
-      setStyle({
-        ...style,
-        opacity: "1",
-      });
-    }, 500);
-  }, []);
   return (
     <div className="m-1">
       <button
@@ -37,7 +26,12 @@ export default function ImpactInset({
           <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-32"></div>
         </div>
         <div className="flex w-full justify-between items-center space-y-2">
-          <div className="flex items-center" style={style}>
+          <motion.div
+            className="flex items-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
             <Image
               className="pb-[2px] mr-2"
               src="/glo-logo.svg"
@@ -46,7 +40,7 @@ export default function ImpactInset({
               width={28}
             />
             {yearlyYieldFormatted} / year
-          </div>
+          </motion.div>
           <EnoughToBuy yearlyYield={yearlyYield} />
         </div>
       </button>
