@@ -70,10 +70,7 @@ export default function Transactions() {
         </button>
       </div>
       <motion.ul variants={variants}>
-        <TransactionsList
-          txns={transfers.slice(0, 5)}
-          transfersCursor={transfersCursor}
-        />
+        <TransactionsList txns={transfers.slice(0, 5)} />
         {transfersCursor && (
           <motion.li
             onClick={() => openModal(<AllTransactionsModal />)}

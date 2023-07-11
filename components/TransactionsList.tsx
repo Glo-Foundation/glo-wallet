@@ -14,7 +14,7 @@ export default function TransactionsList({ txns }: { txns: Transfer[] }) {
     },
   };
 
-  const renderTxns = (txns: Transfer[], transfersCursor: any) =>
+  const renderTxns = (txns: Transfer[]) =>
     txns.map((txn, idx) => {
       const dateTokens = new Date(txn.ts).toDateString().split(" ");
       const txnDate = dateTokens[1] + " " + dateTokens[2];

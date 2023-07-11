@@ -17,13 +17,13 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
   const impactItemOffset = (yearlyImpactItems.length - 1) * -24;
   const [scope, animate] = useAnimate();
   const { isConnected } = useAccount();
+  const animation = async () => {
+    await animate("ul", { opacity: 1 }, { duration: 1 });
+    animate("ul", { y: "0px" }, { duration: 1.5, ease: "easeInOut" });
+  };
 
   useEffect(() => {
     if (isConnected) {
-      const animation = async () => {
-        await animate("ul", { opacity: 1 }, { duration: 1 });
-        animate("ul", { y: "0px" }, { duration: 1.5, ease: "easeInOut" });
-      };
       animation();
     }
   }, [isConnected]);
