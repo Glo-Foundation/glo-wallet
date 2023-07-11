@@ -73,6 +73,14 @@ export default function PaymentOptionModal() {
       {isConnected && address && (
         <>
           <BuyBox
+            name="Uniswap"
+            icon="/uniswap.png"
+            fees=".01"
+            worksFor="🔐 Crypto"
+            delay="⚡ Instant"
+            onClick={() => buyWithUniswap(1000)}
+          />
+          <BuyBox
             name="Ratio"
             icon="/ratio.png"
             fees="0"
@@ -90,19 +98,11 @@ export default function PaymentOptionModal() {
           <BuyBox
             name="Transak"
             icon="/transak.png"
-            fees="0"
+            fees="1-5"
             worksFor="🇺🇸 US citizens"
-            delay="Up to 3 days"
-            onClick={() => buyWithTransak(1000, address)}
-          />{" "}
-          <BuyBox
-            name="Uniswap"
-            icon="/uniswap.png"
-            fees=".01"
-            worksFor="🔐 Crypto"
             delay="⚡ Instant"
-            onClick={() => buyWithUniswap(1000)}
-          />{" "}
+            onClick={() => buyWithTransak(1000, address)}
+          />
           <BuyBox
             name="Coinbase"
             icon="/coinbase.png"
