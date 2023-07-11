@@ -99,9 +99,7 @@ export default function Actions() {
   const { asPath, push } = useRouter();
 
   const buy = async () => {
-    // TEMP replaced
-    // openModal(<BuyGloModal />);
-    openModal(<PaymentOptionModal />, "payment-dialog");
+    openModal(<BuyGloModal />);
   };
 
   useEffect(() => {
