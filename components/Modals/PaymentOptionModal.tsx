@@ -20,7 +20,7 @@ export default function PaymentOptionModal() {
   }, []);
 
   const Double = ({ label, value }: { label: string; value: string }) => (
-    <div className="mr-3">
+    <div className="mr-5">
       <div className="text-pine-700 font-bold">{label}</div>
       <div className="text-black font-bold"> {value}</div>
     </div>

@@ -12,8 +12,6 @@ import { ModalContext } from "@/lib/context";
 import { useToastStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
-import PaymentOptionModal from "./Modals/PaymentOptionModal";
-
 const SendForm = ({ close }: { close: () => void }) => {
   const [sendForm, setSendForm] = useState({
     address: "",
