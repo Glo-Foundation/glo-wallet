@@ -37,7 +37,10 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
 
   return (
     <div ref={scope} className="animated-impact-list">
-      <motion.ul initial={{ y: `${impactItemOffset}px`, opacity: "0" }}>
+      <motion.ul
+        initial={{ y: `${impactItemOffset}px`, opacity: "0" }}
+        style={{ y: `${impactItemOffset}px`, opacity: "0" }}
+      >
         {renderImpactItemList(yearlyImpactItems)}
       </motion.ul>
     </div>
