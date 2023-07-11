@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
-import localFont from "@next/font/local";
 import {
   goerli,
   polygon,
@@ -9,6 +8,7 @@ import {
   Chain,
 } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
+import localFont from "next/font/local";
 import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
