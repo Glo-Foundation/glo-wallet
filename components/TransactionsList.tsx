@@ -1,10 +1,29 @@
-export const TransactionsList = ({ txns }: { txns: Transfer[] }) => (
-  <>
-    {txns.map((txn, idx) => {
+import { motion } from "framer-motion";
+
+export default function TransactionsList({ txns }: { txns: Transfer[] }) {
+  const variants = {
+    open: {
+      x: 0,
+      opacity: 1,
+      transition: { y: { stiffness: 1000, velocity: -100 } },
+    },
+    closed: {
+      x: 50,
+      opacity: 0,
+      transition: { y: { stiffness: 1000 } },
+    },
+  };
+
+  const renderTxns = (txns: Transfer[]) =>
+    txns.map((txn, idx) => {
       const dateTokens = new Date(txn.ts).toDateString().split(" ");
       const txnDate = dateTokens[1] + " " + dateTokens[2];
       return (
-        <li key={`txn-${idx}`} className="transaction-item">
+        <motion.li
+          key={`txn-${idx}`}
+          className="transaction-item"
+          variants={variants}
+        >
           <div>
             <p>
               {txn.type === "outgoing" ? "Sent to " : "Received from"}{" "}
@@ -23,8 +42,8 @@ export const TransactionsList = ({ txns }: { txns: Transfer[] }) => (
               </span>
             </b>
           </div>
-        </li>
+        </motion.li>
       );
-    })}
-  </>
-);
+    });
+  return <>{renderTxns(txns)}</>;
+}

@@ -128,7 +128,7 @@ export default function CTA({ balance }: { balance?: string }) {
   };
 
   return (
-    <div className="bg-pine-50 rounded-[20px] p-6 transition-all">
+    <div className="bg-pine-50 rounded-[20px] p-6">
       <div className="flex justify-between cursor-default">
         <h3>🌟 Help Grow Glo!</h3>
       </div>

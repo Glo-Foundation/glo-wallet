@@ -6,7 +6,7 @@ import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 import { api } from "@/lib/utils";
 
-import { TransactionsList } from "../TransactionsList";
+import TransactionsList from "../TransactionsList";
 
 export default function AllTransactionsModal() {
   const { chain } = useNetwork();
