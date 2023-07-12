@@ -28,7 +28,7 @@ const nextConfig = {
         source: "/api/market-cap",
         headers: [
           // Replace with glodollar.org
-          { key: "Access-Control-Allow-Origin", value: "*.webflow.io" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
         ],
       },
     ];
