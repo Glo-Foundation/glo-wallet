@@ -15,6 +15,7 @@ type Transfer = {
   value: number | string;
   from: string;
   to: string;
+  hash: string;
 };
 
 type TransfersPage = {
