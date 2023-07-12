@@ -26,6 +26,7 @@ export default async function handler(
     BigNumber.from(0)
   );
 
+  // Add formatting
   const value = utils.formatEther(totalMarketCap).split(".")[0];
 
   cache.set(CACHE_KEY, value, 5 * 60);
