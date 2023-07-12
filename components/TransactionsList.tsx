@@ -1,7 +1,9 @@
-import Link from "next/link";
+import { useContext } from "react";
 
-import { getChainExplorerUrl } from "@/lib/config";
+import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
+
+import TransactionDetailsModal from "./Modals/TransactionDetailsModal";
 
 export const TransactionsList = ({
   txns,
@@ -9,30 +11,43 @@ export const TransactionsList = ({
 }: {
   txns: Transfer[];
   chain: number;
-}) => (
-  <>
-    {txns.map((txn, idx) => {
-      const dateTokens = new Date(txn.ts).toDateString().split(" ");
-      const txnDate = dateTokens[1] + " " + dateTokens[2];
-      const scannerUrl = getChainExplorerUrl(chain);
-      const counterParty = txn.type === "outgoing" ? txn.to : txn.from;
-      return (
-        <li key={`txn-${idx}`} className="transaction-item">
-          <div>
-            <Link
-              href={`${scannerUrl}/address/${counterParty}`}
-              target="_blank"
-            >
+}) => {
+  const { openModal } = useContext(ModalContext);
+
+  return (
+    <>
+      {txns.map((txn, idx) => {
+        const dateTokens = new Date(txn.ts).toDateString().split(" ");
+        const txnDate = dateTokens[1] + " " + dateTokens[2];
+
+        const counterParty = txn.type === "outgoing" ? txn.to : txn.from;
+        return (
+          <li
+            key={`txn-${idx}`}
+            className="transaction-item"
+            onClick={() =>
+              openModal(
+                <TransactionDetailsModal
+                  chain={chain}
+                  type={txn.type}
+                  ts={txn.ts}
+                  value={txn.value.toString()}
+                  from={txn.from}
+                  to={txn.to}
+                  hash={txn.hash}
+                />
+              )
+            }
+          >
+            <div>
               <p>
                 {txn.type === "outgoing" ? "Sent to " : "Received from"}{" "}
                 {sliceAddress(counterParty)}
               </p>
               <p className="copy">{txnDate}</p>
-            </Link>
-          </div>
-          <div>
-            <b>
-              <Link href={`${scannerUrl}/tx/${txn.hash}`} target="_blank">
+            </div>
+            <div>
+              <b>
                 <span>{txn.type === "outgoing" ? "-" : "+"}</span>
                 <span>
                   {new Intl.NumberFormat("en-En", {
@@ -40,11 +55,11 @@ export const TransactionsList = ({
                     currency: "USD",
                   }).format(txn.value as number)}
                 </span>
-              </Link>
-            </b>
-          </div>
-        </li>
-      );
-    })}
-  </>
-);
+              </b>
+            </div>
+          </li>
+        );
+      })}
+    </>
+  );
+};
