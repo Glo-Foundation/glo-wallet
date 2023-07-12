@@ -14,7 +14,7 @@ export default async function handler(
   const cached = cache.get(CACHE_KEY);
 
   if (cached) {
-    return res.status(200).json(Number(cached));
+    return res.status(200).end(cached);
   }
 
   const result = await Promise.all([
