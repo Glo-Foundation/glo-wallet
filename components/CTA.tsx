@@ -8,25 +8,12 @@ import { useUserStore } from "@/lib/store";
 import { DEFAULT_CTAS } from "@/lib/utils";
 import { getImpactItems, getTotalYield } from "@/utils";
 
-import { AnimatedCheckIcon } from "./AnimatedCheckIcon";
+import { CompletedIcon } from "./CompletedIcon";
 import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
   <button className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
     <Image src={path} width={16} height={16} alt="call to action" />
-  </button>
-);
-
-const CompletedIcon = ({ path }: { path: string }) => (
-  <button className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-cyan-600 relative">
-    <Image src={path} width={16} height={16} alt="call to action" />
-    <Image
-      src="checkmark.svg"
-      width={16}
-      height={16}
-      alt="call to action"
-      className="absolute -top-1 -right-1"
-    />
   </button>
 );
 
@@ -52,7 +39,7 @@ const ActionButton = ({
       rel="noreferrer"
     >
       {ctaData.isCompleted ? (
-        <CompletedIcon path={cta.iconPath} />
+        <CompletedIcon name={`cta-${ctaData.type}`} path={cta.iconPath} />
       ) : (
         <Icon path={cta.iconPath} />
       )}

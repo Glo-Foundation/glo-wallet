@@ -1,6 +1,7 @@
 import confetti from "canvas-confetti";
 import { motion, useAnimation, useInView } from "framer-motion";
 import Cookies from "js-cookie";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const variants = {
@@ -18,7 +19,13 @@ const variants = {
   hidden: { pathLength: 0, opacity: 0 },
 };
 
-export const AnimatedCheckIcon = ({ name }: { name: string }) => {
+export const CompletedIcon = ({
+  name,
+  path,
+}: {
+  name: string;
+  path: string;
+}) => {
   const [shown, setShown] = useState(false);
 
   const controls = useAnimation();
@@ -54,26 +61,15 @@ export const AnimatedCheckIcon = ({ name }: { name: string }) => {
   }, [isInView]);
 
   return (
-    <div className="mr-4 flex items-center border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
-      <svg
-        ref={ref}
+    <button className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-cyan-600 relative">
+      <Image src={path} width={16} height={16} alt="call to action" />
+      <Image
+        src="checkmark.svg"
         width={16}
         height={16}
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 14 10"
-      >
-        <motion.path
-          variants={variants}
-          animate={controls}
-          initial="hidden"
-          d="M1 5.26667L4.73333 9L12.7333 1"
-          stroke="#133D38"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
+        alt="call to action"
+        className="absolute -top-1 -right-1"
+      />
+    </button>
   );
 };
