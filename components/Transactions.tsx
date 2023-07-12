@@ -20,16 +20,19 @@ export default function Transactions() {
 
   const [isOpen, toggleOpen] = useCycle(false, true);
 
-  const variants = {
-    open: {
-      transition: { staggerChildren: 0.07, delayChildren: 0.2 },
-      height: "426px",
-      margin: "24px 0 0 0",
-    },
-    closed: {
-      transition: { staggerChildren: 0.05, staggerDirection: -1, delay: 0.2 },
-      height: "0px",
-    },
+  const variants = (numTx: number) => {
+    const height = `${numTx * 85}px`;
+    return {
+      open: {
+        transition: { staggerChildren: 0.07, delayChildren: 0.2 },
+        height,
+        margin: "24px 0 0 0",
+      },
+      closed: {
+        transition: { staggerChildren: 0.05, staggerDirection: -1, delay: 0.2 },
+        height: "0px",
+      },
+    };
   };
 
   return (
@@ -69,7 +72,7 @@ export default function Transactions() {
           buy some Glo?
         </button>
       </div>
-      <motion.ul variants={variants}>
+      <motion.ul variants={variants(transfers.length)}>
         <TransactionsList txns={transfers.slice(0, 5)} chain={chain!.id} />
         {transfersCursor && (
           <motion.li
