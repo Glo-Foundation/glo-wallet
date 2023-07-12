@@ -33,5 +33,5 @@ export default async function handler(
 
   cache.set(CACHE_KEY, formatted, 5 * 60);
 
-  return res.status(200).json(formatted);
+  return res.status(200).end(formatted);
 }
