@@ -22,6 +22,14 @@ const nextConfig = {
       },
     ];
   },
+  async headers() {
+    return [
+      {
+        source: "/api/market-cap",
+        headers: [{ key: "Access-Control-Allow-Origin", value: "webflow.io" }], // Replace with glodollar.org
+      },
+    ];
+  },
 };
 
 // Injected content via Sentry wizard below
