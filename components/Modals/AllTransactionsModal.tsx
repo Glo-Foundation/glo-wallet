@@ -45,7 +45,7 @@ export default function AllTransactionsModal() {
       </div>
       <section className="flex flex-col items-center">
         <ul className={`mt-12 `}>
-          <TransactionsList txns={transfers} />
+          <TransactionsList txns={transfers} chain={chain!.id} />
 
           {transfersCursor && (
             <li onClick={loadMore} className="underline cursor-pointer">

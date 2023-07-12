@@ -53,3 +53,17 @@ const chainRPCUrl: { [id: number]: string } = {
 export const getChainRPCUrl = (chainId?: number) => {
   return chainRPCUrl[chainId || defaultChainId];
 };
+
+export const getChainExplorerUrl = (chainId?: number) => {
+  switch (chainId) {
+    case polygon.id:
+      return "https://polygonscan.com";
+    case polygonMumbai.id:
+      return "https://mumbai.polygonscan.com";
+    case goerli.id:
+      return "https://goerli.etherscan.io";
+    case mainnet.id:
+    default:
+      return "https://etherscan.io";
+  }
+};

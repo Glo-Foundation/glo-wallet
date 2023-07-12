@@ -1,6 +1,18 @@
 import { motion } from "framer-motion";
+import { useContext } from "react";
 
-export default function TransactionsList({ txns }: { txns: Transfer[] }) {
+import { ModalContext } from "@/lib/context";
+import { sliceAddress } from "@/lib/utils";
+
+import TransactionDetailsModal from "./Modals/TransactionDetailsModal";
+
+export default function TransactionsList({
+  txns,
+  chain,
+}: {
+  txns: Transfer[];
+  chain: number | undefined;
+}) {
   const variants = {
     open: {
       x: 0,
@@ -14,20 +26,37 @@ export default function TransactionsList({ txns }: { txns: Transfer[] }) {
     },
   };
 
+  const { openModal } = useContext(ModalContext);
+
   const renderTxns = (txns: Transfer[]) =>
     txns.map((txn, idx) => {
       const dateTokens = new Date(txn.ts).toDateString().split(" ");
       const txnDate = dateTokens[1] + " " + dateTokens[2];
+      const counterParty = txn.type === "outgoing" ? txn.to : txn.from;
+
       return (
         <motion.li
           key={`txn-${idx}`}
           className="transaction-item"
           variants={variants}
+          onClick={() =>
+            openModal(
+              <TransactionDetailsModal
+                chain={chain || 137}
+                type={txn.type}
+                ts={txn.ts}
+                value={txn.value.toString()}
+                from={txn.from}
+                to={txn.to}
+                hash={txn.hash}
+              />
+            )
+          }
         >
           <div>
             <p>
               {txn.type === "outgoing" ? "Sent to " : "Received from"}{" "}
-              {txn.type === "outgoing" ? txn.to : txn.from}
+              {sliceAddress(counterParty)}
             </p>
             <p className="copy">{txnDate}</p>
           </div>
@@ -45,5 +74,6 @@ export default function TransactionsList({ txns }: { txns: Transfer[] }) {
         </motion.li>
       );
     });
+
   return <>{renderTxns(txns)}</>;
 }

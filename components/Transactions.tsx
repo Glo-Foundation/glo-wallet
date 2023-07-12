@@ -1,7 +1,7 @@
-import { stagger, motion, animate, useCycle } from "framer-motion";
+import { motion, useCycle } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useState, useContext } from "react";
-import { useAccount, useConnect, useNetwork } from "wagmi";
+import { useContext } from "react";
+import { useAccount, useNetwork } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
@@ -13,23 +13,25 @@ import TransactionsList from "./TransactionsList";
 
 export default function Transactions() {
   const { transfers, transfersCursor } = useUserStore();
-  const { connect, connectors } = useConnect();
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const { chain } = useNetwork();
   const { openModal } = useContext(ModalContext);
 
   const [isOpen, toggleOpen] = useCycle(false, true);
 
-  const variants = {
-    open: {
-      transition: { staggerChildren: 0.07, delayChildren: 0.2 },
-      height: "426px",
-      margin: "24px 0 0 0",
-    },
-    closed: {
-      transition: { staggerChildren: 0.05, staggerDirection: -1, delay: 0.2 },
-      height: "0px",
-    },
+  const variants = (numTx: number) => {
+    const height = `${numTx * 85}px`;
+    return {
+      open: {
+        transition: { staggerChildren: 0.07, delayChildren: 0.2 },
+        height,
+        margin: "24px 0 0 0",
+      },
+      closed: {
+        transition: { staggerChildren: 0.05, staggerDirection: -1, delay: 0.2 },
+        height: "0px",
+      },
+    };
   };
 
   return (
@@ -69,8 +71,8 @@ export default function Transactions() {
           buy some Glo?
         </button>
       </div>
-      <motion.ul variants={variants}>
-        <TransactionsList txns={transfers.slice(0, 5)} />
+      <motion.ul variants={variants(transfers.length)}>
+        <TransactionsList txns={transfers.slice(0, 5)} chain={chain?.id} />
         {transfersCursor && (
           <motion.li
             onClick={() => openModal(<AllTransactionsModal />)}
