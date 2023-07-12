@@ -17,6 +17,19 @@ const Icon = ({ path }: { path: string }) => (
   </button>
 );
 
+const CompletedIcon = ({ path }: { path: string }) => (
+  <button className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-cyan-600 relative">
+    <Image src={path} width={16} height={16} alt="call to action" />
+    <Image
+      src="checkmark.svg"
+      width={16}
+      height={16}
+      alt="call to action"
+      className="absolute -top-1 -right-1"
+    />
+  </button>
+);
+
 const ActionButton = ({
   CTA_MAP,
   ctaData,
@@ -39,7 +52,7 @@ const ActionButton = ({
       rel="noreferrer"
     >
       {ctaData.isCompleted ? (
-        <AnimatedCheckIcon name={`cta-${ctaData.type}`} />
+        <CompletedIcon path={cta.iconPath} />
       ) : (
         <Icon path={cta.iconPath} />
       )}
