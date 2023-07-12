@@ -26,11 +26,11 @@ export default function Transactions() {
   };
 
   return (
-    <div
-      className="bg-white rounded-[20px] p-8 transition-all"
-      onClick={toggleDropdown}
-    >
-      <div className="flex justify-between cursor-default">
+    <div className="bg-white rounded-[20px] p-8 transition-all">
+      <div
+        className="flex justify-between cursor-default"
+        onClick={toggleDropdown}
+      >
         <h3>Transactions</h3>
         <button>
           {isConnected && (
@@ -46,7 +46,7 @@ export default function Transactions() {
       </div>
       {dropdown === "list-item" && transfers.length ? (
         <ul className={`mt-12 ${dropdown}`}>
-          <TransactionsList txns={transfers.slice(0, 5)} />
+          <TransactionsList txns={transfers.slice(0, 5)} chain={chain!.id} />
           {transfersCursor && (
             <li
               onClick={() => openModal(<AllTransactionsModal />)}
