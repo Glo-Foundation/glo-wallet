@@ -4,8 +4,6 @@ import {
   EvmErc20TransfersResponseJSON,
 } from "moralis/common-evm-utils";
 
-import { sliceAddress } from "./utils";
-
 const instance = axios.create({
   baseURL: "https://deep-index.moralis.io/api/v2/",
   headers: {

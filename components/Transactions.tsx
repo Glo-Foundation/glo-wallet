@@ -1,7 +1,7 @@
-import { stagger, motion, animate, useCycle } from "framer-motion";
+import { motion, useCycle } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useState, useContext } from "react";
-import { useAccount, useConnect, useNetwork } from "wagmi";
+import { useContext } from "react";
+import { useAccount, useNetwork } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
@@ -13,8 +13,7 @@ import TransactionsList from "./TransactionsList";
 
 export default function Transactions() {
   const { transfers, transfersCursor } = useUserStore();
-  const { connect, connectors } = useConnect();
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const { chain } = useNetwork();
   const { openModal } = useContext(ModalContext);
 
@@ -73,7 +72,7 @@ export default function Transactions() {
         </button>
       </div>
       <motion.ul variants={variants(transfers.length)}>
-        <TransactionsList txns={transfers.slice(0, 5)} chain={chain!.id} />
+        <TransactionsList txns={transfers.slice(0, 5)} chain={chain?.id} />
         {transfersCursor && (
           <motion.li
             onClick={() => openModal(<AllTransactionsModal />)}

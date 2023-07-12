@@ -11,7 +11,7 @@ export default function TransactionsList({
   chain,
 }: {
   txns: Transfer[];
-  chain: number;
+  chain: number | undefined;
 }) {
   const variants = {
     open: {
@@ -42,7 +42,7 @@ export default function TransactionsList({
           onClick={() =>
             openModal(
               <TransactionDetailsModal
-                chain={chain}
+                chain={chain || 137}
                 type={txn.type}
                 ts={txn.ts}
                 value={txn.value.toString()}
