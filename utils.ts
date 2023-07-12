@@ -112,7 +112,7 @@ export const getNiceNumber = (num: number) => {
   const base = getUSFormattedNumber(num);
 
   const parts = base.split(",");
-  return `${parts[0]}.${parts[1][0]}${TIER_SUFFIX[parts.length]}`;
+  return `${parts[0]}.${parts[1][0]}${TIER_SUFFIX[parts.length - 1]}`;
 };
 
 const USDC_POLYGON_CONTRACT_ADDRESS =

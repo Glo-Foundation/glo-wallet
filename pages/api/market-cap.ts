@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import * as cache from "@/lib/cache";
 import { getMarketCap } from "@/lib/utils";
-import { getNiceNumber, getUSFormattedNumber } from "@/utils";
+import { getNiceNumber } from "@/utils";
 
 const CACHE_KEY = "market-cap";
 export default async function handler(
@@ -30,7 +30,6 @@ export default async function handler(
   const value = utils.formatEther(totalMarketCap).split(".")[0];
 
   const formatted = getNiceNumber(Number(value));
-  console.log({ value, formatted });
 
   cache.set(CACHE_KEY, formatted, 5 * 60);
 
