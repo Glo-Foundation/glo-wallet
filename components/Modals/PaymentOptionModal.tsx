@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import Image from "next/image";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
@@ -9,6 +9,7 @@ import { buyWithCoinbase, buyWithTransak, buyWithUniswap } from "@/payments";
 
 export default function PaymentOptionModal() {
   const { address, isConnected } = useAccount();
+  const [loading, setLoading] = useState(false);
 
   const { closeModal } = useContext(ModalContext);
 
@@ -42,6 +43,7 @@ export default function PaymentOptionModal() {
     worksFor,
     delay,
     onClick,
+    disabled = false,
   }: {
     name: string;
     icon: string;
@@ -49,10 +51,14 @@ export default function PaymentOptionModal() {
     worksFor: string;
     delay: string;
     onClick: () => void;
+    disabled?: boolean;
   }) => (
     <div
-      className="flex flex-col p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 cursor-pointer mb-2"
-      onClick={onClick}
+      className={clsx(
+        "flex flex-col p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 cursor-pointer mb-2",
+        disabled && "bg-pine-100 hover:border-pine-100"
+      )}
+      onClick={!disabled ? onClick : undefined}
     >
       <div className="flex py-2">
         <Image alt={name} src={icon} height={25} width={25} />
@@ -95,12 +101,28 @@ export default function PaymentOptionModal() {
             fees="0"
             worksFor="🇺🇸 US citizens"
             delay="Up to 3 days"
+            disabled={loading}
             onClick={() => {
               const parent = document.getElementById("ratio-button-parent");
               const button = parent?.firstChild as HTMLButtonElement;
               if (button) {
-                // closeModal();
+                setLoading(true);
                 button.click();
+
+                // The only workaround to handle Ratio modal position
+                // Close our modal after Ratio modal is detected
+                const tryClosingModal = () => {
+                  const el = document.getElementById("radix-:r3:");
+                  if (el) {
+                    closeModal();
+                  } else {
+                    setTimeout(() => {
+                      tryClosingModal();
+                    }, 1000);
+                  }
+                };
+
+                tryClosingModal();
               }
             }}
           />
