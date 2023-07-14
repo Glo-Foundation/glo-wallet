@@ -5,14 +5,16 @@ export default function PurchasedCallback() {
   useEffect(() => {
     const bc = new BroadcastChannel("glo-channel-purchased");
     bc.postMessage({ success: true });
-    // window.close();
+    window.close();
   }, []);
 
   // Fallback in case window is not closed automagically
   return (
     <>
       <div>Payment completed</div>
-      <div onClick={() => window.close()}>Click close to continue</div>
+      <div className="cursor-pointer" onClick={() => window.close()}>
+        Click close to continue
+      </div>
     </>
   );
 }
