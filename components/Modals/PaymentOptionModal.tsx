@@ -108,7 +108,7 @@ export default function PaymentOptionModal() {
             name="Transak"
             icon="/transak.png"
             fees="1-5"
-            worksFor="🇺🇸 US citizens"
+            worksFor="🌍 world"
             delay="⚡ Instant"
             onClick={() => buyWithTransak(1000, address)}
           />
