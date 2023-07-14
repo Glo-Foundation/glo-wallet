@@ -8,7 +8,7 @@ import { useUserStore } from "@/lib/store";
 import { DEFAULT_CTAS } from "@/lib/utils";
 import { getImpactItems, getTotalYield } from "@/utils";
 
-import { AnimatedCheckIcon } from "./AnimatedCheckIcon";
+import { CompletedIcon } from "./CompletedIcon";
 import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
@@ -39,7 +39,7 @@ const ActionButton = ({
       rel="noreferrer"
     >
       {ctaData.isCompleted ? (
-        <AnimatedCheckIcon name={`cta-${ctaData.type}`} />
+        <CompletedIcon name={`cta-${ctaData.type}`} path={cta.iconPath} />
       ) : (
         <Icon path={cta.iconPath} />
       )}
@@ -128,7 +128,7 @@ export default function CTA({ balance }: { balance?: string }) {
   };
 
   return (
-    <div className="bg-pine-50 rounded-[20px] p-6 transition-all">
+    <div className="bg-pine-50 rounded-[20px] p-6">
       <div className="flex justify-between cursor-default">
         <h3>🌟 Help Grow Glo!</h3>
       </div>

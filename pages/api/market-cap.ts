@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import * as cache from "@/lib/cache";
 import { getMarketCap } from "@/lib/utils";
+import { getNiceNumber } from "@/utils";
 
 const CACHE_KEY = "market-cap";
 export default async function handler(
@@ -13,7 +14,7 @@ export default async function handler(
   const cached = cache.get(CACHE_KEY);
 
   if (cached) {
-    return res.status(200).json(Number(cached));
+    return res.status(200).end(cached);
   }
 
   const result = await Promise.all([
@@ -28,7 +29,9 @@ export default async function handler(
 
   const value = utils.formatEther(totalMarketCap).split(".")[0];
 
-  cache.set(CACHE_KEY, value, 5 * 60);
+  const formatted = getNiceNumber(Number(value));
 
-  return res.status(200).json(Number(value));
+  cache.set(CACHE_KEY, formatted, 5 * 60);
+
+  return res.status(200).end(formatted);
 }

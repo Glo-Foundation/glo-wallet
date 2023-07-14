@@ -6,7 +6,7 @@ import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 import { api } from "@/lib/utils";
 
-import { TransactionsList } from "../TransactionsList";
+import TransactionsList from "../TransactionsList";
 
 export default function AllTransactionsModal() {
   const { chain } = useNetwork();
@@ -45,7 +45,7 @@ export default function AllTransactionsModal() {
       </div>
       <section className="flex flex-col items-center">
         <ul className={`mt-12 `}>
-          <TransactionsList txns={transfers} />
+          <TransactionsList txns={transfers} chain={chain!.id} />
 
           {transfersCursor && (
             <li onClick={loadMore} className="underline cursor-pointer">
