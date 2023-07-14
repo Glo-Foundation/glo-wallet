@@ -22,6 +22,17 @@ const nextConfig = {
       },
     ];
   },
+  async headers() {
+    return [
+      {
+        source: "/api/market-cap",
+        headers: [
+          // Replace with glodollar.org
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
+    ];
+  },
 };
 
 // Injected content via Sentry wizard below

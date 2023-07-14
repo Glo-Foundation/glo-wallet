@@ -108,6 +108,14 @@ export const getUSFormattedNumber = (num: number): string => {
   }).format(num);
 };
 
+const TIER_SUFFIX = ["", "K", "M", "B", "T"];
+export const getNiceNumber = (num: number) => {
+  const base = getUSFormattedNumber(num);
+
+  const parts = base.split(",");
+  return `${parts[0]}.${parts[1][0]}${TIER_SUFFIX[parts.length - 1]}`;
+};
+
 const USDC_POLYGON_CONTRACT_ADDRESS =
   "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
 
