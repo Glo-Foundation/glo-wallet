@@ -29,6 +29,28 @@ export default function BuyingGuide({ glo }: Props) {
     }
   }, [isCopiedTooltipOpen]);
 
+  {
+    /* const StepCard = ({ */
+  }
+  {
+    /*   index, */
+  }
+  {
+    /*   iconPath, */
+  }
+  {
+    /*   header, */
+  }
+  {
+    /*   copy, */
+  }
+  {
+    /*   done, */
+  }
+  {
+    /* }); */
+  }
+
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-4">
       <div className="flex flex-row justify-between p-3">
@@ -49,13 +71,16 @@ export default function BuyingGuide({ glo }: Props) {
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <h2 className="flex justify-center p-0">Buying Glo Dollars</h2>
-      <h4 className="flex justify-center">through Coinbase and Uniswap</h4>
-      <p className="text-sm">
-        You can get Glo Dollars by exchanging another stablecoin co-created by
-        Coinbase called <em>USDC</em> for Glo Dollar using the <em>Uniswap</em>{" "}
-        app.
-      </p>
+      <div className="flex flex-col items-center">
+        <h3 className="pt-0">
+          Buying Glo Dollars through Coinbase and Uniswap
+        </h3>
+        <p className="text-sm">
+          You can get Glo Dollars by exchanging another stablecoin co-created by
+          Coinbase called <em>USDC</em> for Glo Dollar using the{" "}
+          <em>Uniswap</em> app.
+        </p>
+      </div>
     </div>
   );
 }

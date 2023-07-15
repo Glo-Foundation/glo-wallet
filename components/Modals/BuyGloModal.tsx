@@ -21,16 +21,16 @@ export default function BuyGloModal() {
   const yearlyYield = getTotalYield(glo);
   const formattedGlo = getUSFormattedNumber(glo);
 
-  if (flipped) {
+  if (!flipped) {
     return (
       <div className="flex flex-col max-w-[343px] mb-7">
         <BuyingGuide glo={glo} />
-        <a
+        <button
           className="flex justify-center items-center rounded-full font-black bg-cyan-600 text-pine-900 h-[52px] mx-6"
           onClick={() => openModal(<PaymentOptionModal />, "payment-dialog")}
         >
           Buy ${formattedGlo} Glo Dollar
-        </a>
+        </button>
       </div>
     );
   }
@@ -43,7 +43,7 @@ export default function BuyGloModal() {
         disabled={glo === 0}
         onClick={() =>
           isSequenceWallet
-            ? setFlipped(true)
+            ? setFlipped(false)
             : openModal(<PaymentOptionModal />, "payment-dialog")
         }
       >
