@@ -5,7 +5,6 @@ import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
-
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
@@ -147,8 +146,8 @@ export default function BuyingGuide() {
         <StepCard
           index={4}
           iconPath="/sequence.svg"
-          title={"Switch to the Polygon network"}
-          content="Please confirm the switch in your wallet"
+          title={"Connect to the Sequence wallet"}
+          content="Paste the code into the wallet's scanner"
           done={false}
         />
       </section>
