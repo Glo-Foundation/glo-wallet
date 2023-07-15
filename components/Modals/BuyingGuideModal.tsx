@@ -43,25 +43,41 @@ export default function BuyingGuide() {
   }) => (
     <div
       className={clsx(
-        "flex p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 cursor-pointer mb-2"
+        "flex items-center p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 mb-2"
       )}
     >
-      <div className="circle border-2 w-[32px] h-[32px]">
+      <div className="relative circle border-2 w-[32px] h-[32px]">
         {!done ? (
           index
         ) : (
           <Image alt="checkmark" src="checkmark.svg" height={24} width={24} />
         )}
+        <div className="circle border-2 w-[20px] h-[20px] absolute top-[-6px] right-[-10px]">
+          <Image alt={iconPath} src={iconPath} height={20} width={20} />
+        </div>
       </div>
-      <div className="pl-2">
-        <h5>{title}</h5>
-        <p className="copy text-sm">
+      <div className="pl-4">
+        <h5 className="text-sm mb-2">{title}</h5>
+        <p className="copy text-xs">
           {content}{" "}
           {index === 3 && (
-            <div style={{ display: "inline" }}>
-              <Image alt="qrcode" src="/miniqr.svg" height={16} width={16} /> +
-              <Image alt="copypaste" src="/copy.svg" height={16} width={16} />
-            </div>
+            <>
+              <Image
+                alt="qrcode"
+                style={{ display: "inline" }}
+                src="/miniqr.svg"
+                height={16}
+                width={16}
+              />{" "}
+              +&nbsp;
+              <Image
+                alt="copypaste"
+                style={{ display: "inline" }}
+                src="/copy.svg"
+                height={16}
+                width={16}
+              />
+            </>
           )}
         </p>
       </div>
@@ -69,7 +85,7 @@ export default function BuyingGuide() {
   );
 
   return (
-    <div className="flex flex-col max-w-[343px] text-pine-900 p-4">
+    <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
         <div></div>
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
@@ -88,7 +104,7 @@ export default function BuyingGuide() {
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <div className="flex flex-col items-center">
+      <section className="flex flex-col items-center pb-6">
         <h3 className="pt-0">
           Buying Glo Dollars through Coinbase and Uniswap
         </h3>
@@ -97,28 +113,32 @@ export default function BuyingGuide() {
           Coinbase called <em>USDC</em> for Glo Dollar using the{" "}
           <em>Uniswap</em> app.
         </p>
-      </div>
+      </section>
       <section>
         <StepCard
           index={1}
+          iconPath="/coinbase.png"
           title={`Buy ${1000} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
           done={false}
         />
         <StepCard
           index={2}
+          iconPath="/polygon.svg"
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
           done={false}
         />
         <StepCard
           index={3}
+          iconPath="/uniswap.svg"
           title={"Connect wallet on Uniswap"}
           content={`Choose WalletConnect and click `}
           done={false}
         />
         <StepCard
           index={4}
+          iconPath="/sequence.svg"
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
           done={false}
