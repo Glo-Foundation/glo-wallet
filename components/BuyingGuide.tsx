@@ -30,100 +30,31 @@ export default function BuyingGuide({ glo }: Props) {
   }, [isCopiedTooltipOpen]);
 
   return (
-    <>
-      <div className="flex flex-col bg-pine-50 text-pine-900 pt-[28px] px-[23px] pb-[20px]">
-        <div className="flex flex-row justify-between">
-          <div></div>
-          <button className="" onClick={() => closeModal()}>
-            <Image alt="x" src="/x.svg" height={16} width={16} />
-          </button>
-        </div>
-        <div className="text-4xl text-[38px]">Buying Glo Dollar</div>
-        <div className="text-2xl">A step by step guide</div>
+    <div className="flex flex-col max-w-[343px] text-pine-900 p-4">
+      <div className="flex flex-row justify-between p-3">
+        <div></div>
+        <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
+        <button
+          className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3"
+          data-tooltip-id="copy-deposit-tooltip"
+          data-tooltip-content="Copied!"
+          onClick={() => {
+            navigator.clipboard.writeText(address!);
+            setIsCopiedTooltipOpen(true);
+          }}
+        >
+          🔗 {sliceAddress(address!)}
+        </button>
+        <button onClick={() => closeModal()}>
+          <Image alt="x" src="/x.svg" height={16} width={16} />
+        </button>
       </div>
-      <div className="flex flex-col space-y-4 text-pine-900 mt-3 mb-5 mx-4 text-sm">
-        <div>
-          You can get Glo Dollars by exchanging them for another stablecoin
-          called “USDC” on “Uniswap” This process consists of 12 steps:
-        </div>
-        <Tooltip
-          anchorId="copy-buy-wallet-address"
-          content="Copied!"
-          noArrow={true}
-          isOpen={isCopiedTooltipOpen}
-        />
-        <ol className="list-decimal mx-4">
-          <ul className="font-bold">Buy USDC on Coinbase</ul>
-          <li>
-            Create an account with{" "}
-            <a
-              href="https://www.coinbase.com/"
-              className="underline"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Coinbase
-            </a>
-          </li>
-          <li>
-            Buy ${formattedGlo}{" "}
-            <a
-              href="https://www.coinbase.com/how-to-buy/usdc"
-              target="_blank"
-              className="underline"
-              rel="noreferrer"
-            >
-              USDC
-            </a>{" "}
-            on Coinbase
-          </li>
-          <li className="break-words">
-            Send your USDC to your Polygon wallet powered by Sequence:{" "}
-            <button
-              id={"copy-buy-wallet-address"}
-              className="inline-block"
-              onClick={() => {
-                navigator.clipboard.writeText(address!);
-                setIsCopiedTooltipOpen(true);
-              }}
-            >
-              {sliceAddress(address!)} 🔗
-            </button>
-          </li>
-          <ul className="font-bold mt-3">Connect wallet to Uniswap</ul>
-          {!userIsOnPolygon && (
-            <li
-              className="cursor-pointer underline"
-              onClick={() => switchNetwork && switchNetwork(polygon.id)}
-            >
-              Switch your wallet to Polygon
-            </li>
-          )}
-          <li>
-            Go to{" "}
-            <a
-              href="https://app.uniswap.org/"
-              className="underline"
-              target="_blank"
-              rel="noreferrer"
-            >
-              app.uniswap.org
-            </a>
-          </li>
-          <li>Click “connect” and choose WalletConnect</li>
-          <li>Switch to “QR Code” mode</li>
-          <li>Click on “Copy to clipboard”</li>
-          <li>On this app’s main page select “Scan”</li>
-          <li>Click WalletConnect to paste and connect</li>
-
-          <ul className="font-bold mt-3">
-            Swap USDC for Glo Dollar on Uniswap
-          </ul>
-          <li>Click “Buy Glo on Uniswap” button below👇</li>
-          <li>Input ${formattedGlo} USDC and click “Swap”</li>
-          <li>Complete the steps to swap USDC for Glo</li>
-        </ol>
-      </div>
-    </>
+      <h2 className="flex justify-center p-0">Buying Glo Dollars</h2>
+      <h4 className="flex justify-center">through Coinbase and Uniswap</h4>
+      <p>
+        You can get Glo Dollars by exchanging another stablecoin co-created by
+        Coinbase called USDC for Glo Dollar using the Uniswap app.
+      </p>
+    </div>
   );
 }

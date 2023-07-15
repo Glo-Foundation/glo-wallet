@@ -77,9 +77,17 @@ export default function PaymentOptionModal() {
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
         <div></div>
-        <div className="border-2 rounded-full border-cyan-400 px-3">
+        <button
+          className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3"
+          data-tooltip-id="copy-deposit-tooltip"
+          data-tooltip-content="Copied!"
+          onClick={() => {
+            navigator.clipboard.writeText(address!);
+            setIsCopiedTooltipOpen(true);
+          }}
+        >
           🔗 {sliceAddress(address!)}
-        </div>
+        </button>
         <button onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
