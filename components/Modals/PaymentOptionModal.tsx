@@ -7,11 +7,13 @@ import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithCoinbase, buyWithTransak, buyWithUniswap } from "@/payments";
 
+import BuyingGuideModal from "./BuyingGuideModal";
+
 export default function PaymentOptionModal() {
   const { address, isConnected } = useAccount();
   const [loading, setLoading] = useState(false);
 
-  const { closeModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   useEffect(() => {
     const bc = new BroadcastChannel("glo-channel-purchased");
@@ -148,7 +150,10 @@ export default function PaymentOptionModal() {
             fees="0-3"
             worksFor="🌍 world"
             delay="⚡ Instant"
-            onClick={() => buyWithCoinbase()}
+            onClick={() => {
+              buyWithCoinbase();
+              openModal(<BuyingGuideModal />);
+            }}
           />
         </>
       )}
