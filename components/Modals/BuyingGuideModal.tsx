@@ -134,7 +134,7 @@ export default function BuyingGuide() {
           iconPath="/polygon.svg"
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
-          done={false}
+          done={userIsOnPolygon}
         />
         <StepCard
           index={3}
