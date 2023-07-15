@@ -51,9 +51,10 @@ export default function BuyingGuide({ glo }: Props) {
       </div>
       <h2 className="flex justify-center p-0">Buying Glo Dollars</h2>
       <h4 className="flex justify-center">through Coinbase and Uniswap</h4>
-      <p>
+      <p className="text-sm">
         You can get Glo Dollars by exchanging another stablecoin co-created by
-        Coinbase called USDC for Glo Dollar using the Uniswap app.
+        Coinbase called <em>USDC</em> for Glo Dollar using the <em>Uniswap</em>{" "}
+        app.
       </p>
     </div>
   );
