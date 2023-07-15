@@ -5,8 +5,10 @@ import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
+
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
+import { buyWithUniswap } from "@/payments";
 import { getUSFormattedNumber } from "@/utils";
 
 export default function BuyingGuide() {
@@ -149,6 +151,11 @@ export default function BuyingGuide() {
           content="Please confirm the switch in your wallet"
           done={false}
         />
+      </section>
+      <section className="flex justify-center mt-6 mb-3">
+        <button className="primary-button" onClick={() => buyWithUniswap(1000)}>
+          Buy $1000 on Uniswap
+        </button>
       </section>
     </div>
   );
