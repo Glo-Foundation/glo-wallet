@@ -44,7 +44,7 @@ export default function BuyingGuide() {
   }) => (
     <div
       className={clsx(
-        "flex items-center p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 mb-2",
+        "flex items-center p-3 border-2 cursor-default rounded-xl border-pine-100 hover:border-pine-400 mb-2",
         done && "bg-cyan-600/20"
       )}
     >
