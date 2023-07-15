@@ -80,7 +80,7 @@ export default function PaymentOptionModal() {
       <div className="flex flex-row justify-between p-3">
         <div></div>
         <button
-          className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3"
+          className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
           data-tooltip-id="copy-deposit-tooltip"
           data-tooltip-content="Copied!"
           onClick={() => {

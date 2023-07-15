@@ -43,16 +43,22 @@ export default function BuyingGuide() {
   }) => (
     <div
       className={clsx(
-        "flex items-center p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 mb-2"
+        "flex items-center p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 mb-2",
+        done && "bg-cyan-600/20"
       )}
     >
-      <div className="relative circle border-2 w-[32px] h-[32px]">
+      <div
+        className={clsx(
+          "relative circle border-2 w-[32px] h-[32px]",
+          done && "border-none bg-cyan-600"
+        )}
+      >
         {!done ? (
           index
         ) : (
-          <Image alt="checkmark" src="checkmark.svg" height={24} width={24} />
+          <Image alt="checkmark" src="check-alpha.svg" height={12} width={12} />
         )}
-        <div className="circle border-2 w-[20px] h-[20px] absolute top-[-6px] right-[-10px]">
+        <div className="circle border-2 w-[24px] h-[24px] absolute top-[-10px] right-[-12px]">
           <Image alt={iconPath} src={iconPath} height={20} width={20} />
         </div>
       </div>
@@ -90,7 +96,7 @@ export default function BuyingGuide() {
         <div></div>
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         <button
-          className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3"
+          className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
           data-tooltip-id="copy-deposit-tooltip"
           data-tooltip-content="Copied!"
           onClick={() => {
@@ -104,20 +110,20 @@ export default function BuyingGuide() {
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <section className="flex flex-col items-center pb-6">
+      <section className="text-center">
         <h3 className="pt-0">
           Buying Glo Dollars through Coinbase and Uniswap
         </h3>
-        <p className="text-sm">
+        <p className="text-sm py-6">
           You can get Glo Dollars by exchanging another stablecoin co-created by
-          Coinbase called <em>USDC</em> for Glo Dollar using the{" "}
-          <em>Uniswap</em> app.
+          Coinbase called <b>USDC</b> for Glo Dollar using the <b>Uniswap</b>{" "}
+          app.
         </p>
       </section>
       <section>
         <StepCard
           index={1}
-          iconPath="/coinbase.png"
+          iconPath="/coinbase-invert.svg"
           title={`Buy ${1000} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
           done={false}
