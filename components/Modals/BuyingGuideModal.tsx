@@ -124,17 +124,17 @@ export default function BuyingGuide() {
       <section>
         <StepCard
           index={1}
-          iconPath="/coinbase-invert.svg"
-          title={`Buy ${1000} USDC on Coinbase`}
-          content="Withdraw to the wallet address shown above"
-          done={false}
-        />
-        <StepCard
-          index={2}
           iconPath="/polygon.svg"
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
           done={userIsOnPolygon}
+        />
+        <StepCard
+          index={2}
+          iconPath="/coinbase-invert.svg"
+          title={`Buy ${1000} USDC on Coinbase`}
+          content="Withdraw to the wallet address shown above"
+          done={false}
         />
         <StepCard
           index={3}
