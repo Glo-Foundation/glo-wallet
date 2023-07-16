@@ -12,8 +12,15 @@ import BuyingGuideModal from "./BuyingGuideModal";
 export default function PaymentOptionModal() {
   const { address, isConnected } = useAccount();
   const [loading, setLoading] = useState(false);
+  const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal, closeModal } = useContext(ModalContext);
+
+  useEffect(() => {
+    if (isCopiedTooltipOpen) {
+      setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
+    }
+  }, [isCopiedTooltipOpen]);
 
   useEffect(() => {
     const bc = new BroadcastChannel("glo-channel-purchased");

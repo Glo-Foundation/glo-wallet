@@ -8,8 +8,6 @@ import { getTotalYield, getUSFormattedNumber } from "@/utils";
 
 import PaymentOptionModal from "./PaymentOptionModal";
 
-import BuyingGuide from "@/components/BuyingGuide";
-
 export default function BuyGloModal() {
   const { connector } = useAccount();
   const isSequenceWallet = connector?.id === "sequence";
