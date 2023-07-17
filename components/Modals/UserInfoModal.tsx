@@ -9,13 +9,15 @@ import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
+import EditProfileModal from "./EditProfileModal";
+
 type Props = {
   address?: string;
 };
 export default function UserInfoModal({ address }: Props) {
   const { disconnect } = useDisconnect();
   const { chain } = useNetwork();
-  const { closeModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs } = useUserStore();
 
@@ -82,7 +84,13 @@ export default function UserInfoModal({ address }: Props) {
           )}
         </div>
       </section>
-      <section className="mt-8 flex justify-end">
+      <section className="mt-8 flex justify-between">
+        <button
+          className="primary-button"
+          onClick={() => openModal(<EditProfileModal />)}
+        >
+          Edit profile
+        </button>
         <button className="primary-button" onClick={() => handleLogout()}>
           Log out
         </button>
