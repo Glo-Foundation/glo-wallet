@@ -17,6 +17,9 @@ export default function BuyingGuide() {
   const { closeModal } = useContext(ModalContext);
   // const formattedGlo = getUSFormattedNumber(glo);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+  const [isCoinbaseStepDone, setIsCoinbaseStepDone] = useState(false);
+  const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
+  const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
 
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
@@ -139,10 +142,11 @@ export default function BuyingGuide() {
           iconPath="/coinbase-invert.svg"
           title={`Buy ${1000} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
-          action={() =>
-            window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank")
-          }
-          done={false}
+          action={() => {
+            window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank");
+            setIsCoinbaseStepDone(true);
+          }}
+          done={isCoinbaseStepDone}
         />
         <StepCard
           index={3}
@@ -151,8 +155,9 @@ export default function BuyingGuide() {
           content={`Choose WalletConnect and click `}
           action={() => {
             window.open("https://app.uniswap.org/", "_blank");
+            setIsUniswapStepDone(true);
           }}
-          done={false}
+          done={isUniswapStepDone}
         />
         <StepCard
           index={4}
@@ -161,8 +166,9 @@ export default function BuyingGuide() {
           content="Paste the code into the wallet's scanner"
           action={() => {
             window.open("https://sequence.app/wallet/scan", "_blank");
+            setIsSequenceStepDone(true);
           }}
-          done={false}
+          done={isSequenceStepDone}
         />
       </section>
       <section className="flex justify-center mt-6 mb-3">
