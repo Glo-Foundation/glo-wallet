@@ -32,6 +32,8 @@ export default function AuthorizeTwitter() {
   return isLoading ? (
     <div>Authorizing...</div>
   ) : (
-    <div onClick={() => window.close()}>Click close to continue</div>
+    <div className="cursor-pointer" onClick={() => window.close()}>
+      Click close to continue
+    </div>
   );
 }
