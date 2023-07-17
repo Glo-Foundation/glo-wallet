@@ -1,6 +1,7 @@
 import { polygon } from "@wagmi/chains";
 import clsx from "clsx";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
@@ -12,6 +13,7 @@ import { getUSFormattedNumber } from "@/utils";
 
 export default function BuyingGuide() {
   const { address } = useAccount();
+  const router = useRouter();
   const { closeModal } = useContext(ModalContext);
   // const formattedGlo = getUSFormattedNumber(glo);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -32,6 +34,7 @@ export default function BuyingGuide() {
     iconPath,
     title,
     content,
+    action,
     balance,
     done = false,
   }: {
@@ -39,14 +42,16 @@ export default function BuyingGuide() {
     iconPath: string;
     title: string;
     content: string;
+    action: string;
     balance?: string;
     done?: boolean;
   }) => (
     <div
       className={clsx(
-        "flex items-center p-3 border-2 cursor-default rounded-xl border-pine-100 hover:border-pine-400 mb-2",
+        "cursor-pointer flex items-center p-3 border-2 rounded-xl border-pine-100 hover:border-pine-400 mb-2",
         done && "bg-cyan-600/20"
       )}
+      onClick={action}
     >
       <div
         className={clsx(
@@ -134,6 +139,9 @@ export default function BuyingGuide() {
           iconPath="/coinbase-invert.svg"
           title={`Buy ${1000} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
+          action={() =>
+            window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank")
+          }
           done={false}
         />
         <StepCard
@@ -141,6 +149,9 @@ export default function BuyingGuide() {
           iconPath="/uniswap.svg"
           title={"Connect wallet on Uniswap"}
           content={`Choose WalletConnect and click `}
+          action={() => {
+            window.open("https://app.uniswap.org/", "_blank");
+          }}
           done={false}
         />
         <StepCard
@@ -148,6 +159,9 @@ export default function BuyingGuide() {
           iconPath="/sequence.svg"
           title={"Connect to the Sequence wallet"}
           content="Paste the code into the wallet's scanner"
+          action={() => {
+            window.open("https://sequence.app/wallet/scan", "_blank");
+          }}
           done={false}
         />
       </section>
