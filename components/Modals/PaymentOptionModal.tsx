@@ -7,11 +7,20 @@ import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithCoinbase, buyWithTransak, buyWithUniswap } from "@/payments";
 
+import BuyingGuideModal from "./BuyingGuideModal";
+
 export default function PaymentOptionModal() {
   const { address, isConnected } = useAccount();
   const [loading, setLoading] = useState(false);
+  const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
-  const { closeModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
+
+  useEffect(() => {
+    if (isCopiedTooltipOpen) {
+      setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
+    }
+  }, [isCopiedTooltipOpen]);
 
   useEffect(() => {
     const bc = new BroadcastChannel("glo-channel-purchased");
@@ -77,9 +86,17 @@ export default function PaymentOptionModal() {
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
         <div></div>
-        <div className="border-2 rounded-full border-cyan-400 px-3">
+        <button
+          className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
+          data-tooltip-id="copy-deposit-tooltip"
+          data-tooltip-content="Copied!"
+          onClick={() => {
+            navigator.clipboard.writeText(address!);
+            setIsCopiedTooltipOpen(true);
+          }}
+        >
           🔗 {sliceAddress(address!)}
-        </div>
+        </button>
         <button onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
@@ -140,7 +157,10 @@ export default function PaymentOptionModal() {
             fees="0-3"
             worksFor="🌍 world"
             delay="⚡ Instant"
-            onClick={() => buyWithCoinbase()}
+            onClick={() => {
+              buyWithCoinbase();
+              openModal(<BuyingGuideModal />);
+            }}
           />
         </>
       )}
