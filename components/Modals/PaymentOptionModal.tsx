@@ -106,7 +106,7 @@ export default function PaymentOptionModal() {
         <>
           <BuyBox
             name="Uniswap"
-            icon="/uniswap.png"
+            icon="/uniswap.svg"
             fees=".01"
             worksFor="🔐 Crypto"
             delay="⚡ Instant"
