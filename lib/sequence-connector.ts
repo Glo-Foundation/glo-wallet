@@ -34,9 +34,11 @@ export class GloSequenceConnector extends Connector<
     if (!this.wallet) {
       this.wallet = await sequence.initWallet();
     }
+    console.log("CONNECT");
     if (!this.wallet.isConnected()) {
       this?.emit("message", { type: "connecting" });
       const e = await this.wallet.connect(this.options?.connect);
+      console.log(this.options?.connect, e.email);
 
       Cookies.set("glo-email", e.email || "");
 
