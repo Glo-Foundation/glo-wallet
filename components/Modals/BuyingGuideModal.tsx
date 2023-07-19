@@ -45,7 +45,7 @@ export default function BuyingGuide() {
     iconPath: string;
     title: string;
     content: string;
-    action: string;
+    action: any;
     balance?: string;
     done?: boolean;
   }) => (
@@ -136,7 +136,7 @@ export default function BuyingGuide() {
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
           action={() => {
-            switchNetwork(polygon.id);
+            switchNetwork!(polygon.id);
           }}
           done={userIsOnPolygon}
         />
