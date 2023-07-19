@@ -10,13 +10,16 @@ import PaymentOptionModal from "./PaymentOptionModal";
 
 export default function BuyGloModal() {
   const { connector } = useAccount();
-  const isSequenceWallet = connector?.id === "sequence";
 
   const { openModal } = useContext(ModalContext);
 
   const [glo, setGlo] = useState<number>(1000);
 
-  const yearlyYield = getTotalYield(glo);
+  let yearlyYield = getTotalYield(glo);
+  // round down to 0 when the yield isn't even $1
+  if (yearlyYield < 1) {
+    yearlyYield = 0;
+  }
   const formattedGlo = getUSFormattedNumber(glo);
 
   return (
