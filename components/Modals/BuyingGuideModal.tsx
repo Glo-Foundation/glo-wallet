@@ -1,7 +1,6 @@
 import { polygon } from "@wagmi/chains";
 import clsx from "clsx";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
@@ -12,10 +11,10 @@ import { buyWithUniswap } from "@/payments";
 import { getUSFormattedNumber } from "@/utils";
 
 export default function BuyingGuide() {
-  const { address } = useAccount();
-  const router = useRouter();
+  const { address, connector } = useAccount();
   const { closeModal } = useContext(ModalContext);
   // const formattedGlo = getUSFormattedNumber(glo);
+
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isCoinbaseStepDone, setIsCoinbaseStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
@@ -25,6 +24,7 @@ export default function BuyingGuide() {
   const { switchNetwork } = useSwitchNetwork();
 
   const userIsOnPolygon = chain?.id === polygon.id;
+  const isSequenceWallet = connector?.id === "sequence";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -67,7 +67,7 @@ export default function BuyingGuide() {
         ) : (
           <Image alt="checkmark" src="check-alpha.svg" height={12} width={12} />
         )}
-        <div className="circle border-2 w-[24px] h-[24px] absolute top-[-10px] right-[-12px]">
+        <div className="circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]">
           <Image alt={iconPath} src={iconPath} height={20} width={20} />
         </div>
       </div>
@@ -135,6 +135,9 @@ export default function BuyingGuide() {
           iconPath="/polygon.svg"
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
+          action={() => {
+            switchNetwork(polygon.id);
+          }}
           done={userIsOnPolygon}
         />
         <StepCard
@@ -159,17 +162,19 @@ export default function BuyingGuide() {
           }}
           done={isUniswapStepDone}
         />
-        <StepCard
-          index={4}
-          iconPath="/sequence.svg"
-          title={"Connect to the Sequence wallet"}
-          content="Paste the code into the wallet's scanner"
-          action={() => {
-            window.open("https://sequence.app/wallet/scan", "_blank");
-            setIsSequenceStepDone(true);
-          }}
-          done={isSequenceStepDone}
-        />
+        {isSequenceWallet && (
+          <StepCard
+            index={4}
+            iconPath="/sequence.svg"
+            title={"Connect to the Sequence wallet"}
+            content="Paste the code into the wallet's scanner"
+            action={() => {
+              window.open("https://sequence.app/wallet/scan", "_blank");
+              setIsSequenceStepDone(true);
+            }}
+            done={isSequenceStepDone}
+          />
+        )}
       </section>
       <section className="flex justify-center mt-6 mb-3">
         <button className="primary-button" onClick={() => buyWithUniswap(1000)}>
