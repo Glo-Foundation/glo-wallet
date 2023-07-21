@@ -1,10 +1,20 @@
 import axios from "axios";
+import Moralis from "moralis";
 import {
+  Erc20Transaction,
+  EvmAddress,
   EvmErc20TransferJSON,
   EvmErc20TransfersResponseJSON,
 } from "moralis/common-evm-utils";
 
+import { hexToNumber } from "@/utils";
+
+import { getFirstGloBlock } from "./config";
 import { sliceAddress } from "./utils";
+
+if (!Moralis.Core.isStarted) {
+  await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
+}
 
 const instance = axios.create({
   baseURL: "https://deep-index.moralis.io/api/v2/",
@@ -40,4 +50,36 @@ export const fetchTransactions = async (
       })) || [],
     cursor: transfers.data.cursor,
   };
+};
+
+// fetch very first Glo transaction
+export const fetchFirstGloTransaction = async (
+  address: string,
+  chainHex: string
+): Promise<Erc20Transaction | null> => {
+  let cursor = "";
+  do {
+    const response = await Moralis.EvmApi.token.getTokenTransfers({
+      chain: chainHex,
+      address: process.env.NEXT_PUBLIC_USDGLO as string,
+      fromBlock: getFirstGloBlock(hexToNumber(chainHex)),
+      cursor: cursor,
+      limit: 100,
+    });
+
+    const firstTx = response.result.find((tx: Erc20Transaction) => {
+      return (
+        tx.result.fromAddress.equals(EvmAddress.ZERO_ADDRESS) &&
+        tx.result.toAddress.lowercase === address.toLowerCase()
+      );
+    });
+
+    if (firstTx) {
+      return firstTx;
+    }
+
+    cursor = response.pagination.cursor as string;
+  } while (cursor !== "" && cursor != null);
+
+  return null;
 };

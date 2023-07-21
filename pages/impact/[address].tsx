@@ -1,6 +1,8 @@
-import { getNetwork } from "@wagmi/core";
-import { GetServerSidePropsContext } from "next";
+import { kv } from "@vercel/kv";
+import { Chain, getNetwork } from "@wagmi/core";
+import { Erc20Transaction } from "moralis/common-evm-utils";
 import { useRouter } from "next/router";
+import { GetServerSidePropsContext } from "next/types";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
@@ -8,33 +10,63 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
+import { supportedChains } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { lastSliceAddress, sliceAddress } from "@/lib/utils";
-import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
+import { fetchFirstGloTransaction } from "@/lib/moralis";
+import { isProd, lastSliceAddress, sliceAddress } from "@/lib/utils";
+import {
+  getBalance,
+  getTotalYield,
+  getUSFormattedNumber,
+  numberToHex,
+} from "@/utils";
 
 type Props = {
-  balance: number;
+  whenFirstGlo: string;
 };
 
-export default function Impact({ balance }: Props) {
+export default function Impact({ whenFirstGlo }: Props) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal } = useContext(ModalContext);
   const router = useRouter();
+  const { push } = router;
   const { address } = router.query;
 
-  const yearlyYield = getTotalYield(balance);
-  const yearlyYieldFormatted =
-    yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
-  const formattedBalance = getUSFormattedNumber(balance);
-
-  const { push } = useRouter();
+  const { chain: chainFromNetwork } = getNetwork();
+  const [chain, setChain] = useState<Chain | null>(chainFromNetwork as Chain);
+  const [formattedBalance, setFormattedBalance] = useState<string>("0");
+  const [yearlyYield, setYearlyYield] = useState<number>(0);
+  const [yearlyYieldFormatted, setYearlyYieldFormatted] =
+    useState<string>("$0");
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!address || !chain) {
+        return;
+      }
+
+      const bal = await getBalance(address as string, chain.id);
+      const decimals = BigInt(1000000000000000000);
+      const balance = bal.div(decimals).toNumber();
+
+      const yearlyYield = getTotalYield(balance);
+      setYearlyYield(yearlyYield);
+      const yearlyYieldFormatted =
+        yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
+      setYearlyYieldFormatted(yearlyYieldFormatted);
+      setFormattedBalance(getUSFormattedNumber(balance));
+    };
+
+    setChain(chain);
+    fetchBalance();
+  }, [address, chain]);
 
   const openUserAuthModal = () => {
     openModal(<UserAuthModal />, "bg-transparent");
@@ -68,7 +100,7 @@ export default function Impact({ balance }: Props) {
                 </button>
                 <div className="flex flex-col text-[14px] font-normal leading-normal text-pine-900/90">
                   <span>{sliceAddress(address as string, 4)}</span>
-                  <span className=""> 🔆 july ‘23</span>
+                  <span>{whenFirstGlo}</span>
                 </div>
               </div>
             </div>
@@ -120,14 +152,62 @@ export default function Impact({ balance }: Props) {
 export async function getServerSideProps({
   params,
 }: GetServerSidePropsContext) {
-  const { chain } = getNetwork();
-  const address = params?.address;
-  const balance = await getBalance(address as string, chain?.id);
-  const decimals = BigInt(1000000000000000000);
-  const formattedBalance = balance.div(decimals).toNumber();
+  const address = params?.address as string;
+  const chains = isProd() ? supportedChains.mainnet : supportedChains.testnet;
+
+  const valueFromKv = (await kv.get(address)) as string;
+  if (valueFromKv) {
+    const dateFirstGlo: Date = new Date(valueFromKv);
+    return {
+      props: {
+        whenFirstGlo: beautifyDate(dateFirstGlo),
+      },
+    };
+  }
+
+  const transactions: { [id: number]: Erc20Transaction | null } = {};
+  for (const chain of chains) {
+    const chainHex = `0x${numberToHex(chain)}`;
+    transactions[chain] = await fetchFirstGloTransaction(address, chainHex);
+  }
+
+  const timeStamps = Object.values(transactions).map(
+    (tx) => tx?.blockTimestamp
+  );
+
+  const firstGlo = getEarliest(timeStamps);
+  if (firstGlo) {
+    await kv.set(address, firstGlo.toISOString());
+  }
+
   return {
     props: {
-      balance: formattedBalance,
+      whenFirstGlo: beautifyDate(firstGlo),
     },
   };
+}
+
+const beautifyDate = (date?: Date) => {
+  if (!date) {
+    return "";
+  }
+
+  const year = date.getFullYear().toString().slice(2);
+  const month = date.toLocaleString("default", { month: "long" }).toLowerCase();
+
+  return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
+};
+
+function getEarliest(timeStamps: (Date | undefined)[]) {
+  return timeStamps.reduce((a, b) => {
+    if (!a) {
+      return b;
+    }
+
+    if (!b) {
+      return a;
+    }
+
+    return a < b ? a : b;
+  });
 }

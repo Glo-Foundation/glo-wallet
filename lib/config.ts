@@ -9,7 +9,7 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [goerli.id]: "0x2c872de03E91D2ee463308Cb5dA4Ed9e41bBB355",
 };
 
-const defaultChainId = polygonMumbai.id;
+const defaultChainId = polygon.id;
 
 export const getSmartContractAddress = (chainId?: number) =>
   chainConfig[chainId || defaultChainId];
@@ -43,13 +43,31 @@ export const PROHIBITED_COUNTRIES = [
 
 const chainRPCUrl: { [id: number]: string } = {
   // Mainnets
-  [polygon.id]: process.env.POLYGON_RPC_URL as string,
-  [mainnet.id]: process.env.MAINNET_RPC_URL as string,
+  [polygon.id]: process.env.NEXT_PUBLIC_POLYGON_RPC_URL as string,
+  [mainnet.id]: process.env.NEXT_PUBLIC_MAINNET_RPC_URL as string,
   // Testnets
-  [polygonMumbai.id]: process.env.MUMBAI_RPC_URL as string,
-  [goerli.id]: process.env.GOERLI_RPC_URL as string,
+  [polygonMumbai.id]: process.env.NEXT_PUBLIC_MUMBAI_RPC_URL as string,
+  [goerli.id]: process.env.NEXT_PUBLIC_GOERLI_RPC_URL as string,
 };
 
 export const getChainRPCUrl = (chainId?: number) => {
   return chainRPCUrl[chainId || defaultChainId];
+};
+
+const firstGloBlock: { [id: number]: number } = {
+  // Mainnets
+  [polygon.id]: 35063113,
+  [mainnet.id]: 15874664,
+  // Testnets
+  [polygonMumbai.id]: 35142419,
+  [goerli.id]: 7878164,
+};
+
+export const getFirstGloBlock = (chainId?: number) => {
+  return firstGloBlock[chainId || defaultChainId];
+};
+
+export const supportedChains = {
+  mainnet: [polygon.id, mainnet.id],
+  testnet: [polygonMumbai.id, goerli.id],
 };
