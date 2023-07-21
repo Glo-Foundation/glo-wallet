@@ -3,11 +3,17 @@
 @tailwind utilities;
 
 body {
-  margin: 0 auto 40px;
+  /* !important added as counter to side effects of Ratio component */
+  margin: 0 auto 40px !important;
   max-width: 375px;
   line-height: 1.5rem;
   background-color: #eaf2f1;
   color: #133d38;
+}
+
+/* Hides side effects from above under non-transparent overlay */
+[class*="_dialogOverlay"] {
+  background-color: black !important;
 }
 
 .rc-slider-handle-dragging {
@@ -54,7 +60,7 @@ body {
   }
 
   .auth-button {
-    @apply w-full my-3 py-2 px-4 bg-pine-900/10 py-4 px-8 my-3 text-xl font-normal flex justify-between items-center;
+    @apply w-full my-3 bg-pine-900/10 py-4 px-8 text-xl font-normal flex justify-between items-center;
   }
 
   #sign-in-with-email {
@@ -105,5 +111,13 @@ body {
 
   .react-modal-sheet-container {
     @apply shadow-xl !important;
+  }
+
+  .animated-impact-list {
+    @apply m-0 h-[24px] overflow-hidden !important;
+  }
+
+  .circle {
+    @apply rounded-full flex justify-center items-center;
   }
 }

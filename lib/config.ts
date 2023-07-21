@@ -71,3 +71,17 @@ export const supportedChains = {
   mainnet: [polygon.id, mainnet.id],
   testnet: [polygonMumbai.id, goerli.id],
 };
+
+export const getChainExplorerUrl = (chainId?: number) => {
+  switch (chainId) {
+    case polygon.id:
+      return "https://polygonscan.com";
+    case polygonMumbai.id:
+      return "https://mumbai.polygonscan.com";
+    case goerli.id:
+      return "https://goerli.etherscan.io";
+    case mainnet.id:
+    default:
+      return "https://etherscan.io";
+  }
+};

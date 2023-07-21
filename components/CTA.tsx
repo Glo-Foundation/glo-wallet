@@ -8,7 +8,7 @@ import { useUserStore } from "@/lib/store";
 import { DEFAULT_CTAS } from "@/lib/utils";
 import { getImpactItems, getTotalYield } from "@/utils";
 
-import { AnimatedCheckIcon } from "./AnimatedCheckIcon";
+import { CompletedIcon } from "./CompletedIcon";
 import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
@@ -39,7 +39,7 @@ const ActionButton = ({
       rel="noreferrer"
     >
       {ctaData.isCompleted ? (
-        <AnimatedCheckIcon name={`cta-${ctaData.type}`} />
+        <CompletedIcon name={`cta-${ctaData.type}`} path={cta.iconPath} />
       ) : (
         <Icon path={cta.iconPath} />
       )}
@@ -67,7 +67,13 @@ const nf = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
-export default function CTA({ balance }: { balance?: string }) {
+export default function CTA({
+  balance,
+  address = "",
+}: {
+  balance?: string;
+  address: string;
+}) {
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
 
@@ -82,7 +88,7 @@ export default function CTA({ balance }: { balance?: string }) {
 
   const shareImpactText = `I just bought ${nf.format(
     gloBalance
-  )} @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
+  )} @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${address}\n\nLet’s end extreme poverty!`;
   const shareImpactTextShort = `${
     shareImpactText.split(" someone")[0]
   }...`.replace("\n\n", "\n");
@@ -128,7 +134,7 @@ export default function CTA({ balance }: { balance?: string }) {
   };
 
   return (
-    <div className="bg-pine-50 rounded-[20px] p-6 transition-all">
+    <div className="bg-pine-50 rounded-[20px] p-6">
       <div className="flex justify-between cursor-default">
         <h3>🌟 Help Grow Glo!</h3>
       </div>
