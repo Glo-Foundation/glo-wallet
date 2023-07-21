@@ -67,7 +67,13 @@ const nf = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
-export default function CTA({ balance }: { balance?: string }) {
+export default function CTA({
+  balance,
+  address = "",
+}: {
+  balance?: string;
+  address: string;
+}) {
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
 
@@ -82,7 +88,7 @@ export default function CTA({ balance }: { balance?: string }) {
 
   const shareImpactText = `I just bought ${nf.format(
     gloBalance
-  )} @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLet’s end extreme poverty.`;
+  )} @glodollar.\n\nAt scale, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${address}\n\nLet’s end extreme poverty!`;
   const shareImpactTextShort = `${
     shareImpactText.split(" someone")[0]
   }...`.replace("\n\n", "\n");
