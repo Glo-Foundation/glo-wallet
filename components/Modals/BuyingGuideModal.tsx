@@ -11,15 +11,20 @@ import { buyWithUniswap } from "@/payments";
 import { getUSFormattedNumber } from "@/utils";
 
 export default function BuyingGuide() {
-  const { address } = useAccount();
+  const { address, connector } = useAccount();
   const { closeModal } = useContext(ModalContext);
   // const formattedGlo = getUSFormattedNumber(glo);
+
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+  const [isCoinbaseStepDone, setIsCoinbaseStepDone] = useState(false);
+  const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
+  const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
 
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
 
   const userIsOnPolygon = chain?.id === polygon.id;
+  const isSequenceWallet = connector?.id === "sequence";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -32,6 +37,7 @@ export default function BuyingGuide() {
     iconPath,
     title,
     content,
+    action,
     balance,
     done = false,
   }: {
@@ -39,14 +45,16 @@ export default function BuyingGuide() {
     iconPath: string;
     title: string;
     content: string;
+    action: any;
     balance?: string;
     done?: boolean;
   }) => (
     <div
       className={clsx(
-        "flex items-center p-3 border-2 cursor-default rounded-xl border-pine-100 hover:border-pine-400 mb-2",
+        "cursor-pointer flex items-center p-3 border-2 rounded-xl border-pine-100 hover:border-pine-400 mb-2",
         done && "bg-cyan-600/20"
       )}
+      onClick={action}
     >
       <div
         className={clsx(
@@ -59,7 +67,7 @@ export default function BuyingGuide() {
         ) : (
           <Image alt="checkmark" src="check-alpha.svg" height={12} width={12} />
         )}
-        <div className="circle border-2 w-[24px] h-[24px] absolute top-[-10px] right-[-12px]">
+        <div className="circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]">
           <Image alt={iconPath} src={iconPath} height={20} width={20} />
         </div>
       </div>
@@ -127,6 +135,9 @@ export default function BuyingGuide() {
           iconPath="/polygon.svg"
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
+          action={() => {
+            switchNetwork!(polygon.id);
+          }}
           done={userIsOnPolygon}
         />
         <StepCard
@@ -134,22 +145,36 @@ export default function BuyingGuide() {
           iconPath="/coinbase-invert.svg"
           title={`Buy ${1000} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
-          done={false}
+          action={() => {
+            window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank");
+            setIsCoinbaseStepDone(true);
+          }}
+          done={isCoinbaseStepDone}
         />
         <StepCard
           index={3}
           iconPath="/uniswap.svg"
           title={"Connect wallet on Uniswap"}
           content={`Choose WalletConnect and click `}
-          done={false}
+          action={() => {
+            window.open("https://app.uniswap.org/", "_blank");
+            setIsUniswapStepDone(true);
+          }}
+          done={isUniswapStepDone}
         />
-        <StepCard
-          index={4}
-          iconPath="/sequence.svg"
-          title={"Connect to the Sequence wallet"}
-          content="Paste the code into the wallet's scanner"
-          done={false}
-        />
+        {isSequenceWallet && (
+          <StepCard
+            index={4}
+            iconPath="/sequence.svg"
+            title={"Connect to the Sequence wallet"}
+            content="Paste the code into the wallet's scanner"
+            action={() => {
+              window.open("https://sequence.app/wallet/scan", "_blank");
+              setIsSequenceStepDone(true);
+            }}
+            done={isSequenceStepDone}
+          />
+        )}
       </section>
       <section className="flex justify-center mt-6 mb-3">
         <button className="primary-button" onClick={() => buyWithUniswap(1000)}>
