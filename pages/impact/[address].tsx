@@ -14,12 +14,7 @@ import { supportedChains } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { fetchFirstGloTransaction } from "@/lib/moralis";
 import { isProd, lastSliceAddress, sliceAddress } from "@/lib/utils";
-import {
-  getBalance,
-  getTotalYield,
-  getUSFormattedNumber,
-  numberToHex,
-} from "@/utils";
+import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
 
 type Props = {
   whenFirstGlo: string;
@@ -167,8 +162,7 @@ export async function getServerSideProps({
 
   const transactions: { [id: number]: Erc20Transaction | null } = {};
   for (const chain of chains) {
-    const chainHex = `0x${numberToHex(chain)}`;
-    transactions[chain] = await fetchFirstGloTransaction(address, chainHex);
+    transactions[chain] = await fetchFirstGloTransaction(address, chain);
   }
 
   const timeStamps = Object.values(transactions).map(

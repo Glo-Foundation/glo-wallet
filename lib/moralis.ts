@@ -7,9 +7,7 @@ import {
   EvmErc20TransfersResponseJSON,
 } from "moralis/common-evm-utils";
 
-import { hexToNumber } from "@/utils";
-
-import { getFirstGloBlock } from "./config";
+import { chainConfig, getFirstGloBlock } from "./config";
 
 if (!Moralis.Core.isStarted) {
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
@@ -55,31 +53,78 @@ export const fetchTransactions = async (
 // fetch very first Glo transaction
 export const fetchFirstGloTransaction = async (
   address: string,
-  chainHex: string
+  chain: number
 ): Promise<Erc20Transaction | null> => {
+  // find first minting transaction
+  const mintingTxs = await findMintingTxs(chain, address);
+
+  // find all incoming transactions
   let cursor = "";
+  let incomingGloTxs: Erc20Transaction[] = [];
+
   do {
-    const response = await Moralis.EvmApi.token.getTokenTransfers({
-      chain: chainHex,
-      address: process.env.NEXT_PUBLIC_USDGLO as string,
-      fromBlock: getFirstGloBlock(hexToNumber(chainHex)),
+    const response = await Moralis.EvmApi.token.getWalletTokenTransfers({
+      address,
+      chain,
+      fromBlock: getFirstGloBlock(chain),
       cursor: cursor,
       limit: 100,
     });
 
-    const firstTx = response.result.find((tx: Erc20Transaction) => {
+    const incomingGloTxs_ = response.result.filter((tx: Erc20Transaction) => {
+      return (
+        tx.toAddress.equals(address.toLowerCase()) &&
+        tx.contractAddress.equals(chainConfig[chain].toLowerCase())
+      );
+    });
+
+    incomingGloTxs = incomingGloTxs.concat(incomingGloTxs_);
+
+    cursor = response.pagination.cursor as string;
+  } while (cursor !== "" && cursor != null);
+
+  if (incomingGloTxs.length === 0 && !mintingTxs) {
+    return null;
+  }
+
+  const allTxs = mintingTxs
+    ? incomingGloTxs.concat(mintingTxs!)
+    : incomingGloTxs;
+  const allTxsInOrder = allTxs.sort();
+
+  return allTxsInOrder[0];
+};
+
+async function findMintingTxs(
+  chain: number,
+  address: string
+): Promise<Erc20Transaction[] | null> {
+  let cursor = "";
+  let mintingTxs: Erc20Transaction[] = [];
+  do {
+    const response = await Moralis.EvmApi.token.getTokenTransfers({
+      chain,
+      address: chainConfig[chain],
+      fromBlock: getFirstGloBlock(chain),
+      cursor: cursor,
+      limit: 100,
+    });
+
+    const txs = response.result.filter((tx: Erc20Transaction) => {
       return (
         tx.result.fromAddress.equals(EvmAddress.ZERO_ADDRESS) &&
         tx.result.toAddress.lowercase === address.toLowerCase()
       );
     });
 
-    if (firstTx) {
-      return firstTx;
-    }
+    mintingTxs = mintingTxs.concat(txs);
 
     cursor = response.pagination.cursor as string;
   } while (cursor !== "" && cursor != null);
 
-  return null;
-};
+  if (mintingTxs.length > 0) {
+    return mintingTxs;
+  } else {
+    return null;
+  }
+}
