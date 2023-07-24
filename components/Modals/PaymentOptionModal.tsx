@@ -129,8 +129,13 @@ export default function PaymentOptionModal() {
                 // The only workaround to handle Ratio modal position
                 // Close our modal after Ratio modal is detected
                 const tryClosingModal = () => {
-                  const el = document.getElementById("radix-:r3:");
-                  if (el) {
+                  const el = document.evaluate(
+                    "//p[contains(text(), 'Sign into Ratio')]",
+                    document,
+                    null,
+                    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+                  );
+                  if (el.snapshotLength > 0) {
                     closeModal();
                   } else {
                     setTimeout(() => {
