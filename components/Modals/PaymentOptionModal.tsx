@@ -70,7 +70,7 @@ export default function PaymentOptionModal() {
       onClick={!disabled ? onClick : undefined}
     >
       <div className="flex py-2">
-        <Image alt={name} src={icon} height={25} width={25} />
+        <Image alt={name} src={icon} height={28} width={28} />
 
         <h3 className="px-3">{name}</h3>
       </div>
