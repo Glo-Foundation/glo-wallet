@@ -94,13 +94,6 @@ export default function CTA({
   }...`.replace("\n\n", "\n");
 
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
-    ["SHARE_GLO"]: {
-      title: "Share Glo with friends",
-      iconPath: "/megahorn.svg",
-      description: "Ask your friends to join Glo. Share your invite link.",
-      url: "https://www.glodollar.org/refer-a-friend",
-      slug: `?email1referrer=${email}`,
-    },
     ["BUY_GLO_MERCH"]: {
       title: "Buy Glo Merch",
       description:
