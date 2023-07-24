@@ -27,7 +27,7 @@ export default function BuyingGuide() {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
-  const [USDC, setUSDC] = useState("");
+  const [USDC, setUSDC] = useState(0);
 
   const userIsOnPolygon = chain?.id === polygon.id;
   const isSequenceWallet = connector?.id === "sequence";
@@ -173,7 +173,7 @@ export default function BuyingGuide() {
           action={() => {
             window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank");
           }}
-          done={USDC}
+          done={!!USDC}
         />
         <StepCard
           index={3}
