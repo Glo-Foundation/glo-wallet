@@ -116,7 +116,7 @@ export default function BuyingGuide() {
           </p>
         </div>
       </div>
-      {index === 2 && USDC && (
+      {index === 2 && !!USDC && (
         <div className="p-3 border-t-2 flex justify-center w-full">
           <span className="copy font-bold">USDC balance: ${USDC}</span>
         </div>
