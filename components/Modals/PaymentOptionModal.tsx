@@ -112,53 +112,48 @@ export default function PaymentOptionModal() {
             delay="⚡ Instant"
             onClick={() => buyWithUniswap(1000)}
           />
-          {
-            // Disabling temporary
-            false && (
-              <BuyBox
-                name="Ratio"
-                icon="/ratio.png"
-                fees="0"
-                worksFor="🇺🇸 US citizens"
-                delay="Up to 3 days"
-                disabled={loading}
-                onClick={() => {
-                  const parent = document.getElementById("ratio-button-parent");
-                  const button = parent?.firstChild as HTMLButtonElement;
-                  if (button) {
-                    setLoading(true);
-                    button.click();
+          <BuyBox
+            name="Ratio"
+            icon="/ratio.png"
+            fees="0"
+            worksFor="🇺🇸 US citizens"
+            delay="Up to 3 days"
+            disabled={loading}
+            onClick={() => {
+              const parent = document.getElementById("ratio-button-parent");
+              const button = parent?.firstChild as HTMLButtonElement;
+              if (button) {
+                setLoading(true);
+                button.click();
 
-                    const findElByText = (text: string) =>
-                      document.evaluate(
-                        `//p[contains(text(), '${text}')]`,
-                        document,
-                        null,
-                        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
-                      ).snapshotLength;
+                const findElByText = (text: string) =>
+                  document.evaluate(
+                    `//p[contains(text(), '${text}')]`,
+                    document,
+                    null,
+                    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+                  ).snapshotLength;
 
-                    // The only workaround to handle Ratio modal position
-                    // Close our modal after Ratio modal is detected
-                    const tryClosingModal = () => {
-                      const elementsCount =
-                        findElByText("Sign into Ratio") +
-                        findElByText("Ratio connects your financial accounts");
+                // The only workaround to handle Ratio modal position
+                // Close our modal after Ratio modal is detected
+                const tryClosingModal = () => {
+                  const elementsCount =
+                    findElByText("Sign into Ratio") +
+                    findElByText("Ratio connects your financial accounts");
 
-                      if (elementsCount > 0) {
-                        closeModal();
-                      } else {
-                        setTimeout(() => {
-                          tryClosingModal();
-                        }, 1000);
-                      }
-                    };
-
-                    tryClosingModal();
+                  if (elementsCount > 0) {
+                    closeModal();
+                  } else {
+                    setTimeout(() => {
+                      tryClosingModal();
+                    }, 1000);
                   }
-                }}
-              />
-            )
-          }
+                };
+
+                tryClosingModal();
+              }
+            }}
+          />
           <BuyBox
             name="Transak"
             icon="/transak.png"
