@@ -166,11 +166,14 @@ export default function PaymentOptionModal() {
           />
         </>
       )}
-      {isConnected && (
-        <button className="bg-pine-300 h-[52px] py-3.5 mx-6">
-          Help me choose
-        </button>
-      )}
+      {
+        // Temporary disabled
+        false && isConnected && (
+          <button className="bg-pine-300 h-[52px] py-3.5 mx-6">
+            Help me choose
+          </button>
+        )
+      }
     </div>
   );
 }
