@@ -77,15 +77,14 @@ export default function Home() {
       const key = `glo-wallet-${address}`;
 
       const sign = async () => {
-        return "public-signature";
-        // Temporary disabled
-        // const storedSignature = localStorage.getItem(key);
-        // if (storedSignature) {
-        //   return storedSignature;
-        // }
+        const storedSignature = localStorage.getItem(key);
+        if (storedSignature) {
+          return storedSignature;
+        }
 
-        // const signature = await signMessageAsync();
-        // localStorage.setItem(key, signature); return signature;
+        const signature = await signMessageAsync();
+        localStorage.setItem(key, signature);
+        return signature;
       };
 
       sign().then(async (signature: string) => {

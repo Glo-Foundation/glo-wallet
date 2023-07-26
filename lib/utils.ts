@@ -38,7 +38,7 @@ export const api = () => apiInstance;
 
 export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
-export const signMsgContent = "glo-wallet";
+export const signMsgContent = "Confirm the ownership of the wallet.";
 
 export const DEFAULT_CTAS: CTA[] = [
   "BUY_GLO_MERCH",
