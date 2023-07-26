@@ -1,8 +1,6 @@
-import { kv } from "@vercel/kv";
 import { Chain, getNetwork } from "@wagmi/core";
-import { Erc20Transaction } from "moralis/common-evm-utils";
+import axios from "axios";
 import { useRouter } from "next/router";
-import { GetServerSidePropsContext } from "next/types";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
@@ -10,17 +8,13 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
-import { supportedChains } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { fetchFirstGloTransaction } from "@/lib/moralis";
-import { isProd, lastSliceAddress, sliceAddress } from "@/lib/utils";
+import { lastSliceAddress, sliceAddress } from "@/lib/utils";
 import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
 
-type Props = {
-  whenFirstGlo: string;
-};
+import { KVResponse } from "../api/transfers/first-glo/[address]";
 
-export default function Impact({ whenFirstGlo }: Props) {
+export default function Impact() {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal } = useContext(ModalContext);
@@ -34,6 +28,7 @@ export default function Impact({ whenFirstGlo }: Props) {
   const [yearlyYield, setYearlyYield] = useState<number>(0);
   const [yearlyYieldFormatted, setYearlyYieldFormatted] =
     useState<string>("$0");
+  const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -58,10 +53,27 @@ export default function Impact({ whenFirstGlo }: Props) {
       setYearlyYieldFormatted(yearlyYieldFormatted);
       setFormattedBalance(getUSFormattedNumber(balance));
     };
-
     setChain(chain);
     fetchBalance();
   }, [address, chain]);
+
+  useEffect(() => {
+    const seeWhenFirstGloTransaction = async () => {
+      if (!address) {
+        return;
+      }
+
+      const addressToCheck = address as string;
+      const { data } = await axios.get<KVResponse>(
+        `/api/transfers/first-glo/${addressToCheck}`
+      );
+      const { dateFirstGlo } = data;
+      if (dateFirstGlo) {
+        setWhenFirstGlo(beautifyDate(new Date(dateFirstGlo)));
+      }
+    };
+    seeWhenFirstGloTransaction();
+  }, [address]);
 
   const openUserAuthModal = () => {
     openModal(<UserAuthModal />, "bg-transparent");
@@ -144,43 +156,6 @@ export default function Impact({ whenFirstGlo }: Props) {
   );
 }
 
-export async function getServerSideProps({
-  params,
-}: GetServerSidePropsContext) {
-  const address = params?.address as string;
-  const chains = isProd() ? supportedChains.mainnet : supportedChains.testnet;
-
-  const valueFromKv = (await kv.get(address)) as string;
-  if (valueFromKv) {
-    const dateFirstGlo: Date = new Date(valueFromKv);
-    return {
-      props: {
-        whenFirstGlo: beautifyDate(dateFirstGlo),
-      },
-    };
-  }
-
-  const transactions: { [id: number]: Erc20Transaction | null } = {};
-  for (const chain of chains) {
-    transactions[chain] = await fetchFirstGloTransaction(address, chain);
-  }
-
-  const timeStamps = Object.values(transactions).map(
-    (tx) => tx?.blockTimestamp
-  );
-
-  const firstGlo = getEarliest(timeStamps);
-  if (firstGlo) {
-    await kv.set(address, firstGlo.toISOString());
-  }
-
-  return {
-    props: {
-      whenFirstGlo: beautifyDate(firstGlo),
-    },
-  };
-}
-
 const beautifyDate = (date?: Date) => {
   if (!date) {
     return "";
@@ -191,17 +166,3 @@ const beautifyDate = (date?: Date) => {
 
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
-
-function getEarliest(timeStamps: (Date | undefined)[]) {
-  return timeStamps.reduce((a, b) => {
-    if (!a) {
-      return b;
-    }
-
-    if (!b) {
-      return a;
-    }
-
-    return a < b ? a : b;
-  });
-}
