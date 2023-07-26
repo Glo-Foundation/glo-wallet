@@ -69,43 +69,11 @@ export default function BuyingGuide() {
       )}
       onClick={action}
     >
-      <div
-        className={clsx(
-          "relative circle border-2 w-[32px] h-[32px]",
-          done && "border-none bg-cyan-600"
-        )}
-      >
-        {!done ? (
-          index
-        ) : (
-          <Image alt="checkmark" src="check-alpha.svg" height={12} width={12} />
-        )}
-        <div className="circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]">
-          <Image alt={iconPath} src={iconPath} height={20} width={20} />
-        </div>
-      </div>
-      <div className="pl-4">
-        <h5 className="text-sm mb-2">{title}</h5>
-        <p className="copy text-xs">
-          {content}{" "}
-          {index === 3 && isSequenceWallet && (
-            <>
-              <Image
-                alt="qrcode"
-                style={{ display: "inline" }}
-                src="/miniqr.svg"
-                height={16}
-                width={16}
-              />{" "}
-              +&nbsp;
-              <Image
-                alt="copypaste"
-                style={{ display: "inline" }}
-                src="/copy.svg"
-                height={16}
-                width={16}
-              />
-            </>
+      <div className="flex items-center m-3">
+        <div
+          className={clsx(
+            "relative circle border-2 w-[32px] h-[32px]",
+            done && "border-none bg-cyan-600"
           )}
         >
           {!done ? (
@@ -211,11 +179,7 @@ export default function BuyingGuide() {
           index={3}
           iconPath="/uniswap.svg"
           title={"Connect wallet on Uniswap"}
-          content={
-            isSequenceWallet
-              ? `Choose WalletConnect and click `
-              : `Connect your wallet and click \"Swap\"`
-          }
+          content={`Choose WalletConnect and click `}
           action={() => {
             window.open("https://app.uniswap.org/", "_blank");
             setIsUniswapStepDone(true);
