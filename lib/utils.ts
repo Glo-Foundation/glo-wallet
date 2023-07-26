@@ -41,9 +41,9 @@ export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 export const signMsgContent = "glo-wallet";
 
 export const DEFAULT_CTAS: CTA[] = [
-  "BUY_GLO_MERCH",
-  "JOIN_PROGRAM",
   "TWEEET_IMPACT",
+  "JOIN_PROGRAM",
+  "BUY_GLO_MERCH",
 ].map((cta) => ({ type: cta } as CTA));
 
 export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
