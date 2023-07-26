@@ -75,7 +75,7 @@ export default function BuyingGuide() {
         <h5 className="text-sm mb-2">{title}</h5>
         <p className="copy text-xs">
           {content}{" "}
-          {index === 3 && (
+          {index === 3 && isSequenceWallet && (
             <>
               <Image
                 alt="qrcode"
@@ -155,7 +155,11 @@ export default function BuyingGuide() {
           index={3}
           iconPath="/uniswap.svg"
           title={"Connect wallet on Uniswap"}
-          content={`Choose WalletConnect and click `}
+          content={
+            isSequenceWallet
+              ? `Choose WalletConnect and click `
+              : `Connect your wallet and click \"Swap\"`
+          }
           action={() => {
             window.open("https://app.uniswap.org/", "_blank");
             setIsUniswapStepDone(true);
