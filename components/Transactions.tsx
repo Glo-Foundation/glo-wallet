@@ -33,6 +33,14 @@ export default function Transactions() {
       },
     };
   };
+  const allTxnsVariants = {
+    open: {
+      opacity: 1,
+    },
+    closed: {
+      opacity: 0,
+    },
+  };
 
   return (
     <motion.div
@@ -73,14 +81,13 @@ export default function Transactions() {
       </div>
       <motion.ul variants={variants()}>
         <TransactionsList txns={transfers.slice(0, 5)} chain={chain?.id} />
-        {transfersCursor && (
-          <motion.li
-            onClick={() => openModal(<AllTransactionsModal />)}
-            className="underline cursor-pointer"
-          >
-            View all transactions
-          </motion.li>
-        )}
+        <motion.li
+          onClick={() => openModal(<AllTransactionsModal />)}
+          className="underline cursor-pointer"
+          variants={allTxnsVariants}
+        >
+          View all transactions
+        </motion.li>
       </motion.ul>
       <div>
         {!isConnected && (

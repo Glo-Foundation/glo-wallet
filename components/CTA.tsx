@@ -12,7 +12,7 @@ import { CompletedIcon } from "./CompletedIcon";
 import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
-  <button className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
+  <button className="flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
     <Image src={path} width={16} height={16} alt="call to action" />
   </button>
 );
@@ -43,7 +43,7 @@ const ActionButton = ({
       ) : (
         <Icon path={cta.iconPath} />
       )}
-      <div className="flex-col w-56">
+      <div className="flex-col w-56 ml-[16px]">
         <h5>{cta.title}</h5>
         <p className="mt-1 text-xs text-pine-700 whitespace-pre-line">
           {cta.description}
