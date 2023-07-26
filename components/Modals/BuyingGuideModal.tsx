@@ -9,7 +9,7 @@ import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
-import { getUSFormattedNumber } from "@/utils";
+import { getUSFormattedNumber, USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
 export default function BuyingGuide() {
   const { closeModal } = useContext(ModalContext);
@@ -19,7 +19,7 @@ export default function BuyingGuide() {
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
-    token: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", // USDC polygon
+    token: USDC_POLYGON_CONTRACT_ADDRESS,
     watch: true,
   });
   const { switchNetwork } = useSwitchNetwork();
