@@ -116,7 +116,7 @@ export const getNiceNumber = (num: number) => {
   return `${parts[0]}.${parts[1][0]}${TIER_SUFFIX[parts.length - 1]}`;
 };
 
-const USDC_POLYGON_CONTRACT_ADDRESS =
+export const USDC_POLYGON_CONTRACT_ADDRESS =
   "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
 
 export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {

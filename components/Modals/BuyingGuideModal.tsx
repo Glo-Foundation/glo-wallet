@@ -1,27 +1,33 @@
 import { polygon } from "@wagmi/chains";
 import clsx from "clsx";
+import { utils } from "ethers";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
-import { getUSFormattedNumber } from "@/utils";
+import { getUSFormattedNumber, USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
 export default function BuyingGuide() {
-  const { address, connector } = useAccount();
   const { closeModal } = useContext(ModalContext);
   // const formattedGlo = getUSFormattedNumber(glo);
 
+  const { address, connector } = useAccount();
+  const { chain } = useNetwork();
+  const { data: balance } = useBalance({
+    address,
+    token: USDC_POLYGON_CONTRACT_ADDRESS,
+    watch: true,
+  });
+  const { switchNetwork } = useSwitchNetwork();
+
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [isCoinbaseStepDone, setIsCoinbaseStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
-
-  const { chain } = useNetwork();
-  const { switchNetwork } = useSwitchNetwork();
+  const [USDC, setUSDC] = useState(0);
 
   const userIsOnPolygon = chain?.id === polygon.id;
   const isSequenceWallet = connector?.id === "sequence";
@@ -31,6 +37,13 @@ export default function BuyingGuide() {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
+
+  useEffect(() => {
+    const val = balance?.value;
+    if (val && val > 0) {
+      setUSDC(parseFloat(utils.formatEther(val)));
+    }
+  }, [balance]);
 
   const StepCard = ({
     index,
@@ -51,51 +64,63 @@ export default function BuyingGuide() {
   }) => (
     <div
       className={clsx(
-        "cursor-pointer flex items-center p-3 border-2 rounded-xl border-pine-100 hover:border-pine-400 mb-2",
+        "cursor-pointer flex flex-col justify-center border-2 rounded-xl border-pine-100 hover:border-pine-400 mb-2",
         done && "bg-cyan-600/20"
       )}
       onClick={action}
     >
-      <div
-        className={clsx(
-          "relative circle border-2 w-[32px] h-[32px]",
-          done && "border-none bg-cyan-600"
-        )}
-      >
-        {!done ? (
-          index
-        ) : (
-          <Image alt="checkmark" src="check-alpha.svg" height={12} width={12} />
-        )}
-        <div className="circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]">
-          <Image alt={iconPath} src={iconPath} height={20} width={20} />
+      <div className="flex items-center m-3">
+        <div
+          className={clsx(
+            "relative circle border-2 w-[32px] h-[32px]",
+            done && "border-none bg-cyan-600"
+          )}
+        >
+          {!done ? (
+            index
+          ) : (
+            <Image
+              alt="checkmark"
+              src="check-alpha.svg"
+              height={12}
+              width={12}
+            />
+          )}
+          <div className="circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]">
+            <Image alt={iconPath} src={iconPath} height={20} width={20} />
+          </div>
+        </div>
+        <div className="pl-4">
+          <h5 className="text-sm mb-2">{title}</h5>
+          <p className="copy text-xs">
+            {content}{" "}
+            {index === 3 && (
+              <>
+                <Image
+                  alt="qrcode"
+                  style={{ display: "inline" }}
+                  src="/miniqr.svg"
+                  height={16}
+                  width={16}
+                />{" "}
+                +&nbsp;
+                <Image
+                  alt="copypaste"
+                  style={{ display: "inline" }}
+                  src="/copy.svg"
+                  height={16}
+                  width={16}
+                />
+              </>
+            )}
+          </p>
         </div>
       </div>
-      <div className="pl-4">
-        <h5 className="text-sm mb-2">{title}</h5>
-        <p className="copy text-xs">
-          {content}{" "}
-          {index === 3 && isSequenceWallet && (
-            <>
-              <Image
-                alt="qrcode"
-                style={{ display: "inline" }}
-                src="/miniqr.svg"
-                height={16}
-                width={16}
-              />{" "}
-              +&nbsp;
-              <Image
-                alt="copypaste"
-                style={{ display: "inline" }}
-                src="/copy.svg"
-                height={16}
-                width={16}
-              />
-            </>
-          )}
-        </p>
-      </div>
+      {index === 2 && !!USDC && (
+        <div className="p-3 border-t-2 flex justify-center w-full">
+          <span className="copy font-bold">USDC balance: ${USDC}</span>
+        </div>
+      )}
     </div>
   );
 
@@ -147,19 +172,14 @@ export default function BuyingGuide() {
           content="Withdraw to the wallet address shown above"
           action={() => {
             window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank");
-            setIsCoinbaseStepDone(true);
           }}
-          done={isCoinbaseStepDone}
+          done={!!USDC}
         />
         <StepCard
           index={3}
           iconPath="/uniswap.svg"
           title={"Connect wallet on Uniswap"}
-          content={
-            isSequenceWallet
-              ? `Choose WalletConnect and click `
-              : `Connect your wallet and click \"Swap\"`
-          }
+          content={`Choose WalletConnect and click `}
           action={() => {
             window.open("https://app.uniswap.org/", "_blank");
             setIsUniswapStepDone(true);
