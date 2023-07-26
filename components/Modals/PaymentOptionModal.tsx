@@ -128,11 +128,22 @@ export default function PaymentOptionModal() {
                 setLoading(true);
                 button.click();
 
+                const findElByText = (text: string) =>
+                  document.evaluate(
+                    `//p[contains(text(), '${text}')]`,
+                    document,
+                    null,
+                    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+                  ).snapshotLength;
+
                 // The only workaround to handle Ratio modal position
                 // Close our modal after Ratio modal is detected
                 const tryClosingModal = () => {
-                  const el = document.getElementById("radix-:r3:");
-                  if (el) {
+                  const elementsCount =
+                    findElByText("Sign into Ratio") +
+                    findElByText("Ratio connects your financial accounts");
+
+                  if (elementsCount > 0) {
                     closeModal();
                   } else {
                     setTimeout(() => {
