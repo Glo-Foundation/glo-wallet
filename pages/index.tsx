@@ -123,7 +123,7 @@ export default function Home() {
       <div className="flex flex-col space-y-2">
         <Balance balance={balance} />
         <Transactions />
-        <CTA balance={balance?.formatted} />
+        <CTA balance={balance?.formatted} address={address!} />
       </div>
     </div>
   );
