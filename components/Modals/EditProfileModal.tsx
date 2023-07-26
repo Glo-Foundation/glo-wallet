@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useState, useContext, useEffect } from "react";
 
 import { ModalContext } from "@/lib/context";
+import { useUserStore } from "@/lib/store";
 import { clientSupabase } from "@/lib/supabase";
 import { api } from "@/lib/utils";
 
@@ -17,6 +18,8 @@ type UploadData = {
 };
 
 export default function EditProfileModal() {
+  const { avatar, setAvatar } = useUserStore();
+
   const [form, setForm] = useState<Form>({
     name: "",
   });
@@ -61,10 +64,15 @@ export default function EditProfileModal() {
         .uploadToSignedUrl(path, token, uploadData.file!);
     }
 
-    await api().post("/profile", {
-      ...form,
-      avatarPath: uploadData.path,
-    });
+    const { data } = await api().post<{ name: string; avatar: string }>(
+      "/profile",
+      {
+        ...form,
+        avatar: uploadData.path,
+      }
+    );
+
+    setAvatar(data.avatar);
 
     // Add popup
 

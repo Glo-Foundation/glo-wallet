@@ -15,6 +15,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ctas      CTAs[]
+  avatar    String?  @unique
 }
 
 model CTAs {

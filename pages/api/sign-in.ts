@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/lib/prisma";
-import { fetchEarlyAdoptersEmails, getReferrer } from "@/lib/spreadsheet";
+import { fetchEarlyAdoptersEmails } from "@/lib/spreadsheet";
 
 const getOrCreate = async (address: string, email: string) => {
   try {

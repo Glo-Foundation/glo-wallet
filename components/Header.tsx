@@ -5,6 +5,7 @@ import { useConnect, useNetwork, useSwitchNetwork, useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
+import { generateAvatarUrl } from "@/lib/supabase";
 import { sliceAddress } from "@/lib/utils";
 
 import UserAuthModal from "./Modals/UserAuthModal";
@@ -17,6 +18,8 @@ export default function Header() {
   const { chain, chains } = useNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal, closeModal } = useContext(ModalContext);
+
+  const { avatar } = useUserStore();
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -58,12 +61,24 @@ export default function Header() {
           >
             {sliceAddress(address!)}
           </button>
-          <button
-            className="primary-button w-9 h-9"
-            onClick={() => openUserInfoModal()}
-          >
-            👤
-          </button>
+
+          {avatar ? (
+            <Image
+              src={generateAvatarUrl(avatar)}
+              onClick={() => openUserInfoModal()}
+              alt="avatar"
+              width={36}
+              height={36}
+              className="cursor-pointer"
+            />
+          ) : (
+            <button
+              className="primary-button w-9 h-9"
+              onClick={() => openUserInfoModal()}
+            >
+              👤
+            </button>
+          )}
         </div>
       ) : (
         <div className="flex">

@@ -35,7 +35,7 @@ export default function Home() {
     watch: true,
   });
 
-  const { setTransfers, setCTAs } = useUserStore();
+  const { setTransfers, setCTAs, setAvatar } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();
@@ -92,11 +92,16 @@ export default function Home() {
         await initApi(address!, chain!.id, signature);
         const email = Cookies.get("glo-email");
 
-        const { data: userId } = await api().post<string>(`/sign-in`, {
-          email,
-        });
+        const { data } = await api().post<{ userId: string; avatar: string }>(
+          `/sign-in`,
+          {
+            email,
+          }
+        );
 
-        Cookies.set("glo-user", userId);
+        setAvatar(data.avatar);
+
+        Cookies.set("glo-user", data.userId);
 
         // Parallel requests
         onChainSwitch();
