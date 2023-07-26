@@ -70,13 +70,13 @@ export default function PaymentOptionModal() {
       onClick={!disabled ? onClick : undefined}
     >
       <div className="flex py-2">
-        <Image alt={name} src={icon} height={25} width={25} />
+        <Image alt={name} src={icon} height={28} width={28} />
 
         <h3 className="px-3">{name}</h3>
       </div>
       <div className="flex">
         <Double className="min-w-[15%]" label="Fees" value={`${fees}%`} />
-        <Double className="min-w-[40%]" label="Works for" value={worksFor} />
+        <Double className="min-w-[38%]" label="Works for" value={worksFor} />
         <Double className="min-w-[40%]" label="Delay" value={delay} />
       </div>
     </div>
@@ -86,32 +86,34 @@ export default function PaymentOptionModal() {
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
         <div></div>
-        <button
-          className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
-          data-tooltip-id="copy-deposit-tooltip"
-          data-tooltip-content="Copied!"
-          onClick={() => {
-            navigator.clipboard.writeText(address!);
-            setIsCopiedTooltipOpen(true);
-          }}
-        >
-          🔗 {sliceAddress(address!)}
-        </button>
+        {isConnected && (
+          <button
+            className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
+            data-tooltip-id="copy-deposit-tooltip"
+            data-tooltip-content="Copied!"
+            onClick={() => {
+              navigator.clipboard.writeText(address!);
+              setIsCopiedTooltipOpen(true);
+            }}
+          >
+            🔗 {sliceAddress(address!)}
+          </button>
+        )}
         <button onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
       <h2 className="text-center">Choose a payment option to buy Glo Dollar</h2>
+      <BuyBox
+        name="Uniswap"
+        icon="/uniswap.svg"
+        fees=".01"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() => buyWithUniswap(1000)}
+      />
       {isConnected && address && (
         <>
-          <BuyBox
-            name="Uniswap"
-            icon="/uniswap.svg"
-            fees=".01"
-            worksFor="🔐 Crypto"
-            delay="⚡ Instant"
-            onClick={() => buyWithUniswap(1000)}
-          />
           <BuyBox
             name="Ratio"
             icon="/ratio.png"
@@ -175,9 +177,14 @@ export default function PaymentOptionModal() {
           />
         </>
       )}
-      <button className="bg-pine-300 h-[52px] py-3.5 mx-6">
-        Help me choose
-      </button>
+      {
+        // Temporary disabled
+        false && isConnected && (
+          <button className="bg-pine-300 h-[52px] py-3.5 mx-6">
+            Help me choose
+          </button>
+        )
+      }
     </div>
   );
 }
