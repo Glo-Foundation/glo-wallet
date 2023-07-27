@@ -190,9 +190,9 @@ export default function BuyingGuide() {
           }
           action={() => {
             isSequenceWallet
-              ? window.open("https://app.uniswap.org/", "_blank") &&
-                setIsUniswapStepDone(true)
+              ? window.open("https://app.uniswap.org/", "_blank")
               : buyWithUniswap(1000);
+            setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
         />
