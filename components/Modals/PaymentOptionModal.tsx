@@ -82,6 +82,41 @@ export default function PaymentOptionModal() {
     </div>
   );
 
+  const buyWithRatio = () => {
+    const parent = document.getElementById("ratio-button-parent");
+    const button = parent?.firstChild as HTMLButtonElement;
+    if (button) {
+      setLoading(true);
+      button.click();
+
+      const findElByText = (text: string) =>
+        document.evaluate(
+          `//p[contains(text(), '${text}')]`,
+          document,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+        ).snapshotLength;
+
+      // The only workaround to handle Ratio modal position
+      // Close our modal after Ratio modal is detected
+      const tryClosingModal = () => {
+        const elementsCount =
+          findElByText("Sign into Ratio") +
+          findElByText("Ratio connects your financial accounts");
+
+        if (elementsCount > 0) {
+          closeModal();
+        } else {
+          setTimeout(() => {
+            tryClosingModal();
+          }, 1000);
+        }
+      };
+
+      tryClosingModal();
+    }
+  };
+
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
@@ -121,40 +156,15 @@ export default function PaymentOptionModal() {
             worksFor="🇺🇸 US citizens"
             delay="Up to 3 days"
             disabled={loading}
-            onClick={() => {
-              const parent = document.getElementById("ratio-button-parent");
-              const button = parent?.firstChild as HTMLButtonElement;
-              if (button) {
-                setLoading(true);
-                button.click();
-
-                const findElByText = (text: string) =>
-                  document.evaluate(
-                    `//p[contains(text(), '${text}')]`,
-                    document,
-                    null,
-                    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
-                  ).snapshotLength;
-
-                // The only workaround to handle Ratio modal position
-                // Close our modal after Ratio modal is detected
-                const tryClosingModal = () => {
-                  const elementsCount =
-                    findElByText("Sign into Ratio") +
-                    findElByText("Ratio connects your financial accounts");
-
-                  if (elementsCount > 0) {
-                    closeModal();
-                  } else {
-                    setTimeout(() => {
-                      tryClosingModal();
-                    }, 1000);
-                  }
-                };
-
-                tryClosingModal();
-              }
-            }}
+            onClick={() =>
+              openModal(
+                <BuyingGuideModal
+                  iconPath="/ratio.png"
+                  provider="Ratio"
+                  buyWithProvider={buyWithRatio}
+                />
+              )
+            }
           />
           <BuyBox
             name="Transak"
@@ -162,7 +172,15 @@ export default function PaymentOptionModal() {
             fees="1-5"
             worksFor="🌍 world"
             delay="⚡ Instant"
-            onClick={() => buyWithTransak(1000, address)}
+            onClick={() =>
+              openModal(
+                <BuyingGuideModal
+                  iconPath="/transak.png"
+                  provider="Transak"
+                  buyWithProvider={() => buyWithTransak(1000, address)}
+                />
+              )
+            }
           />
           <BuyBox
             name="Coinbase"
@@ -171,8 +189,18 @@ export default function PaymentOptionModal() {
             worksFor="🌍 world"
             delay="⚡ Instant"
             onClick={() => {
-              buyWithCoinbase();
-              openModal(<BuyingGuideModal />);
+              openModal(
+                <BuyingGuideModal
+                  iconPath="/coinbase-invert.svg"
+                  provider="Coinbase"
+                  buyWithProvider={() =>
+                    window.open(
+                      "https://www.coinbase.com/how-to-buy/usdc",
+                      "_blank"
+                    )
+                  }
+                />
+              );
             }}
           />
         </>
