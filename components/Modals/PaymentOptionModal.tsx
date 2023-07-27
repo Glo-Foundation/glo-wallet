@@ -162,7 +162,8 @@ export default function PaymentOptionModal() {
                   iconPath="/ratio.png"
                   provider="Ratio"
                   buyWithProvider={buyWithRatio}
-                />
+                />,
+                "buying-guide"
               )
             }
           />
