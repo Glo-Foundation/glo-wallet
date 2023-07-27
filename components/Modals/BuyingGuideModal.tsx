@@ -11,11 +11,19 @@ import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
 import { getUSFormattedNumber, USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
-export default function BuyingGuide() {
-  const { closeModal } = useContext(ModalContext);
-  // const formattedGlo = getUSFormattedNumber(glo);
+interface Props {
+  iconPath: string;
+  buyWithProvider: any;
+  provider: string;
+}
 
+export default function BuyingGuide({
+  iconPath,
+  buyWithProvider,
+  provider,
+}: Props) {
   const { address, connector } = useAccount();
+  const { closeModal } = useContext(ModalContext);
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
@@ -25,6 +33,7 @@ export default function BuyingGuide() {
   const { switchNetwork } = useSwitchNetwork();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+  const [isProviderStepDone, setIsProviderStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
   const [USDC, setUSDC] = useState(0);
@@ -146,12 +155,11 @@ export default function BuyingGuide() {
       </div>
       <section className="text-center">
         <h3 className="pt-0">
-          Buying Glo Dollars through Coinbase and Uniswap
+          Buying Glo Dollars through {provider} and Uniswap
         </h3>
         <p className="text-sm py-6">
-          You can get Glo Dollars by exchanging another stablecoin co-created by
-          Coinbase called <b>USDC</b> for Glo Dollar using the <b>Uniswap</b>{" "}
-          app.
+          You can get Glo Dollars by exchanging another stablecoin called{" "}
+          <b>USDC</b> for Glo Dollar using the <b>Uniswap</b> app.
         </p>
       </section>
       <section>
@@ -167,13 +175,14 @@ export default function BuyingGuide() {
         />
         <StepCard
           index={2}
-          iconPath="/coinbase-invert.svg"
-          title={`Buy ${1000} USDC on Coinbase`}
+          iconPath={iconPath}
+          title={`Buy ${1000} USDC on ${provider}`}
           content="Withdraw to the wallet address shown above"
           action={() => {
-            window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank");
+            buyWithProvider();
+            setIsProviderStepDone(true);
           }}
-          done={!!USDC}
+          done={isProviderStepDone}
         />
         <StepCard
           index={3}
@@ -202,7 +211,7 @@ export default function BuyingGuide() {
       </section>
       <section className="flex justify-center mt-6 mb-3">
         <button className="primary-button" onClick={() => buyWithUniswap(1000)}>
-          Buy $1000 on Uniswap
+          Buy $1000 on {provider}
         </button>
       </section>
     </div>
