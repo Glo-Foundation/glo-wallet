@@ -226,7 +226,7 @@ export default function BuyingGuide({
       </section>
       <section className="flex justify-center mt-6 mb-3">
         <button className="primary-button" onClick={() => buyWithUniswap(1000)}>
-          Buy $1000 on {provider}
+          Buy $1000 Glo on Uniswap
         </button>
       </section>
     </div>
