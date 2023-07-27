@@ -28,7 +28,6 @@ export default function BuyingGuide({
   const { data: balance } = useBalance({
     address,
     token: USDC_POLYGON_CONTRACT_ADDRESS,
-    watch: true,
   });
   const { switchNetwork } = useSwitchNetwork();
 
