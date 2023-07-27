@@ -94,7 +94,7 @@ export default function BuyingGuide() {
           <h5 className="text-sm mb-2">{title}</h5>
           <p className="copy text-xs">
             {content}{" "}
-            {index === 3 && (
+            {index === 3 && isSequenceWallet && (
               <>
                 <Image
                   alt="qrcode"
@@ -178,10 +178,20 @@ export default function BuyingGuide() {
         <StepCard
           index={3}
           iconPath="/uniswap.svg"
-          title={"Connect wallet on Uniswap"}
-          content={`Choose WalletConnect and click `}
+          title={
+            isSequenceWallet
+              ? `Connect wallet on Uniswap`
+              : `Buy Glo through Uniswap`
+          }
+          content={
+            isSequenceWallet
+              ? `Choose WalletConnect and click `
+              : `Connect your wallet and click \"Swap\"`
+          }
           action={() => {
-            window.open("https://app.uniswap.org/", "_blank");
+            isSequenceWallet
+              ? window.open("https://app.uniswap.org/", "_blank")
+              : buyWithUniswap(1000);
             setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
