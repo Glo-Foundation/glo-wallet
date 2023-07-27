@@ -1,11 +1,9 @@
 import { motion } from "framer-motion";
-import Lottie from "lottie-react";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 
-import gloAnimation from "../public/glo-animation.json";
-
 import EnoughToBuy from "./EnoughToBuy";
+import GloAnimated from "./GloAnimated";
 
 type Props = {
   openModal: (content: JSX.Element) => void;
@@ -33,13 +31,8 @@ export default function ImpactInset({
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5 }}
           >
-            <Lottie
-              className="mr-2"
-              animationData={gloAnimation}
-              loop={true}
-              style={{ height: 28 }}
-            />
-            {yearlyYieldFormatted} / year
+            <GloAnimated />
+            <p className="ml-2">{yearlyYieldFormatted} / year</p>
           </motion.div>
           <EnoughToBuy yearlyYield={yearlyYield} />
         </div>
