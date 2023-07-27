@@ -1,5 +1,5 @@
-import { getNetwork } from "@wagmi/core";
-import { GetServerSidePropsContext } from "next";
+import { Chain, getNetwork } from "@wagmi/core";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
@@ -12,29 +12,68 @@ import { ModalContext } from "@/lib/context";
 import { lastSliceAddress, sliceAddress } from "@/lib/utils";
 import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
 
-type Props = {
-  balance: number;
-};
+import { KVResponse } from "../api/transfers/first-glo/[address]";
 
-export default function Impact({ balance }: Props) {
+export default function Impact() {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal } = useContext(ModalContext);
   const router = useRouter();
+  const { push } = router;
   const { address } = router.query;
 
-  const yearlyYield = getTotalYield(balance);
-  const yearlyYieldFormatted =
-    yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
-  const formattedBalance = getUSFormattedNumber(balance);
-
-  const { push } = useRouter();
+  const { chain: chainFromNetwork } = getNetwork();
+  const [chain, setChain] = useState<Chain | null>(chainFromNetwork as Chain);
+  const [formattedBalance, setFormattedBalance] = useState<string>("0");
+  const [yearlyYield, setYearlyYield] = useState<number>(0);
+  const [yearlyYieldFormatted, setYearlyYieldFormatted] =
+    useState<string>("$0");
+  const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!address || !chain) {
+        return;
+      }
+
+      const bal = await getBalance(address as string, chain.id);
+      const decimals = BigInt(1000000000000000000);
+      const balance = bal.div(decimals).toNumber();
+
+      const yearlyYield = getTotalYield(balance);
+      setYearlyYield(yearlyYield);
+      const yearlyYieldFormatted =
+        yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
+      setYearlyYieldFormatted(yearlyYieldFormatted);
+      setFormattedBalance(getUSFormattedNumber(balance));
+    };
+    setChain(chain);
+    fetchBalance();
+  }, [address, chain]);
+
+  useEffect(() => {
+    const seeWhenFirstGloTransaction = async () => {
+      if (!address) {
+        return;
+      }
+
+      const addressToCheck = address as string;
+      const { data } = await axios.get<KVResponse>(
+        `/api/transfers/first-glo/${addressToCheck}`
+      );
+      const { dateFirstGlo } = data;
+      if (dateFirstGlo) {
+        setWhenFirstGlo(beautifyDate(new Date(dateFirstGlo)));
+      }
+    };
+    seeWhenFirstGloTransaction();
+  }, [address]);
 
   const openUserAuthModal = () => {
     openModal(<UserAuthModal />, "bg-transparent");
@@ -68,7 +107,7 @@ export default function Impact({ balance }: Props) {
                 </button>
                 <div className="flex flex-col text-[14px] font-normal leading-normal text-pine-900/90">
                   <span>{sliceAddress(address as string, 4)}</span>
-                  <span className=""> 🔆 july ‘23</span>
+                  <span>{whenFirstGlo}</span>
                 </div>
               </div>
             </div>
@@ -117,17 +156,13 @@ export default function Impact({ balance }: Props) {
   );
 }
 
-export async function getServerSideProps({
-  params,
-}: GetServerSidePropsContext) {
-  const { chain } = getNetwork();
-  const address = params?.address;
-  const balance = await getBalance(address as string, chain?.id);
-  const decimals = BigInt(1000000000000000000);
-  const formattedBalance = balance.div(decimals).toNumber();
-  return {
-    props: {
-      balance: formattedBalance,
-    },
-  };
-}
+const beautifyDate = (date?: Date) => {
+  if (!date) {
+    return "";
+  }
+
+  const year = date.getFullYear().toString().slice(2);
+  const month = date.toLocaleString("default", { month: "long" }).toLowerCase();
+
+  return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
+};
