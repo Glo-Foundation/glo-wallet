@@ -36,7 +36,7 @@ export default function AllTransactionsModal() {
   };
 
   return (
-    <div className="py-8 px-10">
+    <div className="py-8 px-10 min-w-[300px]">
       <div className="flex flex-row justify-between">
         <div>
           <h3>All Transactions</h3>
