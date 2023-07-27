@@ -82,7 +82,7 @@ export default function BuyingGuide({
         <div
           className={clsx(
             "relative circle border-2 w-[32px] h-[32px]",
-            done && "border-none bg-cyan-600"
+            done && "border-none bg-cyan-600 w-[32px] h-[32px]"
           )}
         >
           {!done ? (
@@ -95,7 +95,12 @@ export default function BuyingGuide({
               width={12}
             />
           )}
-          <div className="circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]">
+          <div
+            className={clsx(
+              "circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]",
+              done && "top-[-5px] right-[-8px]"
+            )}
+          >
             <Image alt={iconPath} src={iconPath} height={20} width={20} />
           </div>
         </div>
@@ -122,14 +127,27 @@ export default function BuyingGuide({
                 />
               </>
             )}
+            {!done ? (
+              index
+            ) : (
+              <Image
+                alt="checkmark"
+                src="check-alpha.svg"
+                height={12}
+                width={12}
+              />
+            )}
+            <div className="circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]">
+              <Image alt={iconPath} src={iconPath} height={20} width={20} />
+            </div>
           </p>
         </div>
+        {index === 2 && !!USDC && (
+          <div className="p-3 border-t-2 flex justify-center w-full">
+            <span className="copy font-bold">USDC balance: ${USDC}</span>
+          </div>
+        )}
       </div>
-      {index === 2 && !!USDC && (
-        <div className="p-3 border-t-2 flex justify-center w-full">
-          <span className="copy font-bold">USDC balance: ${USDC}</span>
-        </div>
-      )}
     </div>
   );
 
