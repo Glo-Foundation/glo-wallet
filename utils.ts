@@ -140,3 +140,11 @@ export const getBalance = async (
   );
   return await usdgloContract.balanceOf(address);
 };
+
+export const numberToHex = (num: number): string => {
+  return "0x" + num.toString(16);
+};
+
+export const hexToNumber = (hex: string): number => {
+  return parseInt(hex, 16);
+};
