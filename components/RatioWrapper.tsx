@@ -15,8 +15,8 @@ export default function RatioWrapper() {
   const { setModalClass } = useContext(ModalContext);
   const cleanModal = () => setModalClass(""); // figure out callback to checkpoints
   const verifyRatio = () => {
-    cleanModal();
     setRatio(true);
+    cleanModal();
   };
 
   const fetchSessionToken = useCallback(async (): Promise<string | null> => {

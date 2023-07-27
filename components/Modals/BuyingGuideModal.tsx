@@ -32,8 +32,9 @@ export default function BuyingGuide({
     watch: true,
   });
   const { switchNetwork } = useSwitchNetwork();
-  const { buyCheckDone, setBuyCheckDone } = useUserStore();
+  const { buyRatioDone } = useUserStore();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+  const [isProviderStepDone, setIsProviderStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
   const [USDC, setUSDC] = useState(0);
@@ -185,9 +186,9 @@ export default function BuyingGuide({
           content="Withdraw to the wallet address shown above"
           action={() => {
             buyWithProvider();
-            if (provider !== "Ratio") setBuyCheckDone(true);
+            if (provider !== "Ratio") setIsProviderStepDone(true);
           }}
-          done={buyCheckDone}
+          done={provider === "Ratio" ? buyRatioDone : isProviderStepDone}
         />
         <StepCard
           index={3}

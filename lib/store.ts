@@ -5,10 +5,9 @@ interface UserStore {
   transfers: Transfer[];
   transfersCursor: string | null;
   ctas: CTA[];
-  buyCheckDone: boolean;
   setTransfers: (transfers: TransfersPage) => void;
   setCTAs: (ctas: CTA[]) => void;
-  setBuyCheckDone: (check: boolean) => void;
+  buyRatioDone: boolean;
 }
 export const useUserStore = create<UserStore>((set) => ({
   email: undefined,
@@ -19,7 +18,7 @@ export const useUserStore = create<UserStore>((set) => ({
     set(() => ({ transfers: page.transfers, transfersCursor: page.cursor })),
   setCTAs: (ctas: CTA[]) => set(() => ({ ctas })),
   setEmail: (email: string) => set(() => ({ email })),
-  setBuyCheckDone: (buyCheckDone: boolean) => set(() => ({ buyCheckDone })),
+  setRatio: (Ratio: string) => set(() => ({ buyRatioDone })),
 }));
 
 interface ToastType {
