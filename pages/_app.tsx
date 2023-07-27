@@ -9,6 +9,7 @@ import {
 } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
+import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
@@ -124,6 +125,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Analytics />
+      <Script
+        src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
+        async={true}
+      />
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
