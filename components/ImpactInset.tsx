@@ -1,13 +1,12 @@
 import { motion } from "framer-motion";
-import Image from "next/image";
-import { useState, useEffect } from "react";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 
 import EnoughToBuy from "./EnoughToBuy";
+import GloAnimated from "./GloAnimated";
 
 type Props = {
-  openModal: any;
+  openModal: (content: JSX.Element) => void;
   yearlyYield: number;
   yearlyYieldFormatted: string;
 };
@@ -30,16 +29,10 @@ export default function ImpactInset({
             className="flex items-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 1.5 }}
           >
-            <Image
-              className="pb-[2px] mr-2"
-              src="/glo-logo.svg"
-              alt="glo"
-              height={28}
-              width={28}
-            />
-            {yearlyYieldFormatted} / year
+            <GloAnimated />
+            <p className="ml-2">{yearlyYieldFormatted} / year</p>
           </motion.div>
           <EnoughToBuy yearlyYield={yearlyYield} />
         </div>
