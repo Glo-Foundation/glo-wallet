@@ -3,15 +3,21 @@ import { useCallback, useContext } from "react";
 import { useAccount, useNetwork, useSignMessage } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
+import { useUserStore } from "@/lib/store";
 import { api } from "@/lib/utils";
 
 export default function RatioWrapper() {
   const { isConnected, address } = useAccount();
   const { chain } = useNetwork();
   const { signMessageAsync } = useSignMessage();
+  const { setRatio } = useUserStore();
 
   const { setModalClass } = useContext(ModalContext);
   const cleanModal = () => setModalClass(""); // figure out callback to checkpoints
+  const verifyRatio = () => {
+    cleanModal();
+    setRatio(true);
+  };
 
   const fetchSessionToken = useCallback(async (): Promise<string | null> => {
     try {
@@ -43,7 +49,7 @@ export default function RatioWrapper() {
         }}
         onClose={cleanModal}
         onError={cleanModal}
-        onTransactionComplete={cleanModal}
+        onTransactionComplete={verifyRatio}
       />
     </div>
   );
