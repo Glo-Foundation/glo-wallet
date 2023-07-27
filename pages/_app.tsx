@@ -120,7 +120,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   // Might be redundant after adjusting global css
   // margin: 0 auto 40px !important;
-  const isPaymentDialogOpen = modalClassName.includes("payment-dialog");
+  const isRatioModalOpen = modalClassName.includes("buying-guide");
 
   return (
     <>
@@ -146,7 +146,7 @@ export default function App({ Component, pageProps }: AppProps) {
               </dialog>
             </ModalContext.Provider>
             <Toast />
-            {isPaymentDialogOpen && <RatioWrapper />}
+            {isRatioModalOpen && <RatioWrapper />}
           </WagmiConfig>
         )}
       </main>

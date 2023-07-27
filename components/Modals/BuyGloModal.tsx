@@ -28,7 +28,7 @@ export default function BuyGloModal() {
       <button
         className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6 mt-6"
         disabled={glo === 0}
-        onClick={() => openModal(<PaymentOptionModal />, "payment-dialog")}
+        onClick={() => openModal(<PaymentOptionModal />)}
       >
         Buy ${formattedGlo} Glo Dollar
       </button>

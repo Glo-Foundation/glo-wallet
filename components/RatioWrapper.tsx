@@ -11,7 +11,7 @@ export default function RatioWrapper() {
   const { signMessageAsync } = useSignMessage();
 
   const { setModalClass } = useContext(ModalContext);
-  const cleanModal = () => setModalClass("");
+  const cleanModal = () => setModalClass(""); // figure out callback to checkpoints
 
   const fetchSessionToken = useCallback(async (): Promise<string | null> => {
     try {
