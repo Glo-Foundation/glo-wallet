@@ -127,19 +127,6 @@ export default function BuyingGuide({
                 />
               </>
             )}
-            {!done ? (
-              index
-            ) : (
-              <Image
-                alt="checkmark"
-                src="check-alpha.svg"
-                height={12}
-                width={12}
-              />
-            )}
-            <div className="circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]">
-              <Image alt={iconPath} src={iconPath} height={20} width={20} />
-            </div>
           </p>
         </div>
         {index === 2 && !!USDC && (
