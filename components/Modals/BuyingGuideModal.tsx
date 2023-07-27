@@ -192,14 +192,20 @@ export default function BuyingGuide({
         <StepCard
           index={3}
           iconPath="/uniswap.svg"
-          title={"Connect wallet on Uniswap"}
+          title={
+            isSequenceWallet
+              ? `Connect wallet on Uniswap`
+              : `Buy Glo through Uniswap`
+          }
           content={
             isSequenceWallet
               ? `Choose WalletConnect and click `
               : `Connect your wallet and click \"Swap\"`
           }
           action={() => {
-            window.open("https://app.uniswap.org/", "_blank");
+            isSequenceWallet
+              ? window.open("https://app.uniswap.org/", "_blank")
+              : buyWithUniswap(1000);
             setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
