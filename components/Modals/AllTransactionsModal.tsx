@@ -36,15 +36,17 @@ export default function AllTransactionsModal() {
   };
 
   return (
-    <div className="p-8">
+    <div className="py-8 px-10 min-w-[300px]">
       <div className="flex flex-row justify-between">
-        <div></div>
+        <div>
+          <h3>All Transactions</h3>
+        </div>
         <button onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
       <section className="flex flex-col items-center">
-        <ul className={`mt-12 `}>
+        <ul className="mt-10">
           <TransactionsList txns={transfers} chain={chain!.id} />
 
           {transfersCursor && (
