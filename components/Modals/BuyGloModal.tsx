@@ -30,7 +30,10 @@ export default function BuyGloModal() {
         Buy ${formattedGlo} Glo Dollar
       </button>
       <div className="mb-7">
-        <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
+        <DetailedEnoughToBuy
+          yearlyYield={yearlyYield}
+          noImpactCopyText="Pick a value above $0 to see how much impact you could make."
+        />
       </div>
     </div>
   );
