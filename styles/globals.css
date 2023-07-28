@@ -119,4 +119,8 @@ body {
   .circle {
     @apply rounded-full flex justify-center items-center;
   }
+
+  .link {
+    @apply text-blue-700 underline !important;
+  }
 }
