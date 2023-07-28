@@ -183,7 +183,7 @@ export default function UserAuthModal() {
           </button>
         </div>
 
-        <div ref={tosRef} className="pb-2 flex justify-center items-center">
+        <div ref={tosRef} className="pb-4 flex justify-center items-center">
           <input
             type="checkbox"
             defaultChecked={hasUserAgreed || undefined}
