@@ -21,7 +21,7 @@ export const useUserStore = create<UserStore>((set) => ({
 
 interface ToastType {
   showToast: boolean;
-  message?: string | JSX.Element;
+  message?: string | JSXElement;
 }
 
 interface ToastStore extends ToastType {
