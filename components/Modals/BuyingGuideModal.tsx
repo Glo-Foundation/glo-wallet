@@ -7,7 +7,6 @@ import { Tooltip } from "react-tooltip";
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
-import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
 import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
@@ -31,7 +30,6 @@ export default function BuyingGuide({
     token: USDC_POLYGON_CONTRACT_ADDRESS,
   });
   const { switchNetwork } = useSwitchNetwork();
-  const { buyRatioDone } = useUserStore();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isProviderStepDone, setIsProviderStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
@@ -191,16 +189,14 @@ export default function BuyingGuide({
           content="Withdraw to the wallet address shown above"
           action={() => {
             buyWithProvider();
-            if (provider !== "Ratio") setIsProviderStepDone(true);
+            setIsProviderStepDone(true);
           }}
           done={
-            provider === "Ratio"
-              ? buyRatioDone
-              : isProviderStepDone ||
-                (balance &&
-                  BigNumber.from(balance.value).gte(
-                    utils.parseEther("1000.0").mul(99).div(100)
-                  ))
+            isProviderStepDone ||
+            (balance &&
+              BigNumber.from(balance.value).gte(
+                utils.parseEther("1000.0").mul(99).div(100)
+              ))
           }
         />
         <StepCard
