@@ -80,8 +80,8 @@ export default function PaymentOptionModal({
         <h3 className="px-3">{name}</h3>
       </div>
       <div className="flex">
-        <Double className="min-w-[15%]" label="Fees" value={`${fees}%`} />
-        <Double className="min-w-[38%]" label="Works for" value={worksFor} />
+        <Double className="min-w-[18%]" label="Fees" value={`${fees}%`} />
+        <Double className="min-w-[36%]" label="Works for" value={worksFor} />
         <Double className="min-w-[40%]" label="Delay" value={delay} />
       </div>
     </div>
@@ -109,9 +109,7 @@ export default function PaymentOptionModal({
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <h2 className="text-center">
-        Choose a platform where you can buy Glo Dollars
-      </h2>
+      <h2 className="text-center">Choose a path to start buying Glo Dollars</h2>
       <BuyBox
         name="Uniswap"
         icon="/uniswap.svg"
@@ -142,10 +140,10 @@ export default function PaymentOptionModal({
             />
           )}
           <BuyBox
-            name="Coinbase"
+            name="Coinbase + Uniswap"
             icon="/coinbase.png"
-            fees="0-3"
-            worksFor="🌍 world"
+            fees=".01-5"
+            worksFor="💳 Fiat"
             delay="⚡ Instant"
             onClick={() => {
               openModal(
