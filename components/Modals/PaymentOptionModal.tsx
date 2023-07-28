@@ -1,17 +1,18 @@
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
+import { Tooltip } from "react-tooltip";
 import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithCoinbase, buyWithTransak, buyWithUniswap } from "@/payments";
+import { buyWithTransak, buyWithUniswap } from "@/payments";
 
 import BuyingGuideModal from "./BuyingGuideModal";
 
 export default function PaymentOptionModal() {
   const { address, isConnected } = useAccount();
-  const [loading, setLoading] = useState(false);
+
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal, closeModal } = useContext(ModalContext);
@@ -86,6 +87,7 @@ export default function PaymentOptionModal() {
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
         <div></div>
+        <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         {isConnected && (
           <button
             className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
