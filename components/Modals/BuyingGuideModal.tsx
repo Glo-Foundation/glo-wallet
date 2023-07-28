@@ -62,7 +62,7 @@ export default function BuyingGuide({
     }).format(formatted || 0);
     setUSDC(usdc);
 
-    if (val.gte(currBuyAmt)) setIsProviderStepDone();
+    if (val.gte(currBuyAmt)) setIsProviderStepDone(true);
   }, [balance]);
 
   const StepCard = ({
