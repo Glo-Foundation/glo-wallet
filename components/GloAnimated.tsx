@@ -6,6 +6,7 @@ import gloAnimation from "../public/glo-animation.json";
 
 const style = {
   height: 28,
+  width: 28,
 };
 
 const options = {
