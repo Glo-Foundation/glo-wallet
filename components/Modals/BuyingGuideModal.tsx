@@ -50,13 +50,11 @@ export default function BuyingGuide({
 
   useEffect(() => {
     const val = Number(balance?.formatted);
-    if (val && val > 0) {
-      const usdc = Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(val);
-      setUSDC(usdc);
-    }
+    const usdc = Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(val || 0);
+    setUSDC(usdc);
   }, [balance]);
 
   const StepCard = ({
@@ -134,7 +132,7 @@ export default function BuyingGuide({
             </p>
           </div>
         </div>
-        {index === 2 && !!USDC && (
+        {index === 2 && (
           <div className="p-3 border-t-2 flex justify-center w-full">
             <span className="copy text-pine-900 font-bold">
               USDC balance: {USDC}

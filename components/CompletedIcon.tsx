@@ -61,7 +61,7 @@ export const CompletedIcon = ({
   }, [isInView]);
 
   return (
-    <button className="mr-4 flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-cyan-600 relative">
+    <button className="flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-cyan-600 relative">
       <Image src={path} width={16} height={16} alt="call to action" />
       <Image
         src="checkmark.svg"
