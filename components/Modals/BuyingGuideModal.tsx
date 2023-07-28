@@ -55,6 +55,7 @@ export default function BuyingGuide({
         currency: "USD",
       }).format(val);
       setUSDC(usdc);
+      setIsProviderStepDone(true);
     }
   }, [balance]);
 
