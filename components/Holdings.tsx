@@ -107,7 +107,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
               inputMode="numeric"
               onChange={gloOnInputChange}
             />
-            <div className="text-base ml-1">Glo Dollar</div>
+            <div className="text-base ml-1">Glo Dollars</div>
           </div>
           <div
             className="bg-pine-900/[0.1] min-h-fit min-w-fit px-2.5 py-2.5 rounded-full self-center cursor-pointer"

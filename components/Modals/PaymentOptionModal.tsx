@@ -10,7 +10,11 @@ import { buyWithTransak, buyWithUniswap } from "@/payments";
 
 import BuyingGuideModal from "./BuyingGuideModal";
 
-export default function PaymentOptionModal() {
+export default function PaymentOptionModal({
+  buyAmount,
+}: {
+  buyAmount: number;
+}) {
   const { address, isConnected } = useAccount();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -105,14 +109,16 @@ export default function PaymentOptionModal() {
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <h2 className="text-center">Choose a payment option to buy Glo Dollar</h2>
+      <h2 className="text-center">
+        Choose a platform where you can buy Glo Dollars
+      </h2>
       <BuyBox
         name="Uniswap"
         icon="/uniswap.svg"
         fees=".01"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
-        onClick={() => buyWithUniswap(1000)}
+        onClick={() => buyWithUniswap(buyAmount)}
       />
       {isConnected && address && (
         <>
@@ -128,7 +134,8 @@ export default function PaymentOptionModal() {
                   <BuyingGuideModal
                     iconPath="/transak.png"
                     provider="Transak"
-                    buyWithProvider={() => buyWithTransak(1000, address!)}
+                    buyWithProvider={() => buyWithTransak(buyAmount, address!)}
+                    buyAmount={buyAmount}
                   />
                 )
               }
@@ -151,6 +158,7 @@ export default function PaymentOptionModal() {
                       "_blank"
                     )
                   }
+                  buyAmount={buyAmount}
                 />
               );
             }}

@@ -13,17 +13,20 @@ import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
 interface Props {
   iconPath: string;
-  buyWithProvider: any;
+  buyWithProvider: () => void;
   provider: string;
+  buyAmount: number;
 }
 
 export default function BuyingGuide({
   iconPath,
   buyWithProvider,
   provider,
+  buyAmount,
 }: Props) {
   const { address, connector } = useAccount();
   const { closeModal } = useContext(ModalContext);
+
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
@@ -183,7 +186,7 @@ export default function BuyingGuide({
         <StepCard
           index={2}
           iconPath={iconPath}
-          title={`Buy ${1000} USDC on ${provider}`}
+          title={`Buy ${buyAmount} USDC on ${provider}`}
           content="Withdraw to the wallet address shown above"
           action={() => {
             buyWithProvider();
@@ -193,7 +196,7 @@ export default function BuyingGuide({
             isProviderStepDone ||
             (balance &&
               BigNumber.from(balance.value).gte(
-                utils.parseEther("1000.0").mul(99).div(100)
+                utils.parseEther(buyAmount.toString()).mul(99).div(100)
               ))
           }
         />
@@ -213,7 +216,7 @@ export default function BuyingGuide({
           action={() => {
             isSequenceWallet
               ? window.open("https://app.uniswap.org/", "_blank")
-              : buyWithUniswap(1000);
+              : buyWithUniswap(buyAmount);
             setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
@@ -233,8 +236,11 @@ export default function BuyingGuide({
         )}
       </section>
       <section className="flex justify-center mt-6 mb-3">
-        <button className="primary-button" onClick={() => buyWithUniswap(1000)}>
-          Buy $1000 Glo on Uniswap
+        <button
+          className="primary-button"
+          onClick={() => buyWithUniswap(buyAmount)}
+        >
+          Buy ${buyAmount} Glo Dollars on Uniswap
         </button>
       </section>
     </div>
