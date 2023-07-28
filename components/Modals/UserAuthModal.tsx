@@ -99,16 +99,25 @@ export default function UserAuthModal() {
           height={100}
         />
       </section>
-      <section className="sticky p-8 flex flex-col items-center bg-white rounded-t-3xl">
+      <section className="sticky pt-8 px-8 py-4 flex flex-col items-center bg-white rounded-t-3xl">
         <h1 className="">👋 Hey, it’s Jeff</h1>
         <p className="copy text-xl -mt-5 mb-4">CEO, Glo Foundation</p>
-        <p className="copy text-lg m-0 text-center">
-          Thanks for being part of the Glo movement!
+        <p className="copy text m-0 max-w-xs text-center">
+          To see the impact of your Glo Dollars connect your wallet or submit
+          your email to create a wallet{" "}
+          <a
+            className="underline"
+            target="_blank"
+            href="https://sequence.xyz/"
+            rel="noreferrer"
+          >
+            powered by Sequence
+          </a>
+          .
         </p>
       </section>
       <section className="modal-body px-4 rounded-b-3xl bg-pine-100 after:bg-pine-100">
-        <h2 className="flex justify-center">Sign up</h2>
-        <div>
+        <div className="pt-2">
           <div className="p-0 form-group flex justify-center">
             <div className="input-container relative inline w-full">
               <input
@@ -189,17 +198,6 @@ export default function UserAuthModal() {
             Please accept our Terms of Service to sign up
           </div>
         )}
-        <div className="p-2 text-center copy">
-          Email & social login{" "}
-          <a
-            className="underline"
-            target="_blank"
-            href="https://sequence.xyz/"
-            rel="noreferrer"
-          >
-            powered by Sequence
-          </a>
-        </div>
       </section>
     </>
   );
