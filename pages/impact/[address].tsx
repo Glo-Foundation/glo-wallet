@@ -46,7 +46,12 @@ export default function Impact() {
       const decimals = BigInt(1000000000000000000);
       const balance = bal.div(decimals).toNumber();
 
-      const yearlyYield = getTotalYield(balance);
+      let yearlyYield = getTotalYield(balance);
+      // round down to 0 when the yield isn't even $1
+      if (yearlyYield < 1) {
+        yearlyYield = 0;
+      }
+
       setYearlyYield(yearlyYield);
       const yearlyYieldFormatted =
         yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
@@ -133,12 +138,23 @@ export default function Impact() {
                 <span className="text-base">/ year</span>
               </div>
               <span className="text-xs text-[11px] py-4">
-                Current impact on the lower end of this range because Glo Dollar
-                is bootstrapping. Adoption helps grow impact.
+                Current impact on the lower end of this range because Glo Dollar{" "}
+                <a
+                  className="underline"
+                  href="https://www.glodollar.org/articles/from-bootstrap-to-high-impact"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  is bootstrapping
+                </a>
+                . Adoption helps grow impact.
               </span>
             </div>
           </div>
-          <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={yearlyYield} />
+          <DetailedEnoughToBuy
+            yearlyYield={yearlyYield}
+            noImpactCopyText="Nothing."
+          />
         </div>
         <div className="flex flex-col items-center justify-center">
           <div className="font-normal leading-normal mt-3 mb-2">
