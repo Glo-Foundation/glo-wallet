@@ -55,10 +55,7 @@ const SendForm = ({
         setShowToast({
           showToast: true,
           message: (
-            <a
-              className="transfers-toast-link"
-              href={`${scannerUrl}/tx/${hash}`}
-            >
+            <a className="link" href={`${scannerUrl}/tx/${hash}`}>
               Sent with hash {sliceAddress(hash, 8)}
             </a>
           ),
