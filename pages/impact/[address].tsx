@@ -134,7 +134,14 @@ export default function Impact() {
               </div>
               <span className="text-xs text-[11px] py-4">
                 Current impact on the lower end of this range because Glo Dollar
-                is bootstrapping. Adoption helps grow impact.
+                <a
+                  style="underline"
+                  target="_blank"
+                  href="https://www.glodollar.org/articles/from-bootstrap-to-high-impact" rel="noreferrer"
+                >
+                  is bootstrapping
+                </a>
+                . Adoption helps grow impact.
               </span>
             </div>
           </div>

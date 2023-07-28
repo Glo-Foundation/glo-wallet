@@ -155,8 +155,15 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
             <div className="text-base">/ year</div>
           </div>
           <div className="text-xs text-[11px] pt-2">
-            Current impact on the lower end of this range because Glo Dollar is
-            bootstrapping. Adoption helps grow impact.
+            Current impact on the lower end of this range because Glo Dollar{" "}
+            <a
+              className="underline"
+              target="_blank"
+              href="https://www.glodollar.org/articles/from-bootstrap-to-high-impact" rel="noreferrer"
+            >
+              is bootstrapping
+            </a>
+            . Adoption helps grow impact.
           </div>
         </div>
       </div>
