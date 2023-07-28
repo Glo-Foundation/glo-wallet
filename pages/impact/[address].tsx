@@ -135,9 +135,10 @@ export default function Impact() {
               <span className="text-xs text-[11px] py-4">
                 Current impact on the lower end of this range because Glo Dollar
                 <a
-                  style="underline"
+                  className="underline"
                   target="_blank"
-                  href="https://www.glodollar.org/articles/from-bootstrap-to-high-impact" rel="noreferrer"
+                  href="https://www.glodollar.org/articles/from-bootstrap-to-high-impact"
+                  rel="noreferrer"
                 >
                   is bootstrapping
                 </a>
