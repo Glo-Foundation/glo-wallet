@@ -31,7 +31,6 @@ export default function BuyingGuide({
     token: USDC_POLYGON_CONTRACT_ADDRESS,
   });
   const { switchNetwork } = useSwitchNetwork();
-  const { buyRatioDone } = useUserStore();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isProviderStepDone, setIsProviderStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
@@ -193,9 +192,9 @@ export default function BuyingGuide({
           content="Withdraw to the wallet address shown above"
           action={() => {
             buyWithProvider();
-            if (provider !== "Ratio") setIsProviderStepDone(true);
+            setIsProviderStepDone(true);
           }}
-          done={provider === "Ratio" ? buyRatioDone : isProviderStepDone}
+          done={isProviderStepDone}
         />
         <StepCard
           index={3}
