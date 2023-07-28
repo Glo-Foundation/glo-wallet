@@ -37,9 +37,9 @@ export default function TransactionDetailsModal({
       </div>
       <div>
         <p className="mb-2">
-          <b>{type === "outgoing" ? "Sent to" : "From"} </b>
+          <b>{type === "outgoing" ? "Sent to:" : "From:"} </b>
         </p>
-        <p className="mb-6">
+        <p className="copy mb-6">
           <Link href={`${scannerUrl}/address/${counterParty}`} target="_blank">
             {counterParty}
           </Link>
@@ -55,14 +55,16 @@ export default function TransactionDetailsModal({
             </span>
           </b>
         </div>
-        <p className="copy my-4">{txnDate}</p>
-        <Link
-          href={`${scannerUrl}/tx/${hash}`}
-          target="_blank"
-          className="text-sm"
-        >
-          View on Explorer
-        </Link>
+        <div className="flex text-sm justify-between items-center">
+          <p className="copy my-4">{txnDate}</p>
+          <Link
+            href={`${scannerUrl}/tx/${hash}`}
+            target="_blank"
+            className="link"
+          >
+            View on Explorer
+          </Link>
+        </div>
       </div>
     </div>
   );
