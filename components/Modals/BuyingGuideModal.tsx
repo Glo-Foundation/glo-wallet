@@ -242,7 +242,7 @@ export default function BuyingGuide({
           className="primary-button"
           onClick={() => buyWithUniswap(buyAmount)}
         >
-          Buy ${buyAmount} Glo on Uniswap
+          Buy ${buyAmount} Glo Dollars on Uniswap
         </button>
       </section>
     </div>
