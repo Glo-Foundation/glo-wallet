@@ -170,7 +170,7 @@ export default function UserAuthModal() {
         <div ref={tosRef} className="p-2 flex justify-center items-center">
           <input
             type="checkbox"
-            defaultChecked={`${tosAlreadyAgreed}`}
+            defaultChecked={hasUserAgreed || undefined}
             value=""
             className={clsx(
               "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
