@@ -1,16 +1,15 @@
 import { polygon } from "@wagmi/chains";
 import clsx from "clsx";
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
-import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
-import { getUSFormattedNumber, USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
+import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
 interface Props {
   iconPath: string;
@@ -63,7 +62,6 @@ export default function BuyingGuide({
     title,
     content,
     action,
-    balance,
     done = false,
   }: {
     index: number;
@@ -71,7 +69,6 @@ export default function BuyingGuide({
     title: string;
     content: string;
     action: any;
-    balance?: string;
     done?: boolean;
   }) => (
     <div
@@ -194,7 +191,13 @@ export default function BuyingGuide({
             buyWithProvider();
             setIsProviderStepDone(true);
           }}
-          done={isProviderStepDone}
+          done={
+            isProviderStepDone ||
+            (balance &&
+              BigNumber.from(balance.value).gte(
+                utils.parseEther("1000.0").mul(99).div(100)
+              ))
+          }
         />
         <StepCard
           index={3}
