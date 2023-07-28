@@ -37,7 +37,7 @@ export default function TransactionDetailsModal({
       </div>
       <div>
         <p className="mb-2">
-          <b>{type === "outgoing" ? "Sent to" : "Received from"} </b>
+          <b>{type === "outgoing" ? "Sent to" : "From"} </b>
         </p>
         <p className="mb-6">
           <Link href={`${scannerUrl}/address/${counterParty}`} target="_blank">
