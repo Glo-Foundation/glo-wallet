@@ -3,7 +3,12 @@ import { utils } from "ethers";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { useAccount, useBalance, useNetwork } from "wagmi";
+import {
+  useAccount,
+  useBalance,
+  useNetwork,
+  useWaitForTransaction,
+} from "wagmi";
 import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
@@ -13,7 +18,13 @@ import { ModalContext } from "@/lib/context";
 import { useToastStore, useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
-const SendForm = ({ close }: { close: () => void }) => {
+const SendForm = ({
+  close,
+  setHash,
+}: {
+  close: () => void;
+  setHash: (hash: `0x${string}` | undefined) => void;
+}) => {
   const [sendForm, setSendForm] = useState({
     address: "",
     amount: "",
@@ -22,12 +33,6 @@ const SendForm = ({ close }: { close: () => void }) => {
   const { transfers, setTransfers } = useUserStore();
 
   const { address } = useAccount();
-  const { chain } = useNetwork();
-
-  const { refetch } = useBalance({
-    address,
-    token: getSmartContractAddress(chain?.id),
-  });
 
   const [setShowToast] = useToastStore((state) => [state.setShowToast]);
   const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -50,8 +55,6 @@ const SendForm = ({ close }: { close: () => void }) => {
           message: `Sent with hash ${sliceAddress(hash, 8)}`,
         });
 
-        refetch();
-
         // Add new tx as it's not yet available in Moralis
         setTransfers({
           transfers: [
@@ -66,12 +69,15 @@ const SendForm = ({ close }: { close: () => void }) => {
             ...transfers,
           ],
         });
+
+        setHash(hash);
       }
     } catch (err: any) {
       setShowToast({ showToast: true, message: err.message.split(".")[0] });
     }
     close();
   };
+
   return (
     <form className="flex flex-col w-[275px]" onSubmit={handleSubmit}>
       <h3>Transfer</h3>
@@ -122,8 +128,27 @@ const SendForm = ({ close }: { close: () => void }) => {
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
 
-  const { connector, isConnected } = useAccount();
+  const { address, connector, isConnected } = useAccount();
   const { asPath, push } = useRouter();
+
+  const { chain } = useNetwork();
+
+  const { refetch } = useBalance({
+    address,
+    token: getSmartContractAddress(chain?.id),
+  });
+  const [hash, setHash] = useState<`0x${string}` | undefined>(undefined);
+
+  const { isSuccess } = useWaitForTransaction({
+    hash,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      setHash(undefined);
+    }
+  }, [isSuccess]);
 
   const buy = async () => {
     openModal(<BuyGloModal />);
@@ -150,7 +175,7 @@ export default function Actions() {
             <Image alt="x" src="/x.svg" height={16} width={16} />
           </button>
         </div>
-        <SendForm close={closeModal} />
+        <SendForm close={closeModal} setHash={setHash} />
       </div>
     );
   };
