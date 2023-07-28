@@ -131,13 +131,13 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
               backgroundColor: "#133d38",
             }}
             handleStyle={{
-              height: "24px",
-              width: "24px",
+              height: "28px",
+              width: "28px",
               backgroundColor: "white",
               borderColor: "#133d38",
               border: "8px solid",
               opacity: 1,
-              marginTop: "-10px",
+              marginTop: "-13px",
             }}
           />
         </div>
