@@ -45,7 +45,7 @@ export default function PaymentOptionModal({
     className: string;
   }) => (
     <div className={clsx("mr-5", className)}>
-      <div className="text-pine-700 font-bold">{label}</div>
+      <div className="text-pine-700">{label}</div>
       <div className="text-black font-bold"> {value}</div>
     </div>
   );
