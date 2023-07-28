@@ -10,6 +10,7 @@ import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { useContext, useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
 import { configureChains } from "wagmi";
 
@@ -144,14 +145,20 @@ export default function UserAuthModal() {
               <Image alt="google" src="/google.svg" width={35} height={35} />
             </div>
           </button>
-
-          <button
-            className="auth-button"
-            onClick={() => connectWithConnector(1)}
-          >
-            <h4>Metamask</h4>
-            <Image alt="metamask" src="/metamask.svg" width={35} height={35} />
-          </button>
+          {!isMobile && (
+            <button
+              className="auth-button"
+              onClick={() => connectWithConnector(1)}
+            >
+              <h4>Metamask</h4>
+              <Image
+                alt="metamask"
+                src="/metamask.svg"
+                width={35}
+                height={35}
+              />
+            </button>
+          )}
 
           <button
             className="auth-button"
