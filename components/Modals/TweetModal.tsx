@@ -81,12 +81,14 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
           <TwitterLogo />
           1. Tweet your impact
         </button>
-        <p className="py-5">Click the button to tweet the following message:</p>
-        <p className="copy pseudo-input-text text-sm p-2 whitespace-pre-line">
-          {tweetText}
+        <p className="py-5 hidden">
+          Click the button to tweet the following message:
+        </p>
+        <p className="copy pseudo-input-text text-sm p-2 whitespace-pre-line my-6">
+          {tweetText.replace(/0x[a-fA-F0-9]+/, "0x...")}
         </p>
 
-        <p className="py-5">
+        <p className="py-5 hidden">
           and then verify that you posted with the bottom button to complete
           this action.
         </p>
