@@ -3,11 +3,12 @@ import { utils } from "ethers";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
+import { getChainExplorerUrl } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useToastStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
@@ -18,8 +19,10 @@ const SendForm = ({ close }: { close: () => void }) => {
     amount: "",
   });
   const [setShowToast] = useToastStore((state) => [state.setShowToast]);
+  const { chain } = useNetwork();
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    const scannerUrl = getChainExplorerUrl(chain);
 
     try {
       const { request } = await prepareWriteContract({
@@ -35,7 +38,11 @@ const SendForm = ({ close }: { close: () => void }) => {
       if (hash) {
         setShowToast({
           showToast: true,
-          message: `Sent with hash ${sliceAddress(hash, 8)}`,
+          message: (
+            <a href={`${scannerUrl}/${hash}`}>
+              Sent with hash ${sliceAddress(hash, 8)}`
+            </a>
+          ),
         });
       }
     } catch (err: any) {
