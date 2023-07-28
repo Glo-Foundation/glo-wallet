@@ -196,7 +196,7 @@ export default function BuyingGuide({
             isProviderStepDone ||
             (balance &&
               BigNumber.from(balance.value).gte(
-                utils.parseEther(buyAmount.toString()).mul(99).div(100)
+                utils.parseUnits(buyAmount.toString(), 6).mul(99).div(100)
               ))
           }
         />
