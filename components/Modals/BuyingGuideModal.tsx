@@ -6,7 +6,6 @@ import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
-import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
@@ -199,7 +198,9 @@ export default function BuyingGuide({
               ? buyRatioDone
               : isProviderStepDone ||
                 (balance &&
-                  BigNumber.from(balance.value).gte(utils.parseEther("1000.0")))
+                  BigNumber.from(balance.value).gte(
+                    utils.parseEther("1000.0").mul(99).div(100)
+                  ))
           }
         />
         <StepCard
