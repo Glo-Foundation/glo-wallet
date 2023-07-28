@@ -13,7 +13,7 @@ import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
-import { getSmartContractAddress } from "@/lib/config";
+import { getChainExplorerUrl, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useToastStore, useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
@@ -35,8 +35,10 @@ const SendForm = ({
   const { address } = useAccount();
 
   const [setShowToast] = useToastStore((state) => [state.setShowToast]);
+  const { chain } = useNetwork();
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    const scannerUrl = getChainExplorerUrl(chain!.id);
 
     try {
       const { request } = await prepareWriteContract({
@@ -52,7 +54,11 @@ const SendForm = ({
       if (hash) {
         setShowToast({
           showToast: true,
-          message: `Sent with hash ${sliceAddress(hash, 8)}`,
+          message: (
+            <a className="link" href={`${scannerUrl}/tx/${hash}`}>
+              Sent with hash {sliceAddress(hash, 8)}
+            </a>
+          ),
         });
 
         // Add new tx as it's not yet available in Moralis
@@ -73,7 +79,7 @@ const SendForm = ({
         setHash(hash);
       }
     } catch (err: any) {
-      setShowToast({ showToast: true, message: err.message.split(".")[0] });
+      setShowToast({ showToast: true, message: err.cause.shortMessage });
     }
     close();
   };
