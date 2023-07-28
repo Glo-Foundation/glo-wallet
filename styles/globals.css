@@ -63,7 +63,7 @@ body {
   }
 
   #sign-in-with-email {
-    @apply w-full mt-1 mb-7;
+    @apply w-full mt-1;
   }
 
   .primary-button {

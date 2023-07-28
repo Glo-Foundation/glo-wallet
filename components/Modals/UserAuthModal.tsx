@@ -106,7 +106,7 @@ export default function UserAuthModal() {
           Thanks for being part of the Glo movement!
         </p>
       </section>
-      <section className="modal-body px-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
+      <section className="modal-body px-4 rounded-b-3xl bg-pine-100 after:bg-pine-100">
         <h2 className="flex justify-center">Sign up</h2>
         <div>
           <div className="p-0 form-group flex justify-center">
@@ -166,34 +166,31 @@ export default function UserAuthModal() {
             />
           </button>
         </div>
-        {tosAlreadyAgreed ? (
-          <div className="p-2 text-center copy">
-            By signing up, you agree with our <ToS />
-          </div>
-        ) : (
-          <div ref={tosRef} className="p-2 flex justify-center items-center">
-            <input
-              type="checkbox"
-              value=""
-              className={clsx(
-                "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
-                !hasUserAgreed && "appearance-none",
-                userRejected && "border border-red-400"
-              )}
-              onChange={() => setHasUserAgreed(!hasUserAgreed)}
-            />
-            <span className="ml-2">
-              I agree with Glo&apos;s <ToS />
-            </span>
-          </div>
-        )}
+
+        <div ref={tosRef} className="p-2 flex justify-center items-center">
+          <input
+            type="checkbox"
+            defaultChecked={tosAlreadyAgreed}
+            value=""
+            className={clsx(
+              "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
+              !hasUserAgreed && "appearance-none",
+              userRejected && "border border-red-400"
+            )}
+            onChange={() => setHasUserAgreed(!hasUserAgreed)}
+          />
+          <span className="ml-2">
+            I agree with Glo&apos;s <ToS />
+          </span>
+        </div>
+
         {userRejected && (
           <div className="p-2 text-center text-red-400">
             Please accept our Terms of Service to sign up
           </div>
         )}
         <div className="p-2 text-center copy">
-          Email and social login{" "}
+          Email & social login{" "}
           <a
             className="underline"
             target="_blank"
