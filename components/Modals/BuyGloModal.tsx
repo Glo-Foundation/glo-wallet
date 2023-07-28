@@ -25,12 +25,17 @@ export default function BuyGloModal() {
       <button
         className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6 mt-6"
         disabled={glo === 0}
-        onClick={() => openModal(<PaymentOptionModal buyAmount={glo} />)}
+        onClick={() =>
+          openModal(<PaymentOptionModal buyAmount={Math.floor(glo)} />)
+        }
       >
         Buy ${formattedGlo} Glo Dollar
       </button>
       <div className="mb-7">
-        <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
+        <DetailedEnoughToBuy
+          yearlyYield={yearlyYield}
+          noImpactCopyText="Pick a value above $0 to see how much impact you could make."
+        />
       </div>
     </div>
   );

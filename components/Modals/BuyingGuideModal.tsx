@@ -11,6 +11,10 @@ import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
 import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
+const formatter = Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 interface Props {
   iconPath: string;
   buyWithProvider: () => void;
@@ -37,7 +41,6 @@ export default function BuyingGuide({
   const [isProviderStepDone, setIsProviderStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
-  const [USDC, setUSDC] = useState("");
 
   const userIsOnPolygon = chain?.id === polygon.id;
   const isSequenceWallet = connector?.id === "sequence";
@@ -48,14 +51,7 @@ export default function BuyingGuide({
     }
   }, [isCopiedTooltipOpen]);
 
-  useEffect(() => {
-    const val = Number(balance?.formatted);
-    const usdc = Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(val || 0);
-    setUSDC(usdc);
-  }, [balance]);
+  const USDC = formatter.format(Number(balance?.formatted) || 0);
 
   const StepCard = ({
     index,
@@ -196,7 +192,7 @@ export default function BuyingGuide({
             isProviderStepDone ||
             (balance &&
               BigNumber.from(balance.value).gte(
-                utils.parseEther(buyAmount.toString()).mul(99).div(100)
+                utils.parseUnits(buyAmount.toString(), 6).mul(99).div(100)
               ))
           }
         />

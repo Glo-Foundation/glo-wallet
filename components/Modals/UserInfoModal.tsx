@@ -1,13 +1,14 @@
+import { polygon, polygonMumbai } from "@wagmi/core/chains";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useContext } from "react";
 import { Tooltip } from "react-tooltip";
-import { useDisconnect, useNetwork } from "wagmi";
+import { useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { sliceAddress } from "@/lib/utils";
+import { isProd, sliceAddress } from "@/lib/utils";
 
 type Props = {
   address?: string;
@@ -18,6 +19,9 @@ export default function UserInfoModal({ address }: Props) {
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs } = useUserStore();
+  const { switchNetwork } = useSwitchNetwork();
+
+  const expectedChain = isProd() ? polygon : polygonMumbai;
 
   const email = Cookies.get("glo-email");
 
@@ -82,7 +86,15 @@ export default function UserInfoModal({ address }: Props) {
           )}
         </div>
       </section>
-      <section className="mt-8 flex justify-end">
+      <section className="mt-8 flex flex-col space-y-2 justify-end">
+        {chain?.id !== expectedChain.id && (
+          <button
+            className="primary-button"
+            onClick={() => switchNetwork!(expectedChain.id)}
+          >
+            Switch to Polygon
+          </button>
+        )}
         <button className="primary-button" onClick={() => handleLogout()}>
           Log out
         </button>

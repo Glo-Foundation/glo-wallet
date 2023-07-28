@@ -45,7 +45,7 @@ export default function Transactions() {
   return (
     <motion.div
       className="bg-white rounded-[20px] p-8"
-      animate={isOpen ? "open" : "closed"}
+      animate={isConnected && isOpen ? "open" : "closed"}
       initial={false}
       onClick={() => transfers?.length && toggleOpen()}
     >
