@@ -22,7 +22,7 @@ const SendForm = ({ close }: { close: () => void }) => {
   const { chain } = useNetwork();
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const scannerUrl = getChainExplorerUrl(chain);
+    const scannerUrl = getChainExplorerUrl(chain.id);
 
     try {
       const { request } = await prepareWriteContract({
@@ -39,14 +39,17 @@ const SendForm = ({ close }: { close: () => void }) => {
         setShowToast({
           showToast: true,
           message: (
-            <a href={`${scannerUrl}/${hash}`}>
-              Sent with hash ${sliceAddress(hash, 8)}`
+            <a
+              className="transfers-toast-link"
+              href={`${scannerUrl}/tx/${hash}`}
+            >
+              Sent with hash {sliceAddress(hash, 8)}
             </a>
           ),
         });
       }
     } catch (err: any) {
-      setShowToast({ showToast: true, message: err.message.split(".")[0] });
+      setShowToast({ showToast: true, message: err.cause.shortMessage });
     }
     close();
   };
