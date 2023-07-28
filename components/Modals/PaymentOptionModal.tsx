@@ -5,13 +5,17 @@ import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithCoinbase, buyWithTransak, buyWithUniswap } from "@/payments";
+import { buyWithTransak, buyWithUniswap } from "@/payments";
 
 import BuyingGuideModal from "./BuyingGuideModal";
 
-export default function PaymentOptionModal() {
+export default function PaymentOptionModal({
+  buyAmount,
+}: {
+  buyAmount: number;
+}) {
   const { address, isConnected } = useAccount();
-  const [loading, setLoading] = useState(false);
+
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal, closeModal } = useContext(ModalContext);
@@ -110,7 +114,7 @@ export default function PaymentOptionModal() {
         fees=".01"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
-        onClick={() => buyWithUniswap(1000)}
+        onClick={() => buyWithUniswap(buyAmount)}
       />
       {isConnected && address && (
         <>
@@ -126,7 +130,8 @@ export default function PaymentOptionModal() {
                   <BuyingGuideModal
                     iconPath="/transak.png"
                     provider="Transak"
-                    buyWithProvider={() => buyWithTransak(1000, address!)}
+                    buyWithProvider={() => buyWithTransak(buyAmount, address!)}
+                    buyAmount={buyAmount}
                   />
                 )
               }
@@ -149,6 +154,7 @@ export default function PaymentOptionModal() {
                       "_blank"
                     )
                   }
+                  buyAmount={buyAmount}
                 />
               );
             }}
