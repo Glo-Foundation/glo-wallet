@@ -1,6 +1,6 @@
 import { polygon } from "@wagmi/chains";
 import clsx from "clsx";
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
@@ -9,29 +9,30 @@ import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
-import { getUSFormattedNumber, USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
+import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
 interface Props {
   iconPath: string;
-  buyWithProvider: any;
+  buyWithProvider: () => void;
   provider: string;
+  buyAmount: number;
 }
 
 export default function BuyingGuide({
   iconPath,
   buyWithProvider,
   provider,
+  buyAmount,
 }: Props) {
   const { address, connector } = useAccount();
   const { closeModal } = useContext(ModalContext);
+
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
     token: USDC_POLYGON_CONTRACT_ADDRESS,
-    watch: true,
   });
   const { switchNetwork } = useSwitchNetwork();
-
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isProviderStepDone, setIsProviderStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
@@ -65,7 +66,6 @@ export default function BuyingGuide({
     title,
     content,
     action,
-    balance,
     done = false,
   }: {
     index: number;
@@ -73,7 +73,6 @@ export default function BuyingGuide({
     title: string;
     content: string;
     action: any;
-    balance?: string;
     done?: boolean;
   }) => (
     <div
@@ -136,7 +135,7 @@ export default function BuyingGuide({
             </p>
           </div>
         </div>
-        {index === 2 && !!USDC && (
+        {index === 2 && (
           <div className="p-3 border-t-2 flex justify-center w-full">
             <span className="copy text-pine-900 font-bold">
               USDC balance: {USDC}
@@ -190,13 +189,19 @@ export default function BuyingGuide({
         <StepCard
           index={2}
           iconPath={iconPath}
-          title={`Buy ${1000} USDC on ${provider}`}
+          title={`Buy ${buyAmount} USDC on ${provider}`}
           content="Withdraw to the wallet address shown above"
           action={() => {
             buyWithProvider();
             setIsProviderStepDone(true);
           }}
-          done={isProviderStepDone}
+          done={
+            isProviderStepDone ||
+            (balance &&
+              BigNumber.from(balance.value).gte(
+                utils.parseEther(buyAmount.toString()).mul(99).div(100)
+              ))
+          }
         />
         <StepCard
           index={3}
@@ -214,7 +219,7 @@ export default function BuyingGuide({
           action={() => {
             isSequenceWallet
               ? window.open("https://app.uniswap.org/", "_blank")
-              : buyWithUniswap(1000);
+              : buyWithUniswap(buyAmount);
             setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
@@ -234,8 +239,11 @@ export default function BuyingGuide({
         )}
       </section>
       <section className="flex justify-center mt-6 mb-3">
-        <button className="primary-button" onClick={() => buyWithUniswap(1000)}>
-          Buy $1000 on {provider}
+        <button
+          className="primary-button"
+          onClick={() => buyWithUniswap(buyAmount)}
+        >
+          Buy ${buyAmount} Glo Dollars on Uniswap
         </button>
       </section>
     </div>

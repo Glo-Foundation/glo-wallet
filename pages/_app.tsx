@@ -14,9 +14,9 @@ import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import Analytics from "@/components/Analytics";
-import RatioWrapper from "@/components/RatioWrapper";
 import Toast from "@/components/Toast";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
@@ -27,7 +27,10 @@ import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
-  [publicProvider()]
+  [
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
+    publicProvider(),
+  ]
 );
 
 const config = createConfig({
@@ -118,10 +121,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const setModalClass = (className = "") => setModalClassName(className);
 
-  // Might be redundant after adjusting global css
-  // margin: 0 auto 40px !important;
-  const isPaymentDialogOpen = modalClassName.includes("payment-dialog");
-
   return (
     <>
       <Analytics />
@@ -146,7 +145,6 @@ export default function App({ Component, pageProps }: AppProps) {
               </dialog>
             </ModalContext.Provider>
             <Toast />
-            {isPaymentDialogOpen && <RatioWrapper />}
           </WagmiConfig>
         )}
       </main>
