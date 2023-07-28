@@ -55,7 +55,7 @@ export default function TransactionsList({
         >
           <div>
             <p>
-              {txn.type === "outgoing" ? "Sent to " : "Received from"}{" "}
+              {txn.type === "outgoing" ? "Sent to " : "From"}{" "}
               {sliceAddress(counterParty)}
             </p>
             <p className="copy">{txnDate}</p>
