@@ -49,12 +49,20 @@ export default function BuyingGuide({
   }, [isCopiedTooltipOpen]);
 
   useEffect(() => {
-    const val = Number(balance?.formatted);
+    const formatted = Number(balance?.formatted);
+    const val = BigNumber.from(balance?.value);
+    const currBuyAmt = utils
+      .parseUnits(buyAmount.toString(), 6)
+      .mul(99)
+      .div(100);
+
     const usdc = Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
-    }).format(val || 0);
+    }).format(formatted || 0);
     setUSDC(usdc);
+
+    if (val.gte(currBuyAmt)) setIsProviderStepDone();
   }, [balance]);
 
   const StepCard = ({
@@ -134,8 +142,9 @@ export default function BuyingGuide({
         </div>
         {index === 2 && (
           <div className="p-3 border-t-2 flex justify-center w-full">
-            <span className="copy text-pine-900 font-bold">
-              USDC balance: {USDC}
+            <Image alt="usdc" src="usdc.svg" height={20} width={20} />
+            <span className="ml-2 copy text-pine-900 font-bold">
+              Current USDC balance: {USDC}
             </span>
           </div>
         )}

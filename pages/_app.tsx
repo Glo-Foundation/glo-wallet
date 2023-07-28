@@ -26,7 +26,7 @@ import { isProd } from "../lib/utils";
 import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
+  !isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
     publicProvider(),
