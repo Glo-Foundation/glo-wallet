@@ -3,13 +3,14 @@ import { utils } from "ethers";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance, useNetwork } from "wagmi";
 import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
+import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { useToastStore } from "@/lib/store";
+import { useToastStore, useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
 const SendForm = ({ close }: { close: () => void }) => {
@@ -17,6 +18,17 @@ const SendForm = ({ close }: { close: () => void }) => {
     address: "",
     amount: "",
   });
+
+  const { transfers, setTransfers } = useUserStore();
+
+  const { address } = useAccount();
+  const { chain } = useNetwork();
+
+  const { refetch } = useBalance({
+    address,
+    token: getSmartContractAddress(chain?.id),
+  });
+
   const [setShowToast] = useToastStore((state) => [state.setShowToast]);
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -36,6 +48,23 @@ const SendForm = ({ close }: { close: () => void }) => {
         setShowToast({
           showToast: true,
           message: `Sent with hash ${sliceAddress(hash, 8)}`,
+        });
+
+        refetch();
+
+        // Add new tx as it's not yet available in Moralis
+        setTransfers({
+          transfers: [
+            {
+              from: address!,
+              to: sendForm.address,
+              hash,
+              ts: new Date().toISOString(),
+              type: "outgoing",
+              value: sendForm.amount,
+            },
+            ...transfers,
+          ],
         });
       }
     } catch (err: any) {
