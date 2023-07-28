@@ -22,7 +22,7 @@ const SendForm = ({ close }: { close: () => void }) => {
   const { chain } = useNetwork();
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const scannerUrl = getChainExplorerUrl(chain.id);
+    const scannerUrl = getChainExplorerUrl(chain!.id);
 
     try {
       const { request } = await prepareWriteContract({
