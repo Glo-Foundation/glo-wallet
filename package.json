@@ -10,7 +10,9 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "prepare": "husky install",
-    "fmt": "prettier --write './**/*.{js,jsx}' './**/*.{ts,tsx}' './**/*.css' './**/*.json' './**/*.md'"
+    "fmt": "prettier --write './**/*.{js,jsx}' './**/*.{ts,tsx}' './**/*.css' './**/*.json' './**/*.md'",
+    "test:gui": "npx playwright test --project=chromium --headed",
+    "test:gui:headless": "npx playwright test --project=chromium"
   },
   "dependencies": {
     "@0xsequence/wagmi-connector": "^1.1.5",
@@ -42,6 +44,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
+    "@guardianui/test": "^1.0.4",
     "@types/canvas-confetti": "^1.6.0",
     "@types/google-spreadsheet": "^3.3.2",
     "@types/js-cookie": "^3.0.3",

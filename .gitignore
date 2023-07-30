@@ -50,3 +50,7 @@ __tests__/.next/
 
 # Sentry Auth Token
 .sentryclirc
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/tests-examples
