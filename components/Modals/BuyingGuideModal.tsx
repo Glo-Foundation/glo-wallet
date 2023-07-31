@@ -41,6 +41,7 @@ export default function BuyingGuide({
   const [isProviderStepDone, setIsProviderStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
+  const [USDC, setUSDC] = useState("");
 
   const userIsOnPolygon = chain?.id === polygon.id;
   const isSequenceWallet = connector?.id === "sequence";
@@ -51,7 +52,24 @@ export default function BuyingGuide({
     }
   }, [isCopiedTooltipOpen]);
 
-  const USDC = formatter.format(Number(balance?.formatted) || 0);
+  useEffect(() => {
+    if (balance) {
+      const formatted = Number(balance?.formatted);
+      const val = BigNumber.from(balance?.value);
+      const currBuyAmt = utils
+        .parseUnits(buyAmount.toString(), 6)
+        .mul(99)
+        .div(100);
+
+      const usdc = Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(formatted || 0);
+      setUSDC(usdc);
+
+      if (val.gte(currBuyAmt)) setIsProviderStepDone(true);
+    }
+  }, [balance]);
 
   const StepCard = ({
     index,
@@ -130,8 +148,9 @@ export default function BuyingGuide({
         </div>
         {index === 2 && (
           <div className="p-3 border-t-2 flex justify-center w-full">
-            <span className="copy text-pine-900 font-bold">
-              USDC balance: {USDC}
+            <Image alt="usdc" src="usdc.svg" height={20} width={20} />
+            <span className="ml-2 copy text-pine-900 font-bold">
+              Current USDC balance: {USDC}
             </span>
           </div>
         )}
@@ -186,15 +205,9 @@ export default function BuyingGuide({
           content="Withdraw to the wallet address shown above"
           action={() => {
             buyWithProvider();
-            setIsProviderStepDone(true);
+            if (provider !== "Coinbase") setIsProviderStepDone(true);
           }}
-          done={
-            isProviderStepDone ||
-            (balance &&
-              BigNumber.from(balance.value).gte(
-                utils.parseUnits(buyAmount.toString(), 6).mul(99).div(100)
-              ))
-          }
+          done={isProviderStepDone}
         />
         <StepCard
           index={3}
