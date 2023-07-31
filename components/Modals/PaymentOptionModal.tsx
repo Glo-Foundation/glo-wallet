@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount } from "wagmi";
 
+import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithTransak, buyWithUniswap } from "@/payments";
@@ -90,7 +91,14 @@ export default function PaymentOptionModal({
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
-        <div></div>
+        <Image
+          src="/arrow-right.svg"
+          width={25}
+          height={25}
+          alt="arrow-right"
+          className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
+          onClick={() => openModal(<BuyGloModal />)}
+        />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         {isConnected && (
           <button
