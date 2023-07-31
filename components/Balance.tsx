@@ -1,8 +1,6 @@
-import Image from "next/image";
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import { useAccount } from "wagmi";
 
-import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { getTotalYield } from "@/utils";
 
