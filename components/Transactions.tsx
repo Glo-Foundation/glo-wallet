@@ -12,7 +12,7 @@ import UserAuthModal from "./Modals/UserAuthModal";
 import TransactionsList from "./TransactionsList";
 
 export default function Transactions() {
-  const { transfers, transfersCursor } = useUserStore();
+  const { transfers } = useUserStore();
   const { isConnected } = useAccount();
   const { chain } = useNetwork();
   const { openModal } = useContext(ModalContext);
@@ -47,9 +47,11 @@ export default function Transactions() {
       className="bg-white rounded-[20px] p-8"
       animate={isConnected && isOpen ? "open" : "closed"}
       initial={false}
-      onClick={() => transfers?.length && toggleOpen()}
     >
-      <div className="flex justify-between cursor-default">
+      <div
+        className="flex justify-between cursor-default"
+        onClick={() => transfers?.length && toggleOpen()}
+      >
         <h3>Transactions</h3>
         <button>
           {isConnected && (
@@ -80,7 +82,11 @@ export default function Transactions() {
         </button>
       </div>
       <motion.ul variants={variants()}>
-        <TransactionsList txns={transfers.slice(0, 5)} chain={chain?.id} />
+        <TransactionsList
+          isOpen={isOpen}
+          txns={transfers.slice(0, 5)}
+          chain={chain?.id}
+        />
         <motion.li
           onClick={() => openModal(<AllTransactionsModal />)}
           className="underline cursor-pointer"
