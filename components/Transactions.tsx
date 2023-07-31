@@ -19,9 +19,9 @@ export default function Transactions() {
 
   const [isOpen, toggleOpen] = useCycle(false, true);
 
-  const openModal = (content: JSX.Element) => {
+  const openModal = (content: JSX.Element, className?: string | undefined) => {
     if (isOpen) {
-      open(content);
+      open(content, className);
     }
   };
 
