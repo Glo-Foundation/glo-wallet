@@ -8,6 +8,7 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
+import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { lastSliceAddress, sliceAddress } from "@/lib/utils";
 import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
@@ -35,7 +36,6 @@ export default function Impact() {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
-
   useEffect(() => {
     const fetchBalance = async () => {
       if (!address || !chain) {
@@ -58,7 +58,7 @@ export default function Impact() {
       setYearlyYieldFormatted(yearlyYieldFormatted);
       setFormattedBalance(getUSFormattedNumber(balance));
     };
-    setChain(chain);
+    setChain(chain || defaultChain());
     fetchBalance();
   }, [address, chain]);
 

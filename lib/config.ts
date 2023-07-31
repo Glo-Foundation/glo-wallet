@@ -1,5 +1,7 @@
 import { mainnet, goerli, polygon, polygonMumbai } from "@wagmi/core/chains";
 
+import { isProd } from "./utils";
+
 export const chainConfig: { [id: number]: `0x${string}` } = {
   // Mainnets
   [polygon.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
@@ -9,10 +11,11 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [goerli.id]: "0x2c872de03E91D2ee463308Cb5dA4Ed9e41bBB355",
 };
 
-const defaultChainId = polygon.id;
+export const defaultChain = () => (isProd() ? polygon : polygonMumbai);
+const defaultChainId = () => defaultChain().id;
 
 export const getSmartContractAddress = (chainId?: number) =>
-  chainConfig[chainId || defaultChainId];
+  chainConfig[chainId || defaultChainId()];
 
 // https://en.wikipedia.org/wiki/ISO_3166-1
 export const PROHIBITED_COUNTRIES = [
@@ -51,7 +54,7 @@ const chainRPCUrl: { [id: number]: string } = {
 };
 
 export const getChainRPCUrl = (chainId?: number) => {
-  return chainRPCUrl[chainId || defaultChainId];
+  return chainRPCUrl[chainId || defaultChainId()];
 };
 
 const firstGloBlock: { [id: number]: number } = {
@@ -64,7 +67,7 @@ const firstGloBlock: { [id: number]: number } = {
 };
 
 export const getFirstGloBlock = (chainId?: number) => {
-  return firstGloBlock[chainId || defaultChainId];
+  return firstGloBlock[chainId || defaultChainId()];
 };
 
 export const supportedChains = {
