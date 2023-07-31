@@ -205,13 +205,7 @@ export default function BuyingGuide({
             buyWithProvider();
             setIsProviderStepDone(true);
           }}
-          done={
-            isProviderStepDone ||
-            (balance &&
-              BigNumber.from(balance.value).gte(
-                utils.parseUnits(buyAmount.toString(), 6).mul(99).div(100)
-              ))
-          }
+          done={isProviderStepDone}
         />
         <StepCard
           index={3}
