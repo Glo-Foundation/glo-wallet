@@ -231,7 +231,7 @@ export default function BuyingGuide({
           />
         )}
       </section>
-      <section className="flex flex-col justify-center mt-3 mb-3">
+      <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
           onClick={() => buyWithUniswap(buyAmount)}
