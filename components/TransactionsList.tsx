@@ -9,9 +9,11 @@ import TransactionDetailsModal from "./Modals/TransactionDetailsModal";
 export default function TransactionsList({
   txns,
   chain,
+  isOpen,
 }: {
   txns: Transfer[];
   chain: number | undefined;
+  isOpen: boolean;
 }) {
   const variants = {
     open: {
@@ -40,6 +42,7 @@ export default function TransactionsList({
           className="transaction-item"
           variants={variants}
           onClick={() =>
+            isOpen &&
             openModal(
               <TransactionDetailsModal
                 chain={chain || 137}
