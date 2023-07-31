@@ -12,12 +12,18 @@ import UserAuthModal from "./Modals/UserAuthModal";
 import TransactionsList from "./TransactionsList";
 
 export default function Transactions() {
-  const { transfers, transfersCursor } = useUserStore();
+  const { transfers } = useUserStore();
   const { isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { openModal } = useContext(ModalContext);
+  const { openModal: open } = useContext(ModalContext);
 
   const [isOpen, toggleOpen] = useCycle(false, true);
+
+  const openModal = (content: JSX.Element) => {
+    if (isOpen) {
+      open(content);
+    }
+  };
 
   const variants = () => {
     const height = `${5 * 85}px`;
