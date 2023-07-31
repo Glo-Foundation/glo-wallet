@@ -231,12 +231,23 @@ export default function BuyingGuide({
           />
         )}
       </section>
-      <section className="flex justify-center mt-6 mb-3">
+      <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
           onClick={() => buyWithUniswap(buyAmount)}
         >
           Buy ${buyAmount} Glo Dollars on Uniswap
+        </button>
+        <button
+          className="secondary-button mt-3"
+          onClick={() =>
+            window.open(
+              "https://serious-jaborosa-7f8.notion.site/Guide-Buying-USDGLO-by-purchasing-USDC-on-a-centralized-exchange-and-swapping-to-USDGLO-1e376bc4e4144a02b7ca0cb13413e058",
+              "_blank"
+            )
+          }
+        >
+          Step by step guide
         </button>
       </section>
     </div>
