@@ -13,7 +13,7 @@ export default function TransactionsList({
 }: {
   txns: Transfer[];
   chain: number | undefined;
-  isOpen: boolean;
+  isOpen?: boolean;
 }) {
   const variants = {
     open: {
