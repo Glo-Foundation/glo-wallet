@@ -21,14 +21,25 @@ import { isProd } from "@/lib/utils";
 const TOS_COOKIE = "tos-agreed";
 
 const ToS = () => (
-  <a
-    target="_blank"
-    className="underline"
-    href="https://www.glodollar.org/articles/terms-of-service"
-    rel="noreferrer"
-  >
-    Terms of Service
-  </a>
+  <span>
+    <a
+      target="_blank"
+      className="underline"
+      href="https://www.glodollar.org/articles/terms-of-service"
+      rel="noreferrer"
+    >
+      Terms
+    </a>
+    &nbsp;and&nbsp;
+    <a
+      target="_blank"
+      className="underline"
+      href="https://www.glodollar.org/articles/terms-of-service"
+      rel="noreferrer"
+    >
+      Privacy Policy
+    </a>
+  </span>
 );
 
 export default function UserAuthModal() {
@@ -100,9 +111,9 @@ export default function UserAuthModal() {
           height={100}
         />
       </section>
-      <section className="sticky pt-8 px-8 py-4 flex flex-col items-center bg-white rounded-t-3xl">
-        <h1 className="">👋 Hey, it’s Jeff</h1>
-        <p className="copy text-xl -mt-5 mb-4">CEO, Glo Foundation</p>
+      <section className="sticky pt-8 px-4 py-4 flex flex-col items-center text-center bg-white rounded-t-3xl">
+        <h2 className="">👋 Welcome to the Glo App</h2>
+        <p className="copy text-lg -mt-5 mb-4">Jeff, Glo Foundation CEO</p>
         <p className="copy text m-0 max-w-xs text-center">
           To see the impact of your Glo Dollars connect your wallet or submit
           your email to create a wallet{" "}
@@ -183,7 +194,10 @@ export default function UserAuthModal() {
           </button>
         </div>
 
-        <div ref={tosRef} className="pb-4 flex justify-center items-center">
+        <div
+          ref={tosRef}
+          className="pb-4 flex text-sm justify-center items-center inline-block"
+        >
           <input
             type="checkbox"
             defaultChecked={hasUserAgreed || undefined}
@@ -196,13 +210,13 @@ export default function UserAuthModal() {
             onChange={() => setHasUserAgreed(!hasUserAgreed)}
           />
           <span className="ml-2">
-            I agree with Glo&apos;s <ToS />
+            Agree with <ToS />
           </span>
         </div>
 
         {userRejected && (
           <div className="p-2 text-center text-red-400">
-            Please accept our Terms of Service to sign up
+            Please accept our Terms to sign up
           </div>
         )}
       </section>
