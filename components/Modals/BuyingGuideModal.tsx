@@ -53,20 +53,22 @@ export default function BuyingGuide({
   }, [isCopiedTooltipOpen]);
 
   useEffect(() => {
-    const formatted = Number(balance?.formatted);
-    const val = BigNumber.from(balance?.value);
-    const currBuyAmt = utils
-      .parseUnits(buyAmount.toString(), 6)
-      .mul(99)
-      .div(100);
+    if (balance) {
+      const formatted = Number(balance?.formatted);
+      const val = BigNumber.from(balance?.value);
+      const currBuyAmt = utils
+        .parseUnits(buyAmount.toString(), 6)
+        .mul(99)
+        .div(100);
 
-    const usdc = Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(formatted || 0);
-    setUSDC(usdc);
+      const usdc = Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(formatted || 0);
+      setUSDC(usdc);
 
-    if (val.gte(currBuyAmt)) setIsProviderStepDone(true);
+      if (val.gte(currBuyAmt)) setIsProviderStepDone(true);
+    }
   }, [balance]);
 
   const StepCard = ({
