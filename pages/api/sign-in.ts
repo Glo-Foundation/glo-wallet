@@ -47,7 +47,8 @@ export default async function handler(
   const address = req.headers["glo-pub-address"] as string;
   const { email } = req.body;
 
-  const userId = await getOrCreate(address, email);
+  // Do not pass empty string
+  const userId = await getOrCreate(address, email || null);
 
   return res.status(200).json(userId);
 }

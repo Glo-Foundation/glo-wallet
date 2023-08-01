@@ -1,3 +1,4 @@
+import { sequence } from "0xsequence";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -34,6 +35,11 @@ export default function PaymentOptionModal({
       console.log("Popup closed - reloading...");
       // Refetch balance, ctas etc.
     };
+
+    // Attach Embr script to button
+    const a = document.getElementById("Embr");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (a as any).dataset.mattr = "";
   }, []);
 
   const Double = ({
@@ -69,6 +75,7 @@ export default function PaymentOptionModal({
     disabled?: boolean;
   }) => (
     <div
+      id={name}
       className={clsx(
         "flex flex-col p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 cursor-pointer mb-2",
         disabled && "bg-pine-100 hover:border-pine-100"
@@ -167,6 +174,53 @@ export default function PaymentOptionModal({
                   buyAmount={buyAmount}
                 />
               );
+            }}
+          />
+          <BuyBox
+            name="Embr"
+            icon="/embr.png"
+            fees="1-3"
+            worksFor="💳 Cards"
+            delay="⚡ Instant"
+            onClick={() => {
+              const findElByText = (text: string, el = "div") =>
+                document
+                  .evaluate(
+                    `//${el}[contains(text(), "${text}")]`,
+                    document,
+                    null,
+                    XPathResult.ANY_TYPE,
+                    null
+                  )
+                  .iterateNext();
+
+              const tryAttachingEvent = () => {
+                const copyButton = findElByText("Copy to Clipboard");
+                if (copyButton) {
+                  copyButton?.parentNode?.parentNode?.parentNode?.addEventListener(
+                    "click",
+                    () => {
+                      setTimeout(() => {
+                        const wallet = sequence.getWallet();
+                        wallet.openWallet("/wallet/scan");
+                      }, 1000);
+                    }
+                  );
+                } else {
+                  const el = Array.from(
+                    document?.body.getElementsByTagName("div")
+                  ).find((x) => x.shadowRoot);
+                  // If modal closed stop trying
+                  if (el?.shadowRoot?.children.length || 0 > 1) {
+                    setTimeout(() => {
+                      tryAttachingEvent();
+                    }, 1000);
+                  }
+                }
+              };
+
+              tryAttachingEvent();
+              closeModal();
             }}
           />
         </>
