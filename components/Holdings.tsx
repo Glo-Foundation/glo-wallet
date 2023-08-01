@@ -2,7 +2,7 @@ import { utils } from "ethers";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useContext, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
@@ -17,6 +17,7 @@ type Props = {
 
 export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
   const { closeModal } = useContext(ModalContext);
+  const [isFirstTextRender, setIsFirstTextRender] = useState(true);
 
   const gloOnInputChange = (e: { target: { value: any } }) => {
     let newGloQuantity = e.target.value;
@@ -51,12 +52,17 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
     const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
     // get the full font style property
-    const font = window.getComputedStyle(el, null).getPropertyValue("font");
+    // getting them all separately because the shorthand for getPropertyValue is unstable
+    // Refer: above SO post
+    const computedStyles = window.getComputedStyle(el, null);
+    const fontFamily = computedStyles.getPropertyValue("font-family");
+    const fontSize = computedStyles.getPropertyValue("font-size");
+    const fontWeight = computedStyles.getPropertyValue("font-weight");
     const text = el.value;
 
     // set the font attr for the canvas text
     if (context) {
-      context.font = font;
+      context.font = `${fontWeight} ${fontSize} ${fontFamily}`;
       const textMeasurement = context.measureText(text);
       return textMeasurement.width;
     }
@@ -82,7 +88,11 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
   useEffect(() => {
     const gloInput = document.getElementById("gloInput");
     if (gloInput) {
-      const width = Math.floor(getTextWidth(gloInput as HTMLInputElement));
+      let width = Math.floor(getTextWidth(gloInput as HTMLInputElement));
+      if (balance && isFirstTextRender) {
+        width += 16; // 1em offset
+        setIsFirstTextRender(false);
+      }
       gloInput.style.width = width + 4 + "px";
     }
   }, [formattedGlo, getTextWidth]);
