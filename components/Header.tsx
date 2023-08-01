@@ -69,6 +69,7 @@ export default function Header() {
         <div className="flex">
           <button
             className="primary-button mr-2"
+            data-testid="primary-login-button"
             onClick={() => openUserAuthModal()}
           >
             Log in

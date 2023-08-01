@@ -50,7 +50,9 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
           return (
             <div className="flex flex-col space-y-4" key={idx}>
               <div className="flex flex-row">
-                <div className="mr-2">{impactItem.count}</div>
+                <div className="mr-2" data-testid="number-persons-out-poverty">
+                  {impactItem.count}
+                </div>
                 <div className="mr-2 text-xs leading-6">&#10005;</div>
                 <div className="mr-2 text-2xl leading-6">
                   {impactItem.emoji}
