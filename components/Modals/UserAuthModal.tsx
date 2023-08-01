@@ -10,6 +10,7 @@ import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { useContext, useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
 import { configureChains } from "wagmi";
 
@@ -20,14 +21,25 @@ import { isProd } from "@/lib/utils";
 const TOS_COOKIE = "tos-agreed";
 
 const ToS = () => (
-  <a
-    target="_blank"
-    className="underline"
-    href="https://www.glodollar.org/articles/terms-of-service"
-    rel="noreferrer"
-  >
-    Terms of Service
-  </a>
+  <span>
+    <a
+      target="_blank"
+      className="underline"
+      href="https://www.glodollar.org/articles/terms-of-service"
+      rel="noreferrer"
+    >
+      Terms
+    </a>
+    &nbsp;and&nbsp;
+    <a
+      target="_blank"
+      className="underline"
+      href="https://www.glodollar.org/articles/terms-of-service"
+      rel="noreferrer"
+    >
+      Privacy Policy
+    </a>
+  </span>
 );
 
 export default function UserAuthModal() {
@@ -99,16 +111,25 @@ export default function UserAuthModal() {
           height={100}
         />
       </section>
-      <section className="sticky p-8 flex flex-col items-center bg-white rounded-t-3xl">
-        <h1 className="">👋 Hey, it’s Jeff</h1>
-        <p className="copy text-xl -mt-6 mb-4">CEO, Glo Foundation</p>
-        <p className="copy text-xl m-0">
-          Thanks for being part of the Glo movement!
+      <section className="sticky pt-8 px-4 py-4 flex flex-col items-center text-center bg-white rounded-t-3xl">
+        <h2 className="">👋 Welcome to the Glo App</h2>
+        <p className="copy text-lg -mt-5 mb-4">Jeff, Glo Foundation CEO</p>
+        <p className="copy text m-0 max-w-xs text-center">
+          To see the impact of your Glo Dollars connect your wallet or submit
+          your email to create a wallet{" "}
+          <a
+            className="underline"
+            target="_blank"
+            href="https://sequence.xyz/"
+            rel="noreferrer"
+          >
+            powered by Sequence
+          </a>
+          .
         </p>
       </section>
-      <section className="modal-body px-8 rounded-b-3xl bg-pine-100 after:bg-pine-100">
-        <h2 className="flex justify-center">Sign up</h2>
-        <div>
+      <section className="modal-body px-4 rounded-b-3xl bg-pine-100 after:bg-pine-100">
+        <div className="pt-2">
           <div className="p-0 form-group flex justify-center">
             <div className="input-container relative inline w-full">
               <input
@@ -147,15 +168,21 @@ export default function UserAuthModal() {
               <Image alt="google" src="/google.svg" width={35} height={35} />
             </div>
           </button>
-
-          <button
-            className="auth-button"
-            data-testid="metamask-login-button"
-            onClick={() => connectWithConnector(1)}
-          >
-            <h4>Metamask</h4>
-            <Image alt="metamask" src="/metamask.svg" width={35} height={35} />
-          </button>
+          {!isMobile && (
+            <button
+              className="auth-button"
+              data-testid="metamask-login-button"
+              onClick={() => connectWithConnector(1)}
+            >
+              <h4>Metamask</h4>
+              <Image
+                alt="metamask"
+                src="/metamask.svg"
+                width={35}
+                height={35}
+              />
+            </button>
+          )}
 
           <button
             className="auth-button"
@@ -171,44 +198,33 @@ export default function UserAuthModal() {
             />
           </button>
         </div>
-        {tosAlreadyAgreed ? (
-          <div className="p-2 text-center copy">
-            By signing up, you agree with our <ToS />
-          </div>
-        ) : (
-          <div ref={tosRef} className="p-2 flex justify-center items-center">
-            <input
-              type="checkbox"
-              value=""
-              data-testid="tos-checkbox"
-              className={clsx(
-                "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
-                !hasUserAgreed && "appearance-none",
-                userRejected && "border border-red-400"
-              )}
-              onChange={() => setHasUserAgreed(!hasUserAgreed)}
-            />
-            <span className="ml-2">
-              I agree with Glo&apos;s <ToS />
-            </span>
-          </div>
-        )}
+
+        <div
+          ref={tosRef}
+          className="pb-4 flex text-sm justify-center items-center inline-block"
+        >
+          <input
+            type="checkbox"
+            defaultChecked={hasUserAgreed || undefined}
+            data-testid="tos-checkbox"
+            value=""
+            className={clsx(
+              "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
+              !hasUserAgreed && "appearance-none",
+              userRejected && "border border-red-400"
+            )}
+            onChange={() => setHasUserAgreed(!hasUserAgreed)}
+          />
+          <span className="ml-2">
+            Agree with <ToS />
+          </span>
+        </div>
+
         {userRejected && (
           <div className="p-2 text-center text-red-400">
-            Please accept our Terms of Service to sign up
+            Please accept our Terms to sign up
           </div>
         )}
-        <div className="p-2 text-center copy">
-          Email and social login{" "}
-          <a
-            className="underline"
-            target="_blank"
-            href="https://sequence.xyz/"
-            rel="noreferrer"
-          >
-            Powered by Sequence
-          </a>
-        </div>
       </section>
     </>
   );

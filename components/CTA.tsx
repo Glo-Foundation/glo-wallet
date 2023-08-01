@@ -77,7 +77,7 @@ export default function CTA({
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
 
-  const gloBalance = Number(balance) || 1000;
+  const gloBalance = Number(balance) || 100;
   const totalYield = getTotalYield(gloBalance);
   const item = getImpactItems(totalYield)[0];
   const icons = item
@@ -95,16 +95,17 @@ export default function CTA({
 
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
     ["BUY_GLO_MERCH"]: {
-      title: "Buy Glo Merch",
+      title: "Buy Glo Dollar Merch",
       description:
-        "Glo is meant to be spent. Go to the Glo store and get a hoodie!",
+        "Glo Dollars are meant to be spent. Visit the Glo store to get a hoodie!",
       iconPath: "/buy.svg",
       url: "https://merch.glodollar.org",
       // action: () => open a modal in the future,
     },
     ["JOIN_PROGRAM"]: {
-      title: "Join as early adopter",
-      description: "Be the change you want to see in the world",
+      title: "Join the movement",
+      description:
+        "Get listed as an Early Adopter to help us get the ball rolling.",
       iconPath: "/za-warudo.svg",
       url: "https://www.glodollar.org/get-started",
       slug: `?email=${email}`,

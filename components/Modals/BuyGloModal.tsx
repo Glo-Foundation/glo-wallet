@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { useAccount } from "wagmi";
 
 import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import Holdings from "@/components/Holdings";
@@ -9,8 +8,6 @@ import { getTotalYield, getUSFormattedNumber } from "@/utils";
 import PaymentOptionModal from "./PaymentOptionModal";
 
 export default function BuyGloModal() {
-  const { connector } = useAccount();
-
   const { openModal } = useContext(ModalContext);
 
   const [glo, setGlo] = useState<number>(1000);
@@ -28,12 +25,17 @@ export default function BuyGloModal() {
       <button
         className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6 mt-6"
         disabled={glo === 0}
-        onClick={() => openModal(<PaymentOptionModal />, "payment-dialog")}
+        onClick={() =>
+          openModal(<PaymentOptionModal buyAmount={Math.floor(glo)} />)
+        }
       >
         Buy ${formattedGlo} Glo Dollar
       </button>
       <div className="mb-7">
-        <DetailedEnoughToBuy yearlyYield={yearlyYield} glo={glo} />
+        <DetailedEnoughToBuy
+          yearlyYield={yearlyYield}
+          noImpactCopyText="Pick a value above $0 to see how much impact you could make."
+        />
       </div>
     </div>
   );

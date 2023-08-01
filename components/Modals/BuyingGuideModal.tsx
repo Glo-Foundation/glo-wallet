@@ -1,6 +1,6 @@
 import { polygon } from "@wagmi/chains";
 import clsx from "clsx";
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
@@ -9,34 +9,39 @@ import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
-import { getUSFormattedNumber, USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
+import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
+const formatter = Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 interface Props {
   iconPath: string;
-  buyWithProvider: any;
+  buyWithProvider: () => void;
   provider: string;
+  buyAmount: number;
 }
 
 export default function BuyingGuide({
   iconPath,
   buyWithProvider,
   provider,
+  buyAmount,
 }: Props) {
   const { address, connector } = useAccount();
   const { closeModal } = useContext(ModalContext);
+
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
     token: USDC_POLYGON_CONTRACT_ADDRESS,
-    watch: true,
   });
   const { switchNetwork } = useSwitchNetwork();
-
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isProviderStepDone, setIsProviderStepDone] = useState(false);
   const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
-  const [USDC, setUSDC] = useState(0);
+  const [USDC, setUSDC] = useState("");
 
   const userIsOnPolygon = chain?.id === polygon.id;
   const isSequenceWallet = connector?.id === "sequence";
@@ -48,9 +53,21 @@ export default function BuyingGuide({
   }, [isCopiedTooltipOpen]);
 
   useEffect(() => {
-    const val = balance?.value;
-    if (val && val > 0) {
-      setUSDC(parseFloat(utils.formatEther(val)));
+    if (balance) {
+      const formatted = Number(balance?.formatted);
+      const val = BigNumber.from(balance?.value);
+      const currBuyAmt = utils
+        .parseUnits(buyAmount.toString(), 6)
+        .mul(99)
+        .div(100);
+
+      const usdc = Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(formatted || 0);
+      setUSDC(usdc);
+
+      if (val.gte(currBuyAmt)) setIsProviderStepDone(true);
     }
   }, [balance]);
 
@@ -60,7 +77,6 @@ export default function BuyingGuide({
     title,
     content,
     action,
-    balance,
     done = false,
   }: {
     index: number;
@@ -68,7 +84,6 @@ export default function BuyingGuide({
     title: string;
     content: string;
     action: any;
-    balance?: string;
     done?: boolean;
   }) => (
     <div
@@ -78,60 +93,65 @@ export default function BuyingGuide({
       )}
       onClick={action}
     >
-      <div className="flex items-center m-3">
-        <div
-          className={clsx(
-            "relative circle border-2 w-[32px] h-[32px]",
-            done && "border-none bg-cyan-600 w-[32px] h-[32px]"
-          )}
-        >
-          {!done ? (
-            index
-          ) : (
-            <Image
-              alt="checkmark"
-              src="check-alpha.svg"
-              height={12}
-              width={12}
-            />
-          )}
+      <div className="flex flex-col justify-center">
+        <div className="flex items-center p-3">
           <div
             className={clsx(
-              "circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]",
-              done && "top-[-5px] right-[-8px]"
+              "relative circle border-2 w-[32px] h-[32px]",
+              done && "border-none bg-cyan-600 w-[32px] h-[32px]"
             )}
           >
-            <Image alt={iconPath} src={iconPath} height={20} width={20} />
+            {!done ? (
+              index
+            ) : (
+              <Image
+                alt="checkmark"
+                src="check-alpha.svg"
+                height={12}
+                width={12}
+              />
+            )}
+            <div
+              className={clsx(
+                "circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]",
+                done && "top-[-5px] right-[-8px]"
+              )}
+            >
+              <Image alt={iconPath} src={iconPath} height={20} width={20} />
+            </div>
+          </div>
+          <div className="pl-4">
+            <h5 className="text-sm mb-2">{title}</h5>
+            <p className="copy text-xs">
+              {content}{" "}
+              {index === 3 && isSequenceWallet && (
+                <>
+                  <Image
+                    alt="qrcode"
+                    style={{ display: "inline" }}
+                    src="/miniqr.svg"
+                    height={16}
+                    width={16}
+                  />{" "}
+                  +&nbsp;
+                  <Image
+                    alt="copypaste"
+                    style={{ display: "inline" }}
+                    src="/copy.svg"
+                    height={16}
+                    width={16}
+                  />
+                </>
+              )}
+            </p>
           </div>
         </div>
-        <div className="pl-4">
-          <h5 className="text-sm mb-2">{title}</h5>
-          <p className="copy text-xs">
-            {content}{" "}
-            {index === 3 && isSequenceWallet && (
-              <>
-                <Image
-                  alt="qrcode"
-                  style={{ display: "inline" }}
-                  src="/miniqr.svg"
-                  height={16}
-                  width={16}
-                />{" "}
-                +&nbsp;
-                <Image
-                  alt="copypaste"
-                  style={{ display: "inline" }}
-                  src="/copy.svg"
-                  height={16}
-                  width={16}
-                />
-              </>
-            )}
-          </p>
-        </div>
-        {index === 2 && !!USDC && (
+        {index === 2 && (
           <div className="p-3 border-t-2 flex justify-center w-full">
-            <span className="copy font-bold">USDC balance: ${USDC}</span>
+            <Image alt="usdc" src="usdc.svg" height={20} width={20} />
+            <span className="ml-2 copy text-pine-900 font-bold">
+              Current USDC balance: {USDC}
+            </span>
           </div>
         )}
       </div>
@@ -181,11 +201,11 @@ export default function BuyingGuide({
         <StepCard
           index={2}
           iconPath={iconPath}
-          title={`Buy ${1000} USDC on ${provider}`}
+          title={`Buy ${buyAmount} USDC on ${provider}`}
           content="Withdraw to the wallet address shown above"
           action={() => {
             buyWithProvider();
-            setIsProviderStepDone(true);
+            if (provider !== "Coinbase") setIsProviderStepDone(true);
           }}
           done={isProviderStepDone}
         />
@@ -205,7 +225,7 @@ export default function BuyingGuide({
           action={() => {
             isSequenceWallet
               ? window.open("https://app.uniswap.org/", "_blank")
-              : buyWithUniswap(1000);
+              : buyWithUniswap(buyAmount);
             setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
@@ -224,9 +244,23 @@ export default function BuyingGuide({
           />
         )}
       </section>
-      <section className="flex justify-center mt-6 mb-3">
-        <button className="primary-button" onClick={() => buyWithUniswap(1000)}>
-          Buy $1000 on {provider}
+      <section className="flex flex-col justify-center m-3">
+        <button
+          className="primary-button"
+          onClick={() => buyWithUniswap(buyAmount)}
+        >
+          Buy ${buyAmount} Glo Dollars on Uniswap
+        </button>
+        <button
+          className="secondary-button mt-3"
+          onClick={() =>
+            window.open(
+              "https://serious-jaborosa-7f8.notion.site/Guide-Buying-USDGLO-by-purchasing-USDC-on-a-centralized-exchange-and-swapping-to-USDGLO-1e376bc4e4144a02b7ca0cb13413e058",
+              "_blank"
+            )
+          }
+        >
+          Step by step guide
         </button>
       </section>
     </div>

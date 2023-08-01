@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useContext } from "react";
 
@@ -9,9 +10,11 @@ import TransactionDetailsModal from "./Modals/TransactionDetailsModal";
 export default function TransactionsList({
   txns,
   chain,
+  isOpen,
 }: {
   txns: Transfer[];
   chain: number | undefined;
+  isOpen?: boolean;
 }) {
   const variants = {
     open: {
@@ -37,9 +40,10 @@ export default function TransactionsList({
       return (
         <motion.li
           key={`txn-${idx}`}
-          className="transaction-item"
+          className={clsx("transaction-item", !isOpen && "pointer-events-none")}
           variants={variants}
           onClick={() =>
+            isOpen &&
             openModal(
               <TransactionDetailsModal
                 chain={chain || 137}
@@ -55,7 +59,7 @@ export default function TransactionsList({
         >
           <div>
             <p>
-              {txn.type === "outgoing" ? "Sent to " : "Received from"}{" "}
+              {txn.type === "outgoing" ? "Sent to " : "From"}{" "}
               {sliceAddress(counterParty)}
             </p>
             <p className="copy">{txnDate}</p>

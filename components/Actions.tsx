@@ -3,23 +3,42 @@ import { utils } from "ethers";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import {
+  useAccount,
+  useBalance,
+  useNetwork,
+  useWaitForTransaction,
+} from "wagmi";
 import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
+import { getChainExplorerUrl, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { useToastStore } from "@/lib/store";
+import { useToastStore, useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
-const SendForm = ({ close }: { close: () => void }) => {
+const SendForm = ({
+  close,
+  setHash,
+}: {
+  close: () => void;
+  setHash: (hash: `0x${string}` | undefined) => void;
+}) => {
   const [sendForm, setSendForm] = useState({
     address: "",
     amount: "",
   });
+
+  const { transfers, setTransfers } = useUserStore();
+
+  const { address } = useAccount();
+
   const [setShowToast] = useToastStore((state) => [state.setShowToast]);
+  const { chain } = useNetwork();
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    const scannerUrl = getChainExplorerUrl(chain!.id);
 
     try {
       const { request } = await prepareWriteContract({
@@ -35,14 +54,36 @@ const SendForm = ({ close }: { close: () => void }) => {
       if (hash) {
         setShowToast({
           showToast: true,
-          message: `Sent with hash ${sliceAddress(hash, 8)}`,
+          message: (
+            <a className="link" href={`${scannerUrl}/tx/${hash}`}>
+              Sent with hash {sliceAddress(hash, 8)}
+            </a>
+          ),
         });
+
+        // Add new tx as it's not yet available in Moralis
+        setTransfers({
+          transfers: [
+            {
+              from: address!,
+              to: sendForm.address,
+              hash,
+              ts: new Date().toISOString(),
+              type: "outgoing",
+              value: sendForm.amount,
+            },
+            ...transfers,
+          ],
+        });
+
+        setHash(hash);
       }
     } catch (err: any) {
-      setShowToast({ showToast: true, message: err.message.split(".")[0] });
+      setShowToast({ showToast: true, message: err.cause.shortMessage });
     }
     close();
   };
+
   return (
     <form className="flex flex-col w-[275px]" onSubmit={handleSubmit}>
       <h3>Transfer</h3>
@@ -93,8 +134,27 @@ const SendForm = ({ close }: { close: () => void }) => {
 export default function Actions() {
   const { openModal, closeModal } = useContext(ModalContext);
 
-  const { connector, isConnected } = useAccount();
+  const { address, connector, isConnected } = useAccount();
   const { asPath, push } = useRouter();
+
+  const { chain } = useNetwork();
+
+  const { refetch } = useBalance({
+    address,
+    token: getSmartContractAddress(chain?.id),
+  });
+  const [hash, setHash] = useState<`0x${string}` | undefined>(undefined);
+
+  const { isSuccess } = useWaitForTransaction({
+    hash,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      setHash(undefined);
+    }
+  }, [isSuccess]);
 
   const buy = async () => {
     openModal(<BuyGloModal />);
@@ -121,7 +181,7 @@ export default function Actions() {
             <Image alt="x" src="/x.svg" height={16} width={16} />
           </button>
         </div>
-        <SendForm close={closeModal} />
+        <SendForm close={closeModal} setHash={setHash} />
       </div>
     );
   };

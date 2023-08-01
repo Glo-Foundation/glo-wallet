@@ -3,8 +3,7 @@
 @tailwind utilities;
 
 body {
-  /* !important added as counter to side effects of Ratio component */
-  margin: 0 auto 40px !important;
+  margin: 0 auto 40px;
   max-width: 375px;
   line-height: 1.5rem;
   background-color: #eaf2f1;
@@ -64,7 +63,7 @@ body {
   }
 
   #sign-in-with-email {
-    @apply w-full mt-1 mb-7;
+    @apply w-full mt-1;
   }
 
   .primary-button {
@@ -98,7 +97,7 @@ body {
   }
 
   .transaction-item {
-    @apply flex justify-between border-b-2 mb-4 pb-4 last:pb-0 last:mb-0 last:border-none;
+    @apply flex cursor-pointer justify-between border-b-2 mb-4 pb-4 last:pb-0 last:mb-0 last:border-none;
   }
 
   .cta {
@@ -119,5 +118,9 @@ body {
 
   .circle {
     @apply rounded-full flex justify-center items-center;
+  }
+
+  .link {
+    @apply text-blue-700 underline !important;
   }
 }

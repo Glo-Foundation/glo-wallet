@@ -107,7 +107,7 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
               inputMode="numeric"
               onChange={gloOnInputChange}
             />
-            <div className="text-base ml-1">Glo Dollar</div>
+            <div className="text-base ml-1">Glo Dollars</div>
           </div>
           <div
             className="bg-pine-900/[0.1] min-h-fit min-w-fit px-2.5 py-2.5 rounded-full self-center cursor-pointer"
@@ -131,13 +131,13 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
               backgroundColor: "#133d38",
             }}
             handleStyle={{
-              height: "24px",
-              width: "24px",
+              height: "28px",
+              width: "28px",
               backgroundColor: "white",
               borderColor: "#133d38",
               border: "8px solid",
               opacity: 1,
-              marginTop: "-10px",
+              marginTop: "-13px",
             }}
           />
         </div>
@@ -158,8 +158,16 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
             <div className="text-base">/ year</div>
           </div>
           <div className="text-xs text-[11px] pt-2">
-            Current impact on the lower end of this range because Glo Dollar is
-            bootstrapping. Adoption helps grow impact.
+            Current impact on the lower end of this range because Glo Dollar{" "}
+            <a
+              className="underline"
+              href="https://www.glodollar.org/articles/from-bootstrap-to-high-impact"
+              target="_blank"
+              rel="noreferrer"
+            >
+              is bootstrapping
+            </a>
+            . Adoption helps grow impact.
           </div>
         </div>
       </div>

@@ -9,10 +9,13 @@ import {
 
 type Props = {
   yearlyYield: number;
-  glo: number;
+  noImpactCopyText: string;
 };
 
-export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
+export default function DetailedEnoughToBuy({
+  yearlyYield,
+  noImpactCopyText,
+}: Props) {
   const [flipped, setFlipped] = useState<boolean>(false);
   const formattedYearlyYield = getUSFormattedNumber(yearlyYield);
 
@@ -23,11 +26,7 @@ export default function DetailedEnoughToBuy({ yearlyYield, glo }: Props) {
 
   const getFormattedImpactItems = (): JSX.Element => {
     if (yearlyImpactItems.length === 0) {
-      return (
-        <div className="text-pine-900">
-          Pick a value above $0 to see how much impact you could make.
-        </div>
-      );
+      return <div className="text-pine-900">{noImpactCopyText}</div>;
     }
 
     if (enoughToLiftPersonOutOfPoverty) {

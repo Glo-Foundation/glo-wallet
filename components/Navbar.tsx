@@ -6,7 +6,6 @@ export default function Navbar() {
       <a href="https://glodollar.org/">
         <Image src="/glo-logo-text.svg" alt="glo logo" width={74} height={26} />
       </a>
-      <Image src="/menu.svg" alt="menu" width={24} height={24} />
     </nav>
   );
 }

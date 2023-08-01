@@ -1,17 +1,22 @@
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
+import { Tooltip } from "react-tooltip";
 import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithCoinbase, buyWithTransak, buyWithUniswap } from "@/payments";
+import { buyWithTransak, buyWithUniswap } from "@/payments";
 
 import BuyingGuideModal from "./BuyingGuideModal";
 
-export default function PaymentOptionModal() {
+export default function PaymentOptionModal({
+  buyAmount,
+}: {
+  buyAmount: number;
+}) {
   const { address, isConnected } = useAccount();
-  const [loading, setLoading] = useState(false);
+
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal, closeModal } = useContext(ModalContext);
@@ -40,7 +45,7 @@ export default function PaymentOptionModal() {
     className: string;
   }) => (
     <div className={clsx("mr-5", className)}>
-      <div className="text-pine-700 font-bold">{label}</div>
+      <div className="text-pine-700">{label}</div>
       <div className="text-black font-bold"> {value}</div>
     </div>
   );
@@ -75,52 +80,18 @@ export default function PaymentOptionModal() {
         <h3 className="px-3">{name}</h3>
       </div>
       <div className="flex">
-        <Double className="min-w-[15%]" label="Fees" value={`${fees}%`} />
-        <Double className="min-w-[38%]" label="Works for" value={worksFor} />
+        <Double className="min-w-[18%]" label="Fees" value={`${fees}%`} />
+        <Double className="min-w-[36%]" label="Works for" value={worksFor} />
         <Double className="min-w-[40%]" label="Delay" value={delay} />
       </div>
     </div>
   );
 
-  const buyWithRatio = () => {
-    const parent = document.getElementById("ratio-button-parent");
-    const button = parent?.firstChild as HTMLButtonElement;
-    if (button) {
-      setLoading(true);
-      button.click();
-
-      const findElByText = (text: string) =>
-        document.evaluate(
-          `//p[contains(text(), '${text}')]`,
-          document,
-          null,
-          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
-        ).snapshotLength;
-
-      // The only workaround to handle Ratio modal position
-      // Close our modal after Ratio modal is detected
-      const tryClosingModal = () => {
-        const elementsCount =
-          findElByText("Sign into Ratio") +
-          findElByText("Ratio connects your financial accounts");
-
-        if (elementsCount > 0) {
-          closeModal();
-        } else {
-          setTimeout(() => {
-            tryClosingModal();
-          }, 1000);
-        }
-      };
-
-      tryClosingModal();
-    }
-  };
-
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
         <div></div>
+        <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         {isConnected && (
           <button
             className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
@@ -138,55 +109,41 @@ export default function PaymentOptionModal() {
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <h2 className="text-center">Choose a payment option to buy Glo Dollar</h2>
+      <h2 className="text-center">Choose a path to start buying Glo Dollars</h2>
       <BuyBox
         name="Uniswap"
         icon="/uniswap.svg"
         fees=".01"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
-        onClick={() => buyWithUniswap(1000)}
+        onClick={() => buyWithUniswap(buyAmount)}
       />
       {isConnected && address && (
         <>
+          {false && (
+            <BuyBox
+              name="Transak"
+              icon="/transak.png"
+              fees="1-5"
+              worksFor="🌍 world"
+              delay="⚡ Instant"
+              onClick={() =>
+                openModal(
+                  <BuyingGuideModal
+                    iconPath="/transak.png"
+                    provider="Transak"
+                    buyWithProvider={() => buyWithTransak(buyAmount, address!)}
+                    buyAmount={buyAmount}
+                  />
+                )
+              }
+            />
+          )}
           <BuyBox
-            name="Ratio"
-            icon="/ratio.png"
-            fees="0"
-            worksFor="🇺🇸 US citizens"
-            delay="Up to 3 days"
-            disabled={loading}
-            onClick={() =>
-              openModal(
-                <BuyingGuideModal
-                  iconPath="/ratio.png"
-                  provider="Ratio"
-                  buyWithProvider={buyWithRatio}
-                />
-              )
-            }
-          />
-          <BuyBox
-            name="Transak"
-            icon="/transak.png"
-            fees="1-5"
-            worksFor="🌍 world"
-            delay="⚡ Instant"
-            onClick={() =>
-              openModal(
-                <BuyingGuideModal
-                  iconPath="/transak.png"
-                  provider="Transak"
-                  buyWithProvider={() => buyWithTransak(1000, address)}
-                />
-              )
-            }
-          />
-          <BuyBox
-            name="Coinbase"
+            name="Coinbase + Uniswap"
             icon="/coinbase.png"
-            fees="0-3"
-            worksFor="🌍 world"
+            fees=".01-5"
+            worksFor="💳 Fiat"
             delay="⚡ Instant"
             onClick={() => {
               openModal(
@@ -199,6 +156,7 @@ export default function PaymentOptionModal() {
                       "_blank"
                     )
                   }
+                  buyAmount={buyAmount}
                 />
               );
             }}
