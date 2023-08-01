@@ -89,7 +89,7 @@ export default function Home() {
 
       sign().then(async (signature: string) => {
         await initApi(address!, chain!.id, signature);
-        const email = Cookies.get("glo-email");
+        const email = Cookies.get("glo-email") || null;
 
         const { data: userId } = await api().post<string>(`/sign-in`, {
           email,
