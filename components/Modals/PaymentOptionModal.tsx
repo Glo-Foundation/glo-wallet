@@ -1,3 +1,4 @@
+import { sequence } from "0xsequence";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -205,7 +206,10 @@ export default function PaymentOptionModal({
                   closeModal();
                   copyButton?.parentNode?.parentNode?.addEventListener(
                     "click",
-                    () => console.log(123)
+                    () => {
+                      const wallet = sequence.getWallet();
+                      wallet.openWallet("/wallet/scan");
+                    }
                   );
                 } else {
                   setTimeout(() => {
