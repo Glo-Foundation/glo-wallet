@@ -1,4 +1,3 @@
-import { sequence } from "0xsequence";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -35,16 +34,6 @@ export default function PaymentOptionModal({
       console.log("Popup closed - reloading...");
       // Refetch balance, ctas etc.
     };
-
-    const script = document.createElement("script");
-    script.type = "module";
-    script.async = true;
-    script.src = "https://scripts.embr.org/checkout/checkout.js";
-    document.head.append(script);
-
-    const a = document.getElementById("Embr");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (a as any).dataset.mattr = "";
   }, []);
 
   const Double = ({
@@ -80,7 +69,6 @@ export default function PaymentOptionModal({
     disabled?: boolean;
   }) => (
     <div
-      id={name}
       className={clsx(
         "flex flex-col p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 cursor-pointer mb-2",
         disabled && "bg-pine-100 hover:border-pine-100"
@@ -179,51 +167,6 @@ export default function PaymentOptionModal({
                   buyAmount={buyAmount}
                 />
               );
-            }}
-          />
-          <BuyBox
-            name="Embr"
-            icon="/embr.png"
-            fees="1-3"
-            worksFor="💳 Cards"
-            delay="⚡ Instant"
-            onClick={() => {
-              const findElByText = (text: string) =>
-                document
-                  .evaluate(
-                    `//div[contains(text(), "${text}")]`,
-                    document,
-                    null,
-                    XPathResult.ANY_TYPE,
-                    null
-                  )
-                  .iterateNext();
-
-              const tryAttachingEvent = () => {
-                const copyButton = findElByText("Copy to Clipboard");
-
-                if (copyButton) {
-                  closeModal();
-                  copyButton?.parentNode?.parentNode?.addEventListener(
-                    "click",
-                    () => {
-                      const wallet = sequence.getWallet();
-                      wallet.openWallet("/wallet/scan");
-                    }
-                  );
-                } else {
-                  setTimeout(() => {
-                    // If modal closed stop trying
-                    if (
-                      document.getElementById("__CONNECTKIT__")?.children.length
-                    ) {
-                      tryAttachingEvent();
-                    }
-                  }, 1000);
-                }
-              };
-
-              tryAttachingEvent();
             }}
           />
         </>
