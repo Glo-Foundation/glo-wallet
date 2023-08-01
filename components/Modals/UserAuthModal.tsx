@@ -1,10 +1,5 @@
-import {
-  goerli,
-  polygon,
-  mainnet,
-  polygonMumbai,
-  Chain,
-} from "@wagmi/core/chains";
+import { Chain, configureChains, mainnet } from "@wagmi/core";
+import { goerli, polygon, polygonMumbai } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import clsx from "clsx";
 import Cookies from "js-cookie";
@@ -12,7 +7,6 @@ import Image from "next/image";
 import { useContext, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
-import { configureChains } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";

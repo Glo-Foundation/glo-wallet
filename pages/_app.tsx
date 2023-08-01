@@ -1,12 +1,7 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
-import {
-  goerli,
-  polygon,
-  mainnet,
-  polygonMumbai,
-  Chain,
-} from "@wagmi/core/chains";
+import { mainnet, Chain } from "@wagmi/core";
+import { goerli, polygon, polygonMumbai } from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
 import Script from "next/script";
