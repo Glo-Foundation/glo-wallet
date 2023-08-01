@@ -70,8 +70,6 @@ export default function UserAuthModal() {
   };
 
   const signInWithEmail = async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const { chains } = configureChains(
       isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
       [publicProvider()]
