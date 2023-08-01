@@ -1,3 +1,4 @@
+import { Chain } from "@wagmi/core";
 import { goerli, mainnet, polygon, polygonMumbai } from "@wagmi/core/chains";
 import axios, { AxiosInstance } from "axios";
 import { BigNumber, ethers } from "ethers";
@@ -60,6 +61,6 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
   return await usdgloContract.totalSupply();
 };
 
-export const getAllowedChains = () => {
-  return isProd() ? [mainnet, polygon] : [goerli, polygonMumbai];
+export const getAllowedChains = (): Chain[] => {
+  return isProd() ? [polygon, mainnet] : [polygonMumbai, goerli];
 };
