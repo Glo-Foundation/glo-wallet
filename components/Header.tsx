@@ -34,7 +34,7 @@ export default function Header() {
 
   return (
     <nav className="mt-4 mb-6 flex justify-between items-center">
-      <a href="https://glodollar.org/">
+      <a href="https://glodollar.org/" target="_blank" rel="noreferrer">
         <Image src="/glo-logo-text.svg" alt="glo logo" width={74} height={26} />
       </a>
 
