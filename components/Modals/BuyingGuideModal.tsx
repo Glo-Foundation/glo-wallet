@@ -12,10 +12,6 @@ import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
 import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
-const formatter = Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 interface Props {
   iconPath: string;
   buyWithProvider: () => void;
@@ -235,7 +231,7 @@ export default function BuyingGuide({
           action={() => {
             isSequenceWallet
               ? window.open("https://app.uniswap.org/", "_blank")
-              : buyWithUniswap(buyAmount);
+              : chain && buyWithUniswap(buyAmount, chain);
             setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
@@ -257,7 +253,7 @@ export default function BuyingGuide({
       <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
-          onClick={() => buyWithUniswap(buyAmount)}
+          onClick={() => chain && buyWithUniswap(buyAmount, chain)}
         >
           Buy ${buyAmount} Glo Dollars on Uniswap
         </button>

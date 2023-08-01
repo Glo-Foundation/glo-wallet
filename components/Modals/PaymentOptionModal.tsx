@@ -3,7 +3,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
@@ -18,6 +18,7 @@ export default function PaymentOptionModal({
   buyAmount: number;
 }) {
   const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
@@ -131,7 +132,7 @@ export default function PaymentOptionModal({
         fees=".01"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
-        onClick={() => buyWithUniswap(buyAmount)}
+        onClick={() => chain && buyWithUniswap(buyAmount, chain)}
       />
       {isConnected && address && (
         <>

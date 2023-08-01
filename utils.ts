@@ -1,7 +1,9 @@
-import { polygon } from "@wagmi/core/chains";
+import { Chain } from "@wagmi/core";
+import { goerli, mainnet, polygon } from "@wagmi/core/chains";
 import { BigNumber, ethers } from "ethers";
 
 import { getChainRPCUrl, getSmartContractAddress } from "@/lib/config";
+import { getAllowedChains } from "@/lib/utils";
 
 const TOTAL_DAYS = 365;
 const ANNUAL_INTEREST_RATE = 0.024;
@@ -116,13 +118,34 @@ export const getNiceNumber = (num: number) => {
   return `${parts[0]}.${parts[1][0]}${TIER_SUFFIX[parts.length - 1]}`;
 };
 
+export const USDC_ETHEREUM_CONTRACT_ADDRESS =
+  "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+
 export const USDC_POLYGON_CONTRACT_ADDRESS =
   "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
 
-export const getUSDCToUSDGLOUniswapDeeplink = (amount: number): string => {
-  return `https://app.uniswap.org/#/swap?inputCurrency=${USDC_POLYGON_CONTRACT_ADDRESS}&outputCurrency=${getSmartContractAddress(
-    polygon.id
-  )}&exactAmount=${amount}&exactField=input&chain=polygon`;
+export const getUSDCToUSDGLOUniswapDeeplink = (
+  amount: number,
+  chain: Chain
+): string => {
+  const chainAllowed = getAllowedChains().some(
+    (allowedChain) => allowedChain.id === chain?.id
+  );
+  if (!chainAllowed) {
+    return "";
+  }
+
+  let inputCurrency, outputCurrency, uniswapChain;
+  if (chain.id === mainnet.id || chain.id === goerli.id) {
+    inputCurrency = USDC_ETHEREUM_CONTRACT_ADDRESS;
+    outputCurrency = getSmartContractAddress(mainnet.id);
+    uniswapChain = "mainnet";
+  } else {
+    inputCurrency = USDC_POLYGON_CONTRACT_ADDRESS;
+    outputCurrency = getSmartContractAddress(polygon.id);
+    uniswapChain = "polygon";
+  }
+  return `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${uniswapChain}`;
 };
 
 export const getBalance = async (
