@@ -188,24 +188,25 @@ export default function PaymentOptionModal({
             delay="⚡ Instant"
             onClick={() => {
               const findElByText = (text: string) =>
-                document.evaluate(
-                  `//div[contains(text(), "${text}")]`,
-                  document,
-                  null,
-                  XPathResult.ANY_TYPE, // or ORDERED_NODE_SNAPSHOT_TYPE
-                  null
-                );
+                document
+                  .evaluate(
+                    `//div[contains(text(), "${text}")]`,
+                    document,
+                    null,
+                    XPathResult.ANY_TYPE,
+                    null
+                  )
+                  .iterateNext();
 
               const tryAttachingEvent = () => {
                 const copyButton = findElByText("Copy to Clipboard");
 
-                if (copyButton && copyButton.snapshotLength > 0) {
+                if (copyButton) {
                   closeModal();
-                  copyButton
-                    .iterateNext()
-                    ?.parentNode?.parentNode?.addEventListener("click", () =>
-                      console.log(123)
-                    );
+                  copyButton?.parentNode?.parentNode?.addEventListener(
+                    "click",
+                    () => console.log(123)
+                  );
                 } else {
                   setTimeout(() => {
                     // If modal closed stop trying
