@@ -51,7 +51,9 @@ export default function NetworkSwitcher() {
   return (
     <div className="relative mx-2" ref={ref}>
       <div
-        className="rounded-lg hover:bg-white hover:drop-shadow-sm w-9 h-9 z-10 flex justify-center"
+        className={`rounded-lg hover:bg-white hover:drop-shadow-sm w-9 h-9 z-10 flex justify-center ${
+          dropdownActive && "bg-white drop-shadow-sm"
+        }`}
         onClick={() => setDropdownActive(!dropdownActive)}
       >
         <Image
