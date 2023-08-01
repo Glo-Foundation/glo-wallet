@@ -128,6 +128,11 @@ export default function App({ Component, pageProps }: AppProps) {
         src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
         async={true}
       />
+      <Script
+        type="module"
+        async={true}
+        src="https://scripts.embr.org/checkout/checkout.js"
+      />
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >

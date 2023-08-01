@@ -36,12 +36,7 @@ export default function PaymentOptionModal({
       // Refetch balance, ctas etc.
     };
 
-    const script = document.createElement("script");
-    script.type = "module";
-    script.async = true;
-    script.src = "https://scripts.embr.org/checkout/checkout.js";
-    document.head.append(script);
-
+    // Attach Embr script to button
     const a = document.getElementById("Embr");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (a as any).dataset.mattr = "";
@@ -188,10 +183,10 @@ export default function PaymentOptionModal({
             worksFor="💳 Cards"
             delay="⚡ Instant"
             onClick={() => {
-              const findElByText = (text: string) =>
+              const findElByText = (text: string, el = "div") =>
                 document
                   .evaluate(
-                    `//div[contains(text(), "${text}")]`,
+                    `//${el}[contains(text(), "${text}")]`,
                     document,
                     null,
                     XPathResult.ANY_TYPE,
@@ -201,29 +196,31 @@ export default function PaymentOptionModal({
 
               const tryAttachingEvent = () => {
                 const copyButton = findElByText("Copy to Clipboard");
-
                 if (copyButton) {
-                  closeModal();
-                  copyButton?.parentNode?.parentNode?.addEventListener(
+                  copyButton?.parentNode?.parentNode?.parentNode?.addEventListener(
                     "click",
                     () => {
-                      const wallet = sequence.getWallet();
-                      wallet.openWallet("/wallet/scan");
+                      setTimeout(() => {
+                        const wallet = sequence.getWallet();
+                        wallet.openWallet("/wallet/scan");
+                      }, 1000);
                     }
                   );
                 } else {
-                  setTimeout(() => {
-                    // If modal closed stop trying
-                    if (
-                      document.getElementById("__CONNECTKIT__")?.children.length
-                    ) {
+                  const el = Array.from(
+                    document?.body.getElementsByTagName("div")
+                  ).find((x) => x.shadowRoot);
+                  // If modal closed stop trying
+                  if (el?.shadowRoot?.children.length || 0 > 1) {
+                    setTimeout(() => {
                       tryAttachingEvent();
-                    }
-                  }, 1000);
+                    }, 1000);
+                  }
                 }
               };
 
               tryAttachingEvent();
+              closeModal();
             }}
           />
         </>
