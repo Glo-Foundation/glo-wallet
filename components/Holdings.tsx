@@ -3,6 +3,7 @@ import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useContext, useState, useEffect } from "react";
+import { isFirefox } from "react-device-detect";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
@@ -17,7 +18,6 @@ type Props = {
 
 export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
   const { closeModal } = useContext(ModalContext);
-  const [isFirstTextRender, setIsFirstTextRender] = useState(true);
 
   const gloOnInputChange = (e: { target: { value: any } }) => {
     let newGloQuantity = e.target.value;
@@ -53,7 +53,6 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
 
     // get the full font style property
     // getting them all separately because the shorthand for getPropertyValue is unstable
-    // Refer: above SO post
     const computedStyles = window.getComputedStyle(el, null);
     const fontFamily = computedStyles.getPropertyValue("font-family");
     const fontSize = computedStyles.getPropertyValue("font-size");
@@ -89,9 +88,8 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
     const gloInput = document.getElementById("gloInput");
     if (gloInput) {
       let width = Math.floor(getTextWidth(gloInput as HTMLInputElement));
-      if (balance && isFirstTextRender) {
+      if (isFirefox) {
         width += 16; // 1em offset
-        setIsFirstTextRender(false);
       }
       gloInput.style.width = width + 4 + "px";
     }
