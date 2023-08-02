@@ -8,9 +8,8 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
-import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { lastSliceAddress, sliceAddress } from "@/lib/utils";
+import { getAllowedChains, lastSliceAddress, sliceAddress } from "@/lib/utils";
 import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
 
 import { KVResponse } from "../api/transfers/first-glo/[address]";
@@ -23,8 +22,6 @@ export default function Impact() {
   const { push } = router;
   const { address } = router.query;
 
-  const { chain: chainFromNetwork } = getNetwork();
-  const [chain, setChain] = useState<Chain | null>(chainFromNetwork as Chain);
   const [formattedBalance, setFormattedBalance] = useState<string>("0");
   const [yearlyYield, setYearlyYield] = useState<number>(0);
   const [yearlyYieldFormatted, setYearlyYieldFormatted] =
@@ -38,13 +35,15 @@ export default function Impact() {
   }, [isCopiedTooltipOpen]);
   useEffect(() => {
     const fetchBalance = async () => {
-      if (!address || !chain) {
+      if (!address) {
         return;
       }
 
-      const bal = await getBalance(address as string, chain.id);
+      const chains = getAllowedChains();
+      const bal1 = await getBalance(address as string, chains[0].id);
+      const bal2 = await getBalance(address as string, chains[1].id);
       const decimals = BigInt(1000000000000000000);
-      const balance = bal.div(decimals).toNumber();
+      const balance = bal1.add(bal2).div(decimals).toNumber();
 
       let yearlyYield = getTotalYield(balance);
       // round down to 0 when the yield isn't even $1
@@ -58,9 +57,8 @@ export default function Impact() {
       setYearlyYieldFormatted(yearlyYieldFormatted);
       setFormattedBalance(getUSFormattedNumber(balance));
     };
-    setChain(chain || defaultChain());
     fetchBalance();
-  }, [address, chain]);
+  }, [address]);
 
   useEffect(() => {
     const seeWhenFirstGloTransaction = async () => {
