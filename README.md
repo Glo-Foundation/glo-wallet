@@ -52,6 +52,6 @@ _Avoid modifying the @base layer in `globals.css` (such as `span`, `p`, etc.) un
 ## End-to-end testing
 
 We use [GuardianUI](https://github.com/GuardianUI/GuardianTest) on top of [Playwright](https://playwright.dev/) for end-to-end testing. To set up for the first
-time, run `npx playwright install` after `npm install`. Then, to run the tests, run `npm run test:e2e` (or `npm run test:e2e:headless` for headless mode). Setting the `E2E_ENV` environment variable to production or test will run the tests against the production or test environment, respectively. By default, the tests will run against the local development environment.
+time, run `npx playwright install` after `npm install`. Then, to run the tests, run `npm run test:e2e` (or `npm run test:e2e:headless` for headless mode). Setting the `E2E_ENV` environment variable to production or test will run the tests against the production or test environment, respectively. By default, the tests will run against the local development environment. If you're developing on VSCode, you can install the [Playwright extension](https://playwright.dev/docs/getting-started-vscode) for ease of use.
 
 Additionally, a helpful set of example end-to-end tests can be found in [this directory](https://github.com/GuardianUI/GuardianTest/tree/main/test-examples).
