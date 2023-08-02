@@ -186,7 +186,7 @@ export default function UserAuthModal() {
 
         <div
           ref={tosRef}
-          className="pb-4 flex text-sm justify-center items-center inline-block"
+          className="pb-4 flex text-sm justify-center items-center"
         >
           <input
             type="checkbox"
