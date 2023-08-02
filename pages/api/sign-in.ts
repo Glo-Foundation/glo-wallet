@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/lib/prisma";
-import { fetchEarlyAdoptersEmails, getReferrer } from "@/lib/spreadsheet";
+import {
+  addNewGloAppUserToSheet,
+  fetchEarlyAdoptersEmails,
+  getReferrer,
+} from "@/lib/spreadsheet";
 
 const getOrCreate = async (address: string, email: string) => {
   try {
@@ -35,6 +39,9 @@ const getOrCreate = async (address: string, email: string) => {
         },
       });
     }
+
+    // Append to marketing outreach spreadsheet
+    await addNewGloAppUserToSheet(user);
 
     return user.id;
   }

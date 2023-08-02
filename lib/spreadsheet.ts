@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 
 const EMAIL_COLUMN = "Email (ID: id-2c29c00d)";
@@ -46,4 +47,28 @@ export const getReferrer = async (email: string) => {
   const referrer = rows.find((row) => row[REFERRED_COLUMN] === email);
 
   return referrer ? referrer[REFERRER_COLUMN] : null;
+};
+
+export const addNewGloAppUserToSheet = async (user: User) => {
+  const CREATEDAT_COLUMN = "createdAt";
+  const ADDRESS_COLUMN = "address";
+  const EMAIL_COLUMN = "email";
+
+  const doc = new GoogleSpreadsheet(process.env.GOOGLE_GLO_APP_USERS_SHEET_ID);
+
+  await doc.useServiceAccountAuth({
+    client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL!,
+    private_key: process.env.GOOGLE_PRIVATE_KEY!,
+  });
+
+  await doc.loadInfo();
+
+  const sheet = doc.sheetsByIndex[0];
+
+  const row = {
+    [CREATEDAT_COLUMN]: user.createdAt.toDateString()!,
+    [ADDRESS_COLUMN]: user.address!,
+    [EMAIL_COLUMN]: user.email!,
+  };
+  await sheet.addRow(row);
 };
