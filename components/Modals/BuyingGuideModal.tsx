@@ -32,6 +32,8 @@ export default function BuyingGuide({
   const { data: balance } = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
+    watch: true,
+    cacheTime: 2_000,
   });
   const { switchNetwork } = useSwitchNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
