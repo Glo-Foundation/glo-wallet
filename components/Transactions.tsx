@@ -1,6 +1,6 @@
-import { motion, useCycle } from "framer-motion";
+import { motion, useCycle, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useContext } from "react";
+import { useEffect, useContext } from "react";
 import { useAccount, useNetwork } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
@@ -19,8 +19,13 @@ export default function Transactions() {
 
   const [isOpen, toggleOpen] = useCycle(false, true);
 
+  useEffect(() => {
+    // force close to avoid race condition with fetching transfers
+    toggleOpen(0);
+  }, [transfers]);
+
   const variants = () => {
-    const height = `${5 * 85}px`;
+    const height = `${Math.min(transfers.length, 5) * 85}px`;
     return {
       open: {
         transition: { staggerChildren: 0.07, delayChildren: 0.2 },
@@ -33,14 +38,14 @@ export default function Transactions() {
       },
     };
   };
-  const allTxnsVariants = {
+  const allTxnsVariants = () => ({
     open: {
       opacity: 1,
     },
     closed: {
       opacity: 0,
     },
-  };
+  });
 
   return (
     <motion.div
@@ -87,13 +92,17 @@ export default function Transactions() {
           txns={transfers.slice(0, 5)}
           chain={chain?.id}
         />
-        <motion.li
-          onClick={() => openModal(<AllTransactionsModal />)}
-          className="underline cursor-pointer"
-          variants={allTxnsVariants}
-        >
-          View all transactions
-        </motion.li>
+        <AnimatePresence>
+          {transfers.length && (
+            <motion.li
+              onClick={() => openModal(<AllTransactionsModal />)}
+              className="underline cursor-pointer"
+              variants={allTxnsVariants()}
+            >
+              View all transactions
+            </motion.li>
+          )}
+        </AnimatePresence>
       </motion.ul>
       <div>
         {!isConnected && (
