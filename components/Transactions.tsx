@@ -41,9 +41,11 @@ export default function Transactions() {
   const allTxnsVariants = {
     open: {
       opacity: 1,
+      visibility: "visible",
     },
     closed: {
       opacity: 0,
+      visibility: "hidden",
     },
   };
 
