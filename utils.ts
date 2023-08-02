@@ -118,11 +118,13 @@ export const getNiceNumber = (num: number) => {
   return `${parts[0]}.${parts[1][0]}${TIER_SUFFIX[parts.length - 1]}`;
 };
 
-export const USDC_ETHEREUM_CONTRACT_ADDRESS =
-  "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-
-export const USDC_POLYGON_CONTRACT_ADDRESS =
-  "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
+  if (chain.id === mainnet.id || chain.id === goerli.id) {
+    return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+  } else {
+    return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+  }
+};
 
 export const getUSDCToUSDGLOUniswapDeeplink = (
   amount: number,
@@ -135,16 +137,16 @@ export const getUSDCToUSDGLOUniswapDeeplink = (
     return "";
   }
 
-  let inputCurrency, outputCurrency, uniswapChain;
+  const inputCurrency = getUSDCContractAddress(chain);
+  let outputCurrency, uniswapChain;
   if (chain.id === mainnet.id || chain.id === goerli.id) {
-    inputCurrency = USDC_ETHEREUM_CONTRACT_ADDRESS;
     outputCurrency = getSmartContractAddress(mainnet.id);
     uniswapChain = "mainnet";
   } else {
-    inputCurrency = USDC_POLYGON_CONTRACT_ADDRESS;
     outputCurrency = getSmartContractAddress(polygon.id);
     uniswapChain = "polygon";
   }
+
   return `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${uniswapChain}`;
 };
 

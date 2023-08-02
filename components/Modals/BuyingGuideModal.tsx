@@ -10,7 +10,7 @@ import PaymentOptionModal from "@/components/Modals/PaymentOptionModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
-import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
+import { getUSDCContractAddress } from "@/utils";
 
 interface Props {
   iconPath: string;
@@ -31,7 +31,7 @@ export default function BuyingGuide({
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
-    token: USDC_POLYGON_CONTRACT_ADDRESS,
+    token: getUSDCContractAddress(chain!),
   });
   const { switchNetwork } = useSwitchNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
