@@ -1,3 +1,4 @@
+import { sequence } from "0xsequence";
 import { polygon } from "@wagmi/chains";
 import clsx from "clsx";
 import { BigNumber, utils } from "ethers";
@@ -245,7 +246,8 @@ export default function BuyingGuide({
             title={"Connect to the Sequence wallet"}
             content="Paste the code into the wallet's scanner"
             action={() => {
-              window.open("https://sequence.app/wallet/scan", "_blank");
+              const wallet = sequence.getWallet();
+              wallet.openWallet("/wallet/scan");
               setIsSequenceStepDone(true);
             }}
             done={isSequenceStepDone}
