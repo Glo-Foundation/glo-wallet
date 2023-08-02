@@ -1,7 +1,7 @@
 import "react-tooltip/dist/react-tooltip.css";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import {
   useAccount,
   useBalance,
@@ -18,7 +18,7 @@ import Transactions from "@/components/Transactions";
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { api, initApi, signMsgContent } from "@/lib/utils";
+import { getAllowedChains, api, initApi, signMsgContent } from "@/lib/utils";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
@@ -47,14 +47,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const defaultChainId = chains[0]?.id;
-    if (
-      isConnected &&
-      chain?.id !== defaultChainId &&
-      defaultChainId &&
-      switchNetwork
-    ) {
-      switchNetwork(defaultChainId);
+    const allowedChains = getAllowedChains();
+    const currentChainAllowed = allowedChains.some(
+      (allowedChain) => allowedChain.id === chain?.id
+    );
+    if (isConnected && !currentChainAllowed) {
+      const defaultChainId = chains[0]?.id;
+      switchNetwork?.(defaultChainId);
     }
   }, [switchNetwork]);
 
