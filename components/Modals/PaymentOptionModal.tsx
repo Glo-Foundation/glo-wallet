@@ -178,8 +178,8 @@ export default function PaymentOptionModal({
             }}
           />
           <BuyBox
-            name="Embr"
-            icon="/embr.png"
+            name="Unlimit + Embr"
+            icon="/unlimit.png"
             fees="1-3"
             worksFor="💳 Cards"
             delay="⚡ Instant"
