@@ -1,4 +1,4 @@
-import { motion, useCycle } from "framer-motion";
+import { motion, useCycle, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useContext } from "react";
 import { useAccount, useNetwork } from "wagmi";
@@ -41,11 +41,9 @@ export default function Transactions() {
   const allTxnsVariants = () => ({
     open: {
       opacity: 1,
-      visibility: "visible",
     },
     closed: {
       opacity: 0,
-      visibility: "hidden",
     },
   });
 
@@ -94,13 +92,17 @@ export default function Transactions() {
           txns={transfers.slice(0, 5)}
           chain={chain?.id}
         />
-        <motion.li
-          onClick={() => openModal(<AllTransactionsModal />)}
-          className="underline cursor-pointer"
-          variants={allTxnsVariants()}
-        >
-          View all transactions
-        </motion.li>
+        <AnimatePresence>
+          {transfers.length && (
+            <motion.li
+              onClick={() => openModal(<AllTransactionsModal />)}
+              className="underline cursor-pointer"
+              variants={allTxnsVariants()}
+            >
+              View all transactions
+            </motion.li>
+          )}
+        </AnimatePresence>
       </motion.ul>
       <div>
         {!isConnected && (
