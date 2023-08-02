@@ -88,9 +88,9 @@ export default function CTA({
 
   const shareImpactText = `I just bought ${nf.format(
     gloBalance
-  )} @glodollar.\n\nWhen Glo Dollar scales to its high impact phase, this gives someone in extreme poverty enough money to buy ${icons} per year. Without me donating anything.\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${address}\n\nLet’s end extreme poverty!`;
+  )} @glodollar, the antipoverty stablecoin.\n\n📈 as market cap goes up\n📉 extreme poverty goes down\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${address}`;
   const shareImpactTextShort = `${
-    shareImpactText.split(" someone")[0]
+    shareImpactText.split("\n\n📈 as market")[0]
   }...`.replace("\n\n", "\n");
 
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
