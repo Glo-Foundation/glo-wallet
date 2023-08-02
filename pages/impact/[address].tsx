@@ -8,7 +8,6 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
-import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { getAllowedChains, lastSliceAddress, sliceAddress } from "@/lib/utils";
 import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
@@ -23,8 +22,6 @@ export default function Impact() {
   const { push } = router;
   const { address } = router.query;
 
-  const { chain: chainFromNetwork } = getNetwork();
-  const [chain, setChain] = useState<Chain | null>(chainFromNetwork as Chain);
   const [formattedBalance, setFormattedBalance] = useState<string>("0");
   const [yearlyYield, setYearlyYield] = useState<number>(0);
   const [yearlyYieldFormatted, setYearlyYieldFormatted] =
@@ -38,7 +35,7 @@ export default function Impact() {
   }, [isCopiedTooltipOpen]);
   useEffect(() => {
     const fetchBalance = async () => {
-      if (!address || !chain) {
+      if (!address) {
         return;
       }
 
@@ -60,9 +57,8 @@ export default function Impact() {
       setYearlyYieldFormatted(yearlyYieldFormatted);
       setFormattedBalance(getUSFormattedNumber(balance));
     };
-    setChain(chain || defaultChain());
     fetchBalance();
-  }, [address, chain]);
+  }, [address]);
 
   useEffect(() => {
     const seeWhenFirstGloTransaction = async () => {
