@@ -38,7 +38,7 @@ export default function Transactions() {
       },
     };
   };
-  const allTxnsVariants = {
+  const allTxnsVariants = () => ({
     open: {
       opacity: 1,
       visibility: "visible",
@@ -47,7 +47,7 @@ export default function Transactions() {
       opacity: 0,
       visibility: "hidden",
     },
-  };
+  });
 
   return (
     <motion.div
@@ -97,7 +97,7 @@ export default function Transactions() {
         <motion.li
           onClick={() => openModal(<AllTransactionsModal />)}
           className="underline cursor-pointer"
-          variants={allTxnsVariants}
+          variants={allTxnsVariants()}
         >
           View all transactions
         </motion.li>
