@@ -1,10 +1,4 @@
-import {
-  goerli,
-  polygon,
-  mainnet,
-  polygonMumbai,
-  Chain,
-} from "@wagmi/core/chains";
+import { configureChains } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
 import clsx from "clsx";
 import Cookies from "js-cookie";
@@ -12,11 +6,10 @@ import Image from "next/image";
 import { useContext, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
-import { configureChains } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
-import { isProd } from "@/lib/utils";
+import { getAllowedChains } from "@/lib/utils";
 
 const TOS_COOKIE = "tos-agreed";
 
@@ -70,10 +63,7 @@ export default function UserAuthModal() {
   };
 
   const signInWithEmail = async () => {
-    const { chains } = configureChains(
-      isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
-      [publicProvider()]
-    );
+    const { chains } = configureChains(getAllowedChains(), [publicProvider()]);
     const emailConnector = new GloSequenceConnector({
       options: {
         connect: {

@@ -8,14 +8,10 @@ import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import PaymentOptionModal from "@/components/Modals/PaymentOptionModal";
 import { ModalContext } from "@/lib/context";
-import { isProd, sliceAddress } from "@/lib/utils";
+import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
-import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
+import { getUSDCContractAddress } from "@/utils";
 
-const formatter = Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 interface Props {
   iconPath: string;
   buyWithProvider: () => void;
@@ -35,8 +31,7 @@ export default function BuyingGuide({
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
-    // For non-prod env use testnet MATIC
-    ...(isProd() ? { token: USDC_POLYGON_CONTRACT_ADDRESS } : {}),
+    token: getUSDCContractAddress(chain!),
     watch: true,
     cacheTime: 2_000,
   });
@@ -238,7 +233,7 @@ export default function BuyingGuide({
           action={() => {
             isSequenceWallet
               ? window.open("https://app.uniswap.org/", "_blank")
-              : buyWithUniswap(buyAmount);
+              : chain && buyWithUniswap(buyAmount, chain);
             setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
@@ -260,7 +255,7 @@ export default function BuyingGuide({
       <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
-          onClick={() => buyWithUniswap(buyAmount)}
+          onClick={() => chain && buyWithUniswap(buyAmount, chain)}
         >
           Buy ${buyAmount} Glo Dollars on Uniswap
         </button>

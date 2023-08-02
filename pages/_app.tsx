@@ -1,12 +1,5 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
-import {
-  goerli,
-  polygon,
-  mainnet,
-  polygonMumbai,
-  Chain,
-} from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
 import Script from "next/script";
@@ -20,13 +13,12 @@ import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
-
-import { isProd } from "../lib/utils";
+import { getAllowedChains } from "@/lib/utils";
 
 import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  isProd() ? ([polygon, mainnet] as Chain[]) : [goerli, polygonMumbai],
+  getAllowedChains(),
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
     publicProvider(),
