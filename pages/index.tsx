@@ -32,6 +32,8 @@ export default function Home() {
   const { data: balance } = useBalance({
     address,
     token: getSmartContractAddress(chain?.id),
+    watch: true,
+    cacheTime: 5_000,
   });
 
   const { setTransfers, setCTAs } = useUserStore();

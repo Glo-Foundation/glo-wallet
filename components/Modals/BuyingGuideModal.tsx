@@ -8,7 +8,7 @@ import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import PaymentOptionModal from "@/components/Modals/PaymentOptionModal";
 import { ModalContext } from "@/lib/context";
-import { sliceAddress } from "@/lib/utils";
+import { isProd, sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
 import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
 
@@ -35,7 +35,10 @@ export default function BuyingGuide({
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
-    token: USDC_POLYGON_CONTRACT_ADDRESS,
+    // For non-prod env use testnet MATIC
+    ...(isProd() ? { token: USDC_POLYGON_CONTRACT_ADDRESS } : {}),
+    watch: true,
+    cacheTime: 2_000,
   });
   const { switchNetwork } = useSwitchNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);

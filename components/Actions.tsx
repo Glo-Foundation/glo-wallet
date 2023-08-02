@@ -13,7 +13,11 @@ import { prepareWriteContract, writeContract } from "wagmi/actions";
 
 import UsdgloContract from "@/abi/usdglo.json";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
-import { getChainExplorerUrl, getSmartContractAddress } from "@/lib/config";
+import {
+  chainConfig,
+  getChainExplorerUrl,
+  getSmartContractAddress,
+} from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useToastStore, useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
@@ -36,13 +40,14 @@ const SendForm = ({
 
   const [setShowToast] = useToastStore((state) => [state.setShowToast]);
   const { chain } = useNetwork();
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const scannerUrl = getChainExplorerUrl(chain!.id);
 
     try {
       const { request } = await prepareWriteContract({
-        address: process.env.NEXT_PUBLIC_USDGLO as `0x${string}`,
+        address: chainConfig[chain!.id],
         abi: UsdgloContract,
         functionName: "transfer",
         args: [
