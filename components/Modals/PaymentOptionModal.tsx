@@ -38,7 +38,7 @@ export default function PaymentOptionModal({
     };
 
     // Attach Embr script to button
-    const a = document.getElementById("Embr");
+    const a = document.getElementById("Unlimit + Embr");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (a as any).dataset.mattr = "";
   }, []);
@@ -178,8 +178,8 @@ export default function PaymentOptionModal({
             }}
           />
           <BuyBox
-            name="Embr"
-            icon="/embr.png"
+            name="Unlimit + Embr"
+            icon="/unlimit.png"
             fees="1-3"
             worksFor="💳 Cards"
             delay="⚡ Instant"
