@@ -10,7 +10,7 @@ datasource db {
 
 model User {
   id        String   @id @default(uuid())
-  address   String   @unique
+  address   String
   email     String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
