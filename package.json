@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "npm run db:migrate-deploy && next start",
+    "db:migrate-deploy": "prisma migrate deploy",
     "preinstall": "bash preinstall.sh",
     "postinstall": "prisma generate",
     "lint": "next lint",
