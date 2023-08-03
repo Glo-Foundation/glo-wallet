@@ -233,7 +233,10 @@ export default function BuyingGuide({
           }
           action={() => {
             isSequenceWallet
-              ? window.open("https://app.uniswap.org/", "_blank")
+              ? window.open(
+                  "https://app.uniswap.org/#/swap?chain=polygon",
+                  "_blank"
+                )
               : chain && buyWithUniswap(buyAmount, chain);
             setIsUniswapStepDone(true);
           }}
