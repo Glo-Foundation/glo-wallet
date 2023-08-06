@@ -100,7 +100,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const dialogClickHandler = (e: MouseEvent) => {
-    if (e.target.tagName !== "DIALOG") return;
+    if (e.target && e.target.tagName !== "DIALOG") return;
 
     const rect = e.target.getBoundingClientRect();
 
