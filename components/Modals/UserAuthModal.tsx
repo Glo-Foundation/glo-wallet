@@ -137,14 +137,13 @@ export default function UserAuthModal() {
                 className="rounded-full bg-white py-4 px-6 text-xl"
                 placeholder={"Email"}
                 value={sendForm.email}
-                data-testid="submit-email-input"
                 onChange={(e) =>
                   setSendForm({ ...sendForm, email: e.target.value })
                 }
               />
               <button
                 className="absolute top-[10px] right-1 primary-button py-3 px-6 drop-shadow-none"
-                data-testid="submit-email-button"
+                id="submit-email-button"
                 onClick={() => requireUserAgreed(signInWithEmail)}
               >
                 Submit
@@ -153,7 +152,7 @@ export default function UserAuthModal() {
           </div>
           <button
             className="auth-button"
-            data-testid="social-login-button"
+            id="social-login-button"
             onClick={() => connectWithConnector(0)}
           >
             <h4>Social Login</h4>
@@ -171,7 +170,7 @@ export default function UserAuthModal() {
           {!isMobile && (
             <button
               className="auth-button"
-              data-testid="metamask-login-button"
+              id="metamask-login-button"
               onClick={() => connectWithConnector(1)}
             >
               <h4>Metamask</h4>
@@ -186,7 +185,7 @@ export default function UserAuthModal() {
 
           <button
             className="auth-button"
-            data-testid="walletconnect-login-button"
+            id="walletconnect-login-button"
             onClick={() => connectWithConnector(2)}
           >
             <h4>WalletConnect</h4>
@@ -206,7 +205,7 @@ export default function UserAuthModal() {
           <input
             type="checkbox"
             defaultChecked={hasUserAgreed || undefined}
-            data-testid="tos-checkbox"
+            id="tos-checkbox"
             value=""
             className={clsx(
               "w-5 h-5 rounded accent-cyan-600 outline-none bg-white",
