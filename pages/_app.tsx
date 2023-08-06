@@ -99,10 +99,13 @@ export default function App({ Component, pageProps }: AppProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const dialogClickHandler = (e: MouseEvent) => {
-    if (e.target && e.target.tagName !== "DIALOG") return;
+  const dialogClickHandler = (e: React.MouseEvent) => {
+    const target = e.target as HTMLDialogElement;
+    if (target.tagName !== "DIALOG")
+      //This prevents issues with forms
+      return;
 
-    const rect = e.target.getBoundingClientRect();
+    const rect = target.getBoundingClientRect();
 
     const clickedInDialog =
       rect.top <= e.clientY &&
@@ -110,7 +113,7 @@ export default function App({ Component, pageProps }: AppProps) {
       rect.left <= e.clientX &&
       e.clientX <= rect.left + rect.width;
 
-    if (clickedInDialog === false) e.target.close();
+    if (clickedInDialog === false) target.close();
   };
 
   const openModal = (content: JSX.Element, className: string | undefined) => {
