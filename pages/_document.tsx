@@ -13,7 +13,7 @@ export default function Document() {
 
         <meta property="og:url" content="https://app.glodollar.org/" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Glo App" />
+        <meta property="og:title" content="Glo Dollar App" />
         <meta
           property="og:description"
           content="Sign up to buy Glo Dollar using our app. See your transactions and the impact your Glo Dollar holdings have."
@@ -26,7 +26,7 @@ export default function Document() {
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://app.glodollar.org/" />
-        <meta name="twitter:title" content="Glo App" />
+        <meta name="twitter:title" content="Glo Dollar App" />
         <meta
           name="twitter:description"
           content="Sign up to buy Glo Dollar using our app. See your transactions and the impact your Glo Dollar holdings have."
