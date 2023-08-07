@@ -131,7 +131,10 @@ export default function Impact() {
             </div>
             <div className="flex flex-col w-full justify-between items-start space-y-2">
               <span className="my-2">Creating basic income of</span>
-              <div className="text-[2.625rem] leading-[2.625rem] break-all font-neuehaasgrotesk">
+              <div
+                className="text-[2.625rem] leading-[2.625rem] break-all font-neuehaasgrotesk"
+                data-testid="yearlyYieldFormatted"
+              >
                 {yearlyYieldFormatted}
                 <span className="text-base">/ year</span>
               </div>

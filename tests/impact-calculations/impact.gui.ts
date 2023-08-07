@@ -14,15 +14,18 @@ test.describe("Impact page", () => {
     await page.goto(`/impact/${EXAMPLE_ADDRESS}`);
 
     // Owns Glo
+    await page.waitForTimeout(3000);
     expect(await page.isVisible("text=$61,500")).toBeTruthy();
 
     // Creating basic income of
-    expect(await page.isVisible("text=$0 - $1,476")).toBeTruthy();
-    expect(await page.getByTestId("basic-income-created").innerText()).toEqual(
-      "$1,476"
-    );
+    await page.waitForTimeout(1000);
+    const yearlyYield = (
+      await page.getByTestId("yearlyYieldFormatted").allInnerTexts()
+    )[0];
+    expect(yearlyYield).toEqual("$0 - $1476/ year");
 
     // Number of people lifted out of poverty
+    await page.waitForTimeout(1000);
     expect(
       await page.getByTestId("number-persons-out-poverty").innerText()
     ).toEqual("3");
