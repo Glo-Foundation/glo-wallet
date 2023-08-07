@@ -42,7 +42,7 @@ test.describe("Auth", () => {
   //   expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   // });
 
-  test.only("should allow metamask login", async ({ page, gui }) => {
+  test("should allow metamask login", async ({ page, gui }) => {
     const metamaskButton = await page.isVisible("text=Metamask");
     if (metamaskButton) {
       await page.getByTestId("metamask-login-button").click();
