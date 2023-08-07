@@ -26,7 +26,8 @@ import { isProd } from "../lib/utils";
 import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
+  // Add conditional flag if IS_E2E_TEST? So we have polygon avialable as front one.
+  isProd() ? ([polygon, mainnet] as Chain[]) : [polygon, polygonMumbai, goerli],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
     publicProvider(),
