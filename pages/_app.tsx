@@ -112,6 +112,23 @@ export default function App({ Component, pageProps }: AppProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const dialogClickHandler = (e: React.MouseEvent) => {
+    const target = e.target as HTMLDialogElement;
+    if (target.tagName !== "DIALOG")
+      //This prevents issues with forms
+      return;
+
+    const rect = target.getBoundingClientRect();
+
+    const clickedInDialog =
+      rect.top <= e.clientY &&
+      e.clientY <= rect.top + rect.height &&
+      rect.left <= e.clientX &&
+      e.clientX <= rect.left + rect.width;
+
+    if (clickedInDialog === false) target.close();
+  };
+
   const openModal = (content: JSX.Element, className: string | undefined) => {
     closeModal();
     setModalContent(content);
@@ -149,6 +166,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <Component {...pageProps} />
               <dialog
                 ref={dialogRef}
+                onClick={dialogClickHandler}
                 className={`${modalClassName} outline-none`}
               >
                 <div ref={contentRef}>{modalContent}</div>
