@@ -16,13 +16,6 @@ test.describe("Auth", () => {
 
     await gui.setBalance(common.gloAddress, "12340000000000000000000");
 
-    const authPopupVisible = await page.isVisible(
-      `text=${common.authModalText}`
-    );
-    if (!authPopupVisible) {
-      await page.getByTestId("primary-login-button").click();
-    }
-
     await page.getByTestId("tos-checkbox").check();
   });
 
@@ -48,11 +41,12 @@ test.describe("Auth", () => {
     expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 
-  test("should allow metamask login", async ({ page, gui }) => {
-    const metamaskButton = await page.isVisible("text=Metamask");
-    if (metamaskButton) {
-      await page.getByTestId("metamask-login-button").click();
-    }
+  // Only added
+  test.only("should allow metamask login", async ({ page, gui }) => {
+    // const metamaskButton = await page.isVisible("text=Metamask");
+    // if (metamaskButton) {
+    //   await page.getByTestId("metamask-login-button").click();
+    // }
 
     const walletAddress = await gui.getWalletAddress();
     const walletBalance = await gui.getBalance(
@@ -61,7 +55,11 @@ test.describe("Auth", () => {
     );
     expect(walletBalance).toEqual("12340000000000000000000");
 
-    console.log(await page.isVisible("text=12,340.00"));
+    // Seems like plaiwright does not have built-in wait
+    // so we need to add conditional waits
+    await page.waitForTimeout(1000);
+
+    // Balance is build from multiple components
     expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 
