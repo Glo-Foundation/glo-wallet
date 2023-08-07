@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/lib/prisma";
-import { fetchEarlyAdoptersEmails, getReferrer } from "@/lib/spreadsheet";
+import {
+  addNewGloAppUserToSheet,
+  fetchEarlyAdoptersEmails,
+  getReferrer,
+} from "@/lib/spreadsheet";
 
 const getOrCreate = async (address: string, email: string) => {
   try {
@@ -36,6 +40,9 @@ const getOrCreate = async (address: string, email: string) => {
       });
     }
 
+    // Append to marketing outreach spreadsheet
+    await addNewGloAppUserToSheet(user);
+
     return user.id;
   }
 };
@@ -47,7 +54,8 @@ export default async function handler(
   const address = req.headers["glo-pub-address"] as string;
   const { email } = req.body;
 
-  const userId = await getOrCreate(address, email);
+  // Do not pass empty string
+  const userId = await getOrCreate(address, email || null);
 
   return res.status(200).json(userId);
 }

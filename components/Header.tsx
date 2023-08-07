@@ -1,22 +1,20 @@
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { useConnect, useNetwork, useSwitchNetwork, useAccount } from "wagmi";
+import { useConnect, useAccount } from "wagmi";
 
+import NetworkSwitcher from "@/components/NetworkSwitcher";
 import { ModalContext } from "@/lib/context";
-import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
 import UserAuthModal from "./Modals/UserAuthModal";
 import UserInfoModal from "./Modals/UserInfoModal";
 
 export default function Header() {
-  const { connect, connectors, isLoading } = useConnect();
+  const { isLoading } = useConnect();
   const { address, isConnected } = useAccount();
-  const { switchNetwork } = useSwitchNetwork();
-  const { chain, chains } = useNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { openModal } = useContext(ModalContext);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -34,7 +32,7 @@ export default function Header() {
 
   return (
     <nav className="mt-4 mb-6 flex justify-between items-center">
-      <a href="https://glodollar.org/">
+      <a href="https://glodollar.org/" target="_blank" rel="noreferrer">
         <Image src="/glo-logo-text.svg" alt="glo logo" width={74} height={26} />
       </a>
 
@@ -42,6 +40,7 @@ export default function Header() {
         <button className="primary-button">Connecting... </button>
       ) : isConnected ? (
         <div className="flex">
+          <NetworkSwitcher />
           <Tooltip
             id="copy-wallet-tooltip"
             content="Copied!"

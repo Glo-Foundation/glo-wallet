@@ -1,9 +1,11 @@
+import { sequence } from "0xsequence";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 
+import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithTransak, buyWithUniswap } from "@/payments";
@@ -16,6 +18,7 @@ export default function PaymentOptionModal({
   buyAmount: number;
 }) {
   const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
@@ -33,6 +36,11 @@ export default function PaymentOptionModal({
       console.log("Popup closed - reloading...");
       // Refetch balance, ctas etc.
     };
+
+    // Attach Embr script to button
+    const a = document.getElementById("Unlimit + Embr");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (a as any).dataset.mattr = "";
   }, []);
 
   const Double = ({
@@ -68,6 +76,7 @@ export default function PaymentOptionModal({
     disabled?: boolean;
   }) => (
     <div
+      id={name}
       className={clsx(
         "flex flex-col p-3 border-2 rounded-xl border-pine-100 hover:border-pine-800 cursor-pointer mb-2",
         disabled && "bg-pine-100 hover:border-pine-100"
@@ -90,7 +99,14 @@ export default function PaymentOptionModal({
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
-        <div></div>
+        <Image
+          src="/arrow-right.svg"
+          width={25}
+          height={25}
+          alt="arrow-right"
+          className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
+          onClick={() => openModal(<BuyGloModal />)}
+        />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         {isConnected && (
           <button
@@ -116,7 +132,7 @@ export default function PaymentOptionModal({
         fees=".01"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
-        onClick={() => buyWithUniswap(buyAmount)}
+        onClick={() => chain && buyWithUniswap(buyAmount, chain)}
       />
       {isConnected && address && (
         <>
@@ -159,6 +175,53 @@ export default function PaymentOptionModal({
                   buyAmount={buyAmount}
                 />
               );
+            }}
+          />
+          <BuyBox
+            name="Unlimit + Embr"
+            icon="/unlimit.png"
+            fees="1-3"
+            worksFor="💳 Cards"
+            delay="⚡ Instant"
+            onClick={() => {
+              const findElByText = (text: string, el = "div") =>
+                document
+                  .evaluate(
+                    `//${el}[contains(text(), "${text}")]`,
+                    document,
+                    null,
+                    XPathResult.ANY_TYPE,
+                    null
+                  )
+                  .iterateNext();
+
+              const tryAttachingEvent = () => {
+                const copyButton = findElByText("Copy to Clipboard");
+                if (copyButton) {
+                  copyButton?.parentNode?.parentNode?.parentNode?.addEventListener(
+                    "click",
+                    () => {
+                      setTimeout(() => {
+                        const wallet = sequence.getWallet();
+                        wallet.openWallet("/wallet/scan");
+                      }, 1000);
+                    }
+                  );
+                } else {
+                  const el = Array.from(
+                    document?.body.getElementsByTagName("div")
+                  ).find((x) => x.shadowRoot);
+                  // If modal closed stop trying
+                  if (el?.shadowRoot?.children.length || 0 > 1) {
+                    setTimeout(() => {
+                      tryAttachingEvent();
+                    }, 1000);
+                  }
+                }
+              };
+
+              tryAttachingEvent();
+              closeModal();
             }}
           />
         </>
