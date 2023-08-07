@@ -1,3 +1,4 @@
+import { sequence } from "0xsequence";
 import { polygon } from "@wagmi/chains";
 import clsx from "clsx";
 import { BigNumber, utils } from "ethers";
@@ -6,15 +7,12 @@ import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
+import PaymentOptionModal from "@/components/Modals/PaymentOptionModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithUniswap } from "@/payments";
-import { USDC_POLYGON_CONTRACT_ADDRESS } from "@/utils";
+import { getUSDCContractAddress } from "@/utils";
 
-const formatter = Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 interface Props {
   iconPath: string;
   buyWithProvider: () => void;
@@ -29,12 +27,14 @@ export default function BuyingGuide({
   buyAmount,
 }: Props) {
   const { address, connector } = useAccount();
-  const { closeModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
-    token: USDC_POLYGON_CONTRACT_ADDRESS,
+    token: getUSDCContractAddress(chain!),
+    watch: true,
+    cacheTime: 2_000,
   });
   const { switchNetwork } = useSwitchNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -161,7 +161,16 @@ export default function BuyingGuide({
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
-        <div></div>
+        <Image
+          src="/arrow-right.svg"
+          width={25}
+          height={25}
+          alt="arrow-right"
+          className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
+          onClick={() =>
+            openModal(<PaymentOptionModal buyAmount={buyAmount} />)
+          }
+        />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         <button
           className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
@@ -224,8 +233,11 @@ export default function BuyingGuide({
           }
           action={() => {
             isSequenceWallet
-              ? window.open("https://app.uniswap.org/", "_blank")
-              : buyWithUniswap(buyAmount);
+              ? window.open(
+                  "https://app.uniswap.org/#/swap?chain=polygon",
+                  "_blank"
+                )
+              : chain && buyWithUniswap(buyAmount, chain);
             setIsUniswapStepDone(true);
           }}
           done={isUniswapStepDone}
@@ -237,7 +249,8 @@ export default function BuyingGuide({
             title={"Connect to the Sequence wallet"}
             content="Paste the code into the wallet's scanner"
             action={() => {
-              window.open("https://sequence.app/wallet/scan", "_blank");
+              const wallet = sequence.getWallet();
+              wallet.openWallet("/wallet/scan");
               setIsSequenceStepDone(true);
             }}
             done={isSequenceStepDone}
@@ -247,7 +260,7 @@ export default function BuyingGuide({
       <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
-          onClick={() => buyWithUniswap(buyAmount)}
+          onClick={() => chain && buyWithUniswap(buyAmount, chain)}
         >
           Buy ${buyAmount} Glo Dollars on Uniswap
         </button>

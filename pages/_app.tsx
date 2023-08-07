@@ -1,12 +1,5 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
-import {
-  goerli,
-  polygon,
-  mainnet,
-  polygonMumbai,
-  Chain,
-} from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
 import Script from "next/script";
@@ -20,13 +13,12 @@ import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
-
-import { isProd } from "../lib/utils";
+import { getAllowedChains } from "@/lib/utils";
 
 import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  isProd() ? ([polygon, mainnet] as Chain[]) : [polygonMumbai, goerli],
+  getAllowedChains(),
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
     publicProvider(),
@@ -107,6 +99,23 @@ export default function App({ Component, pageProps }: AppProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const dialogClickHandler = (e: React.MouseEvent) => {
+    const target = e.target as HTMLDialogElement;
+    if (target.tagName !== "DIALOG")
+      //This prevents issues with forms
+      return;
+
+    const rect = target.getBoundingClientRect();
+
+    const clickedInDialog =
+      rect.top <= e.clientY &&
+      e.clientY <= rect.top + rect.height &&
+      rect.left <= e.clientX &&
+      e.clientX <= rect.left + rect.width;
+
+    if (clickedInDialog === false) target.close();
+  };
+
   const openModal = (content: JSX.Element, className: string | undefined) => {
     closeModal();
     setModalContent(content);
@@ -128,6 +137,11 @@ export default function App({ Component, pageProps }: AppProps) {
         src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
         async={true}
       />
+      <Script
+        type="module"
+        async={true}
+        src="https://scripts.embr.org/checkout/checkout.js"
+      />
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
@@ -139,6 +153,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <Component {...pageProps} />
               <dialog
                 ref={dialogRef}
+                onClick={dialogClickHandler}
                 className={`${modalClassName} outline-none bg-white`}
               >
                 <div ref={contentRef}>{modalContent}</div>

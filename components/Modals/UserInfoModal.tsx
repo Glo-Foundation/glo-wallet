@@ -19,9 +19,6 @@ export default function UserInfoModal({ address }: Props) {
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs } = useUserStore();
-  const { switchNetwork } = useSwitchNetwork();
-
-  const expectedChain = isProd() ? polygon : polygonMumbai;
 
   const email = Cookies.get("glo-email");
 
@@ -86,15 +83,7 @@ export default function UserInfoModal({ address }: Props) {
           )}
         </div>
       </section>
-      <section className="mt-8 flex flex-col space-y-2 justify-end">
-        {chain?.id !== expectedChain.id && (
-          <button
-            className="primary-button"
-            onClick={() => switchNetwork!(expectedChain.id)}
-          >
-            Switch to Polygon
-          </button>
-        )}
+      <section className="mt-8 flex flex-col justify-end">
         <button className="primary-button" onClick={() => handleLogout()}>
           Log out
         </button>
