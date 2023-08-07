@@ -1,7 +1,7 @@
 import { test } from "@guardianui/test";
 import { expect } from "@playwright/test";
 
-import { getBaseURL } from "../utils";
+import { common, getBaseURL } from "../utils";
 
 test.use({
   baseURL: getBaseURL(),
@@ -17,7 +17,7 @@ test.describe("Profile Page", () => {
     await gui.setBalance(GLO, "12340000000000000000000");
 
     const authPopupVisible = await page.isVisible(
-      "text=Thanks for being part of the Glo movement"
+      `text=${common.authModalText}`
     );
     if (!authPopupVisible) {
       await page.getByTestId("primary-login-button").click();

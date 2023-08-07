@@ -11,3 +11,7 @@ export const getBaseURL = () => {
     }
   }
 };
+
+export const common = {
+  authModalText: "Welcome to the Glo App",
+};
