@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import {
-  Chain,
   goerli,
-  mainnet,
   polygon,
+  mainnet,
   polygonMumbai,
-} from "@wagmi/core/dist/chains";
+  Chain,
+} from "@wagmi/core/chains";
 import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
 import Script from "next/script";
@@ -20,13 +20,18 @@ import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
-import { getAllowedChains, isProd } from "@/lib/utils";
+
+import { isProd, isE2E } from "../lib/utils";
 
 import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   // Add conditional flag if IS_E2E_TEST? So we have polygon avialable as front one.
-  isProd() ? ([polygon, mainnet] as Chain[]) : [polygon, polygonMumbai, goerli],
+  isE2E()
+    ? [polygon]
+    : isProd()
+    ? ([polygon, mainnet] as Chain[])
+    : [polygon, polygonMumbai, goerli],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
     publicProvider(),
