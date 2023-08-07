@@ -11,10 +11,10 @@ test.describe("Auth", () => {
   test.beforeEach(async ({ page, gui }) => {
     const POLYGON = 137;
     await gui.initializeChain(POLYGON, 45735806);
+
     await page.goto("/");
 
-    const GLO = "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3";
-    await gui.setBalance(GLO, "12340000000000000000000");
+    await gui.setBalance(common.gloAddress, "12340000000000000000000");
 
     const authPopupVisible = await page.isVisible(
       `text=${common.authModalText}`
@@ -31,12 +31,12 @@ test.describe("Auth", () => {
     if (walletConnectButton) {
       await page.fill(
         "input[data-testid=submit-email-input]",
-        "engineering.e2e@glodollar.org"
+        "engineering+e2e@glodollar.org"
       );
       await page.getByTestId("submit-email-button").click();
     }
 
-    expect(await page.isVisible("text=1,234.00")).toBeTruthy();
+    expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 
   test("should allow social login", async ({ page, gui }) => {
@@ -45,7 +45,7 @@ test.describe("Auth", () => {
       await page.getByTestId("social-login-button").click();
     }
 
-    expect(await page.isVisible("text=$1,234.00")).toBeTruthy();
+    expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 
   test("should allow metamask login", async ({ page, gui }) => {
@@ -54,7 +54,15 @@ test.describe("Auth", () => {
       await page.getByTestId("metamask-login-button").click();
     }
 
-    // expect(await page.isVisible("text=$1,234.00")).toBeTruthy();
+    const walletAddress = await gui.getWalletAddress();
+    const walletBalance = await gui.getBalance(
+      common.gloAddress,
+      walletAddress
+    );
+    expect(walletBalance).toEqual("12340000000000000000000");
+
+    console.log(await page.isVisible("text=12,340.00"));
+    expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 
   test("should allow wallet connect login", async ({ page, gui }) => {
@@ -63,6 +71,6 @@ test.describe("Auth", () => {
       await page.getByTestId("metamask-login-button").click();
     }
 
-    expect(await page.isVisible("text=$1,234.00")).toBeTruthy();
+    expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 });

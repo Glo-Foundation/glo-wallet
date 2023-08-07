@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@guardianui/test": "^1.0.4",
+    "@playwright/experimental-ct-react": "^1.36.2",
     "@types/canvas-confetti": "^1.6.0",
     "@types/google-spreadsheet": "^3.3.2",
     "@types/js-cookie": "^3.0.3",
