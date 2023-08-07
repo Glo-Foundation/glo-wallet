@@ -11,8 +11,8 @@
     "lint": "next lint",
     "prepare": "husky install",
     "fmt": "prettier --write './**/*.{js,jsx}' './**/*.{ts,tsx}' './**/*.css' './**/*.json' './**/*.md'",
-    "test:gui": "npx playwright test --project=chromium --headed",
-    "test:gui:headless": "npx playwright test --project=chromium"
+    "test:e2e": "npx playwright test --project=chromium --headed",
+    "test:e2e:headless": "npx playwright test --project=chromium"
   },
   "dependencies": {
     "@0xsequence/wagmi-connector": "^1.1.5",
