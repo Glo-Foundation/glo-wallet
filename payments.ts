@@ -1,6 +1,6 @@
 import { Chain } from "@wagmi/core";
 
-import { getUSDCToUSDGLOUniswapDeeplink } from "./utils";
+import { getUSDCToUSDGLOSwapDeeplink } from "./utils";
 
 export const buyWithTransak = (amount: number, address: string) => {
   const redirectUrl = `${window.location.origin}/purchased`;
@@ -9,12 +9,8 @@ export const buyWithTransak = (amount: number, address: string) => {
   window.open(`${process.env.NEXT_PUBLIC_TRANSAK_URL}&${params}`, "_blank");
 };
 
-export const buyWithUniswap = (amount: number, chain: Chain) => {
-  window.open(getUSDCToUSDGLOUniswapDeeplink(amount, chain), "_blank");
-};
-
-export const buyWithMatcha = (amount: number, chain: Chain) => {
-  window.open(getUSDCToUSDGLOMatchaDeeplink(amount, chain), "_blank");
+export const buyWithSwap = (amount: number, chain: Chain, dex: string) => {
+  window.open(getUSDCToUSDGLOSwapDeeplink(amount, chain, dex), "_blank");
 };
 
 export const buyWithCoinbase = () =>

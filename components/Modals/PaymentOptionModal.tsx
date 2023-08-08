@@ -8,7 +8,7 @@ import { useAccount, useNetwork } from "wagmi";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithTransak, buyWithUniswap } from "@/payments";
+import { buyWithTransak, buyWithSwap } from "@/payments";
 
 import BuyingGuideModal from "./BuyingGuideModal";
 
@@ -17,12 +17,15 @@ export default function PaymentOptionModal({
 }: {
   buyAmount: number;
 }) {
-  const { address, isConnected } = useAccount();
+  const { address, connector, isConnected } = useAccount();
   const { chain } = useNetwork();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal, closeModal } = useContext(ModalContext);
+
+  const isSequenceWallet = connector?.id === "sequence";
+  const isMetamaskWallet = connector?.id === "metamask";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -127,12 +130,15 @@ export default function PaymentOptionModal({
       </div>
       <h2 className="text-center">Choose a path to start buying Glo Dollars</h2>
       <BuyBox
-        name="Uniswap"
-        icon="/uniswap.svg"
+        name={isSequenceWallet ? "Uniswap" : "Matcha"}
+        icon={isSequenceWallet ? "/uniswap.svg" : "/matcha.svg"}
         fees=".01"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
-        onClick={() => chain && buyWithUniswap(buyAmount, chain)}
+        onClick={() =>
+          chain &&
+          buyWithSwap(buyAmount, chain, isSequenceWallet ? "uniswap" : "matcha")
+        }
       />
       {isConnected && address && (
         <>
@@ -164,12 +170,12 @@ export default function PaymentOptionModal({
                 <BuyingGuideModal
                   iconPath="/coinbase-invert.svg"
                   provider="Coinbase"
-                  buyWithProvider={() =>
-                    window.open(
-                      "https://www.coinbase.com/how-to-buy/usdc",
-                      "_blank"
-                    )
-                  }
+                  buyWithProvider={() => {
+                    const link = isMetamaskWallet
+                      ? "https://portfolio.metamask.io/buy/build-quote"
+                      : "https://www.coinbase.com/how-to-buy/usdc";
+                    window.open(link, "_blank");
+                  }}
                   buyAmount={buyAmount}
                 />
               );

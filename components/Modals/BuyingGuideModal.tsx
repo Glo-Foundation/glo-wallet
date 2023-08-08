@@ -10,7 +10,7 @@ import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 import PaymentOptionModal from "@/components/Modals/PaymentOptionModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithUniswap } from "@/payments";
+import { buyWithSwap } from "@/payments";
 import { getUSDCContractAddress } from "@/utils";
 
 interface Props {
@@ -39,7 +39,7 @@ export default function BuyingGuide({
   const { switchNetwork } = useSwitchNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isProviderStepDone, setIsProviderStepDone] = useState(false);
-  const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
+  const [isSwapStepDone, setIsSwapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
   const [USDC, setUSDC] = useState("");
 
@@ -188,12 +188,10 @@ export default function BuyingGuide({
         </button>
       </div>
       <section className="text-center">
-        <h3 className="pt-0">
-          Buying Glo Dollars through {provider} and Uniswap
-        </h3>
+        <h3 className="pt-0">Buying Glo Dollars through {provider} and DEX</h3>
         <p className="text-sm py-6">
           You can get Glo Dollars by exchanging another stablecoin called{" "}
-          <b>USDC</b> for Glo Dollar using the <b>Uniswap</b> app.
+          <b>USDC</b> for Glo Dollar using the <b>DEX</b> app.
         </p>
       </section>
       <section>
@@ -221,9 +219,7 @@ export default function BuyingGuide({
           index={3}
           iconPath="/uniswap.svg"
           title={
-            isSequenceWallet
-              ? `Connect wallet on Uniswap`
-              : `Buy Glo through Uniswap`
+            isSequenceWallet ? `Connect wallet on Swap` : `Buy Glo through Swap`
           }
           content={
             isSequenceWallet
@@ -236,10 +232,10 @@ export default function BuyingGuide({
                   "https://app.uniswap.org/#/swap?chain=polygon",
                   "_blank"
                 )
-              : chain && buyWithUniswap(buyAmount, chain);
-            setIsUniswapStepDone(true);
+              : chain && buyWithSwap(buyAmount, chain);
+            setIsSwapStepDone(true);
           }}
-          done={isUniswapStepDone}
+          done={isSwapStepDone}
         />
         {isSequenceWallet && (
           <StepCard
@@ -259,9 +255,9 @@ export default function BuyingGuide({
       <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
-          onClick={() => chain && buyWithUniswap(buyAmount, chain)}
+          onClick={() => chain && buyWithSwap(buyAmount, chain)}
         >
-          Buy ${buyAmount} Glo Dollars on Uniswap
+          Buy ${buyAmount} Glo Dollars on Swap
         </button>
         <button
           className="secondary-button mt-3"
