@@ -126,9 +126,10 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
   }
 };
 
-export const getUSDCToUSDGLOUniswapDeeplink = (
+export const getUSDCToUSDGLOSwapDeeplink = (
   amount: number,
-  chain: Chain
+  chain: Chain,
+  dex: string
 ): string => {
   const chainAllowed = getAllowedChains().some(
     (allowedChain) => allowedChain.id === chain?.id
@@ -138,16 +139,20 @@ export const getUSDCToUSDGLOUniswapDeeplink = (
   }
 
   const inputCurrency = getUSDCContractAddress(chain);
-  let outputCurrency, uniswapChain;
+  let outputCurrency, swapChain;
   if (chain.id === mainnet.id || chain.id === goerli.id) {
     outputCurrency = getSmartContractAddress(mainnet.id);
-    uniswapChain = "mainnet";
+    swapChain = dex === "uniswap" ? "mainnet" : "ethereum";
   } else {
     outputCurrency = getSmartContractAddress(polygon.id);
-    uniswapChain = "polygon";
+    swapChain = "polygon";
   }
 
-  return `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${uniswapChain}`;
+  const outputUrl =
+    dex === "matcha"
+      ? `https://matcha.xyz/tokens/${swapChain}/${outputCurrency}`
+      : `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
+  return outputUrl;
 };
 
 export const getBalance = async (

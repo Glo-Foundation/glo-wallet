@@ -13,5 +13,9 @@ export const buyWithUniswap = (amount: number, chain: Chain) => {
   window.open(getUSDCToUSDGLOUniswapDeeplink(amount, chain), "_blank");
 };
 
+export const buyWithMatcha = (amount: number, chain: Chain) => {
+  window.open(getUSDCToUSDGLOMatchaDeeplink(amount, chain), "_blank");
+};
+
 export const buyWithCoinbase = () =>
   window.open("https://www.coinbase.com/", "_blank");
