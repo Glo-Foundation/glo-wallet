@@ -214,7 +214,6 @@ export default function BuyingGuide({
           content="Withdraw to the wallet address shown above"
           action={() => {
             buyWithProvider();
-            if (provider !== "Coinbase") setIsProviderStepDone(true);
           }}
           done={isProviderStepDone}
         />

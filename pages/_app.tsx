@@ -166,7 +166,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <dialog
                 ref={dialogRef}
                 onClick={dialogClickHandler}
-                className={`${modalClassName} outline-none`}
+                className={`${modalClassName} outline-none bg-white`}
               >
                 <div ref={contentRef}>{modalContent}</div>
               </dialog>
