@@ -18,6 +18,7 @@ interface Props {
   buyWithProvider: () => void;
   provider: string;
   buyAmount: number;
+  dex: string;
 }
 
 export default function BuyingGuide({
@@ -25,6 +26,7 @@ export default function BuyingGuide({
   buyWithProvider,
   provider,
   buyAmount,
+  dex,
 }: Props) {
   const { address, connector } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
@@ -45,6 +47,7 @@ export default function BuyingGuide({
 
   const userIsOnPolygon = chain?.id === polygon.id;
   const isSequenceWallet = connector?.id === "sequence";
+  const isMetamaskWallet = connector?.id === "metaMask";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -217,9 +220,11 @@ export default function BuyingGuide({
         />
         <StepCard
           index={3}
-          iconPath="/uniswap.svg"
+          iconPath={dex === "Matcha" ? "/matcha.svg" : "/uniswap.svg"}
           title={
-            isSequenceWallet ? `Connect wallet on Swap` : `Buy Glo through Swap`
+            isSequenceWallet
+              ? `Connect wallet on Uniswap`
+              : `Buy Glo through Matcha`
           }
           content={
             isSequenceWallet
@@ -227,12 +232,7 @@ export default function BuyingGuide({
               : `Connect your wallet and click \"Swap\"`
           }
           action={() => {
-            isSequenceWallet
-              ? window.open(
-                  "https://app.uniswap.org/#/swap?chain=polygon",
-                  "_blank"
-                )
-              : chain && buyWithSwap(buyAmount, chain);
+            chain && buyWithSwap(buyAmount, chain, dex);
             setIsSwapStepDone(true);
           }}
           done={isSwapStepDone}

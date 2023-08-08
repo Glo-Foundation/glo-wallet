@@ -142,14 +142,14 @@ export const getUSDCToUSDGLOSwapDeeplink = (
   let outputCurrency, swapChain;
   if (chain.id === mainnet.id || chain.id === goerli.id) {
     outputCurrency = getSmartContractAddress(mainnet.id);
-    swapChain = dex === "uniswap" ? "mainnet" : "ethereum";
+    swapChain = dex === "Uniswap" ? "mainnet" : "ethereum";
   } else {
     outputCurrency = getSmartContractAddress(polygon.id);
     swapChain = "polygon";
   }
 
   const outputUrl =
-    dex === "matcha"
+    dex === "Matcha"
       ? `https://matcha.xyz/tokens/${swapChain}/${outputCurrency}`
       : `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
   return outputUrl;

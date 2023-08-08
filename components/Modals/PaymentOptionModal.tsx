@@ -25,7 +25,7 @@ export default function PaymentOptionModal({
   const { openModal, closeModal } = useContext(ModalContext);
 
   const isSequenceWallet = connector?.id === "sequence";
-  const isMetamaskWallet = connector?.id === "metamask";
+  const isMetamaskWallet = connector?.id === "metaMask";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -160,7 +160,7 @@ export default function PaymentOptionModal({
             }
           />
           <BuyBox
-            name="Coinbase + Uniswap"
+            name={isMetamaskWallet ? "Metamask + Matcha" : "Coinbase + Uniswap"}
             icon="/coinbase.png"
             fees=".01-5"
             worksFor="💳 Fiat"
@@ -168,8 +168,11 @@ export default function PaymentOptionModal({
             onClick={() => {
               openModal(
                 <BuyingGuideModal
-                  iconPath="/coinbase-invert.svg"
-                  provider="Coinbase"
+                  iconPath={
+                    isMetamaskWallet ? "/metamask.svg" : "/coinbase-invert.svg"
+                  }
+                  provider="Metamask"
+                  dex={isMetamaskWallet ? "Matcha" : "Uniswap"}
                   buyWithProvider={() => {
                     const link = isMetamaskWallet
                       ? "https://portfolio.metamask.io/buy/build-quote"
