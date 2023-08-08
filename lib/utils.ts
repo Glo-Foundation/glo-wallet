@@ -40,6 +40,8 @@ export const api = () => apiInstance;
 
 export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
+export const isE2E = () => process.env.E2E === "true";
+
 export const signMsgContent = "glo-wallet";
 
 export const DEFAULT_CTAS: CTA[] = [
