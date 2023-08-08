@@ -1,18 +1,18 @@
-import { polygon, polygonMumbai } from "@wagmi/core/chains";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useContext } from "react";
 import { Tooltip } from "react-tooltip";
-import { useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
+import { useDisconnect, useNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { isProd, sliceAddress } from "@/lib/utils";
+import { sliceAddress } from "@/lib/utils";
 
 type Props = {
   address?: string;
 };
+
 export default function UserInfoModal({ address }: Props) {
   const { disconnect } = useDisconnect();
   const { chain } = useNetwork();
@@ -46,19 +46,21 @@ export default function UserInfoModal({ address }: Props) {
       </div>
       <section className="flex flex-col items-center">
         <div className="my-4 p-4 border-2">
-          <QRCodeSVG size={169} value={address!} />
+          <QRCodeSVG size={169} value={address!} data-testid="profile-qr" />
         </div>
         <div>
           <h5>Network:</h5>
           <div className="copy pseudo-input-text text-sm">
-            <span>
+            <span data-testid="profile-network">
               {chain?.name} ({chain?.id})
             </span>
           </div>
 
           <h5 className="mt-6">Wallet Address:</h5>
           <div className="copy pseudo-input-text text-sm">
-            <span>{sliceAddress(address!, 9)}</span>
+            <span data-testid="profile-address">
+              {sliceAddress(address!, 9)}
+            </span>
             <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
             <button
               data-tooltip-id="copy-deposit-tooltip"
@@ -77,14 +79,18 @@ export default function UserInfoModal({ address }: Props) {
             <>
               <h5 className="mt-6">Email:</h5>
               <div className="copy pseudo-input-text text-sm">
-                <span>{email}</span>
+                <span data-testid="profile-email">{email}</span>
               </div>
             </>
           )}
         </div>
       </section>
       <section className="mt-8 flex flex-col justify-end">
-        <button className="primary-button" onClick={() => handleLogout()}>
+        <button
+          className="primary-button"
+          onClick={() => handleLogout()}
+          data-testid="profile-logout"
+        >
           Log out
         </button>
       </section>
