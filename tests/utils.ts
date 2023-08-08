@@ -12,7 +12,7 @@ export const getBaseURL = () => {
   }
 };
 
-export const common = {
+export const CONSTANTS = {
   authModalText: "Welcome to the Glo App",
   gloAddress: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
 };

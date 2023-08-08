@@ -26,7 +26,6 @@ import { isProd, isE2E } from "../lib/utils";
 import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  // Add conditional flag if IS_E2E_TEST? So we have polygon avialable as front one.
   isE2E()
     ? [polygon]
     : isProd()

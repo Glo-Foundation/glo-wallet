@@ -1,7 +1,7 @@
 import { test } from "@guardianui/test";
 import { expect } from "@playwright/test";
 
-import { common, getBaseURL } from "../utils";
+import { CONSTANTS, getBaseURL } from "../utils";
 
 test.use({
   baseURL: getBaseURL(),
@@ -13,34 +13,34 @@ test.describe("Auth", () => {
     await gui.initializeChain(POLYGON, 45735806);
     await page.goto("/");
 
-    await gui.setBalance(common.gloAddress, "12340000000000000000000");
+    await gui.setBalance(CONSTANTS.gloAddress, "12340000000000000000000");
 
     await page.getByTestId("tos-checkbox").check();
   });
 
-  // test("should allow email sign up", async ({ page, gui }) => {
-  //   const walletConnectButton = await page.isVisible("text=Email");
-  //   if (walletConnectButton) {
-  //     await page.fill(
-  //       "input[data-testid=submit-email-input]",
-  //       "engineering+e2e@glodollar.org"
-  //     );
-  //     await page.getByTestId("submit-email-button").click();
-  //   }
+  test.skip("should allow email sign up", async ({ page, gui }) => {
+    const walletConnectButton = await page.isVisible("text=Email");
+    if (walletConnectButton) {
+      await page.fill(
+        "input[data-testid=submit-email-input]",
+        "engineering+e2e@glodollar.org"
+      );
+      await page.getByTestId("submit-email-button").click();
+    }
 
-  //   await page.waitForTimeout(1000);
-  //   expect(await page.isVisible("text=12,340.00")).toBeTruthy();
-  // });
+    await page.waitForTimeout(1000);
+    expect(await page.isVisible("text=12,340.00")).toBeTruthy();
+  });
 
-  // test("should allow social login", async ({ page, gui }) => {
-  //   const socialLoginButton = await page.isVisible("text=WalletConnect");
-  //   if (socialLoginButton) {
-  //     await page.getByTestId("social-login-button").click();
-  //   }
+  test.skip("should allow social login", async ({ page, gui }) => {
+    const socialLoginButton = await page.isVisible("text=WalletConnect");
+    if (socialLoginButton) {
+      await page.getByTestId("social-login-button").click();
+    }
 
-  //   await page.waitForTimeout(1000);
-  //   expect(await page.isVisible("text=12,340.00")).toBeTruthy();
-  // });
+    await page.waitForTimeout(1000);
+    expect(await page.isVisible("text=12,340.00")).toBeTruthy();
+  });
 
   test("should allow metamask login", async ({ page, gui }) => {
     const metamaskButton = await page.isVisible("text=Metamask");
@@ -50,7 +50,7 @@ test.describe("Auth", () => {
 
     const walletAddress = await gui.getWalletAddress();
     const walletBalance = await gui.getBalance(
-      common.gloAddress,
+      CONSTANTS.gloAddress,
       walletAddress
     );
     expect(walletBalance).toEqual("12340000000000000000000");
