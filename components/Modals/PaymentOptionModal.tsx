@@ -136,25 +136,23 @@ export default function PaymentOptionModal({
       />
       {isConnected && address && (
         <>
-          {false && (
-            <BuyBox
-              name="Transak"
-              icon="/transak.png"
-              fees="1-5"
-              worksFor="🌍 world"
-              delay="⚡ Instant"
-              onClick={() =>
-                openModal(
-                  <BuyingGuideModal
-                    iconPath="/transak.png"
-                    provider="Transak"
-                    buyWithProvider={() => buyWithTransak(buyAmount, address!)}
-                    buyAmount={buyAmount}
-                  />
-                )
-              }
-            />
-          )}
+          <BuyBox
+            name="Transak"
+            icon="/transak.png"
+            fees="1-5"
+            worksFor="🌍 world"
+            delay="⚡ Instant"
+            onClick={() =>
+              openModal(
+                <BuyingGuideModal
+                  iconPath="/transak.png"
+                  provider="Transak"
+                  buyWithProvider={() => buyWithTransak(buyAmount, address!)}
+                  buyAmount={buyAmount}
+                />
+              )
+            }
+          />
           <BuyBox
             name="Coinbase + Uniswap"
             icon="/coinbase.png"
