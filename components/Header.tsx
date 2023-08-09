@@ -60,6 +60,7 @@ export default function Header() {
           <button
             className="primary-button w-9 h-9"
             onClick={() => openUserInfoModal()}
+            data-testid="profile-button"
           >
             👤
           </button>
