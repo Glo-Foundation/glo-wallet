@@ -21,7 +21,7 @@ import { useUserStore } from "@/lib/store";
 import { getAllowedChains, api, initApi, signMsgContent } from "@/lib/utils";
 
 export default function Home() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, connector } = useAccount();
   const { chain, chains } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
@@ -53,8 +53,11 @@ export default function Home() {
     const currentChainAllowed = allowedChains.some(
       (allowedChain) => allowedChain.id === chain?.id
     );
-    if (isConnected && !currentChainAllowed) {
-      const defaultChainId = chains[0]?.id;
+    const defaultChainId = chains[0]?.id;
+    const isSequenceWallet = connector?.id === "sequence";
+    const shouldSwitchToDefault =
+      isSequenceWallet && chain?.id !== defaultChainId;
+    if (isConnected && (!currentChainAllowed || shouldSwitchToDefault)) {
       switchNetwork?.(defaultChainId);
     }
   }, [switchNetwork]);
