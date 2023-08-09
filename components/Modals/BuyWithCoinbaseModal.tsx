@@ -25,7 +25,6 @@ export default function BuyWithCoinbaseModal({
   buyWithProvider,
   provider,
   buyAmount,
-  dex,
 }: Props) {
   const { address, connector } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
@@ -193,7 +192,7 @@ export default function BuyWithCoinbaseModal({
         <h3 className="pt-0">Buying Glo Dollars through {provider} and DEX</h3>
         <p className="text-sm py-6">
           You can get Glo Dollars by exchanging another stablecoin called{" "}
-          <b>USDC</b> for Glo Dollar using the <b>{dex}</b> app.
+          <b>USDC</b> for Glo Dollar using the <b>Uniswap</b> app.
         </p>
       </section>
       <section>
@@ -227,7 +226,7 @@ export default function BuyWithCoinbaseModal({
               : `Connect your wallet and click \"Swap\"`
           }
           action={() => {
-            chain && buyWithSwap(buyAmount, chain, dex);
+            chain && buyWithSwap(buyAmount, chain, "Uniswap");
             setIsSwapStepDone(true);
           }}
           done={isSwapStepDone}
@@ -250,9 +249,9 @@ export default function BuyWithCoinbaseModal({
       <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
-          onClick={() => chain && buyWithSwap(buyAmount, chain, dex)}
+          onClick={() => chain && buyWithSwap(buyAmount, chain, "Uniswap")}
         >
-          Buy ${buyAmount} Glo Dollars on {dex}
+          Buy ${buyAmount} Glo Dollars on Uniswap
         </button>
         <button
           className="secondary-button mt-3"

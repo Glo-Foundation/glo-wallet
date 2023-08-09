@@ -216,7 +216,6 @@ export default function PaymentOptionModal({
                 <BuyWithCoinbaseModal
                   iconPath="/coinbase-invert.svg"
                   provider="Coinbase"
-                  dex="Uniswap"
                   buyWithProvider={() => {
                     window.open(
                       "https://www.coinbase.com/how-to-buy/usdc",
