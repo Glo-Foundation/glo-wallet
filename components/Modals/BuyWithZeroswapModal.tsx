@@ -72,9 +72,9 @@ export default function BuyWithZeroswapModal({ buyAmount }: Props) {
             index={1}
             iconPath="/glo-logo.svg"
             title="Copy the Glo smart contract address"
-            content={sliceAddress(getSmartContractAddress(chain.id), 8)}
+            content={sliceAddress(getSmartContractAddress(chain!.id), 8)}
             action={() => {
-              navigator.clipboard.writeText(getSmartContractAddress(chain.id));
+              navigator.clipboard.writeText(getSmartContractAddress(chain!.id));
               setIsCopiedTooltipOpen(true);
               setIsCopiedStepDone(true);
             }}
