@@ -30,7 +30,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     ? [polygon]
     : isProd()
     ? ([polygon, mainnet] as Chain[])
-    : [polygon, polygonMumbai, goerli],
+    : [polygonMumbai, goerli],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
     publicProvider(),

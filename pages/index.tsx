@@ -58,7 +58,10 @@ export default function Home() {
     const shouldSwitchToDefault =
       isSequenceWallet && chain?.id !== defaultChainId;
     if (isConnected && (!currentChainAllowed || shouldSwitchToDefault)) {
-      switchNetwork?.(defaultChainId);
+      // This timeout avoids some Sequence condition race
+      setTimeout(() => {
+        switchNetwork?.(defaultChainId);
+      }, 0);
     }
   }, [switchNetwork]);
 
