@@ -11,6 +11,7 @@ import { sliceAddress } from "@/lib/utils";
 import { buyWithTransak, buyWithSwap } from "@/payments";
 
 import BuyWithCoinbaseModal from "./BuyWithCoinbaseModal";
+import BuyWithZeroswapModal from "./BuyWithZeroswapModal";
 
 export default function PaymentOptionModal({
   buyAmount,
@@ -180,21 +181,28 @@ export default function PaymentOptionModal({
         delay="⚡ Instant"
         onClick={() => chain && buyWithSwap(buyAmount, chain, "Uniswap")}
       />
-      <BuyBox
-        name={`${isMetamaskWallet ? "Matcha" : "Zeroswap"} [gasless]`}
-        icon={`${isMetamaskWallet ? "/matcha.svg" : "/zeroswap.svg"}`}
-        fees=".01"
-        worksFor="🔐 Crypto"
-        delay="⚡ Instant"
-        onClick={() =>
-          chain &&
-          buyWithSwap(
-            buyAmount,
-            chain,
-            isMetamaskWallet ? "Matcha" : "Zeroswap"
-          )
-        }
-      />
+      {isMetamaskWallet && (
+        <BuyBox
+          name="Matcha [gasless]"
+          icon="/matcha.svg"
+          fees=".01"
+          worksFor="🔐 Crypto"
+          delay="⚡ Instant"
+          onClick={() => chain && buyWithSwap(buyAmount, chain, "Matcha")}
+        />
+      )}
+      {isSequenceWallet && (
+        <BuyBox
+          name="Zeroswap [gasless]"
+          icon="/zeroswap.svg"
+          fees=".01"
+          worksFor="🔐 Crypto"
+          delay="⚡ Instant"
+          onClick={() => {
+            openModal(<BuyWithZeroswapModal />);
+          }}
+        />
+      )}
       {isConnected && address && (
         <>
           <BuyBox

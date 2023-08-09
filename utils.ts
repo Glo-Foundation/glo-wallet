@@ -148,10 +148,18 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     swapChain = "polygon";
   }
 
-  const outputUrl =
-    dex === "Matcha"
-      ? `https://matcha.xyz/tokens/${swapChain}/${outputCurrency}`
-      : `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
+  let outputUrl;
+  switch (dex) {
+    case "Matcha":
+      outputUrl = `https://matcha.xyz/tokens/${swapChain}/${outputCurrency}`;
+      break;
+    case "Zeroswap":
+      outputUrl = `https://app.zeroswap.io/swap/${chain.id}/${inputCurrency}/${outputCurrency}`;
+      break;
+    default:
+      outputUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
+  }
+
   return outputUrl;
 };
 
