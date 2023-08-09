@@ -117,7 +117,12 @@ export default function Impact() {
             <div className="text-normal pb-4">Owns</div>
             <div className="flex flex-row font-extrabold justify-start">
               <div className="flex flex-row text-[2.625rem] items-baseline">
-                <span className="font-extrabold">${formattedBalance} </span>
+                <span
+                  className="font-extrabold"
+                  data-testid="formatted-balance"
+                >
+                  ${formattedBalance}{" "}
+                </span>
                 <span className="text-sm ml-1">Glo Dollar</span>
               </div>
             </div>
@@ -125,6 +130,7 @@ export default function Impact() {
           <div
             className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-4 pb-3 cursor-pointer"
             onClick={() => openModal(<BuyGloModal />)}
+            data-testid="simulateBuyGlo"
           >
             <div className="overflow-hidden">
               <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-32"></div>
