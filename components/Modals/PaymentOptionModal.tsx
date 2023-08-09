@@ -199,7 +199,7 @@ export default function PaymentOptionModal({
           worksFor="🔐 Crypto"
           delay="⚡ Instant"
           onClick={() => {
-            openModal(<BuyWithZeroswapModal />);
+            openModal(<BuyWithZeroswapModal buyAmount={buyAmount} />);
           }}
         />
       )}

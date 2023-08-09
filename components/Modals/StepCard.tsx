@@ -6,7 +6,7 @@ interface Props {
   iconPath: string;
   title: string;
   content: string;
-  action: any;
+  action?: any;
   done?: boolean;
   isSequenceWallet?: boolean;
   USDC?: string;
@@ -81,7 +81,7 @@ const StepCard = ({
           </p>
         </div>
       </div>
-      {index === 2 && (
+      {index === 2 && USDC && (
         <div className="p-3 border-t-2 flex justify-center w-full">
           <Image alt="usdc" src="usdc.svg" height={20} width={20} />
           <span className="ml-2 copy text-pine-900 font-bold">

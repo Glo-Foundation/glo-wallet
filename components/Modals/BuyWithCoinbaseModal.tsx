@@ -151,7 +151,7 @@ export default function BuyWithCoinbaseModal({
           <StepCard
             index={4}
             iconPath="/sequence.svg"
-            title={"Connect to the Sequence wallet"}
+            title="Connect to the Sequence wallet"
             content="Paste the code into the wallet's scanner"
             action={() => {
               const wallet = sequence.getWallet();
