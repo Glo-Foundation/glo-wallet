@@ -59,13 +59,7 @@ export default function BuyWithZeroswapModal({ buyAmount }: Props) {
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </header>
-      <section className="text-center">
-        <h3 className="pt-0">Buying Glo Dollars through Zeroswap</h3>
-        <p className="text-sm py-6">
-          You can get Glo Dollars by exchanging another stablecoin called{" "}
-          <b>USDC</b> for Glo Dollar using the <b>Zeroswap</b> app.
-        </p>
-      </section>
+      <h2 className="text-center">Buy Glo Dollars through Zeroswap</h2>
       <section>
         <div data-tooltip-id="copy-tooltip" data-tooltip-content="Copied!">
           <StepCard
@@ -84,8 +78,8 @@ export default function BuyWithZeroswapModal({ buyAmount }: Props) {
         <StepCard
           index={2}
           iconPath="/zeroswap.svg"
-          title="Swap funds with Glo"
-          content=""
+          title="Swap with Glo on Zeroswap"
+          content="Select the output currency and paste the Glo contract address"
           action={() => {
             chain && buyWithSwap(buyAmount, chain, "Zeroswap");
             setIsSwapStepDone(true);
