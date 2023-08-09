@@ -137,7 +137,7 @@ export default function PaymentOptionModal({
         delay="⚡ Instant"
         onClick={() =>
           chain &&
-          buyWithSwap(buyAmount, chain, isSequenceWallet ? "uniswap" : "matcha")
+          buyWithSwap(buyAmount, chain, isSequenceWallet ? "Uniswap" : "Matcha")
         }
       />
       {isConnected && address && (
