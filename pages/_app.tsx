@@ -26,11 +26,11 @@ import { isProd, isE2E } from "../lib/utils";
 import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  isE2E()
+  (isE2E()
     ? [polygon]
     : isProd()
-    ? ([polygon, mainnet] as Chain[])
-    : [polygonMumbai, goerli],
+    ? [polygon, mainnet]
+    : [polygonMumbai, goerli]) as Chain[],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
     publicProvider(),
