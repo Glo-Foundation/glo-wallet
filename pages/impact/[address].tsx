@@ -125,6 +125,7 @@ export default function Impact() {
           <div
             className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] mx-1 mb-1 px-4 pb-3 cursor-pointer"
             onClick={() => openModal(<BuyGloModal />)}
+            data-testid="simulateBuyGlo"
           >
             <div className="overflow-hidden">
               <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-32"></div>
