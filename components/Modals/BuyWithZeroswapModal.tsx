@@ -9,8 +9,7 @@ import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithSwap } from "@/payments";
 
-import PaymentOptionsModal from "./PaymentOptionsModal";
-
+import PaymentOptionModal from "./PaymentOptionModal";
 
 interface Props {
   buyAmount: number;
@@ -41,7 +40,7 @@ export default function BuyWithZeroswapModal({ buyAmount }: Props) {
           alt="arrow-right"
           className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
           onClick={() =>
-            openModal(<PaymentOptionsModal buyAmount={buyAmount} />)
+            openModal(<PaymentOptionModal buyAmount={buyAmount} />)
           }
         />
         <Tooltip id="copy-tooltip" isOpen={isCopiedTooltipOpen} />
