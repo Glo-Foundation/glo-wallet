@@ -18,6 +18,7 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
+import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
@@ -44,7 +45,7 @@ const config = createConfig({
       options: {
         connect: {
           app: "Glo wallet",
-          networkId: chains[0].id,
+          networkId: defaultChainId(),
           askForEmail: true,
           settings: {
             theme: "light",

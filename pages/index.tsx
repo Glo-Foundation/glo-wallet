@@ -15,7 +15,7 @@ import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Transactions from "@/components/Transactions";
-import { getSmartContractAddress } from "@/lib/config";
+import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 import { getAllowedChains, api, initApi, signMsgContent } from "@/lib/utils";
@@ -53,14 +53,14 @@ export default function Home() {
     const currentChainAllowed = allowedChains.some(
       (allowedChain) => allowedChain.id === chain?.id
     );
-    const defaultChainId = chains[0]?.id;
+
     const isSequenceWallet = connector?.id === "sequence";
     const shouldSwitchToDefault =
-      isSequenceWallet && chain?.id !== defaultChainId;
+      isSequenceWallet && chain?.id !== defaultChainId();
     if (isConnected && (!currentChainAllowed || shouldSwitchToDefault)) {
       // This timeout avoids some Sequence condition race
       setTimeout(() => {
-        switchNetwork?.(defaultChainId);
+        switchNetwork?.(defaultChainId());
       }, 0);
     }
   }, [switchNetwork]);
