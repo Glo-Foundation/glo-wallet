@@ -117,7 +117,12 @@ export default function Impact() {
             <div className="text-normal pb-4">Owns</div>
             <div className="flex flex-row font-extrabold justify-start">
               <div className="flex flex-row text-[2.625rem] items-baseline">
-                <span className="font-extrabold">${formattedBalance} </span>
+                <span
+                  className="font-extrabold"
+                  data-testid="formatted-balance"
+                >
+                  ${formattedBalance}{" "}
+                </span>
                 <span className="text-sm ml-1">Glo Dollar</span>
               </div>
             </div>
