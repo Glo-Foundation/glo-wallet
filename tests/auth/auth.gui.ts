@@ -15,6 +15,10 @@ test.describe("Auth", () => {
 
     await gui.setBalance(CONSTANTS.gloAddress, "12340000000000000000000");
 
+    // TODO: Set balance
+    // const DISCORD_WALLET = "0xdf561A94a7be845A13E277c7F8d9b81081888E78";
+    // await gui.setBalance(DISCORD_WALLET, "1");
+
     await page.getByTestId("tos-checkbox").check();
   });
 
@@ -32,14 +36,36 @@ test.describe("Auth", () => {
     expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 
-  test.skip("should allow social login", async ({ page, gui }) => {
-    const socialLoginButton = await page.isVisible("text=WalletConnect");
-    if (socialLoginButton) {
-      await page.getByTestId("social-login-button").click();
-    }
+  test.only("should allow social login with Discord", async ({ page, gui }) => {
+    await page.isVisible("text=Email");
+    await page.getByTestId("social-login-button").click();
 
-    await page.waitForTimeout(1000);
-    expect(await page.isVisible("text=12,340.00")).toBeTruthy();
+    const popup = await page.waitForEvent("popup");
+
+    await popup.getByText("Show More Options").click();
+
+    await popup.getByText("Discord").click();
+
+    const discordPopup = await popup.waitForEvent("popup");
+
+    await discordPopup.fill(
+      "input[name=email]",
+      "engineering+e2e@glodollar.org"
+    );
+
+    await discordPopup.fill(
+      "input[name=password]",
+      process.env.DISCORD_E2E_PW!
+    );
+
+    await discordPopup.getByText("Log In").first().click();
+
+    await discordPopup.getByRole("button", { name: "Authorize" }).click();
+
+    expect(await page.isVisible("text=0.00")).toBeTruthy();
+    // expect(await page.isVisible("text=43,210.00")).toBeTruthy();
+
+    await page.waitForTimeout(10000);
   });
 
   test("should allow metamask login", async ({ page, gui }) => {
