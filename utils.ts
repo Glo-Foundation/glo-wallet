@@ -135,7 +135,9 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     (allowedChain) => allowedChain.id === chain?.id
   );
   if (!chainAllowed) {
-    return "";
+    return alert(
+      `Sorry, (${chain.name} | ${chain.id})  chain not in accepted whitelist.`
+    );
   }
 
   const inputCurrency = getUSDCContractAddress(chain);
