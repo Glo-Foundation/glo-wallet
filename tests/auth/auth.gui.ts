@@ -23,20 +23,18 @@ test.describe("Auth", () => {
   });
 
   test.skip("should allow email sign up", async ({ page, gui }) => {
-    const walletConnectButton = await page.isVisible("text=Email");
-    if (walletConnectButton) {
-      await page.fill(
-        "input[data-testid=submit-email-input]",
-        "engineering+e2e@glodollar.org"
-      );
-      await page.getByTestId("submit-email-button").click();
-    }
+    await page.isVisible("text=Email");
+    await page.fill(
+      "input[data-testid=submit-email-input]",
+      "engineering+e2e@glodollar.org"
+    );
+    await page.getByTestId("submit-email-button").click();
 
     await page.waitForTimeout(1000);
     expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 
-  test.only("should allow social login with Discord", async ({ page, gui }) => {
+  test("should allow social login with Discord", async ({ page, gui }) => {
     await page.isVisible("text=Email");
     await page.getByTestId("social-login-button").click();
 
@@ -63,16 +61,11 @@ test.describe("Auth", () => {
     await discordPopup.getByRole("button", { name: "Authorize" }).click();
 
     expect(await page.isVisible("text=0.00")).toBeTruthy();
-    // expect(await page.isVisible("text=43,210.00")).toBeTruthy();
-
-    await page.waitForTimeout(10000);
   });
 
   test("should allow metamask login", async ({ page, gui }) => {
-    const metamaskButton = await page.isVisible("text=Metamask");
-    if (metamaskButton) {
-      await page.getByTestId("metamask-login-button").click();
-    }
+    await page.isVisible("text=Metamask");
+    await page.getByTestId("metamask-login-button").click();
 
     const walletAddress = await gui.getWalletAddress();
     const walletBalance = await gui.getBalance(
@@ -86,12 +79,15 @@ test.describe("Auth", () => {
   });
 
   test("should allow wallet connect login", async ({ page, gui }) => {
-    const walletConnectButton = await page.isVisible("text=WalletConnect");
-    if (walletConnectButton) {
-      await page.getByTestId("metamask-login-button").click();
-    }
+    await page.isVisible("text=WalletConnect");
+    await page.getByTestId("walletconnect-login-button").click();
 
-    await page.waitForTimeout(1000);
-    expect(await page.isVisible("text=12,340.00")).toBeTruthy();
+    const copy = await page.waitForSelector(".wcm-action-btn");
+    expect(await page.isVisible("text=Scan with your wallet")).toBeTruthy();
+
+    await copy.click();
+
+    // We could open our app in new page login with Sequence
+    // and use scan to fully test the WC flow
   });
 });
