@@ -40,6 +40,7 @@ test.describe("Transactions List", () => {
     }) => {
       const { setTransfers } = useUserStore();
       await setTransfers({
+        cursor: null,
         transfers: [
           {
             type: "incoming",
@@ -51,8 +52,7 @@ test.describe("Transactions List", () => {
           },
         ],
       });
-      // const transactions = await mount(<Transactions />);
-      const txnsList = await transactions.getByTestId("transactions-list");
+      const txnsList = await page.getByTestId("transactions-list");
       expect(txnsList).toBeHidden();
     });
   });
