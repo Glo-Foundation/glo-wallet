@@ -86,7 +86,7 @@ export default function Transactions() {
           buy some Glo?
         </button>
       </div>
-      <motion.ul variants={variants()}>
+      <motion.ul variants={variants()} data-test-id="transactions-list">
         <TransactionsList
           isOpen={isOpen}
           txns={transfers.slice(0, 5)}
