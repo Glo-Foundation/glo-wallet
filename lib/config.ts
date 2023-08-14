@@ -1,4 +1,10 @@
-import { mainnet, goerli, polygon, polygonMumbai } from "@wagmi/core/chains";
+import {
+  mainnet,
+  goerli,
+  polygon,
+  polygonMumbai,
+  celo,
+} from "@wagmi/core/chains";
 
 import { isProd } from "./utils";
 
@@ -6,6 +12,7 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   // Mainnets
   [polygon.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   [mainnet.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
+  [celo.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   // Testnets
   [polygonMumbai.id]: "0xbd05d3B38c400d95D52c2B8fF124DF511AB7EBfc",
   [goerli.id]: "0x2c872de03E91D2ee463308Cb5dA4Ed9e41bBB355",
@@ -48,6 +55,7 @@ const chainRPCUrl: { [id: number]: string } = {
   // Mainnets
   [polygon.id]: process.env.NEXT_PUBLIC_POLYGON_RPC_URL as string,
   [mainnet.id]: process.env.NEXT_PUBLIC_MAINNET_RPC_URL as string,
+  [celo.id]: process.env.NEXT_PUBLIC_CELO_RPC_URL as string,
   // Testnets
   [polygonMumbai.id]: process.env.NEXT_PUBLIC_MUMBAI_RPC_URL as string,
   [goerli.id]: process.env.NEXT_PUBLIC_GOERLI_RPC_URL as string,

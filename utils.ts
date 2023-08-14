@@ -115,7 +115,8 @@ export const getNiceNumber = (num: number) => {
   const base = getUSFormattedNumber(num);
 
   const parts = base.split(",");
-  return `${parts[0]}.${parts[1][0]}${TIER_SUFFIX[parts.length - 1]}`;
+  const decimals = parts.length > 1 ? parts[1][0] : 0;
+  return `${parts[0]}.${decimals}${TIER_SUFFIX[parts.length - 1]}`;
 };
 
 export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
