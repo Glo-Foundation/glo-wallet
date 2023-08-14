@@ -56,8 +56,9 @@ export default function Home() {
 
     const isSequenceWallet = connector?.id === "sequence";
     const shouldSwitchToDefault =
-      isSequenceWallet && chain?.id !== defaultChainId();
-    if (isConnected && (!currentChainAllowed || shouldSwitchToDefault)) {
+      !currentChainAllowed ||
+      (isSequenceWallet && chain?.id !== defaultChainId());
+    if (isConnected && shouldSwitchToDefault) {
       // This timeout avoids some Sequence condition race
       setTimeout(() => {
         switchNetwork?.(defaultChainId());
