@@ -19,7 +19,7 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
 };
 
 export const defaultChain = () => (isProd() ? polygon : polygonMumbai);
-const defaultChainId = () => defaultChain().id;
+export const defaultChainId = () => defaultChain().id;
 
 export const getSmartContractAddress = (chainId?: number) =>
   chainConfig[chainId || defaultChainId()];

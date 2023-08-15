@@ -7,6 +7,7 @@ import { useContext, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
 
+import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 import { getAllowedChains } from "@/lib/utils";
@@ -68,7 +69,7 @@ export default function UserAuthModal() {
       options: {
         connect: {
           app: "Glo wallet",
-          networkId: chains[0].id,
+          networkId: defaultChainId(),
           askForEmail: true,
           settings: {
             theme: "light",
