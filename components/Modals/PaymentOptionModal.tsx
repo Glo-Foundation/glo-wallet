@@ -142,26 +142,29 @@ export default function PaymentOptionModal({
       />
       {isConnected && address && (
         <>
-          <BuyBox
-            name="Transak"
-            icon="/transak.png"
-            fees="1-5"
-            worksFor="🌍 world"
-            delay="⚡ Instant"
-            onClick={() =>
-              openModal(
-                <BuyingGuideModal
-                  iconPath="/transak.png"
-                  provider="Transak"
-                  buyWithProvider={() => buyWithTransak(buyAmount, address!)}
-                  buyAmount={buyAmount}
-                />
-              )
-            }
-          />
+          {false && (
+            <BuyBox
+              name="Transak"
+              icon="/transak.png"
+              fees="1-5"
+              worksFor="🌍 world"
+              delay="⚡ Instant"
+              onClick={() =>
+                openModal(
+                  <BuyingGuideModal
+                    iconPath="/transak.png"
+                    provider="Transak"
+                    buyWithProvider={() => buyWithTransak(buyAmount, address!)}
+                    buyAmount={buyAmount}
+                    dex={"Transak"}
+                  />
+                )
+              }
+            />
+          )}
           <BuyBox
             name={isMetamaskWallet ? "Metamask + Matcha" : "Coinbase + Uniswap"}
-            icon="/coinbase.png"
+            icon={isMetamaskWallet ? "/metamask.svg" : "/coinbase.png"}
             fees=".01-5"
             worksFor="💳 Fiat"
             delay="⚡ Instant"
@@ -171,7 +174,7 @@ export default function PaymentOptionModal({
                   iconPath={
                     isMetamaskWallet ? "/metamask.svg" : "/coinbase-invert.svg"
                   }
-                  provider="Metamask"
+                  provider={isMetamaskWallet ? "Metamask" : "Coinbase"}
                   dex={isMetamaskWallet ? "Matcha" : "Uniswap"}
                   buyWithProvider={() => {
                     const link = isMetamaskWallet

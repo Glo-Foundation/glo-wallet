@@ -194,7 +194,7 @@ export default function BuyingGuide({
         <h3 className="pt-0">Buying Glo Dollars through {provider} and DEX</h3>
         <p className="text-sm py-6">
           You can get Glo Dollars by exchanging another stablecoin called{" "}
-          <b>USDC</b> for Glo Dollar using the <b>DEX</b> app.
+          <b>USDC</b> for Glo Dollar using the <b>{dex}</b> app.
         </p>
       </section>
       <section>
@@ -255,9 +255,9 @@ export default function BuyingGuide({
       <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
-          onClick={() => chain && buyWithSwap(buyAmount, chain)}
+          onClick={() => chain && buyWithSwap(buyAmount, chain, dex)}
         >
-          Buy ${buyAmount} Glo Dollars on Swap
+          Buy ${buyAmount} Glo Dollars on {dex}
         </button>
         <button
           className="secondary-button mt-3"
