@@ -10,7 +10,7 @@ import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithTransak, buyWithSwap } from "@/payments";
 
-import BuyingGuideModal from "./BuyingGuideModal";
+import BuyWithCoinbaseModal from "./BuyWithCoinbaseModal";
 
 export default function PaymentOptionModal({
   buyAmount,
@@ -99,6 +99,47 @@ export default function PaymentOptionModal({
     </div>
   );
 
+  const openEmbrModal = () => {
+    const findElByText = (text: string, el = "div") =>
+      document
+        .evaluate(
+          `//${el}[contains(text(), "${text}")]`,
+          document,
+          null,
+          XPathResult.ANY_TYPE,
+          null
+        )
+        .iterateNext();
+
+    const tryAttachingEvent = () => {
+      const copyButton = findElByText("Copy to Clipboard");
+      if (copyButton) {
+        copyButton?.parentNode?.parentNode?.parentNode?.addEventListener(
+          "click",
+          () => {
+            setTimeout(() => {
+              const wallet = sequence.getWallet();
+              wallet.openWallet("/wallet/scan");
+            }, 1000);
+          }
+        );
+      } else {
+        const el = Array.from(document?.body.getElementsByTagName("div")).find(
+          (x) => x.shadowRoot
+        );
+        // If modal closed stop trying
+        if (el?.shadowRoot?.children.length || 0 > 1) {
+          setTimeout(() => {
+            tryAttachingEvent();
+          }, 1000);
+        }
+      }
+    };
+
+    tryAttachingEvent();
+    closeModal();
+  };
+
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
@@ -128,110 +169,63 @@ export default function PaymentOptionModal({
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <h2 className="text-center">Choose a path to start buying Glo Dollars</h2>
+      <h2 className="text-center pt-0">
+        Choose a path to start buying Glo Dollars
+      </h2>
       <BuyBox
-        name={isSequenceWallet ? "Uniswap" : "Matcha"}
-        icon={isSequenceWallet ? "/uniswap.svg" : "/matcha.svg"}
+        name="Uniswap"
+        icon="/uniswap.svg"
+        fees=".01"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() => chain && buyWithSwap(buyAmount, chain, "Uniswap")}
+      />
+      <BuyBox
+        name={`${isMetamaskWallet ? "Matcha" : "Zeroswap"} [gasless]`}
+        icon={`${isMetamaskWallet ? "/matcha.svg" : "/zeroswap.svg"}`}
         fees=".01"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
         onClick={() =>
           chain &&
-          buyWithSwap(buyAmount, chain, isSequenceWallet ? "Uniswap" : "Matcha")
+          buyWithSwap(
+            buyAmount,
+            chain,
+            isMetamaskWallet ? "Matcha" : "Zeroswap"
+          )
         }
       />
       {isConnected && address && (
         <>
-          {false && (
-            <BuyBox
-              name="Transak"
-              icon="/transak.png"
-              fees="1-5"
-              worksFor="🌍 world"
-              delay="⚡ Instant"
-              onClick={() =>
-                openModal(
-                  <BuyingGuideModal
-                    iconPath="/transak.png"
-                    provider="Transak"
-                    buyWithProvider={() => buyWithTransak(buyAmount, address!)}
-                    buyAmount={buyAmount}
-                    dex={"Transak"}
-                  />
-                )
-              }
-            />
-          )}
-          <BuyBox
-            name={isMetamaskWallet ? "Metamask + Matcha" : "Coinbase + Uniswap"}
-            icon={isMetamaskWallet ? "/metamask.svg" : "/coinbase.png"}
-            fees=".01-5"
-            worksFor="💳 Fiat"
-            delay="⚡ Instant"
-            onClick={() => {
-              openModal(
-                <BuyingGuideModal
-                  iconPath={
-                    isMetamaskWallet ? "/metamask.svg" : "/coinbase-invert.svg"
-                  }
-                  provider={isMetamaskWallet ? "Metamask" : "Coinbase"}
-                  dex={isMetamaskWallet ? "Matcha" : "Uniswap"}
-                  buyWithProvider={() => {
-                    const link = isMetamaskWallet
-                      ? "https://portfolio.metamask.io/buy/build-quote"
-                      : "https://www.coinbase.com/how-to-buy/usdc";
-                    window.open(link, "_blank");
-                  }}
-                  buyAmount={buyAmount}
-                />
-              );
-            }}
-          />
           <BuyBox
             name="Unlimit + Embr"
             icon="/unlimit.png"
             fees="1-3"
             worksFor="💳 Cards"
             delay="⚡ Instant"
+            onClick={openEmbrModal}
+          />
+          <BuyBox
+            name="Coinbase + Uniswap"
+            icon="/coinbase.png"
+            fees=".01-5"
+            worksFor="💳 Fiat"
+            delay="⚡ 0-3 Days"
             onClick={() => {
-              const findElByText = (text: string, el = "div") =>
-                document
-                  .evaluate(
-                    `//${el}[contains(text(), "${text}")]`,
-                    document,
-                    null,
-                    XPathResult.ANY_TYPE,
-                    null
-                  )
-                  .iterateNext();
-
-              const tryAttachingEvent = () => {
-                const copyButton = findElByText("Copy to Clipboard");
-                if (copyButton) {
-                  copyButton?.parentNode?.parentNode?.parentNode?.addEventListener(
-                    "click",
-                    () => {
-                      setTimeout(() => {
-                        const wallet = sequence.getWallet();
-                        wallet.openWallet("/wallet/scan");
-                      }, 1000);
-                    }
-                  );
-                } else {
-                  const el = Array.from(
-                    document?.body.getElementsByTagName("div")
-                  ).find((x) => x.shadowRoot);
-                  // If modal closed stop trying
-                  if (el?.shadowRoot?.children.length || 0 > 1) {
-                    setTimeout(() => {
-                      tryAttachingEvent();
-                    }, 1000);
-                  }
-                }
-              };
-
-              tryAttachingEvent();
-              closeModal();
+              openModal(
+                <BuyWithCoinbaseModal
+                  iconPath="/coinbase-invert.svg"
+                  provider="Coinbase"
+                  dex="Uniswap"
+                  buyWithProvider={() => {
+                    window.open(
+                      "https://www.coinbase.com/how-to-buy/usdc",
+                      "_blank"
+                    );
+                  }}
+                  buyAmount={buyAmount}
+                />
+              );
             }}
           />
         </>

@@ -18,10 +18,9 @@ interface Props {
   buyWithProvider: () => void;
   provider: string;
   buyAmount: number;
-  dex: string;
 }
 
-export default function BuyingGuide({
+export default function BuyWithCoinbaseModal({
   iconPath,
   buyWithProvider,
   provider,
@@ -220,12 +219,8 @@ export default function BuyingGuide({
         />
         <StepCard
           index={3}
-          iconPath={dex === "Matcha" ? "/matcha.svg" : "/uniswap.svg"}
-          title={
-            isSequenceWallet
-              ? `Connect wallet on Uniswap`
-              : `Buy Glo through Matcha`
-          }
+          iconPath="/uniswap.svg"
+          title="Connect wallet on Uniswap"
           content={
             isSequenceWallet
               ? `Choose WalletConnect and click `
