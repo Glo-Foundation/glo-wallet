@@ -52,14 +52,16 @@ test.describe("Help Grow CTAs", () => {
     test("should open merch page", async ({ page, context }) => {
       const pagePromise = context.waitForEvent("page");
       const merchMovementCTA = await page.locator(
-        '[href="https://merch.glodollar.org/"]'
+        '[href="https://merch.glodollar.org"]'
       );
 
       await merchMovementCTA.click({ force: true });
       const newPage = await pagePromise;
 
       await newPage.waitForLoadState();
-      await expect(newPage).toHaveTitle("Glo Merch - Glo Development, Inc.");
+      await expect(newPage).toHaveTitle(
+        "Glo merch – Glo Development Foundation, Inc."
+      );
     });
   });
 });
