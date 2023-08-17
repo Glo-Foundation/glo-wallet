@@ -73,3 +73,17 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 export const getAllowedChains = (): Chain[] => {
   return isProd() ? [polygon, mainnet] : [polygonMumbai, goerli];
 };
+
+export const formatBalance = (balance: {
+  formatted: string;
+  value: number;
+}) => {
+  const formatted = Number(balance.formatted);
+  const val = BigNumber.from(balance.value);
+  const currBuyAmt = utils.parseUnits(buyAmount.toString(), 6).mul(99).div(100);
+
+  const usdc = Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(formatted || 0);
+};

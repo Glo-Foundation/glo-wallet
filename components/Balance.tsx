@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useAccount } from "wagmi";
 
+import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { ModalContext } from "@/lib/context";
 import { getTotalYield } from "@/utils";
 
@@ -8,17 +9,19 @@ import Actions from "./Actions";
 import ImpactInset from "./ImpactInset";
 
 type Props = {
-  balance: any;
+  gloBalance: { formatted: string; value: number };
+  usdcBalance: { formatted: string; value: number };
 };
 
 export default function Balance({
-  balance = { formatted: "0", value: 0 },
+  gloBalance = { formatted: "0", value: 0 },
+  usdcBalance = { formatted: "0", value: 0 },
 }: Props) {
   const { isConnected } = useAccount();
   const { openModal } = useContext(ModalContext);
 
   // ethers and typescript don't like each other
-  const illFormatMyOwnEther = Number(balance.formatted);
+  const illFormatMyOwnEther = Number(gloBalance.formatted);
   const yearlyYield = getTotalYield(illFormatMyOwnEther);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
@@ -26,7 +29,7 @@ export default function Balance({
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
-  }).format(balance.formatted);
+  }).format(gloBalance.formatted);
 
   const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
