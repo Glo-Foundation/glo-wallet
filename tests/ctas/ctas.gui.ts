@@ -49,5 +49,19 @@ test.describe("Help Grow CTAs", () => {
       await newPage.waitForLoadState();
       await expect(newPage).toHaveTitle("Join Glo as an Early Adopter");
     });
+
+    test("should open merch page", async ({ page, gui, context }) => {
+      const pagePromise = context.waitForEvent("page");
+      const merchMovementCTA = await page.locator(
+        '[href="https://merch.glodollar.org/"]'
+      );
+
+      await merchMovementCTA.click({ force: true });
+      const newPage = await pagePromise;
+
+      const allPages = context.pages();
+      await newPage.waitForLoadState();
+      await expect(newPage).toHaveTitle("Glo Merch - Glo Development, Inc.");
+    });
   });
 });
