@@ -5,7 +5,7 @@ import { loginWithMetamask } from "../utils";
 
 test.describe("Help Grow CTAs", () => {
   test.beforeEach(async ({ page, gui }) => {
-    await page.goto("/");
+    await loginWithMetamask(page, gui);
   });
 
   test.describe("initial state", () => {
@@ -25,7 +25,6 @@ test.describe("Help Grow CTAs", () => {
   test.describe("link navs", () => {
     test("should open tweet modal on click", async ({ page }) => {
       const tweetCTA = await page.locator(".cta").first();
-      console.log({ tweetCTA });
       await tweetCTA.click({ force: true });
 
       await expect(page.getByRole("dialog")).toBeTruthy();
@@ -35,6 +34,20 @@ test.describe("Help Grow CTAs", () => {
       await expect(
         page.getByRole("button", { name: "2. Verify Tweet" })
       ).toBeTruthy();
+    });
+
+    test("should open get started page", async ({ page, gui, context }) => {
+      const pagePromise = context.waitForEvent("page");
+      const joinMovementCTA = await page.locator(
+        '[href="https://www.glodollar.org/get-started?email="]'
+      );
+
+      await joinMovementCTA.click({ force: true });
+      const newPage = await pagePromise;
+
+      const allPages = context.pages();
+      await newPage.waitForLoadState();
+      await expect(newPage).toHaveTitle("Join Glo as an Early Adopter");
     });
   });
 });
