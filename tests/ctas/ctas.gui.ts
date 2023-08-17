@@ -36,7 +36,7 @@ test.describe("Help Grow CTAs", () => {
       ).toBeTruthy();
     });
 
-    test("should open get started page", async ({ page, gui, context }) => {
+    test("should open get started page", async ({ page, context }) => {
       const pagePromise = context.waitForEvent("page");
       const joinMovementCTA = await page.locator(
         '[href="https://www.glodollar.org/get-started?email="]'
@@ -45,12 +45,11 @@ test.describe("Help Grow CTAs", () => {
       await joinMovementCTA.click({ force: true });
       const newPage = await pagePromise;
 
-      const allPages = context.pages();
       await newPage.waitForLoadState();
       await expect(newPage).toHaveTitle("Join Glo as an Early Adopter");
     });
 
-    test("should open merch page", async ({ page, gui, context }) => {
+    test("should open merch page", async ({ page, context }) => {
       const pagePromise = context.waitForEvent("page");
       const merchMovementCTA = await page.locator(
         '[href="https://merch.glodollar.org/"]'
@@ -59,7 +58,6 @@ test.describe("Help Grow CTAs", () => {
       await merchMovementCTA.click({ force: true });
       const newPage = await pagePromise;
 
-      const allPages = context.pages();
       await newPage.waitForLoadState();
       await expect(newPage).toHaveTitle("Glo Merch - Glo Development, Inc.");
     });
