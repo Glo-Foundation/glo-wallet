@@ -94,7 +94,7 @@ export default function Balance({
             setShowBalanceDropdown(!showBalanceDropdown);
           }}
         >
-          <div className="flex flex-col justify-center items-center relative z-0">
+          <div className="flex flex-col justify-center items-center relative z-10">
             <div className="flex flex-row text-[2.625rem] items-baseline">
               <div className="max-w-[226px]">
                 ${totalBalanceFormatted.fmtBalanceDollarPart}

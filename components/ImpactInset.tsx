@@ -16,7 +16,7 @@ export default function ImpactInset({
   yearlyYieldFormatted,
 }: Props) {
   return (
-    <div className="m-1">
+    <div className="m-1 relative z-0">
       <button
         className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] px-5 pb-3 w-full font-normal items-baseline"
         onClick={() => openModal(<BuyGloModal />)}
