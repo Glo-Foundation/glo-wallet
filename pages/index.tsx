@@ -162,9 +162,10 @@ export default function Home() {
   }, [isConnected]);
 
   return (
-    <div className="mt-4 px-6">
+    <div className="mt-4 px-6 bg-pine-100">
       <Header />
-      <div className="flex flex-col space-y-2">
+
+      <div className="flex flex-col space-y-4">
         <Balance
           polygonBalance={polygonBalance}
           ethereumBalance={ethereumBalance}

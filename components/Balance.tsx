@@ -6,6 +6,7 @@ import { ModalContext } from "@/lib/context";
 import { getTotalYield } from "@/utils";
 
 import ImpactInset from "./ImpactInset";
+import BuyGloModal from "./Modals/BuyGloModal";
 
 type Props = {
   polygonBalance: FetchBalanceResult | undefined;
@@ -138,6 +139,20 @@ export default function Balance({
         yearlyYield={totalBalanceFormatted.yearlyYield}
         yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldFormatted}
       />
+
+      <div
+        className="bg-pine-50 rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer"
+        onClick={() => openModal(<BuyGloModal />)}
+      >
+        <span className="font-bolder">Buy Glo Dollar</span>
+        <Image
+          className="ml-2"
+          alt="Buy Glo"
+          src="/arrow-right.svg"
+          width={16}
+          height={16}
+        />
+      </div>
     </div>
   );
 }
