@@ -46,12 +46,12 @@ export default function Balance({
           </div>
         </div>
       </div>
-      {isConnected && <Actions />}
       <ImpactInset
         openModal={openModal}
         yearlyYield={yearlyYield}
         yearlyYieldFormatted={yearlyYieldFormatted}
       />
+      {isConnected && <Actions />}
     </div>
   );
 }

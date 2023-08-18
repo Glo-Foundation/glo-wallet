@@ -5,8 +5,8 @@ import { useAccount } from "wagmi";
 import gloAnimation from "../public/glo-animation.json";
 
 const style = {
-  height: 28,
-  width: 28,
+  height: 16,
+  width: 16,
 };
 
 const options = {

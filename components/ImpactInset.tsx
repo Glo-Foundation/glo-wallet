@@ -16,26 +16,21 @@ export default function ImpactInset({
   yearlyYieldFormatted,
 }: Props) {
   return (
-    <div className="m-1">
+    <div className="mx-6 mb-6">
       <button
-        className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] px-5 pb-3 w-full font-normal items-baseline"
+        className="flex flex-row bg-impact-bg justify-between text-impact-fg rounded-[24px] px-5 w-full font-normal items-baseline min-h-8"
         onClick={() => openModal(<BuyGloModal />)}
       >
-        <div className="">
-          <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-32"></div>
-        </div>
-        <div className="flex w-full justify-between items-center space-y-2">
-          <motion.div
-            className="flex items-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5 }}
-          >
-            <GloAnimated />
-            <p className="ml-2">{yearlyYieldFormatted} / year</p>
-          </motion.div>
-          <EnoughToBuy yearlyYield={yearlyYield} />
-        </div>
+        <motion.div
+          className="flex flex-row items-center space-x-1 py-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+        >
+          <GloAnimated />
+          <p className="text-sm">{yearlyYieldFormatted} / year</p>
+        </motion.div>
+        <EnoughToBuy yearlyYield={yearlyYield} />
       </button>
     </div>
   );
