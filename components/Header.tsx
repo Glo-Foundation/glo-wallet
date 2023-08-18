@@ -39,7 +39,7 @@ export default function Header() {
       {isLoading ? (
         <button className="primary-button">Connecting... </button>
       ) : isConnected ? (
-        <div className="flex">
+        <div className="flex z-10">
           <NetworkSwitcher />
           <Tooltip
             id="copy-wallet-tooltip"

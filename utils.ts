@@ -1,5 +1,12 @@
 import { Chain } from "@wagmi/core";
-import { goerli, mainnet, polygon } from "@wagmi/core/chains";
+import {
+  celo,
+  celoAlfajores,
+  goerli,
+  mainnet,
+  polygon,
+  polygonMumbai,
+} from "@wagmi/core/chains";
 import { BigNumber, ethers } from "ethers";
 
 import { getChainRPCUrl, getSmartContractAddress } from "@/lib/config";
@@ -120,10 +127,26 @@ export const getNiceNumber = (num: number) => {
 };
 
 export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
-  if (chain.id === mainnet.id || chain.id === goerli.id) {
-    return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-  } else {
-    return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+  switch (chain.id) {
+    case goerli.id: {
+      return "0x07865c6E87B9F70255377e024ace6630C1Eaa37F";
+    }
+    case mainnet.id: {
+      return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+    }
+    case celo.id: {
+      return "0xef4229c8c3250C675F21BCefa42f58EfbfF6002a";
+    }
+    case celoAlfajores.id: {
+      return "0x5263F75FFB7384690818BeAEa62D7313B69f2A9c";
+    }
+    case polygonMumbai.id: {
+      return "0xF493Af87835D243058103006e829c72f3d34b891";
+    }
+    case polygon.id:
+    default: {
+      return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+    }
   }
 };
 
@@ -141,12 +164,38 @@ export const getUSDCToUSDGLOSwapDeeplink = (
 
   const inputCurrency = getUSDCContractAddress(chain);
   let outputCurrency, swapChain;
-  if (chain.id === mainnet.id || chain.id === goerli.id) {
-    outputCurrency = getSmartContractAddress(mainnet.id);
-    swapChain = dex === "Uniswap" ? "mainnet" : "ethereum";
-  } else {
-    outputCurrency = getSmartContractAddress(polygon.id);
-    swapChain = "polygon";
+
+  switch (chain.id) {
+    case mainnet.id: {
+      outputCurrency = getSmartContractAddress(mainnet.id);
+      swapChain = dex === "Uniswap" ? "mainnet" : "ethereum";
+      break;
+    }
+    case goerli.id: {
+      outputCurrency = getSmartContractAddress(goerli.id);
+      swapChain = dex === "Uniswap" ? "goerli" : "ethereum";
+      break;
+    }
+    case celo.id: {
+      outputCurrency = getSmartContractAddress(celo.id);
+      swapChain = "celo";
+      break;
+    }
+    case celoAlfajores.id: {
+      outputCurrency = getSmartContractAddress(celoAlfajores.id);
+      swapChain = dex === "Uniswap" ? "celo_alfajores" : "celo";
+      break;
+    }
+    case polygonMumbai.id: {
+      outputCurrency = getSmartContractAddress(polygonMumbai.id);
+      swapChain = dex === "Uniswap" ? "polygon_mumbai" : "polygon";
+    }
+    case polygon.id:
+    default: {
+      outputCurrency = getSmartContractAddress(polygon.id);
+      swapChain = "polygon";
+      break;
+    }
   }
 
   let outputUrl;
@@ -157,6 +206,7 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     case "Zeroswap":
       outputUrl = `https://app.zeroswap.io/swap/${chain.id}/${inputCurrency}/${outputCurrency}`;
       break;
+    case "Uniswap":
     default:
       outputUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
   }
