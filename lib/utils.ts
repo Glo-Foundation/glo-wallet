@@ -80,9 +80,8 @@ export const formatBalance = (balance: {
 }) => {
   const formatted = Number(balance.formatted);
   const val = BigNumber.from(balance.value);
-  const currBuyAmt = utils.parseUnits(buyAmount.toString(), 6).mul(99).div(100);
 
-  const usdc = Intl.NumberFormat("en-US", {
+  return Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(formatted || 0);

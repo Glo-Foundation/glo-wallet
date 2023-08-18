@@ -30,13 +30,13 @@ export default function Home() {
     message: signMsgContent,
   });
 
-  const { data: gloBalance } = useBalance({
+  const gloBalance = useBalance({
     address,
     token: getSmartContractAddress(chain?.id),
     watch: true,
     cacheTime: 5_000,
   });
-  const { data: usdcBalance } = useBalance({
+  const usdcBalance = useBalance({
     address,
     token: getUSDCContractAddress(chain),
     watch: true,
@@ -135,9 +135,9 @@ export default function Home() {
     <div className="mt-4 px-6">
       <Header />
       <div className="flex flex-col space-y-2">
-        <Balance gloBalance={gloBalance} usdcBalance={usdcBalance} />
+        <Balance gloBalance={gloBalance.data} usdcBalance={usdcBalance.data} />
         <Transactions />
-        <CTA balance={gloBalance?.formatted} address={address!} />
+        <CTA balance={gloBalance.data?.formatted} address={address!} />
       </div>
     </div>
   );
