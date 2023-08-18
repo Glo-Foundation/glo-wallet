@@ -38,7 +38,7 @@ export default function Home() {
   });
   const usdcBalance = useBalance({
     address,
-    token: getUSDCContractAddress(chain),
+    token: getUSDCContractAddress(chain!),
     watch: true,
     cacheTime: 2_000,
   });

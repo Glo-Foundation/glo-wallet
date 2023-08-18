@@ -57,7 +57,7 @@ export default function BuyWithCoinbaseModal({ buyAmount }: Props) {
         style: "currency",
         currency: "USD",
       }).format(formatted || 0);
-      setUSDC(setBalance(usdc));
+      setUSDC(usdc);
       if (val.gte(currBuyAmt)) setIsCoinbaseStepDone(true);
     }
   }, [balance]);

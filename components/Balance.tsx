@@ -9,8 +9,8 @@ import Actions from "./Actions";
 import ImpactInset from "./ImpactInset";
 
 type Props = {
-  gloBalance: { formatted: string; value: number };
-  usdcBalance: { formatted: string; value: number };
+  gloBalance: any;
+  usdcBalance: any;
 };
 
 export default function Balance({
@@ -29,7 +29,7 @@ export default function Balance({
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
-  }).format(gloBalance.formatted);
+  }).format(illFormatMyOwnEther);
 
   const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
@@ -60,7 +60,9 @@ export default function Balance({
             className="black-link self-center"
             onClick={() => {
               openModal(
-                <BuyWithCoinbaseModal buyAmount={fmtBalanceDollarPart} />
+                <BuyWithCoinbaseModal
+                  buyAmount={Number(fmtBalanceDollarPart)}
+                />
               );
             }}
           >
