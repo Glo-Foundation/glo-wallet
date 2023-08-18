@@ -172,8 +172,6 @@ export default function Home() {
           totalBalance={totalBalance}
         />
 
-        <Transactions />
-
         <CTA balance={totalBalance?.formatted} address={address!} />
       </div>
     </div>

@@ -1,12 +1,10 @@
 import { FetchBalanceResult } from "@wagmi/core";
 import Image from "next/image";
 import { useContext, useState } from "react";
-import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { getTotalYield } from "@/utils";
 
-import Actions from "./Actions";
 import ImpactInset from "./ImpactInset";
 
 type Props = {
@@ -54,7 +52,6 @@ export default function Balance({
   celoBalance,
   totalBalance,
 }: Props) {
-  const { isConnected } = useAccount();
   const { openModal } = useContext(ModalContext);
 
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
@@ -135,7 +132,7 @@ export default function Balance({
           </div>
         </div>
       </div>
-      {isConnected && <Actions />}
+
       <ImpactInset
         openModal={openModal}
         yearlyYield={totalBalanceFormatted.yearlyYield}
