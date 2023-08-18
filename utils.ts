@@ -1,4 +1,4 @@
-import { Chain } from "@wagmi/core";
+import { Chain, FetchBalanceResult } from "@wagmi/core";
 import {
   celo,
   celoAlfajores,
@@ -236,4 +236,22 @@ export const numberToHex = (num: number): string => {
 
 export const hexToNumber = (hex: string): number => {
   return parseInt(hex, 16);
+};
+
+export const getTotalGloBalance = (
+  balances: (FetchBalanceResult | undefined)[]
+): FetchBalanceResult => {
+  let totalBalanceValue = 0;
+  for (const balance of balances) {
+    if (balance) {
+      totalBalanceValue += Number(balance!.formatted);
+    }
+  }
+
+  return {
+    decimals: 18,
+    formatted: totalBalanceValue.toString(),
+    symbol: "USDGLO",
+    value: BigInt(totalBalanceValue * 10 ** 18) / BigInt(10 ** 18),
+  };
 };

@@ -1,4 +1,12 @@
 import "react-tooltip/dist/react-tooltip.css";
+import {
+  mainnet,
+  polygon,
+  celo,
+  goerli,
+  polygonMumbai,
+  celoAlfajores,
+} from "@wagmi/core/chains";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useEffect, useContext } from "react";
@@ -18,23 +26,53 @@ import Transactions from "@/components/Transactions";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { getAllowedChains, api, initApi, signMsgContent } from "@/lib/utils";
+import {
+  getAllowedChains,
+  api,
+  initApi,
+  signMsgContent,
+  isProd,
+} from "@/lib/utils";
+import { getTotalGloBalance } from "@/utils";
 
 export default function Home() {
   const { address, isConnected, connector } = useAccount();
-  const { chain, chains } = useNetwork();
+  const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
   const { signMessageAsync, status } = useSignMessage({
     message: signMsgContent,
   });
 
-  const { data: balance } = useBalance({
+  const polygonId = isProd() ? polygon.id : polygonMumbai.id;
+  const { data: polygonBalance } = useBalance({
     address,
-    token: getSmartContractAddress(chain?.id),
+    token: getSmartContractAddress(polygonId),
     watch: true,
     cacheTime: 5_000,
   });
+
+  const ethereumId = isProd() ? mainnet.id : goerli.id;
+  const { data: ethereumBalance } = useBalance({
+    address,
+    token: getSmartContractAddress(ethereumId),
+    watch: true,
+    cacheTime: 5_000,
+  });
+
+  const celoId = isProd() ? celo.id : celoAlfajores.id;
+  const { data: celoBalance } = useBalance({
+    address,
+    token: getSmartContractAddress(celoId),
+    watch: true,
+    cacheTime: 5_000,
+  });
+
+  const totalBalance = getTotalGloBalance([
+    ethereumBalance,
+    polygonBalance,
+    celoBalance,
+  ]);
 
   const { setTransfers, setCTAs } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
@@ -105,12 +143,11 @@ export default function Home() {
 
         Cookies.set("glo-user", userId);
 
-        // Parallel requests
-        onChainSwitch();
-
-        api()
-          .get<CTA[]>(`/ctas`)
-          .then((res) => setCTAs(res.data));
+        onChainSwitch().then(() => {
+          api()
+            .get<CTA[]>(`/ctas`)
+            .then((res) => setCTAs(res.data));
+        });
       });
     } else {
       Cookies.remove("glo-email");
@@ -128,9 +165,16 @@ export default function Home() {
     <div className="mt-4 px-6">
       <Header />
       <div className="flex flex-col space-y-2">
-        <Balance balance={balance} />
+        <Balance
+          polygonBalance={polygonBalance}
+          ethereumBalance={ethereumBalance}
+          celoBalance={celoBalance}
+          totalBalance={totalBalance}
+        />
+
         <Transactions />
-        <CTA balance={balance?.formatted} address={address!} />
+
+        <CTA balance={totalBalance?.formatted} address={address!} />
       </div>
     </div>
   );
