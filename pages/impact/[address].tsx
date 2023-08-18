@@ -1,5 +1,5 @@
-import { Chain, getNetwork } from "@wagmi/core";
 import axios from "axios";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
@@ -85,6 +85,9 @@ export default function Impact() {
 
   return (
     <>
+      <Head>
+        <title>Glo Impact</title>
+      </Head>
       <Navbar />
       <div className="mt-4 px-6">
         <div className="bg-white rounded-[20px] py-4">

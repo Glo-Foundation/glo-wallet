@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
@@ -31,58 +32,69 @@ export default function Header() {
   };
 
   return (
-    <nav className="mt-4 mb-6 flex justify-between items-center">
-      <a href="https://glodollar.org/" target="_blank" rel="noreferrer">
-        <Image src="/glo-logo-text.svg" alt="glo logo" width={74} height={26} />
-      </a>
+    <>
+      <Head>
+        <title>Glo Dollar App</title>
+      </Head>
 
-      {isLoading ? (
-        <button className="primary-button">Connecting... </button>
-      ) : isConnected ? (
-        <div className="flex z-10">
-          <NetworkSwitcher />
-          <Tooltip
-            id="copy-wallet-tooltip"
-            content="Copied!"
-            isOpen={isCopiedTooltipOpen}
+      <nav className="mt-4 mb-6 flex justify-between items-center">
+        <a href="https://glodollar.org/" target="_blank" rel="noreferrer">
+          <Image
+            src="/glo-logo-text.svg"
+            alt="glo logo"
+            width={74}
+            height={26}
           />
-          <button
-            data-tooltip-id="copy-wallet-tooltip"
-            data-tooltip-content="Copied!"
-            className="text-sm text-pine-800 mr-3 font-normal"
-            onClick={() => {
-              navigator.clipboard.writeText(address!);
-              setIsCopiedTooltipOpen(true);
-            }}
-          >
-            {sliceAddress(address!)}
-          </button>
-          <button
-            className="primary-button w-9 h-9"
-            onClick={() => openUserInfoModal()}
-            data-testid="profile-button"
-          >
-            👤
-          </button>
-        </div>
-      ) : (
-        <div className="flex">
-          <button
-            className="primary-button mr-2"
-            data-testid="primary-login-button"
-            onClick={() => openUserAuthModal()}
-          >
-            Log in
-          </button>
-          <a
-            target="_blank"
-            href="https://www.notion.so/Glo-FAQ-946e21901e934fc19992df43a3008077"
-            rel="noreferrer"
-          >
-            <button className="secondary-button">?</button>
-          </a>
-        </div>
-      )}
-    </nav>
+        </a>
+
+        {isLoading ? (
+          <button className="primary-button">Connecting... </button>
+        ) : isConnected ? (
+          <div className="flex z-10">
+            <NetworkSwitcher />
+            <Tooltip
+              id="copy-wallet-tooltip"
+              content="Copied!"
+              isOpen={isCopiedTooltipOpen}
+            />
+            <button
+              data-tooltip-id="copy-wallet-tooltip"
+              data-tooltip-content="Copied!"
+              className="text-sm text-pine-800 mr-3 font-normal"
+              onClick={() => {
+                navigator.clipboard.writeText(address!);
+                setIsCopiedTooltipOpen(true);
+              }}
+            >
+              {sliceAddress(address!)}
+            </button>
+            <button
+              className="primary-button w-9 h-9"
+              onClick={() => openUserInfoModal()}
+              data-testid="profile-button"
+            >
+              👤
+            </button>
+          </div>
+        ) : (
+          <div className="flex">
+            <button
+              className="primary-button mr-2"
+              data-testid="primary-login-button"
+              onClick={() => openUserAuthModal()}
+            >
+              Log in
+            </button>
+            <a
+              target="_blank"
+              href="https://www.notion.so/Glo-FAQ-946e21901e934fc19992df43a3008077"
+              rel="noreferrer"
+            >
+              <button className="secondary-button">?</button>
+            </a>
+          </div>
+        )}
+      </nav>
+    </>
   );
 }
