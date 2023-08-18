@@ -32,7 +32,7 @@ const ActionButton = ({
 
   return (
     <a
-      className={"flex cursor-pointer items-center py-4"}
+      className="cta"
       href={link}
       onClick={() => (action ? action() : undefined)}
       target="_blank"
