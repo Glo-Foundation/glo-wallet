@@ -129,7 +129,6 @@ export default function Home() {
       <Header />
       <div className="flex flex-col space-y-2">
         <Balance balance={{ formatted: "50000", value: 50000 }} />
-        <Transactions />
         <CTA balance={balance?.formatted} address={address!} />
       </div>
     </div>
