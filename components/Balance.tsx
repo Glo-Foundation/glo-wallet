@@ -36,6 +36,13 @@ export default function Balance({
   let fmtBalanceCentPart = splitFmtBalance[1];
   if (fmtBalanceCentPart?.length === 1) fmtBalanceCentPart += "0";
 
+  // usdc formatting
+  const formattedUSDC = Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(Number(usdcBalance.formatted));
+
   return (
     <div className="bg-white rounded-[20px] pt-4">
       <div className="flex flex-col space-y-2 p-4">
@@ -48,6 +55,18 @@ export default function Balance({
             <div className="text-xl">.{fmtBalanceCentPart || "00"}</div>
           </div>
         </div>
+        {usdcBalance.value > 0 && (
+          <a
+            className="black-link self-center"
+            onClick={() => {
+              openModal(
+                <BuyWithCoinbaseModal buyAmount={fmtBalanceDollarPart} />
+              );
+            }}
+          >
+            ({formattedUSDC} USDC swappable for Glo Dollar)
+          </a>
+        )}
       </div>
       {isConnected && <Actions />}
       <ImpactInset
