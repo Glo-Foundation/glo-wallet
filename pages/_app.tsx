@@ -1,12 +1,6 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
-import {
-  goerli,
-  polygon,
-  mainnet,
-  polygonMumbai,
-  Chain,
-} from "@wagmi/core/chains";
+
 import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
 import Script from "next/script";
@@ -18,19 +12,16 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
+import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
-import { isProd, isE2E } from "../lib/utils";
+import { getChains } from "../lib/utils";
 
 import type { AppProps } from "next/app";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  isE2E()
-    ? [polygon]
-    : isProd()
-    ? ([polygon, mainnet] as Chain[])
-    : [polygon, polygonMumbai, goerli],
+  getChains(),
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
     publicProvider(),
@@ -44,7 +35,7 @@ const config = createConfig({
       options: {
         connect: {
           app: "Glo wallet",
-          networkId: chains[0].id,
+          networkId: defaultChainId(),
           askForEmail: true,
           settings: {
             theme: "light",

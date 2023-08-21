@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useAccount } from "wagmi";
 
+import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { ModalContext } from "@/lib/context";
 import { getTotalYield } from "@/utils";
 
@@ -8,17 +9,19 @@ import Actions from "./Actions";
 import ImpactInset from "./ImpactInset";
 
 type Props = {
-  balance: any;
+  gloBalance: any;
+  usdcBalance: any;
 };
 
 export default function Balance({
-  balance = { formatted: "0", value: 0 },
+  gloBalance = { formatted: "0", value: 0 },
+  usdcBalance = { formatted: "0", value: 0 },
 }: Props) {
   const { isConnected } = useAccount();
   const { openModal } = useContext(ModalContext);
 
   // ethers and typescript don't like each other
-  const illFormatMyOwnEther = Number(balance.formatted);
+  const illFormatMyOwnEther = Number(gloBalance.formatted);
   const yearlyYield = getTotalYield(illFormatMyOwnEther);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
@@ -26,12 +29,19 @@ export default function Balance({
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
-  }).format(balance.formatted);
+  }).format(illFormatMyOwnEther);
 
   const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
   let fmtBalanceCentPart = splitFmtBalance[1];
   if (fmtBalanceCentPart?.length === 1) fmtBalanceCentPart += "0";
+
+  // usdc formatting
+  const formattedUSDC = Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(Number(usdcBalance.formatted));
 
   return (
     <div className="bg-white rounded-[20px] pt-4">
@@ -45,6 +55,20 @@ export default function Balance({
             <div className="text-xl">.{fmtBalanceCentPart || "00"}</div>
           </div>
         </div>
+        {usdcBalance.value > 0 && (
+          <a
+            className="black-link self-center"
+            onClick={() => {
+              openModal(
+                <BuyWithCoinbaseModal
+                  buyAmount={Number(fmtBalanceDollarPart)}
+                />
+              );
+            }}
+          >
+            ({formattedUSDC} USDC swappable for Glo Dollar)
+          </a>
+        )}
       </div>
       {isConnected && <Actions />}
       <ImpactInset

@@ -115,10 +115,14 @@ export const getNiceNumber = (num: number) => {
   const base = getUSFormattedNumber(num);
 
   const parts = base.split(",");
-  return `${parts[0]}.${parts[1][0]}${TIER_SUFFIX[parts.length - 1]}`;
+  const decimals = parts.length > 1 ? parts[1][0] : 0;
+  return `${parts[0]}.${decimals}${TIER_SUFFIX[parts.length - 1]}`;
 };
 
-export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
+export const getUSDCContractAddress = (
+  chain: Chain
+): `0x${string}` | undefined => {
+  if (!chain) return;
   if (chain.id === mainnet.id || chain.id === goerli.id) {
     return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
   } else {
@@ -126,9 +130,10 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
   }
 };
 
-export const getUSDCToUSDGLOUniswapDeeplink = (
+export const getUSDCToUSDGLOSwapDeeplink = (
   amount: number,
-  chain: Chain
+  chain: Chain,
+  dex: string
 ): string => {
   const chainAllowed = getAllowedChains().some(
     (allowedChain) => allowedChain.id === chain?.id
@@ -138,16 +143,28 @@ export const getUSDCToUSDGLOUniswapDeeplink = (
   }
 
   const inputCurrency = getUSDCContractAddress(chain);
-  let outputCurrency, uniswapChain;
+  let outputCurrency, swapChain;
   if (chain.id === mainnet.id || chain.id === goerli.id) {
     outputCurrency = getSmartContractAddress(mainnet.id);
-    uniswapChain = "mainnet";
+    swapChain = dex === "Uniswap" ? "mainnet" : "ethereum";
   } else {
     outputCurrency = getSmartContractAddress(polygon.id);
-    uniswapChain = "polygon";
+    swapChain = "polygon";
   }
 
-  return `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${uniswapChain}`;
+  let outputUrl;
+  switch (dex) {
+    case "Matcha":
+      outputUrl = `https://matcha.xyz/tokens/${swapChain}/${outputCurrency}`;
+      break;
+    case "Zeroswap":
+      outputUrl = `https://app.zeroswap.io/swap/${chain.id}/${inputCurrency}/${outputCurrency}`;
+      break;
+    default:
+      outputUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
+  }
+
+  return outputUrl;
 };
 
 export const getBalance = async (

@@ -42,6 +42,13 @@ export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
 export const isE2E = () => process.env.E2E === "true";
 
+export const getChains = (): Chain[] => {
+  if (isE2E()) {
+    return [polygon] as Chain[];
+  }
+  return (isProd() ? [polygon, mainnet] : [polygonMumbai, goerli]) as Chain[];
+};
+
 export const signMsgContent = "glo-wallet";
 
 export const DEFAULT_CTAS: CTA[] = [
@@ -65,4 +72,17 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 
 export const getAllowedChains = (): Chain[] => {
   return isProd() ? [polygon, mainnet] : [polygonMumbai, goerli];
+};
+
+export const formatBalance = (balance: {
+  formatted: string;
+  value: number;
+}) => {
+  const formatted = Number(balance.formatted);
+  const val = BigNumber.from(balance.value);
+
+  return Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(formatted || 0);
 };

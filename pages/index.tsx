@@ -15,13 +15,14 @@ import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Transactions from "@/components/Transactions";
-import { getSmartContractAddress } from "@/lib/config";
+import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 import { getAllowedChains, api, initApi, signMsgContent } from "@/lib/utils";
+import { getUSDCContractAddress } from "@/utils";
 
 export default function Home() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, connector } = useAccount();
   const { chain, chains } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
@@ -29,11 +30,17 @@ export default function Home() {
     message: signMsgContent,
   });
 
-  const { data: balance } = useBalance({
+  const gloBalance = useBalance({
     address,
     token: getSmartContractAddress(chain?.id),
     watch: true,
     cacheTime: 5_000,
+  });
+  const usdcBalance = useBalance({
+    address,
+    token: getUSDCContractAddress(chain!),
+    watch: true,
+    cacheTime: 2_000,
   });
 
   const { setTransfers, setCTAs } = useUserStore();
@@ -53,9 +60,16 @@ export default function Home() {
     const currentChainAllowed = allowedChains.some(
       (allowedChain) => allowedChain.id === chain?.id
     );
-    if (isConnected && !currentChainAllowed) {
-      const defaultChainId = chains[0]?.id;
-      switchNetwork?.(defaultChainId);
+
+    const isSequenceWallet = connector?.id === "sequence";
+    const shouldSwitchToDefault =
+      !currentChainAllowed ||
+      (isSequenceWallet && chain?.id !== defaultChainId());
+    if (isConnected && shouldSwitchToDefault) {
+      // This timeout avoids some Sequence condition race
+      setTimeout(() => {
+        switchNetwork?.(defaultChainId());
+      }, 0);
     }
   }, [switchNetwork]);
 
@@ -121,9 +135,9 @@ export default function Home() {
     <div className="mt-4 px-6">
       <Header />
       <div className="flex flex-col space-y-2">
-        <Balance balance={balance} />
+        <Balance gloBalance={gloBalance.data} usdcBalance={usdcBalance.data} />
         <Transactions />
-        <CTA balance={balance?.formatted} address={address!} />
+        <CTA balance={gloBalance.data?.formatted} address={address!} />
       </div>
     </div>
   );

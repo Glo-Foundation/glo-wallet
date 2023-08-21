@@ -1,4 +1,4 @@
-import { mainnet, polygon } from "@wagmi/core/chains";
+import { mainnet, polygon, celo } from "@wagmi/core/chains";
 import { BigNumber, utils } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -20,6 +20,7 @@ export default async function handler(
   const result = await Promise.all([
     getMarketCap(mainnet.id),
     getMarketCap(polygon.id),
+    getMarketCap(celo.id),
   ]);
 
   const totalMarketCap = result.reduce(
@@ -28,7 +29,6 @@ export default async function handler(
   );
 
   const value = utils.formatEther(totalMarketCap).split(".")[0];
-
   const formatted = getNiceNumber(Number(value));
 
   cache.set(CACHE_KEY, formatted, 5 * 60);

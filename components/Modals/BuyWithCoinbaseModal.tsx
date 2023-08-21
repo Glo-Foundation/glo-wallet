@@ -1,6 +1,5 @@
 import { sequence } from "0xsequence";
 import { polygon } from "@wagmi/chains";
-import clsx from "clsx";
 import { BigNumber, utils } from "ethers";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
@@ -8,24 +7,17 @@ import { Tooltip } from "react-tooltip";
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import PaymentOptionModal from "@/components/Modals/PaymentOptionModal";
+import StepCard from "@/components/Modals/StepCard";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithUniswap } from "@/payments";
+import { buyWithSwap } from "@/payments";
 import { getUSDCContractAddress } from "@/utils";
 
 interface Props {
-  iconPath: string;
-  buyWithProvider: () => void;
-  provider: string;
   buyAmount: number;
 }
 
-export default function BuyingGuide({
-  iconPath,
-  buyWithProvider,
-  provider,
-  buyAmount,
-}: Props) {
+export default function BuyWithCoinbaseModal({ buyAmount }: Props) {
   const { address, connector } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
 
@@ -38,8 +30,8 @@ export default function BuyingGuide({
   });
   const { switchNetwork } = useSwitchNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [isProviderStepDone, setIsProviderStepDone] = useState(false);
-  const [isUniswapStepDone, setIsUniswapStepDone] = useState(false);
+  const [isCoinbaseStepDone, setIsCoinbaseStepDone] = useState(false);
+  const [isSwapStepDone, setIsSwapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
   const [USDC, setUSDC] = useState("");
 
@@ -66,97 +58,9 @@ export default function BuyingGuide({
         currency: "USD",
       }).format(formatted || 0);
       setUSDC(usdc);
-
-      if (val.gte(currBuyAmt)) setIsProviderStepDone(true);
+      if (val.gte(currBuyAmt)) setIsCoinbaseStepDone(true);
     }
   }, [balance]);
-
-  const StepCard = ({
-    index,
-    iconPath,
-    title,
-    content,
-    action,
-    done = false,
-  }: {
-    index: number;
-    iconPath: string;
-    title: string;
-    content: string;
-    action: any;
-    done?: boolean;
-  }) => (
-    <div
-      className={clsx(
-        "cursor-pointer flex flex-col justify-center border-2 rounded-xl border-pine-100 hover:border-pine-400 mb-2",
-        done && "bg-cyan-600/20"
-      )}
-      onClick={action}
-    >
-      <div className="flex flex-col justify-center">
-        <div className="flex items-center p-3">
-          <div
-            className={clsx(
-              "relative circle border-2 w-[32px] h-[32px]",
-              done && "border-none bg-cyan-600 w-[32px] h-[32px]"
-            )}
-          >
-            {!done ? (
-              index
-            ) : (
-              <Image
-                alt="checkmark"
-                src="check-alpha.svg"
-                height={12}
-                width={12}
-              />
-            )}
-            <div
-              className={clsx(
-                "circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]",
-                done && "top-[-5px] right-[-8px]"
-              )}
-            >
-              <Image alt={iconPath} src={iconPath} height={20} width={20} />
-            </div>
-          </div>
-          <div className="pl-4">
-            <h5 className="text-sm mb-2">{title}</h5>
-            <p className="copy text-xs">
-              {content}{" "}
-              {index === 3 && isSequenceWallet && (
-                <>
-                  <Image
-                    alt="qrcode"
-                    style={{ display: "inline" }}
-                    src="/miniqr.svg"
-                    height={16}
-                    width={16}
-                  />{" "}
-                  +&nbsp;
-                  <Image
-                    alt="copypaste"
-                    style={{ display: "inline" }}
-                    src="/copy.svg"
-                    height={16}
-                    width={16}
-                  />
-                </>
-              )}
-            </p>
-          </div>
-        </div>
-        {index === 2 && (
-          <div className="p-3 border-t-2 flex justify-center w-full">
-            <Image alt="usdc" src="usdc.svg" height={20} width={20} />
-            <span className="ml-2 copy text-pine-900 font-bold">
-              Current USDC balance: {USDC}
-            </span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
@@ -189,7 +93,7 @@ export default function BuyingGuide({
       </div>
       <section className="text-center">
         <h3 className="pt-0">
-          Buying Glo Dollars through {provider} and Uniswap
+          Buying Glo Dollars through Coinbase and Uniswap
         </h3>
         <p className="text-sm py-6">
           You can get Glo Dollars by exchanging another stablecoin called{" "}
@@ -209,43 +113,36 @@ export default function BuyingGuide({
         />
         <StepCard
           index={2}
-          iconPath={iconPath}
-          title={`Buy ${buyAmount} USDC on ${provider}`}
+          iconPath="/coinbase-invert.svg"
+          title={`Buy ${buyAmount} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
           action={() => {
-            buyWithProvider();
+            window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank");
           }}
-          done={isProviderStepDone}
+          done={isCoinbaseStepDone}
+          USDC={USDC}
         />
         <StepCard
           index={3}
           iconPath="/uniswap.svg"
-          title={
-            isSequenceWallet
-              ? `Connect wallet on Uniswap`
-              : `Buy Glo through Uniswap`
-          }
+          title="Connect wallet on Uniswap"
           content={
             isSequenceWallet
               ? `Choose WalletConnect and click `
               : `Connect your wallet and click \"Swap\"`
           }
           action={() => {
-            isSequenceWallet
-              ? window.open(
-                  "https://app.uniswap.org/#/swap?chain=polygon",
-                  "_blank"
-                )
-              : chain && buyWithUniswap(buyAmount, chain);
-            setIsUniswapStepDone(true);
+            chain && buyWithSwap(buyAmount, chain, "Uniswap");
+            setIsSwapStepDone(true);
           }}
-          done={isUniswapStepDone}
+          done={isSwapStepDone}
+          isSequenceWallet={isSequenceWallet}
         />
         {isSequenceWallet && (
           <StepCard
             index={4}
             iconPath="/sequence.svg"
-            title={"Connect to the Sequence wallet"}
+            title="Connect to the Sequence wallet"
             content="Paste the code into the wallet's scanner"
             action={() => {
               const wallet = sequence.getWallet();
@@ -259,7 +156,7 @@ export default function BuyingGuide({
       <section className="flex flex-col justify-center m-3">
         <button
           className="primary-button"
-          onClick={() => chain && buyWithUniswap(buyAmount, chain)}
+          onClick={() => chain && buyWithSwap(buyAmount, chain, "Uniswap")}
         >
           Buy ${buyAmount} Glo Dollars on Uniswap
         </button>

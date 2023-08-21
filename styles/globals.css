@@ -101,7 +101,7 @@ body {
   }
 
   .cta {
-    @apply border-b-2 last:mb-0 last:border-none;
+    @apply flex cursor-pointer items-center py-4;
   }
 
   .cta-icon {
@@ -121,6 +121,10 @@ body {
   }
 
   .link {
-    @apply text-blue-700 underline !important;
+    @apply text-blue-500 underline !important;
+  }
+
+  .black-link {
+    @apply cursor-pointer underline !important;
   }
 }
