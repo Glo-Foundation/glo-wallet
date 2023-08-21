@@ -72,9 +72,11 @@ const firstGloBlock: { [id: number]: number } = {
   // Mainnets
   [polygon.id]: 35063113,
   [mainnet.id]: 15874664,
+  [celo.id]: 20910330,
   // Testnets
   [polygonMumbai.id]: 35142419,
   [goerli.id]: 7878164,
+  [celoAlfajores.id]: 19212753,
 };
 
 export const getFirstGloBlock = (chainId?: number) => {
