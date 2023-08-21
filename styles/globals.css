@@ -123,4 +123,8 @@ body {
   .link {
     @apply text-blue-500 underline !important;
   }
+
+  .black-link {
+    @apply cursor-pointer underline !important;
+  }
 }

@@ -220,19 +220,7 @@ export default function PaymentOptionModal({
             worksFor="💳 Fiat"
             delay="⚡ 0-3 Days"
             onClick={() => {
-              openModal(
-                <BuyWithCoinbaseModal
-                  iconPath="/coinbase-invert.svg"
-                  provider="Coinbase"
-                  buyWithProvider={() => {
-                    window.open(
-                      "https://www.coinbase.com/how-to-buy/usdc",
-                      "_blank"
-                    );
-                  }}
-                  buyAmount={buyAmount}
-                />
-              );
+              openModal(<BuyWithCoinbaseModal buyAmount={buyAmount} />);
             }}
           />
         </>
