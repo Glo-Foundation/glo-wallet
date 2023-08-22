@@ -101,7 +101,7 @@ export default function Balance({
             setShowBalanceDropdown(!showBalanceDropdown);
           }}
         >
-          <div className="flex flex-col justify-center items-center relative z-10">
+          <div className="flex flex-col justify-center items-center relative z-1">
             <div className="flex flex-row text-[2.625rem] items-baseline">
               <div className="max-w-[226px]">
                 ${totalBalanceFormatted.fmtBalanceDollarPart}
@@ -111,7 +111,7 @@ export default function Balance({
               </div>
             </div>
             {showBalanceDropdown && (
-              <div className="absolute top-10 z-100 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
+              <div className="absolute top-10 z-10 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
                 <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
 
                 <div className="flex flex-col justify-center items-center">
