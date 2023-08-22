@@ -14,7 +14,7 @@ type Props = {
   ethereumBalance: FetchBalanceResult | undefined;
   celoBalance: FetchBalanceResult | undefined;
   totalBalance: FetchBalanceResult | undefined;
-  usdcBalance: any;
+  usdcBalance: FetchBalanceResult | undefined;
 };
 
 const customFormatBalance = (
@@ -69,7 +69,7 @@ export default function Balance({
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
-  }).format(Number(usdcBalance.formatted));
+  }).format(Number(usdcBalance?.formatted));
 
   const supportedChains = [
     {
@@ -141,7 +141,7 @@ export default function Balance({
             )}
           </div>
         </div>
-        {usdcBalance.value > 0 && (
+        {usdcBalance && usdcBalance.value > 0 && (
           <a
             className="black-link self-center"
             onClick={() => {
