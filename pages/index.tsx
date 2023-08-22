@@ -64,11 +64,7 @@ export default function Home() {
     chainId: celoId,
   });
 
-  const totalBalance = getTotalGloBalance([
-    ethereumBalance,
-    polygonBalance,
-    celoBalance,
-  ]);
+  const totalBalance = getTotalGloBalance([ethereumBalance, polygonBalance, 0]);
 
   const { setTransfers, setCTAs } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
@@ -171,7 +167,7 @@ export default function Home() {
         <Balance
           polygonBalance={polygonBalance}
           ethereumBalance={ethereumBalance}
-          celoBalance={celoBalance}
+          celoBalance={0}
           totalBalance={totalBalance}
           usdcBalance={usdcBalance.data}
         />
