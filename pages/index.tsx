@@ -41,6 +41,7 @@ export default function Home() {
   const { data: polygonBalance } = useBalance({
     address,
     token: getSmartContractAddress(polygonId),
+    chainId: polygonId,
     watch: true,
     cacheTime: 5_000,
   });
@@ -49,6 +50,7 @@ export default function Home() {
   const { data: ethereumBalance } = useBalance({
     address,
     token: getSmartContractAddress(ethereumId),
+    chainId: ethereumId,
     watch: true,
     cacheTime: 5_000,
   });
@@ -57,6 +59,7 @@ export default function Home() {
   const { data: celoBalance } = useBalance({
     address,
     token: getSmartContractAddress(celoId),
+    chainId: celoId,
     watch: true,
     cacheTime: 5_000,
   });
