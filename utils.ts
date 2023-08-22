@@ -9,7 +9,11 @@ import {
 } from "@wagmi/core/chains";
 import { BigNumber, ethers } from "ethers";
 
-import { getChainRPCUrl, getSmartContractAddress } from "@/lib/config";
+import {
+  defaultChainId,
+  getChainRPCUrl,
+  getSmartContractAddress,
+} from "@/lib/config";
 import { getAllowedChains } from "@/lib/utils";
 
 const TOTAL_DAYS = 365;
@@ -127,7 +131,8 @@ export const getNiceNumber = (num: number) => {
 };
 
 export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
-  switch (chain.id) {
+  const chainId = chain?.id || defaultChainId();
+  switch (chainId) {
     case goerli.id: {
       return "0x07865c6E87B9F70255377e024ace6630C1Eaa37F";
     }
