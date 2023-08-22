@@ -1,7 +1,6 @@
 import { FetchBalanceResult } from "@wagmi/core";
 import Image from "next/image";
 import { useContext, useState } from "react";
-import { useAccount } from "wagmi";
 
 import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { ModalContext } from "@/lib/context";
@@ -58,7 +57,6 @@ export default function Balance({
   usdcBalance,
 }: Props) {
   const { openModal } = useContext(ModalContext);
-  const { isConnected } = useAccount();
 
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
 
@@ -159,19 +157,6 @@ export default function Balance({
         )}
       </div>
 
-      {isConnected && (
-        <div className="flex justify-around mb-6">
-          <button
-            className={`${
-              totalBalance?.value ? "secondary-button" : "primary-button"
-            } px-6`}
-            onClick={() => openModal(<BuyGloModal />)}
-          >
-            Buy Glo Dollar
-          </button>
-        </div>
-      )}
-
       <ImpactInset
         openModal={openModal}
         yearlyYield={totalBalanceFormatted.yearlyYield}
@@ -180,7 +165,9 @@ export default function Balance({
       />
 
       <div
-        className="bg-pine-50 rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer"
+        className={`${
+          totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
+        } rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer`}
         onClick={() => openModal(<BuyGloModal />)}
       >
         <span className="font-bolder">Buy Glo Dollar</span>
