@@ -15,6 +15,7 @@ import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
+import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
@@ -152,6 +153,13 @@ export default function Home() {
       localStorage.setItem("showedLogin", "true");
     }
   }, [isConnected]);
+
+  useEffect(() => {
+    if (isConnected && asPath === "/buy") {
+      openModal(<BuyGloModal />);
+      push("/");
+    }
+  }, []);
 
   return (
     <div className="mt-4 px-6 bg-pine-100">
