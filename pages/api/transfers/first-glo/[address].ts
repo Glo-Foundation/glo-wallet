@@ -1,13 +1,25 @@
 import { kv } from "@vercel/kv";
+import { celoAlfajores, celo } from "@wagmi/core/chains";
 import Moralis from "moralis";
 import { Erc20Transaction, EvmAddress } from "moralis/common-evm-utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { TokenTransfer, fetchCeloTransactions } from "@/lib/celo-explorer";
 import { getFirstGloBlock, chainConfig, supportedChains } from "@/lib/config";
 import { isProd } from "@/lib/utils";
 
 export interface KVResponse {
   dateFirstGlo: string;
+}
+
+export type EVMTransaction = Erc20Transaction | TokenTransfer;
+
+// coerce "compatibility" of Celo's TokenTransfer with Moralis' Erc20Transaction
+function compat(tx: TokenTransfer): EVMTransaction {
+  return {
+    ...tx,
+    blockTimestamp: new Date(Number(tx.timeStamp + "000")),
+  };
 }
 
 export default async function handler(
@@ -44,10 +56,16 @@ export default async function handler(
 
   const chains = isProd() ? supportedChains.mainnet : supportedChains.testnet;
 
-  const transactions: { [id: number]: Erc20Transaction | null } = {};
+  const transactions: { [id: number]: EVMTransaction | null } = {};
 
   for (const chain of chains) {
-    transactions[chain] = await fetchFirstGloTransaction(address, chain);
+    // Moralis doesn't support celo yet, handle manually
+    if (chain === celo.id || chain === celoAlfajores.id) {
+      const tx = await fetchFirstCeloGloTransaction(address);
+      transactions[chain] = tx ? compat(tx) : null;
+    } else {
+      transactions[chain] = await fetchFirstGloTransaction(address, chain);
+    }
   }
 
   const timeStamps = Object.values(transactions).map(
@@ -67,7 +85,7 @@ export default async function handler(
 }
 
 // fetch very first Glo transaction
-export const fetchFirstGloTransaction = async (
+const fetchFirstGloTransaction = async (
   address: string,
   chain: number
 ): Promise<Erc20Transaction | null> => {
@@ -164,4 +182,38 @@ const getEarliest = (timeStamps: (Date | undefined)[]) => {
 
     return a < b ? a : b;
   });
+};
+
+const fetchFirstCeloGloTransaction = async (
+  address: string
+): Promise<TokenTransfer | null> => {
+  // find all incoming (or minting) transactions
+  let incomingTxs: TokenTransfer[] = [];
+  let page = 0;
+
+  // max num of records returned when paginating
+  const OFFSET = 100;
+
+  do {
+    const response: TokenTransfer[] = await fetchCeloTransactions(
+      address,
+      page,
+      OFFSET
+    );
+
+    const txs = response.filter(
+      (tx: TokenTransfer) => tx.to.toLowerCase() === address.toLowerCase()
+    );
+
+    incomingTxs = incomingTxs.concat(txs);
+
+    page += 1;
+
+    // break if a page returned with less than expected page size
+    if (response.length < OFFSET) break;
+  } while (true);
+
+  incomingTxs.sort((a, b) => Number(a.blockNumber) - Number(b.blockNumber));
+
+  return incomingTxs[0];
 };

@@ -1,5 +1,12 @@
 import { Chain } from "@wagmi/core";
-import { polygon, mainnet, polygonMumbai, goerli } from "@wagmi/core/chains";
+import {
+  polygon,
+  mainnet,
+  polygonMumbai,
+  goerli,
+  celoAlfajores,
+  celo,
+} from "@wagmi/core/chains";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { useNetwork, useSwitchNetwork } from "wagmi";
@@ -16,12 +23,23 @@ export default function NetworkSwitcher() {
   useOutsideClick(ref, () => setDropdownActive(false));
 
   const getChainLogoPath = (chain: Chain): string => {
-    if (chain.id === mainnet.id || chain.id === goerli.id) {
-      return "/ethereum-square-logo.svg";
-    } else if (chain.id === polygon.id || chain.id === polygonMumbai.id) {
-      return "/polygon-matic-logo.svg";
+    switch (chain.id) {
+      case mainnet.id:
+      case goerli.id: {
+        return "/ethereum-square-logo.svg";
+      }
+      case polygon.id:
+      case polygonMumbai.id: {
+        return "/polygon-matic-logo.svg";
+      }
+      case celo.id:
+      case celoAlfajores.id: {
+        return "/celo-square-logo.svg";
+      }
+      default: {
+        return "/question-mark.svg";
+      }
     }
-    return "/question-mark.svg";
   };
 
   const getChainOptions = () => {
