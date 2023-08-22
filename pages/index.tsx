@@ -2,33 +2,23 @@ import "react-tooltip/dist/react-tooltip.css";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useEffect, useContext } from "react";
-import {
-  useAccount,
-  useBalance,
-  useNetwork,
-  useSignMessage,
-  useSwitchNetwork,
-} from "wagmi";
+import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
-import Transactions from "@/components/Transactions";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { getAllowedChains, api, initApi, signMsgContent } from "@/lib/utils";
+import { getAllowedChains, api, initApi } from "@/lib/utils";
 import { getUSDCContractAddress } from "@/utils";
 
 export default function Home() {
   const { address, isConnected, connector } = useAccount();
-  const { chain, chains } = useNetwork();
+  const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
-  const { signMessageAsync, status } = useSignMessage({
-    message: signMsgContent,
-  });
 
   const gloBalance = useBalance({
     address,
@@ -136,7 +126,6 @@ export default function Home() {
       <Header />
       <div className="flex flex-col space-y-2">
         <Balance gloBalance={gloBalance.data} usdcBalance={usdcBalance.data} />
-        <Transactions />
         <CTA balance={gloBalance.data?.formatted} address={address!} />
       </div>
     </div>
