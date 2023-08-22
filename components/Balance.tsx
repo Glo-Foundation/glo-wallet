@@ -70,9 +70,10 @@ export default function Balance({
           </a>
         )}
       </div>
-      {isConnected && <Actions />}
+      {isConnected && <Actions gloBalance={gloBalance} />}
       <ImpactInset
         openModal={openModal}
+        gloBalance={gloBalance}
         yearlyYield={yearlyYield}
         yearlyYieldFormatted={yearlyYieldFormatted}
       />

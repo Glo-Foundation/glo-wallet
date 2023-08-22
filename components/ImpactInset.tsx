@@ -9,16 +9,21 @@ type Props = {
   openModal: (content: JSX.Element) => void;
   yearlyYield: number;
   yearlyYieldFormatted: string;
+  gloBalance: { value: number; formatted: string };
 };
+
 export default function ImpactInset({
   openModal,
   yearlyYield,
   yearlyYieldFormatted,
+  gloBalance,
 }: Props) {
+  const bgColorClass = gloBalance.value == 0 ? "bg-pine-100" : "bg-impact-bg";
+
   return (
     <div className="m-1">
       <button
-        className="flex flex-col bg-impact-bg text-impact-fg rounded-[24px] px-5 pb-3 w-full font-normal items-baseline"
+        className={`flex flex-col ${bgColorClass} text-impact-fg rounded-[24px] px-5 pb-3 w-full font-normal items-baseline`}
         onClick={() => openModal(<BuyGloModal />)}
       >
         <div className="">
@@ -31,7 +36,7 @@ export default function ImpactInset({
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5 }}
           >
-            <GloAnimated />
+            <GloAnimated gloBalance={gloBalance} />
             <p className="ml-2">{yearlyYieldFormatted} / year</p>
           </motion.div>
           <EnoughToBuy yearlyYield={yearlyYield} />

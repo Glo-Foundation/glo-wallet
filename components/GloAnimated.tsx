@@ -2,6 +2,7 @@ import { useLottie } from "lottie-react";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
+import gloAnimationInverted from "../public/glo-animation-inverted.json";
 import gloAnimation from "../public/glo-animation.json";
 
 const style = {
@@ -9,14 +10,22 @@ const style = {
   width: 28,
 };
 
-const options = {
-  animationData: gloAnimation,
+const commonOptions = {
   loop: true,
   autoplay: false,
 };
 
-const GloAnimated = () => {
+type Props = {
+  gloBalance: { value: number; formatted: string };
+};
+
+const GloAnimated = ({ gloBalance }: Props) => {
   const { isConnected } = useAccount();
+
+  const options = {
+    animationData: gloBalance.value == 0 ? gloAnimationInverted : gloAnimation,
+    ...commonOptions,
+  };
 
   const { View, play } = useLottie(options, style);
 

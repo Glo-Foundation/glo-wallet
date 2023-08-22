@@ -11,7 +11,11 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 
-export default function Actions() {
+type Props = {
+  gloBalance: { value: number; formatted: string };
+};
+
+export default function Actions({ gloBalance }: Props) {
   const { openModal } = useContext(ModalContext);
 
   const { address, isConnected } = useAccount();
@@ -50,7 +54,9 @@ export default function Actions() {
   return (
     <ul className="flex justify-around w-full mb-6">
       <button
-        className="secondary-button px-6"
+        className={`${
+          gloBalance.value == 0 ? "primary-button" : "secondary-button"
+        } px-6`}
         onClick={() => openModal(<BuyGloModal />)}
       >
         Buy Glo Dollar
