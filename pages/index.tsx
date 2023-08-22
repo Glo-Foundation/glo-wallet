@@ -55,7 +55,7 @@ export default function Home() {
     chainId: ethereumId,
   });
 
-  const celoId = isProd() ? celo.id : celoAlfajores.id;
+  const celoId = !isProd() ? celo.id : celoAlfajores.id;
   const { data: celoBalance } = useBalance({
     address,
     token: getSmartContractAddress(celoId),
@@ -64,7 +64,11 @@ export default function Home() {
     chainId: celoId,
   });
 
-  const totalBalance = getTotalGloBalance([ethereumBalance, polygonBalance, 0]);
+  const totalBalance = getTotalGloBalance([
+    ethereumBalance,
+    polygonBalance,
+    celoBalance,
+  ]);
 
   const { setTransfers, setCTAs } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
@@ -167,7 +171,7 @@ export default function Home() {
         <Balance
           polygonBalance={polygonBalance}
           ethereumBalance={ethereumBalance}
-          celoBalance={0}
+          celoBalance={celoBalance}
           totalBalance={totalBalance}
           usdcBalance={usdcBalance.data}
         />
