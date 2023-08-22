@@ -4,6 +4,7 @@ import {
   polygon,
   polygonMumbai,
   celo,
+  celoAlfajores,
 } from "@wagmi/core/chains";
 
 import { isProd } from "./utils";
@@ -16,6 +17,7 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   // Testnets
   [polygonMumbai.id]: "0xbd05d3B38c400d95D52c2B8fF124DF511AB7EBfc",
   [goerli.id]: "0x2c872de03E91D2ee463308Cb5dA4Ed9e41bBB355",
+  [celoAlfajores.id]: "0x6054aC9c220070F8c3093730d64E701ad23077C5",
 };
 
 export const defaultChain = () => (isProd() ? polygon : polygonMumbai);
@@ -59,6 +61,7 @@ const chainRPCUrl: { [id: number]: string } = {
   // Testnets
   [polygonMumbai.id]: process.env.NEXT_PUBLIC_MUMBAI_RPC_URL as string,
   [goerli.id]: process.env.NEXT_PUBLIC_GOERLI_RPC_URL as string,
+  [celoAlfajores.id]: process.env.NEXT_PUBLIC_ALFAJORES_URL as string,
 };
 
 export const getChainRPCUrl = (chainId?: number) => {
@@ -69,9 +72,11 @@ const firstGloBlock: { [id: number]: number } = {
   // Mainnets
   [polygon.id]: 35063113,
   [mainnet.id]: 15874664,
+  [celo.id]: 20910330,
   // Testnets
   [polygonMumbai.id]: 35142419,
   [goerli.id]: 7878164,
+  [celoAlfajores.id]: 19212753,
 };
 
 export const getFirstGloBlock = (chainId?: number) => {
@@ -79,8 +84,8 @@ export const getFirstGloBlock = (chainId?: number) => {
 };
 
 export const supportedChains = {
-  mainnet: [polygon.id, mainnet.id],
-  testnet: [polygonMumbai.id, goerli.id],
+  mainnet: [polygon.id, mainnet.id, celo.id],
+  testnet: [polygonMumbai.id, goerli.id, celoAlfajores.id],
 };
 
 export const getChainExplorerUrl = (chainId?: number) => {
@@ -89,6 +94,10 @@ export const getChainExplorerUrl = (chainId?: number) => {
       return "https://polygonscan.com";
     case polygonMumbai.id:
       return "https://mumbai.polygonscan.com";
+    case celo.id:
+      return "https://celoscan.io";
+    case celoAlfajores.id:
+      return "https://alfajores.celoscan.io";
     case goerli.id:
       return "https://goerli.etherscan.io";
     case mainnet.id:

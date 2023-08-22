@@ -1,8 +1,19 @@
-import { Chain } from "@wagmi/core";
-import { goerli, mainnet, polygon } from "@wagmi/core/chains";
+import { Chain, FetchBalanceResult } from "@wagmi/core";
+import {
+  celo,
+  celoAlfajores,
+  goerli,
+  mainnet,
+  polygon,
+  polygonMumbai,
+} from "@wagmi/core/chains";
 import { BigNumber, ethers } from "ethers";
 
-import { getChainRPCUrl, getSmartContractAddress } from "@/lib/config";
+import {
+  defaultChainId,
+  getChainRPCUrl,
+  getSmartContractAddress,
+} from "@/lib/config";
 import { getAllowedChains } from "@/lib/utils";
 
 const TOTAL_DAYS = 365;
@@ -119,14 +130,28 @@ export const getNiceNumber = (num: number) => {
   return `${parts[0]}.${decimals}${TIER_SUFFIX[parts.length - 1]}`;
 };
 
-export const getUSDCContractAddress = (
-  chain: Chain
-): `0x${string}` | undefined => {
-  if (!chain) return;
-  if (chain.id === mainnet.id || chain.id === goerli.id) {
-    return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-  } else {
-    return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
+  const chainId = chain?.id || defaultChainId();
+  switch (chainId) {
+    case goerli.id: {
+      return "0x07865c6E87B9F70255377e024ace6630C1Eaa37F";
+    }
+    case mainnet.id: {
+      return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+    }
+    case celo.id: {
+      return "0xef4229c8c3250C675F21BCefa42f58EfbfF6002a";
+    }
+    case celoAlfajores.id: {
+      return "0x5263F75FFB7384690818BeAEa62D7313B69f2A9c";
+    }
+    case polygonMumbai.id: {
+      return "0xF493Af87835D243058103006e829c72f3d34b891";
+    }
+    case polygon.id:
+    default: {
+      return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+    }
   }
 };
 
@@ -144,12 +169,38 @@ export const getUSDCToUSDGLOSwapDeeplink = (
 
   const inputCurrency = getUSDCContractAddress(chain);
   let outputCurrency, swapChain;
-  if (chain.id === mainnet.id || chain.id === goerli.id) {
-    outputCurrency = getSmartContractAddress(mainnet.id);
-    swapChain = dex === "Uniswap" ? "mainnet" : "ethereum";
-  } else {
-    outputCurrency = getSmartContractAddress(polygon.id);
-    swapChain = "polygon";
+
+  switch (chain.id) {
+    case mainnet.id: {
+      outputCurrency = getSmartContractAddress(mainnet.id);
+      swapChain = dex === "Uniswap" ? "mainnet" : "ethereum";
+      break;
+    }
+    case goerli.id: {
+      outputCurrency = getSmartContractAddress(goerli.id);
+      swapChain = dex === "Uniswap" ? "goerli" : "ethereum";
+      break;
+    }
+    case celo.id: {
+      outputCurrency = getSmartContractAddress(celo.id);
+      swapChain = "celo";
+      break;
+    }
+    case celoAlfajores.id: {
+      outputCurrency = getSmartContractAddress(celoAlfajores.id);
+      swapChain = dex === "Uniswap" ? "celo_alfajores" : "celo";
+      break;
+    }
+    case polygonMumbai.id: {
+      outputCurrency = getSmartContractAddress(polygonMumbai.id);
+      swapChain = dex === "Uniswap" ? "polygon_mumbai" : "polygon";
+    }
+    case polygon.id:
+    default: {
+      outputCurrency = getSmartContractAddress(polygon.id);
+      swapChain = "polygon";
+      break;
+    }
   }
 
   let outputUrl;
@@ -160,6 +211,7 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     case "Zeroswap":
       outputUrl = `https://app.zeroswap.io/swap/${chain.id}/${inputCurrency}/${outputCurrency}`;
       break;
+    case "Uniswap":
     default:
       outputUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
   }
@@ -189,4 +241,22 @@ export const numberToHex = (num: number): string => {
 
 export const hexToNumber = (hex: string): number => {
   return parseInt(hex, 16);
+};
+
+export const getTotalGloBalance = (
+  balances: (FetchBalanceResult | undefined)[]
+): FetchBalanceResult => {
+  let totalBalanceValue = 0;
+  for (const balance of balances) {
+    if (balance) {
+      totalBalanceValue += Number(balance!.formatted);
+    }
+  }
+
+  return {
+    decimals: 18,
+    formatted: totalBalanceValue.toString(),
+    symbol: "USDGLO",
+    value: BigInt(totalBalanceValue * 10 ** 18) / BigInt(10 ** 18),
+  };
 };

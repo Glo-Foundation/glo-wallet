@@ -1,19 +1,15 @@
 import { motion, useAnimate } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
-import { getImpactItems, isLiftPersonOutOfPovertyImpactItem } from "@/utils";
-
-import type { GetImpactItem } from "@/utils";
+import { getImpactItems } from "@/utils";
 
 type Props = {
   yearlyYield: number;
 };
 export default function EnoughToBuy({ yearlyYield }: Props) {
   const yearlyImpactItems = getImpactItems(yearlyYield);
-  const enoughToLiftPersonOutOfPoverty =
-    yearlyImpactItems[0] &&
-    isLiftPersonOutOfPovertyImpactItem(yearlyImpactItems[0]);
+
   const impactItemOffset = (yearlyImpactItems.length - 1) * -24;
   const [scope, animate] = useAnimate();
   const { isConnected } = useAccount();
@@ -27,7 +23,7 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
     }
   }, [isConnected]);
 
-  const renderImpactItemList = (impactItemList: GetImpactItem[]) =>
+  const renderImpactItemList = () =>
     yearlyImpactItems.map((item, idx) => (
       <li key={`eb-idx${idx}`}>
         {item.emoji} &#10005; {item.count}
@@ -38,7 +34,7 @@ export default function EnoughToBuy({ yearlyYield }: Props) {
     <div ref={scope} className="animated-impact-list">
       {isConnected && (
         <motion.ul initial={{ y: `${impactItemOffset}px`, opacity: "0" }}>
-          {renderImpactItemList(yearlyImpactItems)}
+          {renderImpactItemList()}
         </motion.ul>
       )}
     </div>

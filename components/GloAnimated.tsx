@@ -1,7 +1,9 @@
+import { FetchBalanceResult } from "@wagmi/core";
 import { useLottie } from "lottie-react";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
+import gloAnimationInverted from "../public/glo-animation-inverted.json";
 import gloAnimation from "../public/glo-animation.json";
 
 const style = {
@@ -9,14 +11,22 @@ const style = {
   width: 28,
 };
 
-const options = {
-  animationData: gloAnimation,
+const commonOptions = {
   loop: true,
   autoplay: false,
 };
 
-const GloAnimated = () => {
+type Props = {
+  totalBalance: FetchBalanceResult | undefined;
+};
+
+const GloAnimated = ({ totalBalance }: Props) => {
   const { isConnected } = useAccount();
+
+  const options = {
+    animationData: totalBalance?.value ? gloAnimation : gloAnimationInverted,
+    ...commonOptions,
+  };
 
   const { View, play } = useLottie(options, style);
 
