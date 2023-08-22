@@ -161,10 +161,13 @@ export default function Balance({
         openModal={openModal}
         yearlyYield={totalBalanceFormatted.yearlyYield}
         yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldFormatted}
+        totalBalance={totalBalance}
       />
 
       <div
-        className="bg-pine-50 rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer"
+        className={`${
+          totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
+        } rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer`}
         onClick={() => openModal(<BuyGloModal />)}
       >
         <span className="font-bolder">Buy Glo Dollar</span>
