@@ -43,6 +43,7 @@ export default function Home() {
     token: getSmartContractAddress(polygonId),
     watch: true,
     cacheTime: 5_000,
+    chainId: polygonId,
   });
 
   const ethereumId = isProd() ? mainnet.id : goerli.id;
@@ -51,6 +52,7 @@ export default function Home() {
     token: getSmartContractAddress(ethereumId),
     watch: true,
     cacheTime: 5_000,
+    chainId: ethereumId,
   });
 
   const celoId = isProd() ? celo.id : celoAlfajores.id;
@@ -59,6 +61,7 @@ export default function Home() {
     token: getSmartContractAddress(celoId),
     watch: true,
     cacheTime: 5_000,
+    chainId: celoId,
   });
 
   const totalBalance = getTotalGloBalance([
