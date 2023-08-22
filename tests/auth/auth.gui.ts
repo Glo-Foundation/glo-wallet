@@ -15,10 +15,6 @@ test.describe("Auth", () => {
 
     await gui.setBalance(CONSTANTS.gloAddress, "12340000000000000000000");
 
-    // TODO: Set balance
-    // const DISCORD_WALLET = "0xdf561A94a7be845A13E277c7F8d9b81081888E78";
-    // await gui.setBalance(DISCORD_WALLET, "1");
-
     await page.getByTestId("tos-checkbox").check();
   });
 
@@ -34,6 +30,7 @@ test.describe("Auth", () => {
     expect(await page.isVisible("text=12,340.00")).toBeTruthy();
   });
 
+  // Note that can be easily blocked by captcha defence
   test("should allow social login with Discord", async ({ page, gui }) => {
     await page.isVisible("text=Email");
     await page.getByTestId("social-login-button").click();
