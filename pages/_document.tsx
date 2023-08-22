@@ -4,8 +4,6 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <title>Glo Dollar App</title>
-
         <meta
           name="description"
           content="Sign up to buy Glo Dollar using our app. See your transactions and the impact your Glo Dollar holdings have."

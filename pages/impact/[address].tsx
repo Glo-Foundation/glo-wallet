@@ -1,5 +1,5 @@
-import { Chain, getNetwork } from "@wagmi/core";
 import axios from "axios";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
@@ -42,8 +42,9 @@ export default function Impact() {
       const chains = getAllowedChains();
       const bal1 = await getBalance(address as string, chains[0].id);
       const bal2 = await getBalance(address as string, chains[1].id);
+      const bal3 = await getBalance(address as string, chains[2].id);
       const decimals = BigInt(1000000000000000000);
-      const balance = bal1.add(bal2).div(decimals).toNumber();
+      const balance = bal1.add(bal2).add(bal3).div(decimals).toNumber();
 
       let yearlyYield = getTotalYield(balance);
       // round down to 0 when the yield isn't even $1
@@ -85,6 +86,9 @@ export default function Impact() {
 
   return (
     <>
+      <Head>
+        <title>Glo Impact</title>
+      </Head>
       <Navbar />
       <div className="mt-4 px-6">
         <div className="bg-white rounded-[20px] py-4">
