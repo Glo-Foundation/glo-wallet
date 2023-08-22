@@ -82,3 +82,16 @@ export const getAllowedChains = (): Chain[] => {
     ? [polygon, mainnet, celo]
     : [polygonMumbai, goerli, celoAlfajores];
 };
+
+export const formatBalance = (balance: {
+  formatted: string;
+  value: number;
+}) => {
+  const formatted = Number(balance.formatted);
+  const val = BigNumber.from(balance.value);
+
+  return Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(formatted || 0);
+};

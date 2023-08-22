@@ -14,18 +14,10 @@ import { buyWithSwap } from "@/payments";
 import { getUSDCContractAddress } from "@/utils";
 
 interface Props {
-  iconPath: string;
-  buyWithProvider: () => void;
-  provider: string;
   buyAmount: number;
 }
 
-export default function BuyWithCoinbaseModal({
-  iconPath,
-  buyWithProvider,
-  provider,
-  buyAmount,
-}: Props) {
+export default function BuyWithCoinbaseModal({ buyAmount }: Props) {
   const { address, connector } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
 
@@ -38,7 +30,7 @@ export default function BuyWithCoinbaseModal({
   });
   const { switchNetwork } = useSwitchNetwork();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [isProviderStepDone, setIsProviderStepDone] = useState(false);
+  const [isCoinbaseStepDone, setIsCoinbaseStepDone] = useState(false);
   const [isSwapStepDone, setIsSwapStepDone] = useState(false);
   const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
   const [USDC, setUSDC] = useState("");
@@ -66,8 +58,7 @@ export default function BuyWithCoinbaseModal({
         currency: "USD",
       }).format(formatted || 0);
       setUSDC(usdc);
-
-      if (val.gte(currBuyAmt)) setIsProviderStepDone(true);
+      if (val.gte(currBuyAmt)) setIsCoinbaseStepDone(true);
     }
   }, [balance]);
 
@@ -102,7 +93,7 @@ export default function BuyWithCoinbaseModal({
       </div>
       <section className="text-center">
         <h3 className="pt-0">
-          Buying Glo Dollars through {provider} and Uniswap
+          Buying Glo Dollars through Coinbase and Uniswap
         </h3>
         <p className="text-sm py-6">
           You can get Glo Dollars by exchanging another stablecoin called{" "}
@@ -122,13 +113,13 @@ export default function BuyWithCoinbaseModal({
         />
         <StepCard
           index={2}
-          iconPath={iconPath}
-          title={`Buy ${buyAmount} USDC on ${provider}`}
+          iconPath="/coinbase-invert.svg"
+          title={`Buy ${buyAmount} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
           action={() => {
-            buyWithProvider();
+            window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank");
           }}
-          done={isProviderStepDone}
+          done={isCoinbaseStepDone}
           USDC={USDC}
         />
         <StepCard

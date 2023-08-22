@@ -2,6 +2,7 @@ import { FetchBalanceResult } from "@wagmi/core";
 import Image from "next/image";
 import { useContext, useState } from "react";
 
+import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { ModalContext } from "@/lib/context";
 import { getTotalYield } from "@/utils";
 
@@ -13,6 +14,7 @@ type Props = {
   ethereumBalance: FetchBalanceResult | undefined;
   celoBalance: FetchBalanceResult | undefined;
   totalBalance: FetchBalanceResult | undefined;
+  usdcBalance: any;
 };
 
 const customFormatBalance = (
@@ -52,6 +54,7 @@ export default function Balance({
   ethereumBalance,
   celoBalance,
   totalBalance,
+  usdcBalance,
 }: Props) {
   const { openModal } = useContext(ModalContext);
 
@@ -61,6 +64,12 @@ export default function Balance({
   const ethereumBalanceFormatted = customFormatBalance(ethereumBalance);
   const celoBalanceFormatted = customFormatBalance(celoBalance);
   const totalBalanceFormatted = customFormatBalance(totalBalance);
+
+  const formattedUSDC = Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(Number(usdcBalance.formatted));
 
   const supportedChains = [
     {
@@ -132,6 +141,20 @@ export default function Balance({
             )}
           </div>
         </div>
+        {usdcBalance.value > 0 && (
+          <a
+            className="black-link self-center"
+            onClick={() => {
+              openModal(
+                <BuyWithCoinbaseModal
+                  buyAmount={Number(totalBalanceFormatted.fmtBalanceDollarPart)}
+                />
+              );
+            }}
+          >
+            ({formattedUSDC} USDC swappable for Glo Dollar)
+          </a>
+        )}
       </div>
 
       <ImpactInset

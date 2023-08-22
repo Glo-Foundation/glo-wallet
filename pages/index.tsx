@@ -22,7 +22,6 @@ import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
-import Transactions from "@/components/Transactions";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
@@ -34,6 +33,7 @@ import {
   isProd,
 } from "@/lib/utils";
 import { getTotalGloBalance } from "@/utils";
+import { getUSDCContractAddress } from "@/utils";
 
 export default function Home() {
   const { address, isConnected, connector } = useAccount();
@@ -42,6 +42,13 @@ export default function Home() {
   const { openModal, closeModal } = useContext(ModalContext);
   const { signMessageAsync, status } = useSignMessage({
     message: signMsgContent,
+  });
+
+  const usdcBalance = useBalance({
+    address,
+    token: getUSDCContractAddress(chain!),
+    watch: true,
+    cacheTime: 2_000,
   });
 
   const polygonId = isProd() ? polygon.id : polygonMumbai.id;
@@ -171,6 +178,7 @@ export default function Home() {
           ethereumBalance={ethereumBalance}
           celoBalance={celoBalance}
           totalBalance={totalBalance}
+          usdcBalance={usdcBalance.data}
         />
 
         <CTA balance={totalBalance?.formatted} address={address!} />
