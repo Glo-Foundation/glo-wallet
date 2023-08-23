@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 
 import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { ModalContext } from "@/lib/context";
-import { getTotalYield } from "@/utils";
+import { customFormatBalance } from "@/utils";
 
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
@@ -15,38 +15,6 @@ type Props = {
   celoBalance: FetchBalanceResult | undefined;
   totalBalance: FetchBalanceResult | undefined;
   usdcBalance: FetchBalanceResult | undefined;
-};
-
-const customFormatBalance = (
-  balance: FetchBalanceResult | undefined
-): {
-  yearlyYield: number;
-  yearlyYieldFormatted: string;
-  dblFmtBalance: string;
-  fmtBalanceDollarPart: string;
-  fmtBalanceCentPart: string;
-} => {
-  const yearlyYield = getTotalYield(Number(balance ? balance.formatted : 0));
-  const yearlyYieldFormatted =
-    yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
-
-  const dblFmtBalance = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(Number(balance ? balance.formatted : 0));
-
-  const splitFmtBalance = dblFmtBalance.split(".");
-  const fmtBalanceDollarPart = splitFmtBalance[0];
-  let fmtBalanceCentPart = splitFmtBalance[1];
-  if (fmtBalanceCentPart?.length === 1) fmtBalanceCentPart += "0";
-
-  return {
-    yearlyYield,
-    yearlyYieldFormatted,
-    dblFmtBalance,
-    fmtBalanceDollarPart,
-    fmtBalanceCentPart,
-  };
 };
 
 export default function Balance({
@@ -168,7 +136,13 @@ export default function Balance({
         className={`${
           totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
         } rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer`}
-        onClick={() => openModal(<BuyGloModal />)}
+        onClick={() =>
+          openModal(
+            <BuyGloModal
+              totalBalance={Number(totalBalanceFormatted.fmtBalanceDollarPart)}
+            />
+          )
+        }
       >
         <span className="font-bolder">Buy Glo Dollar</span>
         <Image
