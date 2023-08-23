@@ -71,13 +71,13 @@ export default function CTA({
   balance,
   address = "",
 }: {
-  balance?: string;
+  balance?: number;
   address: string;
 }) {
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
 
-  const gloBalance = Number(balance) || 100;
+  const gloBalance = balance || 100;
   const totalYield = getTotalYield(gloBalance);
   const item = getImpactItems(totalYield)[0];
   const icons = item

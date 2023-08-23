@@ -1,4 +1,3 @@
-import { FetchBalanceResult } from "@wagmi/core";
 import { motion } from "framer-motion";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
@@ -10,7 +9,7 @@ type Props = {
   openModal: (content: JSX.Element) => void;
   yearlyYield: number;
   yearlyYieldFormatted: string;
-  totalBalance: FetchBalanceResult | undefined;
+  totalBalance: number | undefined;
 };
 
 export default function ImpactInset({
@@ -19,7 +18,8 @@ export default function ImpactInset({
   yearlyYieldFormatted,
   totalBalance,
 }: Props) {
-  const bgColorClass = totalBalance?.value ? "bg-impact-bg" : "bg-pine-100";
+  const bgColorClass =
+    totalBalance && totalBalance > 0 ? "bg-impact-bg" : "bg-pine-100";
 
   return (
     <div className="m-1 relative z-0 flex justify-center">

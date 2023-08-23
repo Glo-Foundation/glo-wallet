@@ -11,6 +11,8 @@ import axios, { AxiosInstance } from "axios";
 import { BigNumber, ethers } from "ethers";
 
 import UsdgloContract from "@/abi/usdglo.json";
+import { KVBalanceResponse } from "@/pages/api/balances/[address]";
+import { getBalance, hexToNumber } from "@/utils";
 
 import { getChainRPCUrl, getSmartContractAddress } from "./config";
 
@@ -94,4 +96,46 @@ export const formatBalance = (balance: {
     style: "currency",
     currency: "USD",
   }).format(formatted || 0);
+};
+
+export const GLO_DECIMALS = BigInt(10 ** 18);
+
+export const bigNumberToNumber = (b: BigNumber, decimals: number): number => {
+  return hexToNumber(b._hex) / 10 ** decimals;
+};
+
+export const fetchBalance = async (address: string) => {
+  if (!address) {
+    return;
+  }
+
+  const { data } = await axios.get<KVBalanceResponse>(
+    `/api/balances/${address}`
+  );
+
+  if (data) {
+    const { balance } = data;
+    return balance;
+  }
+
+  const chains = getAllowedChains();
+  const DECIMALS = 18;
+  const polygonBalance = bigNumberToNumber(
+    await getBalance(address as string, chains[0].id),
+    DECIMALS
+  );
+  const ethereumBalance = bigNumberToNumber(
+    await getBalance(address as string, chains[1].id),
+    DECIMALS
+  );
+  const celoBalance = bigNumberToNumber(
+    await getBalance(address as string, chains[2].id),
+    DECIMALS
+  );
+
+  return {
+    polygonBalance,
+    ethereumBalance,
+    celoBalance,
+  };
 };

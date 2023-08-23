@@ -43,7 +43,7 @@ export default function Impact() {
       const bal1 = await getBalance(address as string, chains[0].id);
       const bal2 = await getBalance(address as string, chains[1].id);
       const bal3 = await getBalance(address as string, chains[2].id);
-      const decimals = BigInt(1000000000000000000);
+      const decimals = BigInt(10 ** 18);
       const balance = bal1.add(bal2).add(bal3).div(decimals).toNumber();
 
       let yearlyYield = getTotalYield(balance);

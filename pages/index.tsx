@@ -1,15 +1,7 @@
 import "react-tooltip/dist/react-tooltip.css";
-import {
-  mainnet,
-  polygon,
-  celo,
-  goerli,
-  polygonMumbai,
-  celoAlfajores,
-} from "@wagmi/core/chains";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import Balance from "@/components/Balance";
@@ -17,11 +9,10 @@ import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
-import { defaultChainId, getSmartContractAddress } from "@/lib/config";
+import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { getAllowedChains, api, initApi, isProd } from "@/lib/utils";
-import { getTotalGloBalance } from "@/utils";
+import { getAllowedChains, api, initApi, fetchBalance } from "@/lib/utils";
 import { getUSDCContractAddress } from "@/utils";
 
 export default function Home() {
@@ -30,45 +21,17 @@ export default function Home() {
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
 
+  const [polygonBalance, setPolygonBalance] = useState<number>(0);
+  const [ethereumBalance, setEthereumBalance] = useState<number>(0);
+  const [celoBalance, setCeloBalance] = useState<number>(0);
+  const [totalBalance, setTotalBalance] = useState<number>();
+
   const usdcBalance = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
     watch: true,
     cacheTime: 2_000,
   });
-
-  const polygonId = isProd() ? polygon.id : polygonMumbai.id;
-  const { data: polygonBalance } = useBalance({
-    address,
-    token: getSmartContractAddress(polygonId),
-    watch: true,
-    cacheTime: 5_000,
-    chainId: polygonId,
-  });
-
-  const ethereumId = isProd() ? mainnet.id : goerli.id;
-  const { data: ethereumBalance } = useBalance({
-    address,
-    token: getSmartContractAddress(ethereumId),
-    watch: true,
-    cacheTime: 5_000,
-    chainId: ethereumId,
-  });
-
-  const celoId = !isProd() ? celo.id : celoAlfajores.id;
-  const { data: celoBalance } = useBalance({
-    address,
-    token: getSmartContractAddress(celoId),
-    watch: true,
-    cacheTime: 5_000,
-    chainId: celoId,
-  });
-
-  const totalBalance = getTotalGloBalance([
-    ethereumBalance,
-    polygonBalance,
-    celoBalance,
-  ]);
 
   const { setTransfers, setCTAs } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
@@ -115,7 +78,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isConnected) {
-      const key = `glo-wallet-${address}`;
+      // const key = `glo-wallet-${address}`;
 
       const sign = async () => {
         return "public-signature";
@@ -164,6 +127,20 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    // TODO: hide balance dropdown, show loader
+    fetchBalance(address!).then((balance) => {
+      const polygon = balance!.polygonBalance as number;
+      const ethereum = balance!.ethereumBalance as number;
+      const celo = balance!.celoBalance as number;
+      setPolygonBalance(polygon);
+      setEthereumBalance(ethereum);
+      setCeloBalance(celo);
+      setTotalBalance(polygon + ethereum + celo);
+      // TODO: hide loader
+    });
+  }, [polygonBalance, ethereumBalance, celoBalance, address]);
+
   return (
     <div className="mt-4 px-6 bg-pine-100">
       <Header />
@@ -176,7 +153,7 @@ export default function Home() {
           usdcBalance={usdcBalance.data}
         />
 
-        <CTA balance={totalBalance?.formatted} address={address!} />
+        <CTA balance={totalBalance} address={address!} />
       </div>
     </div>
   );

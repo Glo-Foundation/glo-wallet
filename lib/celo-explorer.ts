@@ -41,12 +41,10 @@ export type TokenTransfer = {
   blockTimestamp?: Date;
 };
 
-/*
-E.g.
-curl -X GET "https://explorer.celo.org/mainnet/api?module=account&action=tokentx&address=0xa76d7873b01fa564ec3e49a651c2e6e40dfa311f&contractaddress=0x4f604735c1cf31399c6e711d5962b2b3e0225ad3&start_block=20910330" -H "accept: application/json"
-*/
-
-//
+/**
+ * Fetches an account's Glo transactions (Token Transfers) on Celo
+ * curl -X GET "https://explorer.celo.org/mainnet/api?module=account&action=tokentx&address=0xa76d7873b01fa564ec3e49a651c2e6e40dfa311f&contractaddress=0x4f604735c1cf31399c6e711d5962b2b3e0225ad3&start_block=20910330" -H "accept: application/json"
+ */
 export const fetchCeloTransactions = async (
   address: string,
   page?: number,
@@ -65,4 +63,23 @@ export const fetchCeloTransactions = async (
 
   const { status, result } = transfers.data;
   return status === "1" ? result : [];
+};
+
+/**
+ * Fetches an account's Glo balance on Celo
+ * @param address address to look up
+ * @returns {TokenBalance} balance result if exists or null
+ */
+export const fetchCeloTokenBalance = async (
+  address: string
+): Promise<string> => {
+  if (!address) {
+    throw new Error("address is required");
+  }
+
+  const balance = await instance.get(
+    `?module=account&action=tokenbalance&contractaddress=${GLO_ADDRESS}&address=${address}`
+  );
+  const { status, result } = balance.data;
+  return status === "1" ? result : "";
 };

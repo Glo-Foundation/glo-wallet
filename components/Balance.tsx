@@ -10,15 +10,15 @@ import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
 
 type Props = {
-  polygonBalance: FetchBalanceResult | undefined;
-  ethereumBalance: FetchBalanceResult | undefined;
-  celoBalance: FetchBalanceResult | undefined;
-  totalBalance: FetchBalanceResult | undefined;
+  polygonBalance: number | undefined;
+  ethereumBalance: number | undefined;
+  celoBalance: number | undefined;
+  totalBalance: number | undefined;
   usdcBalance: FetchBalanceResult | undefined;
 };
 
 const customFormatBalance = (
-  balance: FetchBalanceResult | undefined
+  balance: number
 ): {
   yearlyYield: number;
   yearlyYieldFormatted: string;
@@ -26,14 +26,23 @@ const customFormatBalance = (
   fmtBalanceDollarPart: string;
   fmtBalanceCentPart: string;
 } => {
-  const yearlyYield = getTotalYield(Number(balance ? balance.formatted : 0));
+  if (!balance) {
+    return {
+      yearlyYield: 0,
+      yearlyYieldFormatted: "0",
+      dblFmtBalance: "0",
+      fmtBalanceDollarPart: "0",
+      fmtBalanceCentPart: "00",
+    };
+  }
+  const yearlyYield = getTotalYield(balance);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
 
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
-  }).format(Number(balance ? balance.formatted : 0));
+  }).format(balance);
 
   const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
@@ -60,10 +69,12 @@ export default function Balance({
 
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
 
-  const polygonBalanceFormatted = customFormatBalance(polygonBalance);
-  const ethereumBalanceFormatted = customFormatBalance(ethereumBalance);
-  const celoBalanceFormatted = customFormatBalance(celoBalance);
-  const totalBalanceFormatted = customFormatBalance(totalBalance);
+  const polygonBalanceFormatted = customFormatBalance(polygonBalance as number);
+  const ethereumBalanceFormatted = customFormatBalance(
+    ethereumBalance as number
+  );
+  const celoBalanceFormatted = customFormatBalance(celoBalance as number);
+  const totalBalanceFormatted = customFormatBalance(totalBalance as number);
 
   const formattedUSDC = Intl.NumberFormat("en-US", {
     style: "currency",
@@ -166,7 +177,7 @@ export default function Balance({
 
       <div
         className={`${
-          totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
+          totalBalance && totalBalance > 0 ? "bg-pine-50" : "bg-impact-bg"
         } rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer`}
         onClick={() => openModal(<BuyGloModal />)}
       >
