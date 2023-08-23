@@ -55,7 +55,7 @@ export default function Home() {
     chainId: ethereumId,
   });
 
-  const celoId = !isProd() ? celo.id : celoAlfajores.id;
+  const celoId = isProd() ? celo.id : celoAlfajores.id;
   const { data: celoBalance } = useBalance({
     address,
     token: getSmartContractAddress(celoId),

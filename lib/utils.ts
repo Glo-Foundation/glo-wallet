@@ -53,7 +53,9 @@ export const getChains = (): Chain[] => {
   if (isE2E()) {
     return [polygon] as Chain[];
   }
-  return (isProd() ? [polygon, mainnet] : [polygonMumbai, goerli]) as Chain[];
+  return (
+    isProd() ? [polygon, mainnet, celo] : [polygonMumbai, goerli, celoAlfajores]
+  ) as Chain[];
 };
 
 export const signMsgContent = "glo-wallet";
