@@ -1,12 +1,4 @@
 import { Chain } from "@wagmi/core";
-import {
-  goerli,
-  mainnet,
-  polygon,
-  polygonMumbai,
-  celo,
-  celoAlfajores,
-} from "@wagmi/core/chains";
 import axios, { AxiosInstance } from "axios";
 import { BigNumber, ethers } from "ethers";
 
