@@ -21,7 +21,7 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
-import { defaultChainId } from "@/lib/config";
+import { defaultChainId, getChainRPCUrl } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
@@ -29,36 +29,12 @@ import { getChains } from "../lib/utils";
 
 import type { AppProps } from "next/app";
 
-const wagmiRpcMap = (chainId: number) => {
-  switch (chainId) {
-    case celo.id: {
-      return "https://celo-mainnet.infura.io/v3/2f43a58ab9ce4cc689a34eb4e98e4928";
-    }
-    case celoAlfajores.id: {
-      return "https://celo-alfajores.infura.io/v3/2f43a58ab9ce4cc689a34eb4e98e4928";
-    }
-    case goerli.id: {
-      return "https://ethereum-goerli.publicnode.com";
-    }
-    case mainnet.id: {
-      return "https://ethereum.publicnode.com";
-    }
-    case polygonMumbai.id: {
-      return "https://polygon-mumbai-bor.publicnode.com";
-    }
-    case polygon.id:
-    default: {
-      return "https://polygon-rpc.com";
-    }
-  }
-};
-
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   getChains(),
   [
     jsonRpcProvider({
       rpc: (chain) => ({
-        http: wagmiRpcMap(chain.id),
+        http: getChainRPCUrl(chain.id),
       }),
     }),
   ]
