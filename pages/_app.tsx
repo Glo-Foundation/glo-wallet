@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-// import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
