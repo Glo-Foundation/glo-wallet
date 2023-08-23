@@ -277,7 +277,9 @@ export const customFormatBalance = (
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
-  }).format(Number(balance ? balance.formatted : 0));
+  })
+    .format(Number(balance ? balance.formatted : 0))
+    .replaceAll(",", "");
 
   const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
