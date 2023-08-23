@@ -150,7 +150,7 @@ export default function PaymentOptionModal({
           height={25}
           alt="arrow-right"
           className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
-          onClick={() => openModal(<BuyGloModal />)}
+          onClick={() => openModal(<BuyGloModal totalBalance={buyAmount} />)}
         />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         {isConnected && (
