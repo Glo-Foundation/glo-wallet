@@ -1,6 +1,15 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 
+import {
+  polygon,
+  mainnet,
+  polygonMumbai,
+  goerli,
+  celoAlfajores,
+  celo,
+} from "@wagmi/core/chains";
+import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
 import Script from "next/script";
@@ -8,7 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import { alchemyProvider } from "wagmi/providers/alchemy";
+// import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
@@ -20,11 +29,38 @@ import { getChains } from "../lib/utils";
 
 import type { AppProps } from "next/app";
 
+const wagmiRpcMap = (chainId: number) => {
+  switch (chainId) {
+    case celo.id: {
+      return "https://celo-mainnet.infura.io/v3/2f43a58ab9ce4cc689a34eb4e98e4928";
+    }
+    case celoAlfajores.id: {
+      return "https://celo-alfajores.infura.io/v3/2f43a58ab9ce4cc689a34eb4e98e4928";
+    }
+    case goerli.id: {
+      return "https://ethereum-goerli.publicnode.com";
+    }
+    case mainnet.id: {
+      return "https://ethereum.publicnode.com";
+    }
+    case polygonMumbai.id: {
+      return "https://polygon-mumbai-bor.publicnode.com";
+    }
+    case polygon.id:
+    default: {
+      return "https://polygon-rpc.com";
+    }
+  }
+};
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   getChains(),
   [
-    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
-    publicProvider(),
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http: wagmiRpcMap(chain.id),
+      }),
+    }),
   ]
 );
 
