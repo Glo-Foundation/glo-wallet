@@ -10,28 +10,17 @@ import {
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useEffect, useContext } from "react";
-import {
-  useAccount,
-  useBalance,
-  useNetwork,
-  useSignMessage,
-  useSwitchNetwork,
-} from "wagmi";
+import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
+import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import {
-  getAllowedChains,
-  api,
-  initApi,
-  signMsgContent,
-  isProd,
-} from "@/lib/utils";
+import { getAllowedChains, api, initApi, isProd } from "@/lib/utils";
 import { getTotalGloBalance } from "@/utils";
 import { getUSDCContractAddress } from "@/utils";
 
@@ -40,9 +29,6 @@ export default function Home() {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
-  const { signMessageAsync, status } = useSignMessage({
-    message: signMsgContent,
-  });
 
   const usdcBalance = useBalance({
     address,
@@ -57,6 +43,7 @@ export default function Home() {
     token: getSmartContractAddress(polygonId),
     watch: true,
     cacheTime: 5_000,
+    chainId: polygonId,
   });
 
   const ethereumId = isProd() ? mainnet.id : goerli.id;
@@ -65,6 +52,7 @@ export default function Home() {
     token: getSmartContractAddress(ethereumId),
     watch: true,
     cacheTime: 5_000,
+    chainId: ethereumId,
   });
 
   const celoId = isProd() ? celo.id : celoAlfajores.id;
@@ -73,6 +61,7 @@ export default function Home() {
     token: getSmartContractAddress(celoId),
     watch: true,
     cacheTime: 5_000,
+    chainId: celoId,
   });
 
   const totalBalance = getTotalGloBalance([
@@ -168,10 +157,16 @@ export default function Home() {
     }
   }, [isConnected]);
 
+  useEffect(() => {
+    if (isConnected && asPath === "/buy") {
+      openModal(<BuyGloModal />);
+      push("/");
+    }
+  }, []);
+
   return (
     <div className="mt-4 px-6 bg-pine-100">
       <Header />
-
       <div className="flex flex-col space-y-4">
         <Balance
           polygonBalance={polygonBalance}

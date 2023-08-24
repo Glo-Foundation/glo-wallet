@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
-
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
@@ -9,11 +8,10 @@ import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
-import { defaultChainId } from "@/lib/config";
+import { defaultChainId, getChainRPCUrl } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
@@ -24,8 +22,11 @@ import type { AppProps } from "next/app";
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   getChains(),
   [
-    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY! }),
-    publicProvider(),
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http: getChainRPCUrl(chain.id),
+      }),
+    }),
   ]
 );
 
