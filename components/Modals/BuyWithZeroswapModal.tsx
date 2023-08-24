@@ -1,7 +1,9 @@
+import { sequence } from "0xsequence";
+import { polygon } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useState, useEffect, useContext } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
 import StepCard from "@/components/Modals/StepCard";
 import { getSmartContractAddress } from "@/lib/config";
@@ -15,13 +17,21 @@ interface Props {
   buyAmount: number;
 }
 export default function BuyWithZeroswapModal({ buyAmount }: Props) {
-  const { address } = useAccount();
+  const { address, connector } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
 
   const { chain } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
+
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isCopiedStepDone, setIsCopiedStepDone] = useState(false);
   const [isSwapStepDone, setIsSwapStepDone] = useState(false);
+  const [isSequenceStepDone, setIsSequenceStepDone] = useState(false);
+  const [isConnectWalletDone, setIsConnectWalletDone] = useState(false);
+  const [openedZeroswap, setOpenedZeroswap] = useState(false);
+
+  const userIsOnPolygon = chain?.id === polygon.id;
+  const isSequenceWallet = connector?.id === "sequence";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -61,9 +71,64 @@ export default function BuyWithZeroswapModal({ buyAmount }: Props) {
       </header>
       <h2 className="text-center">Buy Glo Dollars through Zeroswap</h2>
       <section>
+        <StepCard
+          index={1}
+          iconPath="/polygon.svg"
+          title={"Switch to the Polygon network"}
+          content="Please confirm the switch in your wallet"
+          action={() => {
+            switchNetwork!(polygon.id);
+          }}
+          done={userIsOnPolygon}
+        />
+        <StepCard
+          index={2}
+          iconPath="/zeroswap.svg"
+          title={"Connect wallet on Zeroswap"}
+          content={
+            isSequenceWallet
+              ? `Choose WalletConnect and click `
+              : `Connect your wallet and click \"Swap\"`
+          }
+          action={() => {
+            chain && buyWithSwap(buyAmount, chain, "Zeroswap");
+            setOpenedZeroswap(true);
+          }}
+          done={openedZeroswap}
+        />
+        {isSequenceWallet ? (
+          <StepCard
+            index={3}
+            iconPath="/sequence.svg"
+            title="Connect to the Sequence wallet"
+            content="Paste the code into the wallet's scanner"
+            action={() => {
+              const wallet = sequence.getWallet();
+              wallet.openWallet("/wallet/scan");
+              setIsSequenceStepDone(true);
+            }}
+            done={isSequenceStepDone}
+          />
+        ) : (
+          <StepCard
+            index={3}
+            iconPath="/walletconnect.svg"
+            title="Connect to your wallet"
+            content={
+              isSequenceWallet
+                ? `Choose WalletConnect and click `
+                : `Connect your wallet`
+            }
+            action={() => {
+              setIsConnectWalletDone(true);
+            }}
+            done={isConnectWalletDone}
+            isSequenceWallet={isSequenceWallet}
+          />
+        )}
         <div data-tooltip-id="copy-tooltip" data-tooltip-content="Copied!">
           <StepCard
-            index={1}
+            index={4}
             iconPath="/glo-logo.svg"
             title="Copy the Glo smart contract address"
             content={sliceAddress(getSmartContractAddress(chain!.id), 8)}
@@ -76,7 +141,7 @@ export default function BuyWithZeroswapModal({ buyAmount }: Props) {
           />
         </div>
         <StepCard
-          index={2}
+          index={5}
           iconPath="/zeroswap.svg"
           title="Swap with Glo on Zeroswap"
           content="Select the output currency and paste the Glo contract address"
