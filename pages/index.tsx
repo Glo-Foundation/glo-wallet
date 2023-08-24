@@ -126,11 +126,9 @@ export default function Home() {
 
         Cookies.set("glo-user", userId);
 
-        onChainSwitch().then(() => {
-          api()
-            .get<CTA[]>(`/ctas`)
-            .then((res) => setCTAs(res.data));
-        });
+        api()
+          .get<CTA[]>(`/ctas`)
+          .then((res) => setCTAs(res.data));
       });
     } else {
       Cookies.remove("glo-email");
