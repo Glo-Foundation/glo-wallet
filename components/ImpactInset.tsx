@@ -2,6 +2,7 @@ import { FetchBalanceResult } from "@wagmi/core";
 import { motion } from "framer-motion";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
+import { customFormatBalance } from "@/utils";
 
 import EnoughToBuy from "./EnoughToBuy";
 import GloAnimated from "./GloAnimated";
@@ -25,7 +26,15 @@ export default function ImpactInset({
     <div className="m-1 relative z-0 flex justify-center">
       <button
         className={`flex flex-col ${bgColorClass} text-impact-fg rounded-[36px] h-[32px] mb-3 px-5 py-7 w-[95%] font-normal items-baseline`}
-        onClick={() => openModal(<BuyGloModal />)}
+        onClick={() =>
+          openModal(
+            <BuyGloModal
+              totalBalance={Number(
+                customFormatBalance(totalBalance).fmtBalanceDollarPart
+              )}
+            />
+          )
+        }
       >
         <div className="">
           <div className="fixed h-[13px] w-[13px] bg-white -rotate-45 transform origin-top-left translate-x-[124px] -translate-y-4"></div>

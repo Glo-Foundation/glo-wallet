@@ -159,7 +159,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isConnected && asPath === "/buy") {
-      openModal(<BuyGloModal />);
+      openModal(<BuyGloModal totalBalance={1000} />);
       push("/");
     }
   }, []);

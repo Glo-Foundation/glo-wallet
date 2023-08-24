@@ -70,20 +70,6 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
     return 116;
   };
 
-  const { address } = useAccount();
-  const { chain } = useNetwork();
-  const { data: balance } = useBalance({
-    address,
-    token: getSmartContractAddress(chain?.id),
-  });
-
-  useEffect(() => {
-    const val = balance?.value;
-    if (val && val > 0) {
-      setGlo(parseFloat(utils.formatEther(val)));
-    }
-  }, [balance]);
-
   useEffect(() => {
     const gloInput = document.getElementById("gloInput");
     if (gloInput) {

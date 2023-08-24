@@ -7,10 +7,14 @@ import { getTotalYield, getUSFormattedNumber } from "@/utils";
 
 import PaymentOptionModal from "./PaymentOptionModal";
 
-export default function BuyGloModal() {
+export default function BuyGloModal({
+  totalBalance,
+}: {
+  totalBalance: number;
+}) {
   const { openModal } = useContext(ModalContext);
 
-  const [glo, setGlo] = useState<number>(1000);
+  const [glo, setGlo] = useState<number>(totalBalance);
 
   let yearlyYield = getTotalYield(glo);
   // round down to 0 when the yield isn't even $1
