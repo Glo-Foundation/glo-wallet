@@ -260,3 +260,37 @@ export const getTotalGloBalance = (
     value: BigInt(totalBalanceValue * 10 ** 18) / BigInt(10 ** 18),
   };
 };
+
+export const customFormatBalance = (
+  balance: FetchBalanceResult | undefined
+): {
+  yearlyYield: number;
+  yearlyYieldFormatted: string;
+  dblFmtBalance: string;
+  fmtBalanceDollarPart: string;
+  fmtBalanceCentPart: string;
+} => {
+  const yearlyYield = getTotalYield(Number(balance ? balance.formatted : 0));
+  const yearlyYieldFormatted =
+    yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
+
+  const dblFmtBalance = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })
+    .format(Number(balance ? balance.formatted : 0))
+    .replaceAll(",", "");
+
+  const splitFmtBalance = dblFmtBalance.split(".");
+  const fmtBalanceDollarPart = splitFmtBalance[0];
+  let fmtBalanceCentPart = splitFmtBalance[1];
+  if (fmtBalanceCentPart?.length === 1) fmtBalanceCentPart += "0";
+
+  return {
+    yearlyYield,
+    yearlyYieldFormatted,
+    dblFmtBalance,
+    fmtBalanceDollarPart,
+    fmtBalanceCentPart,
+  };
+};

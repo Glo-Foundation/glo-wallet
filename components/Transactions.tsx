@@ -81,7 +81,7 @@ export default function Transactions() {
         <span> No transactions yet - </span>
         <button
           className="inline cursor-pointer hover:decoration-solid text-blue-500"
-          onClick={() => openModal(<BuyGloModal />)}
+          onClick={() => openModal(<BuyGloModal totalBalance={1000} />)}
         >
           buy some Glo?
         </button>
