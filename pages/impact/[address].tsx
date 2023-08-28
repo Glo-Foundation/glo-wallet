@@ -1,5 +1,6 @@
 import axios from "axios";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
@@ -10,7 +11,12 @@ import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
 import { ModalContext } from "@/lib/context";
 import { getAllowedChains, lastSliceAddress, sliceAddress } from "@/lib/utils";
-import { getBalance, getTotalYield, getUSFormattedNumber } from "@/utils";
+import {
+  getBalance,
+  getTotalYield,
+  getUSFormattedNumber,
+  customFormatBalance,
+} from "@/utils";
 
 import { KVResponse } from "../api/transfers/first-glo/[address]";
 
@@ -27,6 +33,28 @@ export default function Impact() {
   const [yearlyYieldFormatted, setYearlyYieldFormatted] =
     useState<string>("$0");
   const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
+  const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
+  const [ethereumBalanceFormatted, setEthereumBalanceFormatted] = useState<{
+    yearlyYield: number;
+    yearlyYieldFormatted: string;
+    dblFmtBalance: string;
+    fmtBalanceDollarPart: string;
+    fmtBalanceCentPart: string;
+  }>();
+  const [polygonBalanceFormatted, setPolygonBalanceFormatted] = useState<{
+    yearlyYield: number;
+    yearlyYieldFormatted: string;
+    dblFmtBalance: string;
+    fmtBalanceDollarPart: string;
+    fmtBalanceCentPart: string;
+  }>();
+  const [celoBalanceFormatted, setCeloBalanceFormatted] = useState<{
+    yearlyYield: number;
+    yearlyYieldFormatted: string;
+    dblFmtBalance: string;
+    fmtBalanceDollarPart: string;
+    fmtBalanceCentPart: string;
+  }>();
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -40,11 +68,27 @@ export default function Impact() {
       }
 
       const chains = getAllowedChains();
-      const bal1 = await getBalance(address as string, chains[0].id);
-      const bal2 = await getBalance(address as string, chains[1].id);
-      const bal3 = await getBalance(address as string, chains[2].id);
-      const decimals = BigInt(1000000000000000000);
-      const balance = bal1.add(bal2).add(bal3).div(decimals).toNumber();
+
+      const { polygonBalanceFormatted, polygonBalance } =
+        await getPolygonBalance(address, chains);
+      setPolygonBalanceFormatted(polygonBalanceFormatted);
+
+      const { ethereumBalanceFormatted, ethereumBalance } =
+        await getEthereumBalance(address, chains);
+      setEthereumBalanceFormatted(ethereumBalanceFormatted);
+
+      const { celoBalanceFormatted, celoBalance } = await getCeloBalance(
+        address,
+        chains
+      );
+      setCeloBalanceFormatted(celoBalanceFormatted);
+
+      const decimals = BigInt(10 ** 18);
+      const balance = polygonBalance
+        .add(ethereumBalance)
+        .add(celoBalance)
+        .div(decimals)
+        .toNumber();
 
       let yearlyYield = getTotalYield(balance);
       // round down to 0 when the yield isn't even $1
@@ -84,6 +128,24 @@ export default function Impact() {
     push("/");
   };
 
+  const supportedChains = [
+    {
+      name: "Ethereum",
+      logo: "/ethereum-square-logo.svg",
+      balance: ethereumBalanceFormatted,
+    },
+    {
+      name: "Polygon",
+      logo: "/polygon-matic-logo.svg",
+      balance: polygonBalanceFormatted,
+    },
+    {
+      name: "Celo",
+      logo: "/celo-square-logo.svg",
+      balance: celoBalanceFormatted,
+    },
+  ];
+
   return (
     <>
       <Head>
@@ -119,8 +181,13 @@ export default function Impact() {
               </div>
             </div>
             <div className="text-normal pb-4">Owns</div>
-            <div className="flex flex-row font-extrabold justify-start">
-              <div className="flex flex-row text-[2.625rem] items-baseline">
+            <div className="flex flex-row font-extrabold justify-start relative">
+              <div
+                className="flex flex-row text-[2.625rem] items-baseline cursor-pointer"
+                onClick={() => {
+                  setShowBalanceDropdown(!showBalanceDropdown);
+                }}
+              >
                 <span
                   className="font-extrabold"
                   data-testid="formatted-balance"
@@ -129,6 +196,35 @@ export default function Impact() {
                 </span>
                 <span className="text-sm ml-1">Glo Dollar</span>
               </div>
+              {showBalanceDropdown && (
+                <div className="absolute top-10 z-10 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
+                  <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
+
+                  <div className="flex flex-col justify-center items-center">
+                    {supportedChains.map((chain) => (
+                      <div
+                        key={chain.name}
+                        className="flex flex-row align-middle text-[2.625rem] items-center justify-between w-[200px] mb-2"
+                      >
+                        <div className="text-sm text-pine-700/90 mb-1.5 w-1/6">
+                          <Image
+                            alt={`${chain.name} logo`}
+                            src={chain.logo}
+                            width={20}
+                            height={20}
+                          />
+                        </div>
+                        <div className="text-sm text-pine-700/90 mb-1.5 w-1/3">
+                          {chain.name}
+                        </div>
+                        <div className="text-sm text-pine-700/90 mb-1.5 w-1/2 text-right">
+                          ${chain?.balance?.dblFmtBalance}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div
@@ -193,3 +289,49 @@ const beautifyDate = (date?: Date) => {
 
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
+async function getCeloBalance(
+  address: string | string[],
+  chains: { id: number | undefined }[]
+) {
+  const celoBalance = await getBalance(address as string, chains[2].id);
+  const celoBalanceValue = BigInt(celoBalance.toString()) / BigInt(10 ** 18);
+  const celoBalanceFormatted = customFormatBalance({
+    decimals: 18,
+    formatted: celoBalanceValue.toString(),
+    symbol: "USDGLO",
+    value: celoBalanceValue,
+  });
+  return { celoBalanceFormatted, celoBalance };
+}
+
+async function getEthereumBalance(
+  address: string | string[],
+  chains: { id: number | undefined }[]
+) {
+  const ethereumBalance = await getBalance(address as string, chains[1].id);
+  const ethereumBalanceValue =
+    BigInt(ethereumBalance.toString()) / BigInt(10 ** 18);
+  const ethereumBalanceFormatted = customFormatBalance({
+    decimals: 18,
+    formatted: ethereumBalanceValue.toString(),
+    symbol: "USDGLO",
+    value: ethereumBalanceValue,
+  });
+  return { ethereumBalanceFormatted, ethereumBalance };
+}
+
+async function getPolygonBalance(
+  address: string | string[],
+  chains: { id: number | undefined }[]
+) {
+  const polygonBalance = await getBalance(address as string, chains[0].id);
+  const polygonBalanceValue =
+    BigInt(polygonBalance.toString()) / BigInt(10 ** 18);
+  const polygonBalanceFormatted = customFormatBalance({
+    decimals: 18,
+    formatted: polygonBalanceValue.toString(),
+    symbol: "USDGLO",
+    value: polygonBalanceValue,
+  });
+  return { polygonBalanceFormatted, polygonBalance };
+}
