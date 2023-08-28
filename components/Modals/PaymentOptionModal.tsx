@@ -181,6 +181,28 @@ export default function PaymentOptionModal({
         delay="⚡ Instant"
         onClick={() => chain && buyWithSwap(buyAmount, chain, "Uniswap")}
       />
+      {isConnected && address && (
+        <>
+          <BuyBox
+            name="Coinbase + Uniswap"
+            icon="/coinbase.png"
+            fees=".01-5"
+            worksFor="💳 Fiat"
+            delay="⚡ 0-3 Days"
+            onClick={() => {
+              openModal(<BuyWithCoinbaseModal buyAmount={buyAmount} />);
+            }}
+          />
+          <BuyBox
+            name="Unlimit + Embr"
+            icon="/unlimit.png"
+            fees="1-3"
+            worksFor="💳 Cards"
+            delay="⚡ Instant"
+            onClick={openEmbrModal}
+          />
+        </>
+      )}
       {isMetamaskWallet && (
         <BuyBox
           name="Matcha [gasless]"
@@ -202,28 +224,6 @@ export default function PaymentOptionModal({
             openModal(<BuyWithZeroswapModal buyAmount={buyAmount} />);
           }}
         />
-      )}
-      {isConnected && address && (
-        <>
-          <BuyBox
-            name="Unlimit + Embr"
-            icon="/unlimit.png"
-            fees="1-3"
-            worksFor="💳 Cards"
-            delay="⚡ Instant"
-            onClick={openEmbrModal}
-          />
-          <BuyBox
-            name="Coinbase + Uniswap"
-            icon="/coinbase.png"
-            fees=".01-5"
-            worksFor="💳 Fiat"
-            delay="⚡ 0-3 Days"
-            onClick={() => {
-              openModal(<BuyWithCoinbaseModal buyAmount={buyAmount} />);
-            }}
-          />
-        </>
       )}
       {
         // Temporary disabled
