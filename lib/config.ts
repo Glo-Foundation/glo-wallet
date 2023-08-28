@@ -61,7 +61,7 @@ const chainRPCUrl: { [id: number]: string } = {
   // Testnets
   [polygonMumbai.id]: process.env.NEXT_PUBLIC_MUMBAI_RPC_URL as string,
   [goerli.id]: process.env.NEXT_PUBLIC_GOERLI_RPC_URL as string,
-  [celoAlfajores.id]: process.env.NEXT_PUBLIC_ALFAJORES_URL as string,
+  [celoAlfajores.id]: process.env.NEXT_PUBLIC_ALFAJORES_RPC_URL as string,
 };
 
 export const getChainRPCUrl = (chainId?: number) => {

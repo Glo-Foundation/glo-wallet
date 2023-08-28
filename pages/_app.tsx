@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
-import { publicProvider } from "@wagmi/core/providers/public";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
