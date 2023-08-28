@@ -70,7 +70,7 @@ export default function Home() {
     celoBalance,
   ]);
 
-  const { setTransfers, setCTAs } = useUserStore();
+  const { setCTAs } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();
@@ -100,19 +100,6 @@ export default function Home() {
     }
   }, [switchNetwork]);
 
-  const onChainSwitch = async () => {
-    if (chain?.id) {
-      const res = await api().get<TransfersPage>(`/transfers/${chain.id}`);
-      setTransfers(res.data);
-    }
-  };
-
-  useEffect(() => {
-    if (api()) {
-      onChainSwitch();
-    }
-  }, [chain]);
-
   useEffect(() => {
     if (isConnected) {
       const key = `glo-wallet-${address}`;
@@ -139,11 +126,9 @@ export default function Home() {
 
         Cookies.set("glo-user", userId);
 
-        onChainSwitch().then(() => {
-          api()
-            .get<CTA[]>(`/ctas`)
-            .then((res) => setCTAs(res.data));
-        });
+        api()
+          .get<CTA[]>(`/ctas`)
+          .then((res) => setCTAs(res.data));
       });
     } else {
       Cookies.remove("glo-email");
