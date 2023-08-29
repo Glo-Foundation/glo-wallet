@@ -178,7 +178,7 @@ export default function PaymentOptionModal({
       {isConnected && address && (
         <BuyBox
           name="Sequence (+ Coinbase)"
-          icon="/coinbase.png"
+          icon="/sequence.svg"
           fees=".01-5"
           worksFor="💳 Fiat"
           delay="⚡ 0-3 Days"
