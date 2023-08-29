@@ -14,7 +14,9 @@ export default function BuyGloModal({
 }) {
   const { openModal } = useContext(ModalContext);
 
-  const [glo, setGlo] = useState<number>(totalBalance);
+  const [glo, setGlo] = useState<number>(
+    totalBalance !== 0 ? totalbalance : 1000
+  );
 
   let yearlyYield = getTotalYield(glo);
   // round down to 0 when the yield isn't even $1
