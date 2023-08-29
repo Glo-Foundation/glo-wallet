@@ -1,4 +1,3 @@
-import { sequence } from "0xsequence";
 import { polygon } from "@wagmi/chains";
 import { BigNumber, utils } from "ethers";
 import Image from "next/image";
@@ -124,13 +123,13 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
         <button
           className="primary-button"
           onClick={() => {
-            const wallet = sequence.getWallet();
             if (chain) {
-              wallet.openWallet(
-                `/wallet/swap?chainId=${chain.id}&from=${getUSDCContractAddress(
-                  chain
-                )}&to=${chainConfig[chain.id]}`
-              );
+              const url = `https://sequence.app/wallet/swap?chainId=${
+                chain.id
+              }&from=${getUSDCContractAddress(chain)}&to=${
+                chainConfig[chain.id]
+              }`;
+              window.open(url, "_blank");
             }
           }}
         >
