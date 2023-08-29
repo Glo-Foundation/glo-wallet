@@ -213,6 +213,13 @@ export const getUSDCToUSDGLOSwapDeeplink = (
       break;
     case "Uniswap":
     default:
+      // exception for celo, we'll use cUSD instead of USDC as input
+      if (chain.id === celo.id) {
+        const cUSDContractAddress =
+          "0x765de816845861e75a25fca122bb6898b8b1282a";
+        outputUrl = `https://app.uniswap.org/#/swap?inputCurrency=${cUSDContractAddress}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
+        break;
+      }
       outputUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}&exactAmount=${amount}&exactField=input&chain=${swapChain}`;
   }
 
