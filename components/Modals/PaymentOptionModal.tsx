@@ -11,6 +11,7 @@ import { sliceAddress } from "@/lib/utils";
 import { buyWithTransak, buyWithSwap } from "@/payments";
 
 import BuyWithCoinbaseModal from "./BuyWithCoinbaseModal";
+import BuyWithCoinbaseSequenceModal from "./BuyWithCoinbaseSequenceModal";
 import BuyWithZeroswapModal from "./BuyWithZeroswapModal";
 
 export default function PaymentOptionModal({
@@ -175,44 +176,17 @@ export default function PaymentOptionModal({
       <h2 className="text-center pt-0">
         Choose a path to start buying Glo Dollars
       </h2>
-      <BuyBox
-        name="Uniswap"
-        icon="/uniswap.svg"
-        fees=".01"
-        worksFor="🔐 Crypto"
-        delay="⚡ Instant"
-        onClick={() => chain && buyWithSwap(buyAmount, chain, "Uniswap")}
-      />
+
       {isConnected && address && (
-        <>
-          <BuyBox
-            name="Coinbase + Uniswap"
-            icon="/coinbase.png"
-            fees=".01-5"
-            worksFor="💳 Fiat"
-            delay="⚡ 0-3 Days"
-            onClick={() => {
-              openModal(<BuyWithCoinbaseModal buyAmount={buyAmount} />);
-            }}
-          />
-          <BuyBox
-            name="Unlimit + Embr"
-            icon="/unlimit.png"
-            fees="1-3"
-            worksFor="💳 Cards"
-            delay="⚡ Instant"
-            onClick={openEmbrModal}
-          />
-        </>
-      )}
-      {isMetamaskWallet && (
         <BuyBox
-          name="Matcha [gasless]"
-          icon="/matcha.svg"
-          fees=".01"
-          worksFor="🔐 Crypto"
-          delay="⚡ Instant"
-          onClick={() => chain && buyWithSwap(buyAmount, chain, "Matcha")}
+          name="Sequence (+ Coinbase)"
+          icon="/sequence.svg"
+          fees=".01-5"
+          worksFor="💳 Fiat"
+          delay="⚡ 0-3 Days"
+          onClick={() => {
+            openModal(<BuyWithCoinbaseSequenceModal buyAmount={buyAmount} />);
+          }}
         />
       )}
       {isSequenceWallet && (
@@ -225,6 +199,35 @@ export default function PaymentOptionModal({
           onClick={() => {
             openModal(<BuyWithZeroswapModal buyAmount={buyAmount} />);
           }}
+        />
+      )}
+      <BuyBox
+        name="Uniswap"
+        icon="/uniswap.svg"
+        fees=".01"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() => chain && buyWithSwap(buyAmount, chain, "Uniswap")}
+      />
+      {isMetamaskWallet && (
+        <BuyBox
+          name="Matcha [gasless]"
+          icon="/matcha.svg"
+          fees=".01"
+          worksFor="🔐 Crypto"
+          delay="⚡ Instant"
+          onClick={() => chain && buyWithSwap(buyAmount, chain, "Matcha")}
+        />
+      )}
+
+      {isConnected && address && (
+        <BuyBox
+          name="Unlimit + Embr"
+          icon="/unlimit.png"
+          fees="1-3"
+          worksFor="💳 Cards"
+          delay="⚡ Instant"
+          onClick={openEmbrModal}
         />
       )}
       {
