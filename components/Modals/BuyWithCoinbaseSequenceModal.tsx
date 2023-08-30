@@ -139,7 +139,7 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
           className="secondary-button mt-3"
           onClick={() =>
             window.open(
-              "https://serious-jaborosa-7f8.notion.site/Guide-Buying-USDGLO-by-purchasing-USDC-on-a-centralized-exchange-and-swapping-to-USDGLO-1e376bc4e4144a02b7ca0cb13413e058",
+              "https://serious-jaborosa-7f8.notion.site/Guide-Purchasing-Glo-Dollar-by-swapping-USDC-for-Glo-Dollar-USDGLO-in-a-Sequence-wallet-54f9e0cd1e6d4b52a6cd6c5da697e917",
               "_blank"
             )
           }
