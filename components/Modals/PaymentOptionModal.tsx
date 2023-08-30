@@ -44,7 +44,9 @@ export default function PaymentOptionModal({
     // Attach Embr script to button
     const a = document.getElementById("Unlimit + Embr");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (a as any).dataset.mattr = "";
+    if (a) {
+      (a as any).dataset.mattr = "";
+    }
   }, []);
 
   const Double = ({
