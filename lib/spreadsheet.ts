@@ -14,15 +14,29 @@ export const fetchEarlyAdoptersEmails = async () => {
 
   await doc.loadInfo();
 
-  const sheet = doc.sheetsByTitle["HeyFlow Early adopters"];
+  const getAdopters = async () => {
+    const sheet = doc.sheetsByTitle["HeyFlow Early adopters"];
 
-  const rows = await sheet.getRows();
+    const rows = await sheet.getRows();
 
-  const emails = rows
-    .filter((row) => row[EA_COLUMN] === "yes" && row[EMAIL_COLUMN].length)
-    .map((row) => row[EMAIL_COLUMN]);
+    return rows
+      .filter((row) => row[EA_COLUMN] === "yes" && row[EMAIL_COLUMN].length)
+      .map((row) => row[EMAIL_COLUMN]);
+  };
 
-  const uniqueEmails = new Set<string>(emails);
+  const getSupporters = async () => {
+    const sheet = doc.sheetsByTitle["Glo Supporters"];
+
+    const rows = await sheet.getRows();
+
+    return rows
+      .filter((row) => row[EMAIL_COLUMN].length)
+      .map((row) => row[EMAIL_COLUMN]);
+  };
+
+  const result = await Promise.all([getAdopters(), getSupporters()]);
+
+  const uniqueEmails = new Set<string>([...result[0], ...result[1]]);
 
   return uniqueEmails;
 };
