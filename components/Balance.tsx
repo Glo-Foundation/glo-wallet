@@ -2,12 +2,12 @@ import { FetchBalanceResult } from "@wagmi/core";
 import Image from "next/image";
 import { useContext, useState } from "react";
 
-import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { ModalContext } from "@/lib/context";
 import { customFormatBalance } from "@/utils";
 
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
+import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
 
 type Props = {
   polygonBalance: FetchBalanceResult | undefined;
@@ -114,13 +114,13 @@ export default function Balance({
             className="black-link self-center"
             onClick={() => {
               openModal(
-                <BuyWithCoinbaseModal
+                <BuyWithCoinbaseSequenceModal
                   buyAmount={Number(totalBalanceFormatted.fmtBalanceDollarPart)}
                 />
               );
             }}
           >
-            ({formattedUSDC} USDC swappable for Glo Dollar)
+            ({formattedUSDC} USDC swappable for Glo Dollar) LOOOL
           </a>
         )}
       </div>
