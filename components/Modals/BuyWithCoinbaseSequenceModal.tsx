@@ -118,11 +118,12 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
           done={isCoinbaseStepDone}
           USDC={USDC}
         />
-      </section>
-      <section className="flex flex-col justify-center m-3">
-        <button
-          className="primary-button"
-          onClick={() => {
+        <StepCard
+          index={3}
+          iconPath="/sequence.svg"
+          title={`Swap ${buyAmount} Glo Dollars on Sequence`}
+          content={`Swap ${buyAmount} Glo Dollars for ${buyAmount} USDC`}
+          action={() => {
             if (chain) {
               const url = `https://sequence.app/wallet/swap?chainId=${
                 chain.id
@@ -132,9 +133,9 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
               window.open(url, "_blank");
             }
           }}
-        >
-          Buy ${buyAmount} Glo Dollars on Sequence
-        </button>
+        />
+      </section>
+      <section className="flex flex-col justify-center m-3">
         <button
           className="secondary-button mt-3"
           onClick={() =>
