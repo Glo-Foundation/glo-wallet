@@ -8,9 +8,8 @@ import { useAccount, useNetwork } from "wagmi";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithTransak, buyWithSwap } from "@/payments";
+import { buyWithSwap } from "@/payments";
 
-import BuyWithCoinbaseModal from "./BuyWithCoinbaseModal";
 import BuyWithCoinbaseSequenceModal from "./BuyWithCoinbaseSequenceModal";
 import BuyWithZeroswapModal from "./BuyWithZeroswapModal";
 
