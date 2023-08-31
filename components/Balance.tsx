@@ -120,7 +120,7 @@ export default function Balance({
               );
             }}
           >
-            ({formattedUSDC} USDC swappable for Glo Dollar) LOOOL
+            ({formattedUSDC} USDC swappable for Glo Dollar)
           </a>
         )}
       </div>
