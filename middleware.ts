@@ -27,7 +27,7 @@ export async function middleware(req: NextRequest) {
   const { success } = await ratelimit.limit(ip);
 
   if (!success) {
-    return Response.redirect(new URL("/blocked.html", req.url));
+    return new Response("Too many requests!", { status: 429 });
   }
 
   const path = req.nextUrl.pathname;
