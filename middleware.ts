@@ -12,11 +12,6 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(5, "10 s"),
 });
 
-// Define which routes you want to rate limit
-export const config = {
-  matcher: "/",
-};
-
 export async function middleware(req: NextRequest) {
   const country = req.geo?.country || "";
   if (PROHIBITED_COUNTRIES.includes(country)) {
