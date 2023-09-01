@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import * as cache from "@/lib/cache";
+import { fetchTotalHolders } from "@/lib/dune";
 
 const CACHE_KEY = "total-holders";
 export default async function handler(
@@ -13,8 +14,7 @@ export default async function handler(
     return res.status(200).end(cached);
   }
 
-  // Fetch total holders number from Dune
-  const total = String(123);
+  const total = await fetchTotalHolders();
 
   cache.set(CACHE_KEY, total, 5 * 60);
 
