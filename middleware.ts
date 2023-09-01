@@ -8,8 +8,8 @@ import { PROHIBITED_COUNTRIES } from "./lib/config";
 
 const ratelimit = new Ratelimit({
   redis: kv,
-  // 25 requests from the same IP in 5 seconds
-  limiter: Ratelimit.slidingWindow(25, "5 s"),
+  // 200 requests from the same IP in 5 seconds
+  limiter: Ratelimit.slidingWindow(200, "5 s"),
 });
 
 export async function middleware(req: NextRequest) {
