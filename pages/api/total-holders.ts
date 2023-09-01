@@ -16,7 +16,8 @@ export default async function handler(
 
   const total = await fetchTotalHolders();
 
-  cache.set(CACHE_KEY, total, 5 * 60);
+  // The dune query is executed on the daily basis
+  cache.set(CACHE_KEY, total, 60 * 60);
 
   return res.status(200).end(total);
 }
