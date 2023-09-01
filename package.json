@@ -26,6 +26,7 @@
     "canvas-confetti": "^1.6.0",
     "clsx": "^1.2.1",
     "ethers": "^5.7.2",
+    "express-rate-limit": "^6.10.0",
     "framer-motion": "^10.12.17",
     "google-spreadsheet": "^3.3.0",
     "js-cookie": "^3.0.5",
