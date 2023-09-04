@@ -6,6 +6,8 @@ import { Tooltip } from "react-tooltip";
 import { useAccount, useNetwork } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
+import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
+import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithSwap } from "@/payments";
@@ -143,6 +145,90 @@ export default function PaymentOptionModal({
     closeModal();
   };
 
+  const getBuyBoxList = () => {
+    const sequenceAndCoinbase = (
+      <BuyBox
+        name="Sequence (+ Coinbase)"
+        icon="/sequence.svg"
+        fees=".01-5"
+        worksFor="💳 Fiat"
+        delay="⚡ 0-3 Days"
+        onClick={() => {
+          openModal(<BuyWithCoinbaseSequenceModal buyAmount={buyAmount} />);
+        }}
+      />
+    );
+
+    const coinbaseAndUniswap = (
+      <BuyBox
+        name="Coinbase + Uniswap"
+        icon="/coinbase.png"
+        fees=".01-5"
+        worksFor="💳 Fiat"
+        delay="⚡ 0-3 Days"
+        onClick={() => {
+          openModal(<BuyWithCoinbaseModal buyAmount={buyAmount} />);
+        }}
+      />
+    );
+
+    const zeroSwap = (
+      <BuyBox
+        name="Zeroswap [gasless]"
+        icon="/zeroswap.svg"
+        fees=".01"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() => {
+          openModal(<BuyWithZeroswapModal buyAmount={buyAmount} />);
+        }}
+      />
+    );
+
+    const uniswap = (
+      <BuyBox
+        name="Uniswap"
+        icon="/uniswap.svg"
+        fees=".01"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() =>
+          buyWithSwap(buyAmount, chain ? chain : defaultChain(), "Uniswap")
+        }
+      />
+    );
+
+    const matcha = (
+      <BuyBox
+        name="Matcha [gasless]"
+        icon="/matcha.svg"
+        fees=".01"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() => chain && buyWithSwap(buyAmount, chain, "Matcha")}
+      />
+    );
+
+    const unlimitAndEmbr = (
+      <BuyBox
+        name="Unlimit + Embr"
+        icon="/unlimit.png"
+        fees="1-3"
+        worksFor="💳 Cards"
+        delay="⚡ Instant"
+        onClick={openEmbrModal}
+      />
+    );
+
+    if (!isConnected) {
+      return [uniswap];
+    } else if (isSequenceWallet) {
+      return [sequenceAndCoinbase, uniswap, zeroSwap, unlimitAndEmbr];
+    } else {
+      return [coinbaseAndUniswap, uniswap, matcha, unlimitAndEmbr];
+    }
+  };
+
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
@@ -176,59 +262,8 @@ export default function PaymentOptionModal({
         Choose a path to start buying Glo Dollars
       </h2>
 
-      {isConnected && address && (
-        <BuyBox
-          name="Sequence (+ Coinbase)"
-          icon="/sequence.svg"
-          fees=".01-5"
-          worksFor="💳 Fiat"
-          delay="⚡ 0-3 Days"
-          onClick={() => {
-            openModal(<BuyWithCoinbaseSequenceModal buyAmount={buyAmount} />);
-          }}
-        />
-      )}
-      {isSequenceWallet && (
-        <BuyBox
-          name="Zeroswap [gasless]"
-          icon="/zeroswap.svg"
-          fees=".01"
-          worksFor="🔐 Crypto"
-          delay="⚡ Instant"
-          onClick={() => {
-            openModal(<BuyWithZeroswapModal buyAmount={buyAmount} />);
-          }}
-        />
-      )}
-      <BuyBox
-        name="Uniswap"
-        icon="/uniswap.svg"
-        fees=".01"
-        worksFor="🔐 Crypto"
-        delay="⚡ Instant"
-        onClick={() => chain && buyWithSwap(buyAmount, chain, "Uniswap")}
-      />
-      {isMetamaskWallet && (
-        <BuyBox
-          name="Matcha [gasless]"
-          icon="/matcha.svg"
-          fees=".01"
-          worksFor="🔐 Crypto"
-          delay="⚡ Instant"
-          onClick={() => chain && buyWithSwap(buyAmount, chain, "Matcha")}
-        />
-      )}
+      {getBuyBoxList()}
 
-      {isConnected && address && (
-        <BuyBox
-          name="Unlimit + Embr"
-          icon="/unlimit.png"
-          fees="1-3"
-          worksFor="💳 Cards"
-          delay="⚡ Instant"
-          onClick={openEmbrModal}
-        />
-      )}
       {
         // Temporary disabled
         false && isConnected && (
