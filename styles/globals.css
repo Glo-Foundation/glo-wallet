@@ -127,4 +127,8 @@ body {
   .black-link {
     @apply cursor-pointer underline !important;
   }
+
+  .invisible-link {
+    @apply cursor-pointer !important;
+  }
 }
