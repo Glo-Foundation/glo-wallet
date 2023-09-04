@@ -111,7 +111,7 @@ export default function Balance({
         </div>
         {usdcBalance && usdcBalance.value > 0 && (
           <a
-            className="black-link self-center"
+            className="text-pine-700 self-center"
             onClick={() => {
               openModal(
                 <BuyWithCoinbaseSequenceModal
@@ -120,7 +120,8 @@ export default function Balance({
               );
             }}
           >
-            ({formattedUSDC} USDC swappable for Glo Dollar)
+            <span className="black-link">{formattedUSDC} USDC</span>{" "}
+            <span className="invisible-link">swappable for Glo Dollar</span>
           </a>
         )}
       </div>
