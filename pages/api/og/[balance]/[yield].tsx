@@ -68,183 +68,189 @@ export default async function handler(request: NextRequest) {
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
   const formattedBalance = getUSFormattedNumber(balance);
-
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "1200px",
-          height: "630px",
-          border: "1px solid rgba(19, 61, 56, 1)",
-        }}
-      >
+  try {
+    return new ImageResponse(
+      (
         <div
           style={{
-            fontSize: 74,
-            color: "rgba(19, 61, 56, 1)",
-            background: "rgba(234, 242, 241, 1)",
-            padding: "80px 60px 80px 60px",
-            width: "640px",
-            height: "630px",
-            lineHeight: "1.1",
-            textAlign: "center",
-            justifyContent: "center",
-            alignItems: "center",
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
+            width: "1200px",
+            height: "630px",
+            border: "1px solid rgba(19, 61, 56, 1)",
           }}
         >
-          <div style={{ flexDirection: "column", marginBottom: "60px" }}>
-            <p id="copy-row-1">Let&apos;s end</p>
-            <p id="copy-row-2">extreme</p>
-            <p id="copy-row-3">poverty with</p>
-            <p id="copy-row-4">a stablecoin</p>
-          </div>
-          <img
-            alt="Glo logo"
-            style={{ flexDirection: "column" }}
-            src="/glo-logo-text.svg"
-            width="206px"
-            height="73px"
-          />
-        </div>
-        <div>
           <div
             style={{
-              width: "560px",
-              height: "630px",
+              fontSize: 74,
+              color: "rgba(19, 61, 56, 1)",
               background: "rgba(234, 242, 241, 1)",
-              paddingTop: "40px",
-              paddingRight: "36px",
+              padding: "80px 60px 80px 60px",
+              width: "640px",
+              height: "630px",
+              lineHeight: "1.1",
+              textAlign: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
+            <div style={{ flexDirection: "column", marginBottom: "60px" }}>
+              <p id="copy-row-1">Let&apos;s end</p>
+              <p id="copy-row-2">extreme</p>
+              <p id="copy-row-3">poverty with</p>
+              <p id="copy-row-4">a stablecoin</p>
+            </div>
+            <img
+              alt="Glo logo"
+              style={{ flexDirection: "column" }}
+              src="/glo-logo-text.svg"
+              width="206px"
+              height="73px"
+            />
+          </div>
+          <div>
             <div
               style={{
-                color: "white",
-                background: "rgba(19, 61, 56, 1)",
-                borderRadius: "24px",
-                height: "180px",
-                padding: "48px 36px",
-                marginLeft: "40px",
-                marginRight: "40px",
-                display: "flex",
-                flexDirection: "column",
-                textAlign: "center",
-                alignContent: "center",
-                justifyContent: "between",
-                lineHeight: "0.8",
+                width: "560px",
+                height: "630px",
+                background: "rgba(234, 242, 241, 1)",
+                paddingTop: "40px",
+                paddingRight: "36px",
               }}
             >
-              <span
+              <div
                 style={{
-                  height: "120px",
-                  fontSize: "24px",
+                  color: "white",
+                  background: "rgba(19, 61, 56, 1)",
+                  borderRadius: "24px",
+                  height: "180px",
+                  padding: "48px 36px",
+                  marginLeft: "40px",
+                  marginRight: "40px",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                  alignContent: "center",
+                  justifyContent: "between",
                   lineHeight: "0.8",
-                  marginBottom: "10px",
                 }}
               >
-                By owning
-              </span>
-              <span
-                style={{
-                  fontSize: "50px",
-                  fontWeight: "600",
-                  lineHeight: "0.8",
-                }}
-              >
-                ${formattedBalance}{" "}
                 <span
                   style={{
-                    fontSize: "27px",
+                    height: "120px",
+                    fontSize: "24px",
+                    lineHeight: "0.8",
+                    marginBottom: "10px",
+                  }}
+                >
+                  By owning
+                </span>
+                <span
+                  style={{
+                    fontSize: "50px",
+                    fontWeight: "600",
                     lineHeight: "0.8",
                   }}
                 >
-                  GLO
+                  ${formattedBalance}{" "}
+                  <span
+                    style={{
+                      fontSize: "27px",
+                      lineHeight: "0.8",
+                    }}
+                  >
+                    GLO
+                  </span>
                 </span>
-              </span>
-            </div>
-            <div
-              style={{
-                color: "rgba(19, 61, 56, 1)",
-                background: "rgba(36, 229, 223, 1)",
-                borderRadius: "24px",
-                height: "190px",
-                padding: "40px",
-                marginLeft: "24px",
-                marginRight: "24px",
-                marginTop: "-18px",
-                display: "flex",
-                flexDirection: "column",
-                textAlign: "center",
-                alignContent: "center",
-                justifyContent: "between",
-                lineHeight: "1",
-              }}
-            >
-              <span
+              </div>
+              <div
                 style={{
-                  height: "120px",
-                  fontSize: "24px",
-                  fontWeight: "400",
+                  color: "rgba(19, 61, 56, 1)",
+                  background: "rgba(36, 229, 223, 1)",
+                  borderRadius: "24px",
+                  height: "190px",
+                  padding: "40px",
+                  marginLeft: "24px",
+                  marginRight: "24px",
+                  marginTop: "-18px",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                  alignContent: "center",
+                  justifyContent: "between",
+                  lineHeight: "1",
                 }}
               >
-                I create basic income of
-              </span>
-              <span
+                <span
+                  style={{
+                    height: "120px",
+                    fontSize: "24px",
+                    fontWeight: "400",
+                  }}
+                >
+                  I create basic income of
+                </span>
+                <span
+                  style={{
+                    fontSize: "54px",
+                    fontWeight: "600",
+                    marginTop: "12px",
+                  }}
+                >
+                  {yearlyYieldFormatted.split(" - ").length > 1
+                    ? yearlyYieldFormatted.split(" - ")[1].trim()
+                    : yearlyYieldFormatted.split(" - ")[0].trim()}
+                </span>
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "400",
+                    marginTop: "10px",
+                  }}
+                >
+                  for people in extreme poverty
+                </span>
+              </div>
+              <div
                 style={{
-                  fontSize: "54px",
-                  fontWeight: "600",
-                  marginTop: "12px",
+                  color: "rgba(43, 80, 76, 1)",
+                  background: "white",
+                  borderRadius: "24px",
+                  height: "220px",
+                  padding: "60px",
+                  marginLeft: "12px",
+                  marginRight: "12px",
+                  marginTop: "-16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                  alignContent: "center",
+                  justifyContent: "between",
+                  lineHeight: "1",
                 }}
               >
-                {yearlyYieldFormatted.split(" - ").length > 1
-                  ? yearlyYieldFormatted.split(" - ")[1].trim()
-                  : yearlyYieldFormatted.split(" - ")[0].trim()}
-              </span>
-              <span
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "400",
-                  marginTop: "10px",
-                }}
-              >
-                for people in extreme poverty
-              </span>
-            </div>
-            <div
-              style={{
-                color: "rgba(43, 80, 76, 1)",
-                background: "white",
-                borderRadius: "24px",
-                height: "220px",
-                padding: "60px",
-                marginLeft: "12px",
-                marginRight: "12px",
-                marginTop: "-16px",
-                display: "flex",
-                flexDirection: "column",
-                textAlign: "center",
-                alignContent: "center",
-                justifyContent: "between",
-                lineHeight: "1",
-              }}
-            >
-              <span style={{ fontSize: "24px", fontWeight: "400" }}>
-                Enough to buy
-              </span>
-              <span style={{ fontSize: "38px", fontWeight: "600" }}>
-                {whatCanYearlyYieldBuy(yearlyYield, "Nothing")}
-              </span>
+                <span style={{ fontSize: "24px", fontWeight: "400" }}>
+                  Enough to buy
+                </span>
+                <span style={{ fontSize: "38px", fontWeight: "600" }}>
+                  {whatCanYearlyYieldBuy(yearlyYield, "Nothing")}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    ),
-    {
-      width: 1200,
-      height: 630,
-    }
-  );
+      ),
+      {
+        width: 1200,
+        height: 630,
+      }
+    );
+  } catch (e: any) {
+    console.log(`${e.message}`);
+    return new Response(`Failed to generate the image`, {
+      status: 500,
+    });
+  }
 }
