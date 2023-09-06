@@ -1,6 +1,7 @@
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
@@ -55,12 +56,16 @@ export default function Impact() {
     fmtBalanceDollarPart: string;
     fmtBalanceCentPart: string;
   }>();
+  const [balance, setBalance] = useState<number>(0);
+
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
+
   useEffect(() => {
     const fetchBalance = async () => {
       if (!address) {
@@ -89,6 +94,8 @@ export default function Impact() {
         .add(celoBalance)
         .div(decimals)
         .toNumber();
+
+      setBalance(balance);
 
       let yearlyYield = getTotalYield(balance);
       // round down to 0 when the yield isn't even $1
@@ -146,10 +153,28 @@ export default function Impact() {
     },
   ];
 
+  // meta tags
+  const ogTitle =
+    "Make an impact with Glo - the stablecoin that lifts people out of extreme poverty.";
+  const ogDescription =
+    "Glo Dollar is a fully backed stablecoin that redistributes all profits as basic income to people in extreme poverty. Let's end extreme poverty. Join the movement.";
+  const ogUrl = `${process.env.NEXT_PUBLIC_VERCEL_URL}${pathname}`;
+  const ogImage = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/og/${balance}/${yearlyYield}`;
   return (
     <>
       <Head>
         <title>Glo Impact</title>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@glodollar" />
+        <meta name="twitter:creator" content="@glodollar" />
+        <meta name="twitter:title" content={ogTitle} />
+        <meta name="twitter:description" content={ogDescription} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={ogTitle} />
+        <meta property="og:description" content={ogDescription} />
+        <meta property="og:url" content={ogUrl} />
+        <meta property="og:image" content={ogImage} />
       </Head>
       <Navbar />
       <div className="mt-4 px-6">
@@ -289,6 +314,7 @@ const beautifyDate = (date?: Date) => {
 
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
+
 async function getCeloBalance(
   address: string | string[],
   chains: { id: number | undefined }[]
