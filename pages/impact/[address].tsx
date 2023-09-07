@@ -1,7 +1,7 @@
 import axios from "axios";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
@@ -21,7 +21,47 @@ import {
 
 import { KVResponse } from "../api/transfers/first-glo/[address]";
 
-export default function Impact() {
+type ImpactPageProps = {
+  balance: number;
+  yearlyYield: number;
+  polygonBalanceFormatted: {
+    yearlyYield: number;
+    yearlyYieldFormatted: string;
+    dblFmtBalance: string;
+    fmtBalanceDollarPart: string;
+    fmtBalanceCentPart: string;
+  };
+  ethereumBalanceFormatted: {
+    yearlyYield: number;
+    yearlyYieldFormatted: string;
+    dblFmtBalance: string;
+    fmtBalanceDollarPart: string;
+    fmtBalanceCentPart: string;
+  };
+  celoBalanceFormatted: {
+    yearlyYield: number;
+    yearlyYieldFormatted: string;
+    dblFmtBalance: string;
+    fmtBalanceDollarPart: string;
+    fmtBalanceCentPart: string;
+  };
+  ogTitle: string;
+  ogDescription: string;
+  ogUrl: string;
+  ogImage: string;
+};
+
+export default function Impact({
+  balance,
+  yearlyYield,
+  polygonBalanceFormatted,
+  ethereumBalanceFormatted,
+  celoBalanceFormatted,
+  ogTitle,
+  ogDescription,
+  ogUrl,
+  ogImage,
+}: ImpactPageProps) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal } = useContext(ModalContext);
@@ -29,88 +69,18 @@ export default function Impact() {
   const { push } = router;
   const { address } = router.query;
 
-  const [formattedBalance, setFormattedBalance] = useState<string>("0");
-  const [yearlyYield, setYearlyYield] = useState<number>(0);
-  const [yearlyYieldFormatted, setYearlyYieldFormatted] =
-    useState<string>("$0");
   const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
-  const [ethereumBalanceFormatted, setEthereumBalanceFormatted] = useState<{
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  }>();
-  const [polygonBalanceFormatted, setPolygonBalanceFormatted] = useState<{
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  }>();
-  const [celoBalanceFormatted, setCeloBalanceFormatted] = useState<{
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  }>();
-  const [balance, setBalance] = useState<number>(0);
 
-  const pathname = usePathname();
+  const formattedBalance = getUSFormattedNumber(balance);
+  const yearlyYieldFormatted =
+    yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (!address) {
-        return;
-      }
-
-      const chains = getAllowedChains();
-
-      const { polygonBalanceFormatted, polygonBalance } =
-        await getPolygonBalance(address, chains);
-      setPolygonBalanceFormatted(polygonBalanceFormatted);
-
-      const { ethereumBalanceFormatted, ethereumBalance } =
-        await getEthereumBalance(address, chains);
-      setEthereumBalanceFormatted(ethereumBalanceFormatted);
-
-      const { celoBalanceFormatted, celoBalance } = await getCeloBalance(
-        address,
-        chains
-      );
-      setCeloBalanceFormatted(celoBalanceFormatted);
-
-      const decimals = BigInt(10 ** 18);
-      const balance = polygonBalance
-        .add(ethereumBalance)
-        .add(celoBalance)
-        .div(decimals)
-        .toNumber();
-
-      setBalance(balance);
-
-      let yearlyYield = getTotalYield(balance);
-      // round down to 0 when the yield isn't even $1
-      if (yearlyYield < 1) {
-        yearlyYield = 0;
-      }
-
-      setYearlyYield(yearlyYield);
-      const yearlyYieldFormatted =
-        yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
-      setYearlyYieldFormatted(yearlyYieldFormatted);
-      setFormattedBalance(getUSFormattedNumber(balance));
-    };
-    fetchBalance();
-  }, [address]);
 
   useEffect(() => {
     const seeWhenFirstGloTransaction = async () => {
@@ -153,13 +123,6 @@ export default function Impact() {
     },
   ];
 
-  // meta tags
-  const ogTitle =
-    "Make an impact with Glo - the stablecoin that lifts people out of extreme poverty.";
-  const ogDescription =
-    "Glo Dollar is a fully backed stablecoin that redistributes all profits as basic income to people in extreme poverty. Let's end extreme poverty. Join the movement.";
-  const ogUrl = `${process.env.NEXT_PUBLIC_VERCEL_URL}${pathname}`;
-  const ogImage = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/og/${balance}/${yearlyYield}`;
   return (
     <>
       <Head>
@@ -360,4 +323,70 @@ async function getPolygonBalance(
     value: polygonBalanceValue,
   });
   return { polygonBalanceFormatted, polygonBalance };
+}
+
+// serverside rendering
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { address } = context.query;
+  const pathname = context.req.url;
+
+  if (!address) {
+    return {
+      props: {
+        balance: 0,
+        yearlyYield: 0,
+      },
+    };
+  }
+
+  const chains = getAllowedChains();
+
+  const { polygonBalanceFormatted, polygonBalance } = await getPolygonBalance(
+    address as string,
+    chains
+  );
+
+  const { ethereumBalanceFormatted, ethereumBalance } =
+    await getEthereumBalance(address as string, chains);
+
+  const { celoBalanceFormatted, celoBalance } = await getCeloBalance(
+    address as string,
+    chains
+  );
+
+  const decimals = BigInt(10 ** 18);
+  const balance = polygonBalance
+    .add(ethereumBalance)
+    .add(celoBalance)
+    .div(decimals)
+    .toNumber();
+
+  let yearlyYield = getTotalYield(balance);
+
+  // round down to 0 when the yield isn't even $1
+  if (yearlyYield < 1) {
+    yearlyYield = 0;
+  }
+
+  // meta tags
+  const ogTitle =
+    "Make an impact with Glo - the stablecoin that lifts people out of extreme poverty.";
+  const ogDescription =
+    "Glo Dollar is a fully backed stablecoin that redistributes all profits as basic income to people in extreme poverty. Let's end extreme poverty. Join the movement.";
+  const ogUrl = `${process.env.VERCEL_URL}${pathname}`;
+  const ogImage = `${process.env.VERCEL_URL}/api/og/${balance}/${yearlyYield}`;
+
+  return {
+    props: {
+      balance,
+      yearlyYield,
+      polygonBalanceFormatted,
+      ethereumBalanceFormatted,
+      celoBalanceFormatted,
+      ogTitle,
+      ogDescription,
+      ogUrl,
+      ogImage,
+    },
+  };
 }
