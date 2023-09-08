@@ -127,6 +127,12 @@ export default function Impact({
     <>
       <Head>
         <title>Glo Impact</title>
+        <meta name="title" content={ogTitle} />
+        <meta name="description" content={ogDescription} />
+        <meta name="keywords" content="glo, impact, stablecoin, crypto" />
+        <meta name="robots" content="index, follow" />
+        <meta name="language" content="English" />
+        <meta name="author" content="Glo" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@glodollar" />
         <meta name="twitter:creator" content="@glodollar" />
