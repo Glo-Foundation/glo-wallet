@@ -1,4 +1,6 @@
+import { kv } from "@vercel/kv";
 import axios from "axios";
+import { BigNumber } from "ethers";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -244,7 +246,19 @@ async function getCeloBalance(
   address: string | string[],
   chains: { id: number | undefined }[]
 ) {
-  const celoBalance = await getBalance(address as string, chains[2].id);
+  const kvValue = await kv.hget(`balance-${address as string}`, "celo");
+
+  const celoBalance = kvValue
+    ? BigNumber.from(kvValue as string)
+    : await getBalance(address as string, chains[2].id);
+
+  if (!kvValue) {
+    await kv.hset(`balance-${address as string}`, {
+      celo: celoBalance.toString(),
+    });
+    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
+  }
+
   const celoBalanceValue = BigInt(celoBalance.toString()) / BigInt(10 ** 18);
   const celoBalanceFormatted = customFormatBalance({
     decimals: 18,
@@ -259,7 +273,19 @@ async function getEthereumBalance(
   address: string | string[],
   chains: { id: number | undefined }[]
 ) {
-  const ethereumBalance = await getBalance(address as string, chains[1].id);
+  const kvValue = await kv.hget(`balance-${address as string}`, "ethereum");
+
+  const ethereumBalance = kvValue
+    ? BigNumber.from(kvValue as string)
+    : await getBalance(address as string, chains[1].id);
+
+  if (!kvValue) {
+    await kv.hset(`balance-${address as string}`, {
+      ethereum: ethereumBalance.toString(),
+    });
+    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
+  }
+
   const ethereumBalanceValue =
     BigInt(ethereumBalance.toString()) / BigInt(10 ** 18);
   const ethereumBalanceFormatted = customFormatBalance({
@@ -275,7 +301,19 @@ async function getPolygonBalance(
   address: string | string[],
   chains: { id: number | undefined }[]
 ) {
-  const polygonBalance = await getBalance(address as string, chains[0].id);
+  const kvValue = await kv.hget(`balance-${address as string}`, "polygon");
+
+  const polygonBalance = kvValue
+    ? BigNumber.from(kvValue as string)
+    : await getBalance(address as string, chains[0].id);
+
+  if (!kvValue) {
+    await kv.hset(`balance-${address as string}`, {
+      polygon: polygonBalance.toString(),
+    });
+    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
+  }
+
   const polygonBalanceValue =
     BigInt(polygonBalance.toString()) / BigInt(10 ** 18);
   const polygonBalanceFormatted = customFormatBalance({
