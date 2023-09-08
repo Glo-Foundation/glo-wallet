@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -21,47 +21,13 @@ import {
 
 import { KVResponse } from "../api/transfers/first-glo/[address]";
 
-type ImpactPageProps = {
-  balance: number;
-  yearlyYield: number;
-  polygonBalanceFormatted: {
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  };
-  ethereumBalanceFormatted: {
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  };
-  celoBalanceFormatted: {
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  };
-  ogTitle: string;
-  ogDescription: string;
-  ogUrl: string;
-  ogImage: string;
-};
-
 export default function Impact({
   balance,
   yearlyYield,
   polygonBalanceFormatted,
   ethereumBalanceFormatted,
   celoBalanceFormatted,
-  ogTitle,
-  ogDescription,
-  ogUrl,
-  ogImage,
-}: ImpactPageProps) {
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal } = useContext(ModalContext);
@@ -127,8 +93,6 @@ export default function Impact({
     <>
       <Head>
         <title>Glo Impact</title>
-        <meta name="title" content={ogTitle} />
-        <meta name="description" content={ogDescription} />
         <meta name="keywords" content="glo, impact, stablecoin, crypto" />
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
@@ -136,23 +100,6 @@ export default function Impact({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@glodollar" />
         <meta name="twitter:creator" content="@glodollar" />
-        <meta name="twitter:title" content={ogTitle} key="tw-title" />
-        <meta
-          name="twitter:description"
-          content={ogDescription}
-          key="tw-description"
-        />
-        <meta name="twitter:image" content={ogImage} key="tw-image" />
-        <meta name="twitter:url" content={ogUrl} key="tw-url" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={ogTitle} key="og-title" />
-        <meta
-          property="og:description"
-          content={ogDescription}
-          key="og-description"
-        />
-        <meta property="og:url" content={ogUrl} key="og-url" />
-        <meta property="og:image" content={ogImage} key="og-image" />
       </Head>
       <Navbar />
       <div className="mt-4 px-6">
@@ -342,6 +289,12 @@ async function getPolygonBalance(
 
 // serverside rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { res } = context;
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+
   const { address } = context.query;
   const pathname = context.req.url;
 
@@ -398,10 +351,73 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       polygonBalanceFormatted,
       ethereumBalanceFormatted,
       celoBalanceFormatted,
-      ogTitle,
-      ogDescription,
-      ogUrl,
-      ogImage,
+      openGraphData: [
+        {
+          property: "og:image",
+          content: ogImage,
+          key: "ogimage",
+        },
+        {
+          property: "og:image:width",
+          content: "1200",
+          key: "ogimagewidth",
+        },
+        {
+          property: "og:image:height",
+          content: "630",
+          key: "ogimageheight",
+        },
+        {
+          property: "og:url",
+          content: ogUrl,
+          key: "ogurl",
+        },
+        {
+          property: "og:title",
+          content: ogTitle,
+          key: "ogtitle",
+        },
+        {
+          property: "og:description",
+          content: ogDescription,
+          key: "ogdesc",
+        },
+        {
+          property: "og:type",
+          content: "website",
+          key: "website",
+        },
+        {
+          name: "twitter:title",
+          content: ogTitle,
+          key: "twtitle",
+        },
+        {
+          name: "twitter:description",
+          content: ogDescription,
+          key: "twdesc",
+        },
+        {
+          name: "twitter:image",
+          content: ogImage,
+          key: "twimage",
+        },
+        {
+          name: "twitter:url",
+          content: ogUrl,
+          key: "twurl",
+        },
+        {
+          name: "title",
+          content: ogTitle,
+          key: "title",
+        },
+        {
+          name: "description",
+          content: ogDescription,
+          key: "desc",
+        },
+      ],
     },
   };
 }
