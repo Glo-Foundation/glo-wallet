@@ -136,15 +136,23 @@ export default function Impact({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@glodollar" />
         <meta name="twitter:creator" content="@glodollar" />
-        <meta name="twitter:title" content={ogTitle} />
-        <meta name="twitter:description" content={ogDescription} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:url" content={ogUrl} />
+        <meta name="twitter:title" content={ogTitle} key="tw-title" />
+        <meta
+          name="twitter:description"
+          content={ogDescription}
+          key="tw-description"
+        />
+        <meta name="twitter:image" content={ogImage} key="tw-image" />
+        <meta name="twitter:url" content={ogUrl} key="tw-url" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content={ogTitle} />
-        <meta property="og:description" content={ogDescription} />
-        <meta property="og:url" content={ogUrl} />
-        <meta property="og:image" content={ogImage} />
+        <meta property="og:title" content={ogTitle} key="og-title" />
+        <meta
+          property="og:description"
+          content={ogDescription}
+          key="og-description"
+        />
+        <meta property="og:url" content={ogUrl} key="og-url" />
+        <meta property="og:image" content={ogImage} key="og-image" />
       </Head>
       <Navbar />
       <div className="mt-4 px-6">
