@@ -388,8 +388,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     "Make an impact with Glo - the stablecoin that lifts people out of extreme poverty.";
   const ogDescription =
     "Glo Dollar is a fully backed stablecoin that redistributes all profits as basic income to people in extreme poverty. Let's end extreme poverty. Join the movement.";
-  const ogUrl = `${process.env.VERCEL_URL}${pathname}`;
-  const ogImage = `${process.env.VERCEL_URL}/api/og/${balance}/${yearlyYield}`;
+  const ogUrl = `${process.env.VERCEL_OG_URL}${pathname}`;
+  const ogImage = `${process.env.VERCEL_OG_URL}/api/og/${balance}/${yearlyYield}`;
 
   return {
     props: {

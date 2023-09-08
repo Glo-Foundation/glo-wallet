@@ -50,8 +50,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // meta tags
   const ogTitle = "The OG Title";
   const ogDescription = "The OG Description";
-  const ogUrl = `${process.env.VERCEL_URL}${pathname}`;
-  const ogImage = `${process.env.VERCEL_URL}/api/og/${
+  const ogUrl = `${process.env.VERCEL_OG_URL}${pathname}`;
+  const ogImage = `${process.env.VERCEL_OG_URL}/api/og/${
     Number(amount) * 10
   }/${amount}`;
 
