@@ -5,17 +5,11 @@ import Navbar from "@/components/Navbar";
 
 export default function Impact({
   amount,
-  ogTitle,
-  ogDescription,
-  ogUrl,
-  ogImage,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <Head>
         <title>Glo OG</title>
-        <meta name="title" content={ogTitle} />
-        <meta name="description" content={ogDescription} />
         <meta name="keywords" content="glo, impact, stablecoin, crypto" />
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
@@ -23,15 +17,6 @@ export default function Impact({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@glodollar" />
         <meta name="twitter:creator" content="@glodollar" />
-        <meta name="twitter:title" content={ogTitle} />
-        <meta name="twitter:description" content={ogDescription} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta name="twitter:url" content={ogUrl} />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={ogTitle} />
-        <meta property="og:description" content={ogDescription} />
-        <meta property="og:url" content={ogUrl} />
-        <meta property="og:image" content={ogImage} />
       </Head>
       <Navbar />
       <div className="mt-4 px-6">
@@ -73,10 +58,73 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       amount,
-      ogTitle,
-      ogDescription,
-      ogUrl,
-      ogImage,
+      openGraphData: [
+        {
+          property: "og:image",
+          content: ogImage,
+          key: "ogimage",
+        },
+        {
+          property: "og:image:width",
+          content: "1200",
+          key: "ogimagewidth",
+        },
+        {
+          property: "og:image:height",
+          content: "630",
+          key: "ogimageheight",
+        },
+        {
+          property: "og:url",
+          content: ogUrl,
+          key: "ogurl",
+        },
+        {
+          property: "og:title",
+          content: ogTitle,
+          key: "ogtitle",
+        },
+        {
+          property: "og:description",
+          content: ogDescription,
+          key: "ogdesc",
+        },
+        {
+          property: "og:type",
+          content: "website",
+          key: "website",
+        },
+        {
+          name: "twitter:title",
+          content: ogTitle,
+          key: "twtitle",
+        },
+        {
+          name: "twitter:description",
+          content: ogDescription,
+          key: "twdesc",
+        },
+        {
+          name: "twitter:image",
+          content: ogImage,
+          key: "twimage",
+        },
+        {
+          name: "twitter:url",
+          content: ogUrl,
+          key: "twurl",
+        },
+        {
+          name: "title",
+          content: ogTitle,
+          key: "title",
+        },
+        {
+          name: "description",
+          content: ogDescription,
+          key: "desc",
+        },
+      ],
     },
   };
 }

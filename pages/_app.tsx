@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/jsx-key */
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import localFont from "next/font/local";
+import Head from "next/head";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
@@ -134,8 +137,14 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const setModalClass = (className = "") => setModalClassName(className);
 
+  const openGraphData = pageProps.openGraphData || [];
   return (
     <>
+      <Head>
+        {openGraphData.map((og: any) => (
+          <meta {...og} />
+        ))}
+      </Head>
       <Analytics />
       <Script
         src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
