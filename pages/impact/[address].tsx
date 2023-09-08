@@ -249,7 +249,7 @@ async function getCeloBalance(
   const kvValue = await kv.hget(`balance-${address as string}`, "celo");
 
   const celoBalance = kvValue
-    ? BigNumber.from(kvValue as string)
+    ? BigNumber.from(BigInt(kvValue as string))
     : await getBalance(address as string, chains[2].id);
 
   if (!kvValue) {
@@ -276,7 +276,7 @@ async function getEthereumBalance(
   const kvValue = await kv.hget(`balance-${address as string}`, "ethereum");
 
   const ethereumBalance = kvValue
-    ? BigNumber.from(kvValue as string)
+    ? BigNumber.from(BigInt(kvValue as string))
     : await getBalance(address as string, chains[1].id);
 
   if (!kvValue) {
@@ -304,7 +304,7 @@ async function getPolygonBalance(
   const kvValue = await kv.hget(`balance-${address as string}`, "polygon");
 
   const polygonBalance = kvValue
-    ? BigNumber.from(kvValue as string)
+    ? BigNumber.from(BigInt(kvValue as string))
     : await getBalance(address as string, chains[0].id);
 
   if (!kvValue) {
