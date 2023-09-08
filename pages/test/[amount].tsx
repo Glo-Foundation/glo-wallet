@@ -26,6 +26,7 @@ export default function Impact({
         <meta name="twitter:title" content={ogTitle} />
         <meta name="twitter:description" content={ogDescription} />
         <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:url" content={ogUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={ogTitle} />
         <meta property="og:description" content={ogDescription} />
