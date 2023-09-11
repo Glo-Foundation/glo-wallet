@@ -11,7 +11,11 @@ import { sliceAddress } from "@/lib/utils";
 import UserAuthModal from "./Modals/UserAuthModal";
 import UserInfoModal from "./Modals/UserInfoModal";
 
-export default function Header() {
+export default function Header({
+  isWalletIdriss,
+}: {
+  isWalletIdriss: boolean;
+}) {
   const { isLoading } = useConnect();
   const { address, isConnected } = useAccount();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -68,6 +72,9 @@ export default function Header() {
             >
               {sliceAddress(address!)}
             </button>
+            {/* Temporary Idriss Name/Logo */}
+            {isWalletIdriss && <>Idriss</>}
+
             <button
               className="primary-button w-9 h-9"
               onClick={() => openUserInfoModal()}
