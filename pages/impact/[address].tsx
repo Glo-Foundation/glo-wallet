@@ -1,4 +1,7 @@
+import { kv } from "@vercel/kv";
 import axios from "axios";
+import { BigNumber } from "ethers";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -20,7 +23,13 @@ import {
 
 import { KVResponse } from "../api/transfers/first-glo/[address]";
 
-export default function Impact() {
+export default function Impact({
+  balance,
+  yearlyYield,
+  polygonBalanceFormatted,
+  ethereumBalanceFormatted,
+  celoBalanceFormatted,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal } = useContext(ModalContext);
@@ -28,82 +37,18 @@ export default function Impact() {
   const { push } = router;
   const { address } = router.query;
 
-  const [formattedBalance, setFormattedBalance] = useState<string>("0");
-  const [yearlyYield, setYearlyYield] = useState<number>(0);
-  const [yearlyYieldFormatted, setYearlyYieldFormatted] =
-    useState<string>("$0");
   const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
-  const [ethereumBalanceFormatted, setEthereumBalanceFormatted] = useState<{
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  }>();
-  const [polygonBalanceFormatted, setPolygonBalanceFormatted] = useState<{
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  }>();
-  const [celoBalanceFormatted, setCeloBalanceFormatted] = useState<{
-    yearlyYield: number;
-    yearlyYieldFormatted: string;
-    dblFmtBalance: string;
-    fmtBalanceDollarPart: string;
-    fmtBalanceCentPart: string;
-  }>();
+
+  const formattedBalance = getUSFormattedNumber(balance);
+  const yearlyYieldFormatted =
+    yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (!address) {
-        return;
-      }
-
-      const chains = getAllowedChains();
-
-      const { polygonBalanceFormatted, polygonBalance } =
-        await getPolygonBalance(address, chains);
-      setPolygonBalanceFormatted(polygonBalanceFormatted);
-
-      const { ethereumBalanceFormatted, ethereumBalance } =
-        await getEthereumBalance(address, chains);
-      setEthereumBalanceFormatted(ethereumBalanceFormatted);
-
-      const { celoBalanceFormatted, celoBalance } = await getCeloBalance(
-        address,
-        chains
-      );
-      setCeloBalanceFormatted(celoBalanceFormatted);
-
-      const decimals = BigInt(10 ** 18);
-      const balance = polygonBalance
-        .add(ethereumBalance)
-        .add(celoBalance)
-        .div(decimals)
-        .toNumber();
-
-      let yearlyYield = getTotalYield(balance);
-      // round down to 0 when the yield isn't even $1
-      if (yearlyYield < 1) {
-        yearlyYield = 0;
-      }
-
-      setYearlyYield(yearlyYield);
-      const yearlyYieldFormatted =
-        yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
-      setYearlyYieldFormatted(yearlyYieldFormatted);
-      setFormattedBalance(getUSFormattedNumber(balance));
-    };
-    fetchBalance();
-  }, [address]);
 
   useEffect(() => {
     const seeWhenFirstGloTransaction = async () => {
@@ -150,6 +95,13 @@ export default function Impact() {
     <>
       <Head>
         <title>Glo Impact</title>
+        <meta name="keywords" content="glo, impact, stablecoin, crypto" />
+        <meta name="robots" content="index, follow" />
+        <meta name="language" content="English" />
+        <meta name="author" content="Glo" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@glodollar" />
+        <meta name="twitter:creator" content="@glodollar" />
       </Head>
       <Navbar />
       <div className="mt-4 px-6">
@@ -289,11 +241,24 @@ const beautifyDate = (date?: Date) => {
 
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
+
 async function getCeloBalance(
   address: string | string[],
   chains: { id: number | undefined }[]
 ) {
-  const celoBalance = await getBalance(address as string, chains[2].id);
+  const kvValue = await kv.hget(`balance-${address as string}`, "celo");
+
+  const celoBalance = kvValue
+    ? BigNumber.from(BigInt(kvValue as string))
+    : await getBalance(address as string, chains[2].id);
+
+  if (!kvValue) {
+    await kv.hset(`balance-${address as string}`, {
+      celo: celoBalance.toString(),
+    });
+    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
+  }
+
   const celoBalanceValue = BigInt(celoBalance.toString()) / BigInt(10 ** 18);
   const celoBalanceFormatted = customFormatBalance({
     decimals: 18,
@@ -308,7 +273,19 @@ async function getEthereumBalance(
   address: string | string[],
   chains: { id: number | undefined }[]
 ) {
-  const ethereumBalance = await getBalance(address as string, chains[1].id);
+  const kvValue = await kv.hget(`balance-${address as string}`, "ethereum");
+
+  const ethereumBalance = kvValue
+    ? BigNumber.from(BigInt(kvValue as string))
+    : await getBalance(address as string, chains[1].id);
+
+  if (!kvValue) {
+    await kv.hset(`balance-${address as string}`, {
+      ethereum: ethereumBalance.toString(),
+    });
+    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
+  }
+
   const ethereumBalanceValue =
     BigInt(ethereumBalance.toString()) / BigInt(10 ** 18);
   const ethereumBalanceFormatted = customFormatBalance({
@@ -324,7 +301,19 @@ async function getPolygonBalance(
   address: string | string[],
   chains: { id: number | undefined }[]
 ) {
-  const polygonBalance = await getBalance(address as string, chains[0].id);
+  const kvValue = await kv.hget(`balance-${address as string}`, "polygon");
+
+  const polygonBalance = kvValue
+    ? BigNumber.from(BigInt(kvValue as string))
+    : await getBalance(address as string, chains[0].id);
+
+  if (!kvValue) {
+    await kv.hset(`balance-${address as string}`, {
+      polygon: polygonBalance.toString(),
+    });
+    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
+  }
+
   const polygonBalanceValue =
     BigInt(polygonBalance.toString()) / BigInt(10 ** 18);
   const polygonBalanceFormatted = customFormatBalance({
@@ -334,4 +323,139 @@ async function getPolygonBalance(
     value: polygonBalanceValue,
   });
   return { polygonBalanceFormatted, polygonBalance };
+}
+
+// serverside rendering
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { res } = context;
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+
+  const { address } = context.query;
+  const pathname = context.req.url;
+
+  if (!address) {
+    return {
+      props: {
+        balance: 0,
+        yearlyYield: 0,
+      },
+    };
+  }
+
+  const chains = getAllowedChains();
+
+  const { polygonBalanceFormatted, polygonBalance } = await getPolygonBalance(
+    address as string,
+    chains
+  );
+
+  const { ethereumBalanceFormatted, ethereumBalance } =
+    await getEthereumBalance(address as string, chains);
+
+  const { celoBalanceFormatted, celoBalance } = await getCeloBalance(
+    address as string,
+    chains
+  );
+
+  const decimals = BigInt(10 ** 18);
+  const balance = polygonBalance
+    .add(ethereumBalance)
+    .add(celoBalance)
+    .div(decimals)
+    .toNumber();
+
+  let yearlyYield = getTotalYield(balance);
+
+  // round down to 0 when the yield isn't even $1
+  if (yearlyYield < 1) {
+    yearlyYield = 0;
+  }
+
+  // meta tags
+  const ogTitle =
+    "Make an impact with Glo - the stablecoin that lifts people out of extreme poverty.";
+  const ogDescription =
+    "Glo Dollar is a fully backed stablecoin that redistributes all profits as basic income to people in extreme poverty. Let's end extreme poverty. Join the movement.";
+  const ogUrl = `${process.env.VERCEL_OG_URL}${pathname}`;
+  const ogImage = `${process.env.VERCEL_OG_URL}/api/og/${balance}/${yearlyYield}`;
+
+  return {
+    props: {
+      balance,
+      yearlyYield,
+      polygonBalanceFormatted,
+      ethereumBalanceFormatted,
+      celoBalanceFormatted,
+      openGraphData: [
+        {
+          property: "og:image",
+          content: ogImage,
+          key: "ogimage",
+        },
+        {
+          property: "og:image:width",
+          content: "1200",
+          key: "ogimagewidth",
+        },
+        {
+          property: "og:image:height",
+          content: "630",
+          key: "ogimageheight",
+        },
+        {
+          property: "og:url",
+          content: ogUrl,
+          key: "ogurl",
+        },
+        {
+          property: "og:title",
+          content: ogTitle,
+          key: "ogtitle",
+        },
+        {
+          property: "og:description",
+          content: ogDescription,
+          key: "ogdesc",
+        },
+        {
+          property: "og:type",
+          content: "website",
+          key: "website",
+        },
+        {
+          name: "twitter:title",
+          content: ogTitle,
+          key: "twtitle",
+        },
+        {
+          name: "twitter:description",
+          content: ogDescription,
+          key: "twdesc",
+        },
+        {
+          name: "twitter:image",
+          content: ogImage,
+          key: "twimage",
+        },
+        {
+          name: "twitter:url",
+          content: ogUrl,
+          key: "twurl",
+        },
+        {
+          name: "title",
+          content: ogTitle,
+          key: "title",
+        },
+        {
+          name: "description",
+          content: ogDescription,
+          key: "desc",
+        },
+      ],
+    },
+  };
 }

@@ -291,7 +291,11 @@ export const customFormatBalance = (
   const splitFmtBalance = dblFmtBalance.split(".");
   const fmtBalanceDollarPart = splitFmtBalance[0];
   let fmtBalanceCentPart = splitFmtBalance[1];
-  if (fmtBalanceCentPart?.length === 1) fmtBalanceCentPart += "0";
+  if (fmtBalanceCentPart === undefined) {
+    fmtBalanceCentPart = "00";
+  } else if (fmtBalanceCentPart?.length === 1) {
+    fmtBalanceCentPart += "0";
+  }
 
   return {
     yearlyYield,

@@ -8,6 +8,7 @@ import {
   celoAlfajores,
 } from "@wagmi/core/chains";
 import Cookies from "js-cookie";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useContext } from "react";
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
@@ -150,19 +151,53 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="mt-4 px-6 bg-pine-100">
-      <Header />
-      <div className="flex flex-col space-y-4">
-        <Balance
-          polygonBalance={polygonBalance}
-          ethereumBalance={ethereumBalance}
-          celoBalance={celoBalance}
-          totalBalance={totalBalance}
-          usdcBalance={usdcBalance.data}
+    <>
+      <Head>
+        <meta
+          name="description"
+          content="Sign up to buy Glo Dollar using our app. See your transactions and the impact your Glo Dollar holdings have."
         />
 
-        <CTA balance={totalBalance?.formatted} address={address!} />
+        <meta property="og:url" content="https://app.glodollar.org/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Glo Dollar App" />
+        <meta
+          property="og:description"
+          content="Sign up to buy Glo Dollar using our app. See your transactions and the impact your Glo Dollar holdings have."
+        />
+        <meta
+          property="og:image"
+          content="https://uploads-ssl.webflow.com/62289d6493efe7c3b765d6bd/63d146d464f48942d593bc57_Group%204%20(3).png"
+        />
+        <meta property="og:image:alt" content="Glo Dollar logo" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://app.glodollar.org/" />
+        <meta name="twitter:title" content="Glo Dollar App" />
+        <meta
+          name="twitter:description"
+          content="Sign up to buy Glo Dollar using our app. See your transactions and the impact your Glo Dollar holdings have."
+        />
+        <meta
+          name="twitter:image"
+          content="https://uploads-ssl.webflow.com/62289d6493efe7c3b765d6bd/63d146d464f48942d593bc57_Group%204%20(3).png"
+        />
+        <meta name="twitter:image:alt" content="Glo Dollar logo" />
+      </Head>
+      <div className="mt-4 px-6 bg-pine-100">
+        <Header />
+        <div className="flex flex-col space-y-4">
+          <Balance
+            polygonBalance={polygonBalance}
+            ethereumBalance={ethereumBalance}
+            celoBalance={celoBalance}
+            totalBalance={totalBalance}
+            usdcBalance={usdcBalance.data}
+          />
+
+          <CTA balance={totalBalance?.formatted} address={address!} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
