@@ -28,7 +28,9 @@ export default function Header({
   }, [isCopiedTooltipOpen]);
 
   const openUserInfoModal = () => {
-    openModal(<UserInfoModal address={address} />);
+    openModal(
+      <UserInfoModal address={address} isWalletIdriss={isWalletIdriss} />
+    );
   };
 
   const openUserAuthModal = () => {
@@ -72,7 +74,7 @@ export default function Header({
             >
               {sliceAddress(address!)}
             </button>
-            {/* Temporary Idriss Name/Logo */}
+            {/* TODO: Temporary Idriss Name/Logo */}
             {isWalletIdriss && <>Idriss</>}
 
             <button

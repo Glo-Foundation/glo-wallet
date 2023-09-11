@@ -11,9 +11,10 @@ import { sliceAddress } from "@/lib/utils";
 
 type Props = {
   address?: string;
+  isWalletIdriss: boolean;
 };
 
-export default function UserInfoModal({ address }: Props) {
+export default function UserInfoModal({ address, isWalletIdriss }: Props) {
   const { disconnect } = useDisconnect();
   const { chain } = useNetwork();
   const { closeModal } = useContext(ModalContext);
@@ -83,6 +84,8 @@ export default function UserInfoModal({ address }: Props) {
               </div>
             </>
           )}
+          {/* TODO: Temporary Idriss Name/Logo */}
+          {isWalletIdriss && <>Idriss</>}
         </div>
       </section>
       <section className="mt-8 flex flex-col justify-end">
