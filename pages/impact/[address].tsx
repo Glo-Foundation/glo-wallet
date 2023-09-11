@@ -13,6 +13,7 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
 import { ModalContext } from "@/lib/context";
+import { getIdrissName } from "@/lib/idriss";
 import { getAllowedChains, lastSliceAddress, sliceAddress } from "@/lib/utils";
 import {
   getBalance,
@@ -31,6 +32,7 @@ export default function Impact({
   celoBalanceFormatted,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+  const [idrissName, setIdrissName] = useState("");
 
   const { openModal } = useContext(ModalContext);
   const router = useRouter();
@@ -64,6 +66,9 @@ export default function Impact({
       if (dateFirstGlo) {
         setWhenFirstGlo(beautifyDate(new Date(dateFirstGlo)));
       }
+
+      const result = await getIdrissName(addressToCheck!);
+      setIdrissName(result);
     };
     seeWhenFirstGloTransaction();
   }, [address]);
@@ -129,6 +134,7 @@ export default function Impact({
                 <div className="flex flex-col text-[14px] font-normal leading-normal text-pine-900/90">
                   <span>{sliceAddress(address as string, 4)}</span>
                   <span>{whenFirstGlo}</span>
+                  {idrissName && <span>idrissName</span>}
                 </div>
               </div>
             </div>
