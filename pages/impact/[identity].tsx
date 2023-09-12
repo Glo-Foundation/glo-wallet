@@ -25,6 +25,8 @@ import {
 import { KVResponse } from "../api/transfers/first-glo/[address]";
 
 export default function Impact({
+  address,
+  idrissIdentity,
   balance,
   yearlyYield,
   polygonBalanceFormatted,
@@ -36,25 +38,13 @@ export default function Impact({
   const { openModal } = useContext(ModalContext);
   const router = useRouter();
   const { push } = router;
-  const { address } = router.query;
 
   const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
-  const [idrissIdentity, setIdrissIdentity] = useState("");
 
   const formattedBalance = getUSFormattedNumber(balance);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
-
-  useEffect(() => {
-    async function getIdrissIdentity() {
-      const identity = await idriss.reverseResolve(address as string);
-      if (identity) {
-        setIdrissIdentity(identity);
-      }
-    }
-    getIdrissIdentity();
-  }, []);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -346,8 +336,36 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     "public, s-maxage=10, stale-while-revalidate=59"
   );
 
-  const { address } = context.query;
   const pathname = context.req.url;
+
+  // identity can be an address or an idriss identity
+  let { identity } = context.query;
+  if (Array.isArray(identity)) {
+    identity = identity[0];
+  }
+
+  if (!identity) {
+    return {
+      props: {
+        balance: 0,
+        yearlyYield: 0,
+      },
+    };
+  }
+
+  let address, idrissIdentity;
+
+  if (identity.startsWith("0x")) {
+    address = identity;
+    idrissIdentity = await idriss.reverseResolve(address);
+  } else {
+    idrissIdentity = identity;
+    // TODO: handle exception in resolving
+    const idrissResolvedAddresses = await idriss.resolve(idrissIdentity);
+    if (idrissResolvedAddresses) {
+      address = Object.values(idrissResolvedAddresses)[0];
+    }
+  }
 
   if (!address) {
     return {
@@ -397,6 +415,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
+      address,
+      idrissIdentity,
       balance,
       yearlyYield,
       polygonBalanceFormatted,
