@@ -13,6 +13,7 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
 import { ModalContext } from "@/lib/context";
+import { idriss } from "@/lib/idriss";
 import { getAllowedChains, lastSliceAddress, sliceAddress } from "@/lib/utils";
 import {
   getBalance,
@@ -39,10 +40,21 @@ export default function Impact({
 
   const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
+  const [idrissIdentity, setIdrissIdentity] = useState("");
 
   const formattedBalance = getUSFormattedNumber(balance);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
+
+  useEffect(() => {
+    async function getIdrissIdentity() {
+      const identity = await idriss.reverseResolve(address as string);
+      if (identity) {
+        setIdrissIdentity(identity);
+      }
+    }
+    getIdrissIdentity();
+  }, []);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -128,6 +140,7 @@ export default function Impact({
                 </button>
                 <div className="flex flex-col text-[14px] font-normal leading-normal text-pine-900/90">
                   <span>{sliceAddress(address as string, 4)}</span>
+                  <span>{idrissIdentity}</span>
                   <span>{whenFirstGlo}</span>
                 </div>
               </div>
