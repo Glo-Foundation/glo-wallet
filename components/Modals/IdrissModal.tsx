@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import StepCard from "@/components/Modals/StepCard";
 import { ModalContext } from "@/lib/context";
 import { isIdriss } from "@/lib/idriss";
+import { useUserStore } from "@/lib/store";
 import { api, sliceAddress } from "@/lib/utils";
 
 interface Props {
@@ -14,10 +15,20 @@ interface Props {
 
 export default function IdrissModal({ balance }: Props) {
   const { address } = useAccount();
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { closeModal } = useContext(ModalContext);
+  const { setCTAs } = useUserStore();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isRegisteredWithIdriss, setIsRegisteredWithIdriss] = useState(false);
+
+  const onClose = () => {
+    closeModal();
+    api()
+      .get<CTA[]>(`/ctas`)
+      .then((res) => {
+        setCTAs(res.data);
+      });
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -46,7 +57,7 @@ export default function IdrissModal({ balance }: Props) {
           height={25}
           alt="arrow-right"
           className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
-          onClick={() => closeModal()}
+          onClick={() => onClose()}
         />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         <button
@@ -60,7 +71,7 @@ export default function IdrissModal({ balance }: Props) {
         >
           🔗 {sliceAddress(address!)}
         </button>
-        <button onClick={() => closeModal()}>
+        <button onClick={() => onClose()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
