@@ -1,4 +1,13 @@
 import { kv } from "@vercel/kv";
+import { Chain } from "@wagmi/core";
+import {
+  celo,
+  celoAlfajores,
+  goerli,
+  mainnet,
+  polygon,
+  polygonMumbai,
+} from "@wagmi/core/chains";
 import axios from "axios";
 import { BigNumber } from "ethers";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -13,7 +22,8 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
 import { ModalContext } from "@/lib/context";
-import { getAllowedChains, lastSliceAddress, sliceAddress } from "@/lib/utils";
+import { idriss } from "@/lib/idriss";
+import { isProd, lastSliceAddress, sliceAddress } from "@/lib/utils";
 import {
   getBalance,
   getTotalYield,
@@ -24,6 +34,8 @@ import {
 import { KVResponse } from "../api/transfers/first-glo/[address]";
 
 export default function Impact({
+  address,
+  idrissIdentity,
   balance,
   yearlyYield,
   polygonBalanceFormatted,
@@ -35,7 +47,6 @@ export default function Impact({
   const { openModal } = useContext(ModalContext);
   const router = useRouter();
   const { push } = router;
-  const { address } = router.query;
 
   const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
@@ -128,6 +139,7 @@ export default function Impact({
                 </button>
                 <div className="flex flex-col text-[14px] font-normal leading-normal text-pine-900/90">
                   <span>{sliceAddress(address as string, 4)}</span>
+                  <span>{idrissIdentity}</span>
                   <span>{whenFirstGlo}</span>
                 </div>
               </div>
@@ -242,87 +254,38 @@ const beautifyDate = (date?: Date) => {
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
 
-async function getCeloBalance(
-  address: string | string[],
-  chains: { id: number | undefined }[]
-) {
-  const kvValue = await kv.hget(`balance-${address as string}`, "celo");
+async function getChainBalance(
+  address: string,
+  chain: Chain
+): Promise<BigNumber> {
+  const chainName = chain.name.toLowerCase();
 
-  const celoBalance = kvValue
-    ? BigNumber.from(BigInt(kvValue as string))
-    : await getBalance(address as string, chains[2].id);
+  const cacheKey = `balance-${address}`;
+  const cacheValue = await kv.hget(cacheKey, chainName);
 
-  if (!kvValue) {
-    await kv.hset(`balance-${address as string}`, {
-      celo: celoBalance.toString(),
+  let balance;
+
+  if (!cacheValue) {
+    balance = await getBalance(address as string, chain.id);
+    await kv.hset(cacheKey, {
+      chainName: balance.toString(),
     });
-    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
+    await kv.expire(cacheKey, 60 * 60 * 24);
+  } else {
+    balance = BigNumber.from(cacheValue);
   }
 
-  const celoBalanceValue = BigInt(celoBalance.toString()) / BigInt(10 ** 18);
-  const celoBalanceFormatted = customFormatBalance({
-    decimals: 18,
-    formatted: celoBalanceValue.toString(),
-    symbol: "USDGLO",
-    value: celoBalanceValue,
-  });
-  return { celoBalanceFormatted, celoBalance };
+  return balance;
 }
 
-async function getEthereumBalance(
-  address: string | string[],
-  chains: { id: number | undefined }[]
-) {
-  const kvValue = await kv.hget(`balance-${address as string}`, "ethereum");
-
-  const ethereumBalance = kvValue
-    ? BigNumber.from(BigInt(kvValue as string))
-    : await getBalance(address as string, chains[1].id);
-
-  if (!kvValue) {
-    await kv.hset(`balance-${address as string}`, {
-      ethereum: ethereumBalance.toString(),
-    });
-    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
-  }
-
-  const ethereumBalanceValue =
-    BigInt(ethereumBalance.toString()) / BigInt(10 ** 18);
-  const ethereumBalanceFormatted = customFormatBalance({
+function formatBalance(balance: BigNumber) {
+  const balanceValue = BigInt(balance.toString()) / BigInt(10 ** 18);
+  return customFormatBalance({
     decimals: 18,
-    formatted: ethereumBalanceValue.toString(),
+    formatted: balanceValue.toString(),
     symbol: "USDGLO",
-    value: ethereumBalanceValue,
+    value: balanceValue,
   });
-  return { ethereumBalanceFormatted, ethereumBalance };
-}
-
-async function getPolygonBalance(
-  address: string | string[],
-  chains: { id: number | undefined }[]
-) {
-  const kvValue = await kv.hget(`balance-${address as string}`, "polygon");
-
-  const polygonBalance = kvValue
-    ? BigNumber.from(BigInt(kvValue as string))
-    : await getBalance(address as string, chains[0].id);
-
-  if (!kvValue) {
-    await kv.hset(`balance-${address as string}`, {
-      polygon: polygonBalance.toString(),
-    });
-    await kv.expire(`balance-${address as string}`, 60 * 60 * 24);
-  }
-
-  const polygonBalanceValue =
-    BigInt(polygonBalance.toString()) / BigInt(10 ** 18);
-  const polygonBalanceFormatted = customFormatBalance({
-    decimals: 18,
-    formatted: polygonBalanceValue.toString(),
-    symbol: "USDGLO",
-    value: polygonBalanceValue,
-  });
-  return { polygonBalanceFormatted, polygonBalance };
 }
 
 // serverside rendering
@@ -333,8 +296,36 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     "public, s-maxage=10, stale-while-revalidate=59"
   );
 
-  const { address } = context.query;
   const pathname = context.req.url;
+
+  // identity can be an address or an idriss identity
+  let { identity } = context.query;
+  if (Array.isArray(identity)) {
+    identity = identity[0];
+  }
+
+  if (!identity) {
+    return {
+      props: {
+        balance: 0,
+        yearlyYield: 0,
+      },
+    };
+  }
+
+  let address, idrissIdentity;
+
+  if (identity.startsWith("0x")) {
+    address = identity;
+    idrissIdentity = await idriss.reverseResolve(address);
+  } else {
+    idrissIdentity = identity;
+    // TODO: handle exception in resolving
+    const idrissResolvedAddresses = await idriss.resolve(idrissIdentity);
+    if (idrissResolvedAddresses) {
+      address = Object.values(idrissResolvedAddresses)[0];
+    }
+  }
 
   if (!address) {
     return {
@@ -345,20 +336,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const chains = getAllowedChains();
-
-  const { polygonBalanceFormatted, polygonBalance } = await getPolygonBalance(
-    address as string,
-    chains
-  );
-
-  const { ethereumBalanceFormatted, ethereumBalance } =
-    await getEthereumBalance(address as string, chains);
-
-  const { celoBalanceFormatted, celoBalance } = await getCeloBalance(
-    address as string,
-    chains
-  );
+  const [polygonBalance, ethereumBalance, celoBalance] = await Promise.all([
+    getChainBalance(address, isProd() ? polygon : polygonMumbai),
+    getChainBalance(address, isProd() ? mainnet : goerli),
+    getChainBalance(address, isProd() ? celo : celoAlfajores),
+  ]);
 
   const decimals = BigInt(10 ** 18);
   const balance = polygonBalance
@@ -384,11 +366,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
+      address,
+      idrissIdentity,
       balance,
       yearlyYield,
-      polygonBalanceFormatted,
-      ethereumBalanceFormatted,
-      celoBalanceFormatted,
+      polygonBalanceFormatted: formatBalance(polygonBalance),
+      ethereumBalanceFormatted: formatBalance(ethereumBalance),
+      celoBalanceFormatted: formatBalance(celoBalance),
       openGraphData: [
         {
           property: "og:image",

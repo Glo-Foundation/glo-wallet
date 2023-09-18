@@ -30,6 +30,7 @@
     "express-rate-limit": "^6.10.0",
     "framer-motion": "^10.12.17",
     "google-spreadsheet": "^3.3.0",
+    "idriss-crypto": "^1.8.10",
     "js-cookie": "^3.0.5",
     "lottie-react": "^2.4.0",
     "moralis": "^2.20.0",
