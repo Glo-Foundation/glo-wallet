@@ -26,3 +26,7 @@ model CTAs {
   User        User     @relation(fields: [userId], references: [id])
   userId      String
 }
+
+model IdrissInvite {
+  address   String   @id @unique
+}

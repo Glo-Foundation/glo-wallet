@@ -5,10 +5,11 @@ import { useContext } from "react";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { DEFAULT_CTAS } from "@/lib/utils";
+import { DEFAULT_CTAS, api } from "@/lib/utils";
 import { getImpactItems, getTotalYield } from "@/utils";
 
 import { CompletedIcon } from "./CompletedIcon";
+import IdrissModal from "./Modals/IdrissModal";
 import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
@@ -114,6 +115,12 @@ export default function CTA({
       iconPath: "/megahorn.svg",
       description: shareImpactTextShort,
       action: () => openModal(<TweetModal tweetText={shareImpactText} />),
+    },
+    ["REGISTER_IDRISS"]: {
+      title: "Register with IDRiss",
+      iconPath: "/megahorn.svg",
+      description: "blalba",
+      action: () => openModal(<IdrissModal balance={gloBalance} />),
     },
   };
 

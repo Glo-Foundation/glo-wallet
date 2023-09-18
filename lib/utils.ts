@@ -64,6 +64,7 @@ export const DEFAULT_CTAS: CTA[] = [
   "TWEEET_IMPACT",
   "JOIN_PROGRAM",
   "BUY_GLO_MERCH",
+  "REGISTER_IDRISS",
 ].map((cta) => ({ type: cta } as CTA));
 
 export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
