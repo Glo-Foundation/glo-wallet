@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getToTalBalances } from "@/lib/balance";
+import { getBalances } from "@/lib/balance";
 import { isIdriss } from "@/lib/idriss";
 import { isProd } from "@/lib/utils";
 import prisma from "lib/prisma";
@@ -42,7 +42,7 @@ export default async function handler(
     return res.status(200).json({ msg: "Already registered" });
   }
 
-  const { balance } = await getToTalBalances(address);
+  const { totalBalance: balance } = await getBalances(address);
   console.log({ balance });
 
   if (balance < 100) {

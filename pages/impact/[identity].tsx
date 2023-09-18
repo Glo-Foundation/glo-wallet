@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BigNumber } from "ethers";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -10,15 +11,21 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
-import { getToTalBalances } from "@/lib/balance";
+import { getBalances } from "@/lib/balance";
 import { ModalContext } from "@/lib/context";
-import { getIdrissName } from "@/lib/idriss";
+import { idriss } from "@/lib/idriss";
 import { lastSliceAddress, sliceAddress } from "@/lib/utils";
-import { getTotalYield, getUSFormattedNumber } from "@/utils";
+import {
+  getTotalYield,
+  getUSFormattedNumber,
+  customFormatBalance,
+} from "@/utils";
 
 import { KVResponse } from "../api/transfers/first-glo/[address]";
 
 export default function Impact({
+  address,
+  idrissIdentity,
   balance,
   yearlyYield,
   polygonBalanceFormatted,
@@ -26,12 +33,10 @@ export default function Impact({
   celoBalanceFormatted,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [idrissName, setIdrissName] = useState("");
 
   const { openModal } = useContext(ModalContext);
   const router = useRouter();
   const { push } = router;
-  const { address } = router.query;
 
   const [whenFirstGlo, setWhenFirstGlo] = useState<string>("");
   const [showBalanceDropdown, setShowBalanceDropdown] = useState(false);
@@ -60,9 +65,6 @@ export default function Impact({
       if (dateFirstGlo) {
         setWhenFirstGlo(beautifyDate(new Date(dateFirstGlo)));
       }
-
-      const result = await getIdrissName(addressToCheck!);
-      setIdrissName(result);
     };
     seeWhenFirstGloTransaction();
   }, [address]);
@@ -127,8 +129,8 @@ export default function Impact({
                 </button>
                 <div className="flex flex-col text-[14px] font-normal leading-normal text-pine-900/90">
                   <span>{sliceAddress(address as string, 4)}</span>
+                  <span>{idrissIdentity}</span>
                   <span>{whenFirstGlo}</span>
-                  {idrissName && <span>idrissName</span>}
                 </div>
               </div>
             </div>
@@ -242,6 +244,16 @@ const beautifyDate = (date?: Date) => {
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
 
+function formatBalance(balance: BigNumber) {
+  const balanceValue = BigInt(balance.toString()) / BigInt(10 ** 18);
+  return customFormatBalance({
+    decimals: 18,
+    formatted: balanceValue.toString(),
+    symbol: "USDGLO",
+    value: balanceValue,
+  });
+}
+
 // serverside rendering
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { res } = context;
@@ -250,8 +262,36 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     "public, s-maxage=10, stale-while-revalidate=59"
   );
 
-  const { address } = context.query;
   const pathname = context.req.url;
+
+  // identity can be an address or an idriss identity
+  let { identity } = context.query;
+  if (Array.isArray(identity)) {
+    identity = identity[0];
+  }
+
+  if (!identity) {
+    return {
+      props: {
+        balance: 0,
+        yearlyYield: 0,
+      },
+    };
+  }
+
+  let address, idrissIdentity;
+
+  if (identity.startsWith("0x")) {
+    address = identity;
+    idrissIdentity = await idriss.reverseResolve(address);
+  } else {
+    idrissIdentity = identity;
+    // TODO: handle exception in resolving
+    const idrissResolvedAddresses = await idriss.resolve(idrissIdentity);
+    if (idrissResolvedAddresses) {
+      address = Object.values(idrissResolvedAddresses)[0];
+    }
+  }
 
   if (!address) {
     return {
@@ -263,11 +303,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const {
-    balance,
-    polygonBalanceFormatted,
-    ethereumBalanceFormatted,
-    celoBalanceFormatted,
-  } = await getToTalBalances(address as string);
+    totalBalance: balance,
+    polygonBalance,
+    ethereumBalance,
+    celoBalance,
+  } = await getBalances(address);
+
   let yearlyYield = getTotalYield(balance);
 
   // round down to 0 when the yield isn't even $1
@@ -285,11 +326,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
+      address,
+      idrissIdentity,
       balance,
       yearlyYield,
-      polygonBalanceFormatted,
-      ethereumBalanceFormatted,
-      celoBalanceFormatted,
+      polygonBalanceFormatted: formatBalance(polygonBalance),
+      ethereumBalanceFormatted: formatBalance(ethereumBalance),
+      celoBalanceFormatted: formatBalance(celoBalance),
       openGraphData: [
         {
           property: "og:image",
