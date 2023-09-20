@@ -76,22 +76,30 @@ export default function IdrissModal({ balance }: Props) {
         </button>
       </div>
       <section className="text-center">
-        <h3 className="pt-0">Register IDriss</h3>
-        <p className="text-sm py-6">Blabla.</p>
+        <h3 className="pt-0">IDriss 🤝 Glo Dollar</h3>
+        <p className="text-sm py-4">
+          We&apos;ve teamed up to gift a free IDriss registration to people who
+          own $100+ Glo Dollar.
+        </p>
+        <p className="text-sm pb-4">
+          With an IDriss you can use an 📧, 📱 or @twitter instead of your
+          wallet address, and share your impact with an easier link:
+          /@geyr_garmr
+        </p>
       </section>
       <section>
         <StepCard
           index={1}
           iconPath="/glo-logo.svg"
-          title={"Hold 100GLO"}
-          content="100GLO across all chains"
+          title="Buy $100 Glo Dollars (or more!)"
+          content="Across all blockchains"
           done={balance >= 100}
         />
         <StepCard
           index={2}
           iconPath="/coinbase-invert.svg"
-          title={`Register with IDriss`}
-          content="Connect your wallet to IDriss"
+          title="Request a free IDriss registration"
+          content="Just click here"
           action={() => {
             isIdriss(address!).then((isRegistered) => {
               if (isRegistered) {
@@ -101,6 +109,13 @@ export default function IdrissModal({ balance }: Props) {
               }
             });
           }}
+          done={isRegisteredWithIdriss}
+        />
+        <StepCard
+          index={3}
+          iconPath="/idriss.png"
+          title="Complete IDriss registration"
+          content="Connect your wallet on idriss.xyz"
           done={isRegisteredWithIdriss}
         />
       </section>

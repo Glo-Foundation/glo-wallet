@@ -117,9 +117,10 @@ export default function CTA({
       action: () => openModal(<TweetModal tweetText={shareImpactText} />),
     },
     ["REGISTER_IDRISS"]: {
-      title: "Register with IDRiss",
-      iconPath: "/megahorn.svg",
-      description: "blalba",
+      title: "Claim free IDriss handle",
+      iconPath: "/idriss.png",
+      description:
+        "Hold $100+ of Glo Dollar to claim an IDriss registration for this wallet",
       action: () => openModal(<IdrissModal balance={gloBalance} />),
     },
   };
