@@ -2,7 +2,6 @@ import axios, { AxiosError } from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getBalances } from "@/lib/balance";
-import { isIdriss } from "@/lib/idriss";
 import { isProd } from "@/lib/utils";
 import prisma from "lib/prisma";
 
@@ -12,38 +11,7 @@ export default async function handler(
 ) {
   const address = req.headers["glo-pub-address"] as string;
 
-  const isAlreadyRegistered = await isIdriss(address);
-  if (isAlreadyRegistered) {
-    const user = await prisma.user.findFirstOrThrow({
-      where: {
-        address,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const props = {
-      type: "REGISTER_IDRISS" as CTAType,
-      userId: user.id,
-      isCompleted: true,
-    };
-
-    const cta = await prisma.cTAs.findFirst({
-      where: props,
-    });
-
-    if (!cta) {
-      await prisma.cTAs.create({
-        data: props,
-      });
-    }
-
-    return res.status(200).json({ msg: "Already registered" });
-  }
-
   const { totalBalance: balance } = await getBalances(address);
-  console.log({ balance });
 
   if (balance < 100) {
     return res.status(200).json({ msg: "Not enough GLO" });
@@ -73,8 +41,6 @@ export default async function handler(
         },
       }
     );
-
-    console.log(result);
 
     if (result.status === 200 && result.data.message === "Access granted") {
       await prisma.idrissInvite.create({

@@ -5,9 +5,9 @@ import { useAccount } from "wagmi";
 
 import StepCard from "@/components/Modals/StepCard";
 import { ModalContext } from "@/lib/context";
-import { isIdriss } from "@/lib/idriss";
-import { useUserStore } from "@/lib/store";
 import { api, sliceAddress } from "@/lib/utils";
+
+import IdrissConfirmModal from "./IdrissConfirmModal";
 
 interface Props {
   balance: number;
@@ -15,32 +15,11 @@ interface Props {
 
 export default function IdrissModal({ balance }: Props) {
   const { address } = useAccount();
-  const { closeModal } = useContext(ModalContext);
-  const { setCTAs } = useUserStore();
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [isRegisteredWithIdriss, setIsRegisteredWithIdriss] = useState(false);
-
-  const onClose = () => {
-    closeModal();
-    api()
-      .get<CTA[]>(`/ctas`)
-      .then((res) => {
-        setCTAs(res.data);
-      });
-  };
-
-  useEffect(() => {
-    const init = async () => {
-      await api().get("/idriss");
-
-      const isRegistered = await isIdriss(address!);
-      if (isRegistered) {
-        setIsRegisteredWithIdriss(true);
-      }
-    };
-    init();
-  }, [address]);
+  const [startedRegistration, setstartedRegistration] = useState(false);
+  const [requestedRegistration, setRequestedRegistration] = useState(false);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -57,7 +36,7 @@ export default function IdrissModal({ balance }: Props) {
           height={25}
           alt="arrow-right"
           className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
-          onClick={() => onClose()}
+          onClick={() => closeModal()}
         />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         <button
@@ -71,7 +50,7 @@ export default function IdrissModal({ balance }: Props) {
         >
           🔗 {sliceAddress(address!)}
         </button>
-        <button onClick={() => onClose()}>
+        <button onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
@@ -100,23 +79,29 @@ export default function IdrissModal({ balance }: Props) {
           iconPath="/coinbase-invert.svg"
           title="Request a free IDriss registration"
           content="Just click here"
-          action={() => {
-            isIdriss(address!).then((isRegistered) => {
-              if (isRegistered) {
-                setIsRegisteredWithIdriss(true);
-              } else {
-                window.open("https://www.idriss.xyz/", "_blank");
-              }
-            });
+          action={async () => {
+            await api().get("/idriss");
+            setRequestedRegistration(true);
           }}
-          done={isRegisteredWithIdriss}
+          done={requestedRegistration}
         />
         <StepCard
           index={3}
           iconPath="/idriss.png"
           title="Complete IDriss registration"
           content="Connect your wallet on idriss.xyz"
-          done={isRegisteredWithIdriss}
+          action={() => {
+            window.open("https://www.idriss.xyz/", "_blank");
+            setstartedRegistration(true);
+          }}
+          done={startedRegistration}
+        />{" "}
+        <StepCard
+          index={4}
+          iconPath="/idriss.png"
+          title="Confirm IDriss identity"
+          content="Enter your IDriss email/twitter/phone"
+          action={() => openModal(<IdrissConfirmModal />)}
         />
       </section>
     </div>
