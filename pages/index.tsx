@@ -133,7 +133,7 @@ export default function Home() {
           .get<CTA[]>(`/ctas`)
           .then((res) => setCTAs(res.data));
 
-        const result = await isIdriss(address!);
+        const result = await isIdriss(address!, email!);
         setIsWalletIdriss(result);
       });
     } else {

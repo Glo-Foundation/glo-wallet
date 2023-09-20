@@ -84,8 +84,16 @@ export default function UserInfoModal({ address, isWalletIdriss }: Props) {
               </div>
             </>
           )}
-          {/* TODO: Temporary Idriss Name/Logo */}
-          {isWalletIdriss && <>Idriss</>}
+          {isWalletIdriss && (
+            <div className="w-9 h-9">
+              <Image
+                alt={"Idriss"}
+                src={"/idriss.png"}
+                height={20}
+                width={20}
+              />
+            </div>
+          )}
         </div>
       </section>
       <section className="mt-8 flex flex-col justify-end">

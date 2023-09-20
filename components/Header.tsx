@@ -74,8 +74,16 @@ export default function Header({
             >
               {sliceAddress(address!)}
             </button>
-            {/* TODO: Temporary Idriss Name/Logo */}
-            {isWalletIdriss && <>Idriss</>}
+            {isWalletIdriss && (
+              <div className="w-9 h-9">
+                <Image
+                  alt={"Idriss"}
+                  src={"/idriss.png"}
+                  height={20}
+                  width={20}
+                />
+              </div>
+            )}
 
             <button
               className="primary-button w-9 h-9"
