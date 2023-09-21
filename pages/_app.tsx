@@ -5,6 +5,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import localFont from "next/font/local";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
@@ -98,6 +99,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [modalContent, setModalContent] = useState(<div />);
   const [modalClassName, setModalClassName] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -146,10 +148,12 @@ export default function App({ Component, pageProps }: AppProps) {
         ))}
       </Head>
       <Analytics />
-      {/*<Script
-        src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
-        async={true}
-      />*/}
+      {!router.pathname.includes("/impact") && (
+        <Script
+          src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
+          async={true}
+        />
+      )}
       <Script
         type="module"
         async={true}
