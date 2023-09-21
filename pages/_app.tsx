@@ -146,10 +146,10 @@ export default function App({ Component, pageProps }: AppProps) {
         ))}
       </Head>
       <Analytics />
-      <Script
+      {/*<Script
         src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
         async={true}
-      />
+      />*/}
       <Script
         type="module"
         async={true}
