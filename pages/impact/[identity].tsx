@@ -69,11 +69,6 @@ export default function Impact({
     seeWhenFirstGloTransaction();
   }, [address]);
 
-  const openUserAuthModal = () => {
-    openModal(<UserAuthModal />, "bg-transparent");
-    push("/");
-  };
-
   const supportedChains = [
     {
       name: "Ethereum",
@@ -223,7 +218,7 @@ export default function Impact({
           </div>
           <button
             className="primary-button px-6"
-            onClick={() => openUserAuthModal()}
+            onClick={() => push("/sign-in")}
           >
             Buy Glo Dollar
           </button>
