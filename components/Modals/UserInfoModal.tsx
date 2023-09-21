@@ -11,9 +11,10 @@ import { sliceAddress } from "@/lib/utils";
 
 type Props = {
   address?: string;
+  idrissName?: string;
 };
 
-export default function UserInfoModal({ address }: Props) {
+export default function UserInfoModal({ address, idrissName }: Props) {
   const { disconnect } = useDisconnect();
   const { chain } = useNetwork();
   const { closeModal } = useContext(ModalContext);
@@ -80,6 +81,14 @@ export default function UserInfoModal({ address }: Props) {
               <h5 className="mt-6">Email:</h5>
               <div className="copy pseudo-input-text text-sm">
                 <span data-testid="profile-email">{email}</span>
+              </div>
+            </>
+          )}
+          {idrissName && (
+            <>
+              <h5 className="mt-6">IDriss ID:</h5>
+              <div className="copy pseudo-input-text text-sm">
+                <span data-testid="profile-idriss">{idrissName}</span>
               </div>
             </>
           )}

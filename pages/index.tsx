@@ -10,7 +10,7 @@ import {
 import Cookies from "js-cookie";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import Balance from "@/components/Balance";
@@ -20,6 +20,7 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
+import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
 import { getAllowedChains, api, initApi, isProd } from "@/lib/utils";
 import { getTotalGloBalance } from "@/utils";
@@ -30,6 +31,7 @@ export default function Home() {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
+  const [idrissName, setIdrissName] = useState("");
 
   const usdcBalance = useBalance({
     address,
@@ -130,6 +132,9 @@ export default function Home() {
         api()
           .get<CTA[]>(`/ctas`)
           .then((res) => setCTAs(res.data));
+
+        const idrissName = await getIdrissName(address!);
+        setIdrissName(idrissName);
       });
     } else {
       Cookies.remove("glo-email");
@@ -185,7 +190,7 @@ export default function Home() {
         <meta name="twitter:image:alt" content="Glo Dollar logo" />
       </Head>
       <div className="mt-4 px-6 bg-pine-100">
-        <Header />
+        <Header idrissName={idrissName} />
         <div className="flex flex-col space-y-4">
           <Balance
             polygonBalance={polygonBalance}
@@ -195,7 +200,10 @@ export default function Home() {
             usdcBalance={usdcBalance.data}
           />
 
-          <CTA balance={totalBalance?.formatted} address={address!} />
+          <CTA
+            balance={totalBalance?.formatted}
+            identity={idrissName || address!}
+          />
         </div>
       </div>
     </>

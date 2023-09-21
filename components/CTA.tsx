@@ -5,10 +5,11 @@ import { useContext } from "react";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { DEFAULT_CTAS } from "@/lib/utils";
+import { DEFAULT_CTAS, api } from "@/lib/utils";
 import { getImpactItems, getTotalYield } from "@/utils";
 
 import { CompletedIcon } from "./CompletedIcon";
+import IdrissModal from "./Modals/IdrissModal";
 import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
@@ -69,10 +70,10 @@ const nf = new Intl.NumberFormat("en-US", {
 
 export default function CTA({
   balance,
-  address = "",
+  identity = "",
 }: {
   balance?: string;
-  address: string;
+  identity: string;
 }) {
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
@@ -88,7 +89,7 @@ export default function CTA({
 
   const shareImpactText = `I just bought ${nf.format(
     gloBalance
-  )} @glodollar, the antipoverty stablecoin.\n\n📈 as market cap goes up\n📉 extreme poverty goes down\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${address}`;
+  )} @glodollar, the antipoverty stablecoin.\n\n📈 as market cap goes up\n📉 extreme poverty goes down\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${identity}`;
   const shareImpactTextShort = `${
     shareImpactText.split("\n\n📈 as market")[0]
   }...`.replace("\n\n", "\n");
@@ -114,6 +115,13 @@ export default function CTA({
       iconPath: "/megahorn.svg",
       description: shareImpactTextShort,
       action: () => openModal(<TweetModal tweetText={shareImpactText} />),
+    },
+    ["REGISTER_IDRISS"]: {
+      title: "Claim free IDriss handle",
+      iconPath: "/idriss.png",
+      description:
+        "Hold $100+ of Glo Dollar to claim an IDriss registration for this wallet",
+      action: () => openModal(<IdrissModal balance={gloBalance} />),
     },
   };
 

@@ -1,13 +1,3 @@
-import { kv } from "@vercel/kv";
-import { Chain } from "@wagmi/core";
-import {
-  celo,
-  celoAlfajores,
-  goerli,
-  mainnet,
-  polygon,
-  polygonMumbai,
-} from "@wagmi/core/chains";
 import axios from "axios";
 import { BigNumber } from "ethers";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -21,11 +11,11 @@ import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
+import { getBalances } from "@/lib/balance";
 import { ModalContext } from "@/lib/context";
 import { idriss } from "@/lib/idriss";
-import { isProd, lastSliceAddress, sliceAddress } from "@/lib/utils";
+import { lastSliceAddress, sliceAddress } from "@/lib/utils";
 import {
-  getBalance,
   getTotalYield,
   getUSFormattedNumber,
   customFormatBalance,
@@ -254,30 +244,6 @@ const beautifyDate = (date?: Date) => {
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
 
-async function getChainBalance(
-  address: string,
-  chain: Chain
-): Promise<BigNumber> {
-  const chainName = chain.name.toLowerCase();
-
-  const cacheKey = `balance-${address}`;
-  const cacheValue = await kv.hget(cacheKey, chainName);
-
-  let balance;
-
-  if (!cacheValue) {
-    balance = await getBalance(address as string, chain.id);
-    await kv.hset(cacheKey, {
-      chainName: balance.toString(),
-    });
-    await kv.expire(cacheKey, 60 * 60 * 24);
-  } else {
-    balance = BigNumber.from(cacheValue);
-  }
-
-  return balance;
-}
-
 function formatBalance(balance: BigNumber) {
   const balanceValue = BigInt(balance.toString()) / BigInt(10 ** 18);
   return customFormatBalance({
@@ -336,18 +302,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const [polygonBalance, ethereumBalance, celoBalance] = await Promise.all([
-    getChainBalance(address, isProd() ? polygon : polygonMumbai),
-    getChainBalance(address, isProd() ? mainnet : goerli),
-    getChainBalance(address, isProd() ? celo : celoAlfajores),
-  ]);
-
-  const decimals = BigInt(10 ** 18);
-  const balance = polygonBalance
-    .add(ethereumBalance)
-    .add(celoBalance)
-    .div(decimals)
-    .toNumber();
+  const {
+    totalBalance: balance,
+    polygonBalance,
+    ethereumBalance,
+    celoBalance,
+  } = await getBalances(address);
 
   let yearlyYield = getTotalYield(balance);
 
