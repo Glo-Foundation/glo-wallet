@@ -62,8 +62,10 @@ export default function IdrissModal({ balance }: Props) {
         </p>
         <p className="text-sm pb-4">
           With an IDriss you can use an 📧, 📱 or @twitter instead of your
-          wallet address, and share your impact with an easier link:
-          /impact/@geyr_garmr
+          wallet address, and share your impact with an easier link:&nbsp;
+          <a className="black-link" target="_blank" href="/impact/@geyr_garmr">
+            /impact/@geyr_garmr
+          </a>
         </p>
       </section>
       <section>
