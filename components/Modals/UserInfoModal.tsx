@@ -11,10 +11,10 @@ import { sliceAddress } from "@/lib/utils";
 
 type Props = {
   address?: string;
-  isWalletIdriss: boolean;
+  idrissName?: string;
 };
 
-export default function UserInfoModal({ address, isWalletIdriss }: Props) {
+export default function UserInfoModal({ address, idrissName }: Props) {
   const { disconnect } = useDisconnect();
   const { chain } = useNetwork();
   const { closeModal } = useContext(ModalContext);
@@ -84,15 +84,13 @@ export default function UserInfoModal({ address, isWalletIdriss }: Props) {
               </div>
             </>
           )}
-          {isWalletIdriss && (
-            <div className="w-9 h-9">
-              <Image
-                alt={"Idriss"}
-                src={"/idriss.png"}
-                height={20}
-                width={20}
-              />
-            </div>
+          {idrissName && (
+            <>
+              <h5 className="mt-6">IDriss ID:</h5>
+              <div className="copy pseudo-input-text text-sm">
+                <span data-testid="profile-idriss">{idrissName}</span>
+              </div>
+            </>
           )}
         </div>
       </section>

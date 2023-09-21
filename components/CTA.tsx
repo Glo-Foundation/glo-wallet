@@ -70,10 +70,10 @@ const nf = new Intl.NumberFormat("en-US", {
 
 export default function CTA({
   balance,
-  address = "",
+  identity = "",
 }: {
   balance?: string;
-  address: string;
+  identity: string;
 }) {
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
@@ -89,7 +89,7 @@ export default function CTA({
 
   const shareImpactText = `I just bought ${nf.format(
     gloBalance
-  )} @glodollar, the antipoverty stablecoin.\n\n📈 as market cap goes up\n📉 extreme poverty goes down\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${address}`;
+  )} @glodollar, the antipoverty stablecoin.\n\n📈 as market cap goes up\n📉 extreme poverty goes down\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${identity}`;
   const shareImpactTextShort = `${
     shareImpactText.split("\n\n📈 as market")[0]
   }...`.replace("\n\n", "\n");

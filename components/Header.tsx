@@ -11,15 +11,12 @@ import { sliceAddress } from "@/lib/utils";
 import UserAuthModal from "./Modals/UserAuthModal";
 import UserInfoModal from "./Modals/UserInfoModal";
 
-export default function Header({
-  isWalletIdriss,
-}: {
-  isWalletIdriss: boolean;
-}) {
+export default function Header({ idrissName }: { idrissName: string }) {
   const { isLoading } = useConnect();
   const { address, isConnected } = useAccount();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal } = useContext(ModalContext);
+  const isWalletIdriss = !!idrissName;
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -28,9 +25,7 @@ export default function Header({
   }, [isCopiedTooltipOpen]);
 
   const openUserInfoModal = () => {
-    openModal(
-      <UserInfoModal address={address} isWalletIdriss={isWalletIdriss} />
-    );
+    openModal(<UserInfoModal address={address} idrissName={idrissName} />);
   };
 
   const openUserAuthModal = () => {
@@ -68,23 +63,12 @@ export default function Header({
               data-tooltip-content="Copied!"
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
-                navigator.clipboard.writeText(address!);
+                navigator.clipboard.writeText(idrissName!);
                 setIsCopiedTooltipOpen(true);
               }}
             >
-              {sliceAddress(address!)}
+              {idrissName || sliceAddress(address!)}
             </button>
-            {isWalletIdriss && (
-              <div className="w-9 h-9">
-                <Image
-                  alt={"Idriss"}
-                  src={"/idriss.png"}
-                  height={20}
-                  width={20}
-                />
-              </div>
-            )}
-
             <button
               className="primary-button w-9 h-9"
               onClick={() => openUserInfoModal()}

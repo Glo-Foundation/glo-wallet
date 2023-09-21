@@ -20,7 +20,7 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { isIdriss } from "@/lib/idriss";
+import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
 import { getAllowedChains, api, initApi, isProd } from "@/lib/utils";
 import { getTotalGloBalance } from "@/utils";
@@ -31,7 +31,7 @@ export default function Home() {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
-  const [isWalletIdriss, setIsWalletIdriss] = useState(false);
+  const [idrissName, setIdrissName] = useState("");
 
   const usdcBalance = useBalance({
     address,
@@ -133,8 +133,8 @@ export default function Home() {
           .get<CTA[]>(`/ctas`)
           .then((res) => setCTAs(res.data));
 
-        const result = await isIdriss(address!, email!);
-        setIsWalletIdriss(result);
+        const idrissName = await getIdrissName(address!);
+        setIdrissName(idrissName);
       });
     } else {
       Cookies.remove("glo-email");
@@ -190,7 +190,7 @@ export default function Home() {
         <meta name="twitter:image:alt" content="Glo Dollar logo" />
       </Head>
       <div className="mt-4 px-6 bg-pine-100">
-        <Header isWalletIdriss={isWalletIdriss} />
+        <Header idrissName={idrissName} />
         <div className="flex flex-col space-y-4">
           <Balance
             polygonBalance={polygonBalance}
@@ -200,7 +200,10 @@ export default function Home() {
             usdcBalance={usdcBalance.data}
           />
 
-          <CTA balance={totalBalance?.formatted} address={address!} />
+          <CTA
+            balance={totalBalance?.formatted}
+            identity={idrissName || address!}
+          />
         </div>
       </div>
     </>

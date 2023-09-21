@@ -63,7 +63,7 @@ export default function IdrissModal({ balance }: Props) {
         <p className="text-sm pb-4">
           With an IDriss you can use an 📧, 📱 or @twitter instead of your
           wallet address, and share your impact with an easier link:
-          /@geyr_garmr
+          /impact/@geyr_garmr
         </p>
       </section>
       <section>
@@ -76,12 +76,12 @@ export default function IdrissModal({ balance }: Props) {
         />
         <StepCard
           index={2}
-          iconPath="/coinbase-invert.svg"
+          iconPath="/idriss.png"
           title="Request a free IDriss registration"
           content="Just click here"
           action={async () => {
-            await api().get("/idriss");
             setRequestedRegistration(true);
+            await api().get("/idriss");
           }}
           done={requestedRegistration}
         />
@@ -95,7 +95,7 @@ export default function IdrissModal({ balance }: Props) {
             setstartedRegistration(true);
           }}
           done={startedRegistration}
-        />{" "}
+        />
         <StepCard
           index={4}
           iconPath="/idriss.png"
