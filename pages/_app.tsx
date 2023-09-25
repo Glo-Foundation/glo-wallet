@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-key */
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
+import { SequenceConnector } from "@0xsequence/wagmi-connector";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import localFont from "next/font/local";
 import Head from "next/head";
@@ -36,11 +37,11 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 const config = createConfig({
   autoConnect: true,
   connectors: [
-    new GloSequenceConnector({
+    new SequenceConnector({
       options: {
+        defaultNetwork: defaultChainId(),
         connect: {
           app: "Glo wallet",
-          networkId: defaultChainId(),
           askForEmail: true,
           settings: {
             theme: "light",
@@ -49,7 +50,7 @@ const config = createConfig({
         },
       },
       chains,
-    }) as unknown as Connector,
+    }),
     new MetaMaskConnector({
       chains,
     }),

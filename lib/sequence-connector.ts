@@ -1,43 +1,58 @@
+// https://github.com/0xsequence/wagmi-connector
+
 import { sequence } from "0xsequence";
-import { mainnetNetworks, testnetNetworks } from "@0xsequence/network";
-import { Wallet } from "@0xsequence/provider";
 import Cookies from "js-cookie";
 import { createWalletClient, custom, UserRejectedRequestError } from "viem";
-import {
-  Connector,
-  ConnectorData,
-  Chain,
-  ConnectorNotFoundError,
-  Address,
-} from "wagmi";
-
-import type { ConnectOptions, Web3Provider } from "@0xsequence/provider";
+import { Connector, ConnectorData, Chain } from "wagmi";
 
 interface Options {
-  connect?: ConnectOptions;
+  defaultNetwork?: sequence.network.ChainIdLike;
+  connect?: sequence.provider.ConnectOptions & { walletAppURL?: string };
 }
 
 export class GloSequenceConnector extends Connector<
-  Web3Provider,
+  sequence.provider.SequenceProvider,
   Options | undefined
 > {
   id = "sequence";
   name = "Sequence";
+
   ready = true;
-  provider: Web3Provider | null = null;
-  wallet: Wallet | null = null;
-  connected = false;
+
+  provider: sequence.provider.SequenceProvider;
+
   constructor({ chains, options }: { chains?: Chain[]; options?: Options }) {
     super({ chains, options });
-  }
-  async connect(): Promise<Required<ConnectorData>> {
-    if (!this.wallet) {
-      this.wallet = await sequence.initWallet();
-    }
-    if (!this.wallet.isConnected()) {
-      this?.emit("message", { type: "connecting" });
-      const e = await this.wallet.connect(this.options?.connect);
 
+    this.provider = sequence.initWallet({
+      defaultNetwork: options?.defaultNetwork,
+      transports: {
+        walletAppURL: options?.connect?.walletAppURL,
+      },
+      defaultEIP6492: true,
+    });
+
+    this.provider.on("chainChanged", (chainIdHex: string) => {
+      this?.emit("change", {
+        chain: { id: normalizeChainId(chainIdHex), unsupported: false },
+      });
+    });
+
+    this.provider.on("accountsChanged", (accounts: string[]) => {
+      // this?.emit("accountsChanged", this.onAccountsChanged(accounts));
+    });
+
+    this.provider.on("disconnect", () => {
+      this.onDisconnect();
+    });
+  }
+
+  async connect(): Promise<Required<ConnectorData>> {
+    if (!this.provider.isConnected()) {
+      this?.emit("message", { type: "connecting" });
+      const e = await this.provider.connect(
+        this.options?.connect ?? { app: "RainbowKit app" }
+      );
       Cookies.set("glo-email", e.email || "");
 
       if (e.error) {
@@ -50,78 +65,60 @@ export class GloSequenceConnector extends Connector<
       }
     }
 
-    const chainId = await this.getChainId();
-    const provider = await this.getProvider();
-    const account = (await this.getAccount()) as Address;
-    provider.on("accountsChanged", this.onAccountsChanged);
-    this.wallet.on("chainChanged", this.onChainChanged);
-    provider.on("disconnect", this.onDisconnect);
-    this.connected = true;
+    const account = await this.getAccount();
+
     return {
       account,
       chain: {
-        id: chainId,
-        unsupported: this.isChainUnsupported(chainId),
+        id: this.provider.getChainId(),
+        unsupported: this.isChainUnsupported(this.provider.getChainId()),
       },
     };
   }
 
-  async getWalletClient({ chainId }: { chainId?: number } = {}) {
-    const [provider, account] = await Promise.all([
-      this.getProvider(),
-      this.getAccount(),
-    ]);
+  async getWalletClient({ chainId }: { chainId?: number } = {}): Promise<any> {
     const chain = this.chains.find((x) => x.id === chainId);
-    if (!provider) throw new Error("provider is required.");
+
     return createWalletClient({
-      account,
       chain,
-      transport: custom(provider),
+      account: await this.getAccount(),
+      transport: custom(this.provider),
     });
   }
 
+  protected onChainChanged(chain: string | number): void {
+    this.provider.setDefaultChainId(normalizeChainId(chain));
+  }
+
+  async switchChain(chainId: number): Promise<Chain> {
+    if (this.isChainUnsupported(chainId)) {
+      throw new Error("Unsupported chain");
+    }
+
+    this.provider.setDefaultChainId(chainId);
+    return this.chains.find((x) => x.id === chainId) as Chain;
+  }
+
   async disconnect() {
-    if (!this.wallet) {
-      this.wallet = await sequence.initWallet();
-    }
-    this.wallet.disconnect();
+    this.provider.disconnect();
   }
-  async getAccount() {
-    if (!this.wallet) {
-      this.wallet = await sequence.initWallet();
-    }
-    return this.wallet.getAddress() as Promise<Address>;
+
+  getAccount() {
+    return this.provider.getSigner().getAddress() as Promise<`0x${string}`>;
   }
+
   async getChainId() {
-    if (!this.wallet) {
-      this.wallet = await sequence.initWallet();
-    }
-    if (!this.wallet.isConnected()) {
-      return this.connect().then(() => this.wallet!.getChainId());
-    }
-    return this.wallet.getChainId();
+    return this.provider.getChainId();
   }
+
   async getProvider() {
-    if (!this.wallet) {
-      this.wallet = await sequence.initWallet();
-    }
-    if (!this.provider) {
-      const provider = this.wallet.getProvider();
-      if (!provider) {
-        throw new ConnectorNotFoundError(
-          "Failed to get Sequence Wallet provider."
-        );
-      }
-      this.provider = provider;
-    }
     return this.provider;
   }
+
   async getSigner() {
-    if (!this.wallet) {
-      this.wallet = await sequence.initWallet();
-    }
-    return this.wallet.getSigner();
+    return this.provider.getSigner();
   }
+
   async isAuthorized() {
     try {
       const account = await this.getAccount();
@@ -130,31 +127,26 @@ export class GloSequenceConnector extends Connector<
       return false;
     }
   }
-  async switchChain(chainId: number): Promise<Chain> {
-    await this.provider?.send("wallet_switchEthereumChain", [{ chainId }]);
-    return { id: chainId } as Chain;
-  }
+
   protected onAccountsChanged = (accounts: string[]) => {
     return { account: accounts[0] };
   };
-  protected onChainChanged = (chain: number | string) => {
-    this.provider?.emit("chainChanged", chain);
-    const id = normalizeChainId(chain);
-    const unsupported = this.isChainUnsupported(id);
-    this?.emit("change", { chain: { id, unsupported } });
-  };
+
   protected onDisconnect = () => {
     this?.emit("disconnect");
   };
+
   isChainUnsupported(chainId: number): boolean {
-    return !(
-      mainnetNetworks.some((c) => c.chainId === chainId) ||
-      testnetNetworks.some((c) => c.chainId === chainId)
+    return (
+      this.provider.networks.findIndex((x) => x.chainId === chainId) === -1
     );
   }
 }
 
-function normalizeChainId(chainId: string | number | bigint) {
+function normalizeChainId(
+  chainId: string | number | bigint | { chainId: string }
+) {
+  if (typeof chainId === "object") return normalizeChainId(chainId.chainId);
   if (typeof chainId === "string")
     return Number.parseInt(
       chainId,

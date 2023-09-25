@@ -1,3 +1,4 @@
+import { SequenceConnector } from "@0xsequence/wagmi-connector";
 import { configureChains } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
 import clsx from "clsx";
@@ -65,11 +66,11 @@ export default function UserAuthModal() {
 
   const signInWithEmail = async () => {
     const { chains } = configureChains(getAllowedChains(), [publicProvider()]);
-    const emailConnector = new GloSequenceConnector({
+    const emailConnector = new SequenceConnector({
       options: {
+        defaultNetwork: defaultChainId(),
         connect: {
           app: "Glo wallet",
-          networkId: defaultChainId(),
           askForEmail: true,
           settings: {
             theme: "light",
@@ -86,7 +87,8 @@ export default function UserAuthModal() {
 
   const connectWithConnector = (index: number) => {
     requireUserAgreed(() => {
-      connect({ connector: connectors[index] });
+      const x = connect({ connector: connectors[index] });
+      console.log({ x, connectors });
       closeModal();
     });
   };
