@@ -145,7 +145,8 @@ export class GloSequenceConnector extends Connector<
 
 function normalizeChainId(
   chainId: string | number | bigint | { chainId: string }
-) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any {
   if (typeof chainId === "object") return normalizeChainId(chainId.chainId);
   if (typeof chainId === "string")
     return Number.parseInt(
