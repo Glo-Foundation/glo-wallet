@@ -221,7 +221,7 @@ export default function PaymentOptionModal({
     );
 
     if (!isConnected) {
-      return [uniswap];
+      return [uniswap, unlimitAndEmbr];
     } else if (isSequenceWallet) {
       return [sequenceAndCoinbase, uniswap, zeroSwap, unlimitAndEmbr];
     } else {
