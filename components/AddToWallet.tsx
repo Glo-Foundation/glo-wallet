@@ -45,7 +45,7 @@ export default function AddToWallet() {
   function addTokenToWallet(chain: Chain) {
     try {
       walletClient
-        .watchAsset({
+        ?.watchAsset({
           type: "ERC20", // Initially only supports ERC20, but eventually more!
           options: {
             address: chainConfig[chain.id], // The address that the token is at.
@@ -76,7 +76,7 @@ export default function AddToWallet() {
         className={`rounded-lg hover:bg-white hover:drop-shadow-sm w-9 h-9 z-10 flex justify-center`}
         onMouseOver={() => setIsAddToWalletTooltipOpen(true)}
         onMouseOut={() => setIsAddToWalletTooltipOpen(false)}
-        onClick={() => addTokenToWallet(chain)}
+        onClick={() => (chain ? addTokenToWallet(chain) : "")}
         data-tooltip-id="add-to-wallet-tooltip"
         data-tooltip-content="Add to wallet"
       >
