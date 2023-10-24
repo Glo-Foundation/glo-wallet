@@ -47,7 +47,7 @@ const possibleImpactItems = [
     emoji: "🧑‍🏫",
   },
   {
-    description: "Kienyeji farm chicken",
+    description: "Farm chicken",
     cost: 12 * 1.11,
     emoji: "🐔",
   },
