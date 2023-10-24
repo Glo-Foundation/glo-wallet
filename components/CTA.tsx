@@ -105,7 +105,7 @@ export default function CTA({
     ["JOIN_PROGRAM"]: {
       title: "Join the movement",
       description:
-        "Get listed as an Early Adopter to help us get the ball rolling.",
+        "Get listed as a Glo Supporter to help us get the ball rolling.",
       iconPath: "/za-warudo.svg",
       url: "https://www.glodollar.org/get-started",
       slug: `?email=${email}`,

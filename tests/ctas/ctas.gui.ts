@@ -46,7 +46,7 @@ test.describe("Help Grow CTAs", () => {
       const newPage = await pagePromise;
 
       await newPage.waitForLoadState();
-      await expect(newPage).toHaveTitle("Join Glo as an Early Adopter");
+      await expect(newPage).toHaveTitle("Becoming a Glo Supporter");
     });
 
     test("should open merch page", async ({ page, context }) => {
