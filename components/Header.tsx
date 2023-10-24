@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { useConnect, useAccount } from "wagmi";
 
+import AddToWallet from "@/components/AddToWallet";
 import NetworkSwitcher from "@/components/NetworkSwitcher";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
@@ -13,10 +14,11 @@ import UserInfoModal from "./Modals/UserInfoModal";
 
 export default function Header({ idrissName }: { idrissName: string }) {
   const { isLoading } = useConnect();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, connector } = useAccount();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal } = useContext(ModalContext);
   const isWalletIdriss = !!idrissName;
+  const isSequenceWallet = connector?.id === "sequence";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -52,6 +54,7 @@ export default function Header({ idrissName }: { idrissName: string }) {
           <button className="primary-button">Connecting... </button>
         ) : isConnected ? (
           <div className="flex z-10">
+            {!isSequenceWallet ? <AddToWallet /> : ""}
             <NetworkSwitcher />
             <Tooltip
               id="copy-wallet-tooltip"
