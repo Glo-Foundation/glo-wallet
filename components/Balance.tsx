@@ -34,6 +34,7 @@ export default function Balance({
   const ethereumBalanceFormatted = customFormatBalance(ethereumBalance);
   const celoBalanceFormatted = customFormatBalance(celoBalance);
   const totalBalanceFormatted = customFormatBalance(totalBalance);
+  const usdcBalanceFormatted = customFormatBalance(usdcBalance);
   const { connector } = useAccount();
   const isSequenceWallet = connector?.id === "sequence";
 
@@ -41,7 +42,7 @@ export default function Balance({
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
-  }).format(Number(usdcBalance?.formatted));
+  }).format(Math.floor(Number(usdcBalance?.formatted)));
 
   const supportedChains = [
     {
@@ -113,7 +114,7 @@ export default function Balance({
             )}
           </div>
         </div>
-        {usdcBalance && usdcBalance.value > 0 && (
+        {usdcBalance && usdcBalance.value > 1000000 && (
           <a
             className="text-pine-700 self-center"
             onClick={() => {
@@ -121,13 +122,13 @@ export default function Balance({
                 isSequenceWallet ? (
                   <BuyWithCoinbaseSequenceModal
                     buyAmount={Number(
-                      totalBalanceFormatted.fmtBalanceDollarPart
+                      usdcBalanceFormatted.fmtBalanceDollarPart
                     )}
                   />
                 ) : (
                   <PaymentOptionModal
                     buyAmount={Number(
-                      totalBalanceFormatted.fmtBalanceDollarPart
+                      usdcBalanceFormatted.fmtBalanceDollarPart
                     )}
                   />
                 )
