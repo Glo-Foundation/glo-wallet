@@ -1,6 +1,7 @@
 import { FetchBalanceResult } from "@wagmi/core";
 import Image from "next/image";
 import { useContext, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { customFormatBalance } from "@/utils";
@@ -8,6 +9,7 @@ import { customFormatBalance } from "@/utils";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
 import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
+import PaymentOptionModal from "./Modals/PaymentOptionModal";
 
 type Props = {
   polygonBalance: FetchBalanceResult | undefined;
@@ -32,6 +34,8 @@ export default function Balance({
   const ethereumBalanceFormatted = customFormatBalance(ethereumBalance);
   const celoBalanceFormatted = customFormatBalance(celoBalance);
   const totalBalanceFormatted = customFormatBalance(totalBalance);
+  const { connector } = useAccount();
+  const isSequenceWallet = connector?.id === "sequence";
 
   const formattedUSDC = Intl.NumberFormat("en-US", {
     style: "currency",
@@ -114,9 +118,19 @@ export default function Balance({
             className="text-pine-700 self-center"
             onClick={() => {
               openModal(
-                <BuyWithCoinbaseSequenceModal
-                  buyAmount={Number(totalBalanceFormatted.fmtBalanceDollarPart)}
-                />
+                isSequenceWallet ? (
+                  <BuyWithCoinbaseSequenceModal
+                    buyAmount={Number(
+                      totalBalanceFormatted.fmtBalanceDollarPart
+                    )}
+                  />
+                ) : (
+                  <PaymentOptionModal
+                    buyAmount={Number(
+                      totalBalanceFormatted.fmtBalanceDollarPart
+                    )}
+                  />
+                )
               );
             }}
           >
