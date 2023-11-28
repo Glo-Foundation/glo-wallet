@@ -86,6 +86,28 @@ export const getAllowedChains = (): Chain[] => {
     : [polygonMumbai, goerli, celoAlfajores];
 };
 
+// ZUSD: 8772
+// VAI: 7824
+// GUSD: 3306
+// PYUSD: 27772
+// USDP: 3330
+// FDUSD: 26081
+// TUSD: 2563
+// USDC: 3408
+// USDT: 825
+// USDGLO: 23888
+
+export const getCMCMarketCap = async (): Promise<BigNumber> => {
+  const apiUrl =
+    "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest";
+  const res = await axios.get(apiUrl, {
+    params: { id: "825,3408,2563,26081,3330,27772,3306,7824,8772,23888" }, // get all usd stablecoins from coinmarketcap
+    headers: { "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY },
+  });
+
+  return await res.data.data;
+};
+
 export const formatBalance = (balance: {
   formatted: string;
   value: number;
