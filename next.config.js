@@ -39,6 +39,13 @@ const nextConfig = {
         ],
       },
       {
+        source: "/api/stablecoin-market-caps",
+        headers: [
+          // Replace with glodollar.org
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
+      {
         source: "/api/total-holders",
         headers: [
           // Replace with glodollar.org
