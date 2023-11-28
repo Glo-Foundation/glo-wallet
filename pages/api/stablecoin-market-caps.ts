@@ -26,11 +26,13 @@ export default async function handler(
       : stable[1].total_supply,
   }));
 
+  const stringMarketCaps = JSON.stringify(allMarketCaps);
+
   // const totalMarketCaps = allMarketCaps.reduce( (acc, cur) => acc + cur.supply, 0);
 
   // const formatted = getNiceNumber(totalMarketCaps);
 
-  cache.set(CACHE_KEY, allMarketCaps, 60 * 60);
+  cache.set(CACHE_KEY, stringMarketCaps, 60 * 60);
 
-  return res.status(200).end(JSON.stringify(allMarketCaps));
+  return res.status(200).end(stringMarketCaps);
 }
