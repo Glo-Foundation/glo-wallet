@@ -16,6 +16,17 @@ export default async function handler(
   if (cached) {
     return res.status(200).end(cached);
   }
+  const stablecoin_colors = {
+    USDGLO: "#24e5df",
+    USDT: "#009393",
+    USDC: "#2775ca",
+    FDUSD: "#00d680",
+    TUSD: "#1a5bff",
+    USDP: "#00a650",
+    PYUSD: "#0070e0",
+    GUSD: "#26ddf9",
+    ZUSD: "#d62825",
+  };
 
   const result = await getCMCMarketCap();
 
@@ -24,6 +35,7 @@ export default async function handler(
     supply: stable[1].circulating_supply
       ? stable[1].circulating_supply
       : stable[1].total_supply,
+    color: stablecoin_colors[stable[1].symbol],
   }));
 
   const stringMarketCaps = JSON.stringify(allMarketCaps);
