@@ -16,7 +16,7 @@ export default async function handler(
   if (cached) {
     return res.status(200).end(cached);
   }
-  const stablecoin_colors = {
+  const stablecoin_colors: { [key: string]: string } = {
     USDGLO: "#24e5df",
     USDT: "#009393",
     USDC: "#2775ca",
