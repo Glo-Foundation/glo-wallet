@@ -1,0 +1,24 @@
+ACCOUNTS=”GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV”
+
+[DOCUMENTATION]
+ORG_NAME="Glo Development Foundation, Inc"
+ORG_DBA="Glo Foundation"
+ORG_URL="https://glodollar.org/"
+ORG_LOGO="https://app.glodollar.org/glo-logo.png"
+ORG_PHYSICAL_ADDRESS="462 Andover St, San Francisco, CA 95110, United States"
+ORG_OFFICIAL_EMAIL="support@glodollar.org"
+ORG_GITHUB="Glo-Foundation"
+ORG_TWITTER="glodollar"
+ORG_DESCRIPTION="The Glo Foundation aims to unlock new sources of funding for basic income programs against extreme poverty."
+
+[[CURRENCIES]]
+code="USDGLO"
+issuer=”GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV”
+is_asset_anchored=true
+anchor_asset_type="fiat"
+anchor_asset="USD"
+attestation_of_reserve="https://brale.xyz/stablecoins/USDGLO"
+redemption_instructions="Redeemable through a Brale account at https://brale.xyz/"
+name="Glo Dollar"
+desc="USDGLO is a stablecoin that generates basic income for people in extreme poverty. It is redeemable one-to-one for U.S. dollars."
+image="https://app.glodollar.org/glo-logo.png"
