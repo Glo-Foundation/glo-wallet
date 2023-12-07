@@ -52,6 +52,10 @@ const nextConfig = {
           { key: "Access-Control-Allow-Origin", value: "*" },
         ],
       },
+      {
+        source: "/.well-known/stellar.toml",
+        headers: [{ key: "Content-Type", value: "text/plain" }],
+      },
     ];
   },
 };
