@@ -1,11 +1,4 @@
-import {
-  mainnet,
-  polygon,
-  celo,
-  optimism,
-  base,
-  arbitrum,
-} from "@wagmi/core/chains";
+import { mainnet, polygon, celo } from "@wagmi/core/chains";
 import { BigNumber, utils } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 

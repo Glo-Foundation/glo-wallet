@@ -1,11 +1,4 @@
-import {
-  mainnet,
-  polygon,
-  celo,
-  optimism,
-  base,
-  arbitrum,
-} from "@wagmi/core/chains";
+import { mainnet, polygon, celo } from "@wagmi/core/chains";
 import { BigNumber, utils } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -28,9 +21,6 @@ export default async function handler(
     getMarketCap(mainnet.id),
     getMarketCap(polygon.id),
     getMarketCap(celo.id),
-    getMarketCap(optimism.id),
-    getMarketCap(base.id),
-    getMarketCap(arbitrum.id),
   ]);
 
   const totalMarketCap = result.reduce(
