@@ -5,6 +5,8 @@ import {
   polygonMumbai,
   celo,
   celoAlfajores,
+  optimism,
+  arbitrum,
 } from "@wagmi/core/chains";
 
 import { isProd } from "./utils";
@@ -14,6 +16,9 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [polygon.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   [mainnet.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   [celo.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
+  [optimism.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
+  [84532]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
+  [arbitrum.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   // Testnets
   [polygonMumbai.id]: "0xbd05d3B38c400d95D52c2B8fF124DF511AB7EBfc",
   [goerli.id]: "0x2c872de03E91D2ee463308Cb5dA4Ed9e41bBB355",
@@ -58,6 +63,9 @@ const chainRPCUrl: { [id: number]: string } = {
   [polygon.id]: process.env.NEXT_PUBLIC_POLYGON_RPC_URL as string,
   [mainnet.id]: process.env.NEXT_PUBLIC_MAINNET_RPC_URL as string,
   [celo.id]: process.env.NEXT_PUBLIC_CELO_RPC_URL as string,
+  [optimism.id]: process.env.NEXT_PUBLIC_OPTIMISM_RPC_URL as string,
+  [arbitrum.id]: process.env.NEXT_PUBLIC_ARBITRUM_RPC_URL as string,
+  [84532]: process.env.NEXT_PUBLIC_BASE_RPC_URL as string,
   // Testnets
   [polygonMumbai.id]: process.env.NEXT_PUBLIC_MUMBAI_RPC_URL as string,
   [goerli.id]: process.env.NEXT_PUBLIC_GOERLI_RPC_URL as string,
