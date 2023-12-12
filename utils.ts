@@ -4,6 +4,9 @@ import {
   celoAlfajores,
   goerli,
   mainnet,
+  optimism,
+  base,
+  arbitrum,
   polygon,
   polygonMumbai,
 } from "@wagmi/core/chains";
