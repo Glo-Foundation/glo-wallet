@@ -1,4 +1,11 @@
-import { mainnet, polygon, celo, optimism, arbitrum } from "@wagmi/core/chains";
+import {
+  mainnet,
+  polygon,
+  celo,
+  optimism,
+  base,
+  arbitrum,
+} from "@wagmi/core/chains";
 import { BigNumber, utils } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -22,7 +29,7 @@ export default async function handler(
     getMarketCap(polygon.id),
     getMarketCap(celo.id),
     getMarketCap(optimism.id),
-    getMarketCap(84532),
+    getMarketCap(base.id),
     getMarketCap(arbitrum.id),
   ]);
 

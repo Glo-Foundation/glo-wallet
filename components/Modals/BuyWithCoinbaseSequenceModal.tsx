@@ -1,4 +1,4 @@
-import { polygon } from "@wagmi/chains";
+import { polygon } from "@wagmi/core/chains";
 import { BigNumber, utils } from "ethers";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";

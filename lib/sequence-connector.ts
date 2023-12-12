@@ -12,6 +12,7 @@ import {
 } from "wagmi";
 
 import type { ConnectOptions, Web3Provider } from "@0xsequence/provider";
+import type { WalletClient } from "wagmi";
 
 interface Options {
   connect?: ConnectOptions;
@@ -66,12 +67,15 @@ export class GloSequenceConnector extends Connector<
     };
   }
 
-  async getWalletClient({ chainId }: { chainId?: number } = {}) {
+  async getWalletClient({
+    chainId,
+  }: { chainId?: number } = {}): Promise<WalletClient> {
     const [provider, account] = await Promise.all([
       this.getProvider(),
       this.getAccount(),
     ]);
-    const chain = this.chains.find((x) => x.id === chainId);
+    const chain = this.chains.find((x) => x.id === chainId) as Chain;
+    console.log("chain type: ", chain);
     if (!provider) throw new Error("provider is required.");
     return createWalletClient({
       account,
