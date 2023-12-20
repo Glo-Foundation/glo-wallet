@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const fetchTotalHolders = async () => {
-  const queryId = 2986620;
+  const queryId = 3299607;
   const apiUrl = `https://api.dune.com/api/v1/query/${queryId}/results`;
   const res = await axios.get(apiUrl, {
     headers: { "X-Dune-API-Key": process.env.DUNE_API_KEY },
