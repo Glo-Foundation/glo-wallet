@@ -86,7 +86,7 @@ export const getAllowedChains = (): Chain[] => {
     : [polygonMumbai, goerli, celoAlfajores];
 };
 
-export const getStellarMarketCap = async (): Promise<BigNumber> => {
+export const getStellarMarketCap = async (): Promise<number> => {
   const apiUrl =
     "https://horizon.stellar.org/assets?asset_code=USDGLO&asset_issuer=GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV";
   const res = await axios.get(apiUrl, {
