@@ -86,6 +86,17 @@ export const getAllowedChains = (): Chain[] => {
     : [polygonMumbai, goerli, celoAlfajores];
 };
 
+export const getStellarMarketCap = async (): Promise<BigNumber> => {
+  const apiUrl =
+    "https://horizon.stellar.org/assets?asset_code=USDGLO&asset_issuer=GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV";
+  const res = await axios.get(apiUrl, {
+    headers: { Accept: "application/json" },
+  });
+  const stellarMarketCapString = await res.data._embedded.records[0].amount;
+  const stellarMarketCap = parseInt(stellarMarketCapString);
+  return stellarMarketCap;
+};
+
 // GUSD: 3306
 // PYUSD: 27772
 // USDP: 3330

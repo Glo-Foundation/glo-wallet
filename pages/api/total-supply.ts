@@ -10,7 +10,7 @@ import { BigNumber, utils } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import * as cache from "@/lib/cache";
-import { getMarketCap } from "@/lib/utils";
+import { getMarketCap, getStellarMarketCap } from "@/lib/utils";
 import { getNiceNumber } from "@/utils";
 
 const CACHE_KEY = "total-supply";
@@ -33,12 +33,18 @@ export default async function handler(
     getMarketCap(arbitrum.id),
   ]);
 
-  const totalMarketCap = result.reduce(
+  const stellarMarketCap = await getStellarMarketCap();
+
+  const totalEVMMarketCap = result.reduce(
     (acc, cur) => acc.add(cur),
     BigNumber.from(0)
   );
 
-  const value = utils.formatEther(totalMarketCap).split(".")[0];
+  const EVMMarketCap = parseInt(
+    utils.formatEther(totalEVMMarketCap).split(".")[0]
+  );
+
+  const value = (EVMMarketCap + stellarMarketCap).toString();
 
   cache.set(CACHE_KEY, value, 5 * 60);
 
