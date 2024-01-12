@@ -35,14 +35,13 @@ export default async function handler(
     supply: stable[1].circulating_supply
       ? stable[1].circulating_supply
       : stable[1].total_supply,
+    cap: stable[1].circulating_supply
+      ? getNiceNumber(Number(stable[1].circulating_supply))
+      : getNiceNumber(Number(stable[1].total_supply)),
     color: stablecoin_colors[stable[1].symbol],
   }));
 
   const stringMarketCaps = JSON.stringify(allMarketCaps);
-
-  // const totalMarketCaps = allMarketCaps.reduce( (acc, cur) => acc + cur.supply, 0);
-
-  // const formatted = getNiceNumber(totalMarketCaps);
 
   cache.set(CACHE_KEY, stringMarketCaps, 60 * 60);
 
