@@ -20,7 +20,7 @@ export default function Header({ idrissName }: { idrissName: string }) {
   const { openModal } = useContext(ModalContext);
   const isWalletIdriss = !!idrissName;
   const isSequenceWallet = connector?.id === "sequence";
-  const { isFreighterConnected } = useFreighter();
+  const { isFreighterConnected, freighterAddress } = useFreighter();
 
   console.log("is freighter connected in header: ", isFreighterConnected);
 
@@ -56,7 +56,7 @@ export default function Header({ idrissName }: { idrissName: string }) {
 
         {isLoading ? (
           <button className="primary-button">Connecting... </button>
-        ) : isConnected || isFreighterConnected ? (
+        ) : isConnected ? (
           <div className="flex z-10">
             {!isSequenceWallet ? <AddToWallet /> : ""}
             <NetworkSwitcher />
@@ -75,6 +75,27 @@ export default function Header({ idrissName }: { idrissName: string }) {
               }}
             >
               {idrissName || sliceAddress(address!)}
+            </button>
+            <button
+              className="primary-button w-9 h-9"
+              onClick={() => openUserInfoModal()}
+              data-testid="profile-button"
+            >
+              👤
+            </button>
+          </div>
+        ) : isFreighterConnected ? (
+          <div className="flex z-10">
+            <button
+              data-tooltip-id="copy-wallet-tooltip"
+              data-tooltip-content="Copied!"
+              className="text-sm text-pine-800 mr-3 font-normal"
+              onClick={() => {
+                navigator.clipboard.writeText(freighterAddress);
+                setIsCopiedTooltipOpen(true);
+              }}
+            >
+              {sliceAddress(freighterAddress)}
             </button>
             <button
               className="primary-button w-9 h-9"

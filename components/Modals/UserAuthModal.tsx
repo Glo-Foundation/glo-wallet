@@ -104,45 +104,9 @@ export default function UserAuthModal() {
   const connectWithStellar = async () => {
     requireUserAgreed(async () => {
       console.log("going to connect with Stellar app");
-      const userInfo = await retrieveUserInfo();
+      const userInfo = await connectFreighter();
       closeModal();
     });
-  };
-
-  const retrieveUserInfo = async () => {
-    let userInfo = { publicKey: "" };
-    let error = "";
-
-    try {
-      userInfo = await getUserInfo();
-    } catch (e) {
-      error = e;
-    }
-
-    if (error) {
-      return error;
-    }
-
-    if (!userInfo.publicKey) {
-      // we didn't get anything back. Maybe the app hasn't been authorixed?
-
-      const isAccessAllowed = await isAllowed();
-
-      if (!isAccessAllowed) {
-        // oh, we forgot to make sure the app is allowed. Let's do that now
-        await setAllowed();
-
-        // now, let's try getting that user info again
-        // it should work now that this app is "allowed"
-        userInfo = await getUserInfo();
-      }
-    }
-
-    if (userInfo.publicKey) {
-      await connectFreighter();
-    }
-
-    return userInfo;
   };
 
   return (
