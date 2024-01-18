@@ -19,6 +19,7 @@
     "@0xsequence/wagmi-connector": "^1.1.5",
     "@prisma/client": "^4.15.0",
     "@sentry/nextjs": "^7.77.0",
+    "@stellar/freighter-api": "^1.7.1",
     "@vercel/kv": "^0.2.2",
     "@vercel/og": "^0.5.13",
     "@wagmi/core": "^1.4.10",
@@ -44,9 +45,9 @@
     "react-modal-sheet": "^2.0.0",
     "react-tooltip": "^5.13.1",
     "typescript": "5.0.4",
+    "viem": "^1.18.0",
     "wagmi": "^1.4.10",
-    "zustand": "^4.3.8",
-    "viem": "^1.18.0"
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@guardianui/test": "^1.0.4",

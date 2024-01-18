@@ -1,3 +1,10 @@
+import {
+  getUserInfo,
+  isAllowed,
+  setAllowed,
+  signTransaction,
+  signBlob,
+} from "@stellar/freighter-api";
 import { configureChains } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
 import clsx from "clsx";
@@ -9,6 +16,7 @@ import { useConnect } from "wagmi";
 
 import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
+import { useFreighter } from "@/lib/hooks";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 import { getAllowedChains } from "@/lib/utils";
 
@@ -38,6 +46,7 @@ const ToS = () => (
 
 export default function UserAuthModal() {
   const { connect, connectors } = useConnect();
+  const { isFreighterConnected, connectFreighter } = useFreighter();
   const { closeModal } = useContext(ModalContext);
   const [sendForm, setSendForm] = useState({
     email: "",
@@ -86,9 +95,52 @@ export default function UserAuthModal() {
 
   const connectWithConnector = (index: number) => {
     requireUserAgreed(() => {
+      // Connect with EVM connectors
       connect({ connector: connectors[index] });
       closeModal();
     });
+  };
+
+  const connectWithStellar = async () => {
+    console.log("going to connect with Stellar app");
+    const userInfo = await retrieveUserInfo();
+    closeModal();
+  };
+
+  const retrieveUserInfo = async () => {
+    let userInfo = { publicKey: "" };
+    let error = "";
+
+    try {
+      userInfo = await getUserInfo();
+    } catch (e) {
+      error = e;
+    }
+
+    if (error) {
+      return error;
+    }
+
+    if (!userInfo.publicKey) {
+      // we didn't get anything back. Maybe the app hasn't been authorixed?
+
+      const isAccessAllowed = await isAllowed();
+
+      if (!isAccessAllowed) {
+        // oh, we forgot to make sure the app is allowed. Let's do that now
+        await setAllowed();
+
+        // now, let's try getting that user info again
+        // it should work now that this app is "allowed"
+        userInfo = await getUserInfo();
+      }
+    }
+
+    if (userInfo.publicKey) {
+      connectFreighter();
+    }
+
+    return userInfo;
   };
 
   return (
@@ -105,9 +157,9 @@ export default function UserAuthModal() {
       <section className="sticky pt-8 px-4 py-4 flex flex-col items-center text-center bg-white rounded-t-3xl">
         <h2 className="">👋 Welcome to the Glo App</h2>
         <p className="copy text-lg -mt-5 mb-4">Jeff, Glo Foundation CEO</p>
-        <p className="copy text m-0 max-w-xs text-center">
+        <p className="copy text m-0 max-w-[21rem] text-center">
           To see the impact of your Glo Dollars connect your wallet or submit
-          your email to create a wallet{" "}
+          your email to create an Eth wallet{" "}
           <a
             className="underline"
             target="_blank"
@@ -160,19 +212,35 @@ export default function UserAuthModal() {
             </div>
           </button>
           {!isMobile && (
-            <button
-              className="auth-button"
-              data-testid="metamask-login-button"
-              onClick={() => connectWithConnector(1)}
-            >
-              <h4>Metamask</h4>
-              <Image
-                alt="metamask"
-                src="/metamask.svg"
-                width={35}
-                height={35}
-              />
-            </button>
+            <div>
+              <button
+                className="auth-button"
+                data-testid="metamask-login-button"
+                onClick={() => connectWithConnector(1)}
+              >
+                <h4>Metamask</h4>
+                <Image
+                  alt="metamask"
+                  src="/metamask.svg"
+                  width={35}
+                  height={35}
+                />
+              </button>
+
+              <button
+                className="auth-button"
+                data-testid="freighter-login-button"
+                onClick={() => connectWithStellar()}
+              >
+                <h4>Freighter</h4>
+                <Image
+                  alt="freighter"
+                  src="/freighter.svg"
+                  width={35}
+                  height={35}
+                />
+              </button>
+            </div>
           )}
 
           <button

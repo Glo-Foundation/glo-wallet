@@ -6,6 +6,7 @@ import { Tooltip } from "react-tooltip";
 import { useDisconnect, useNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
+import { useFreighter } from "@/lib/hooks";
 import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ export default function UserInfoModal({ address, idrissName }: Props) {
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs } = useUserStore();
+  const { isFreighterConnected, disconnectFreighter } = useFreighter();
 
   const email = Cookies.get("glo-email");
 
@@ -30,7 +32,11 @@ export default function UserInfoModal({ address, idrissName }: Props) {
   }, [isCopiedTooltipOpen]);
 
   const handleLogout = () => {
-    disconnect();
+    if (isFreighterConnected) {
+      disconnectFreighter();
+    } else {
+      disconnect();
+    }
     setTransfers({ transfers: [] });
     setCTAs([]);
     localStorage.setItem("showedLogin", "true");
