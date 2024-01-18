@@ -12,7 +12,7 @@ import { BigNumber, ethers } from "ethers";
 
 import UsdgloContract from "@/abi/usdglo.json";
 
-import { getChainRPCUrl, getSmartContractAddress } from "./config";
+import { stellar, getChainRPCUrl, getSmartContractAddress } from "./config";
 
 export const sliceAddress = (address: string, amt = 3) =>
   `${address?.slice(0, amt + 2)}...${address?.slice(amt * -1)}`;
@@ -54,7 +54,9 @@ export const getChains = (): Chain[] => {
     return [polygon] as Chain[];
   }
   return (
-    isProd() ? [polygon, mainnet, celo] : [polygonMumbai, goerli, celoAlfajores]
+    isProd()
+      ? [polygon, mainnet, celo, stellar]
+      : [polygonMumbai, goerli, celoAlfajores, stellar]
   ) as Chain[];
 };
 
@@ -82,8 +84,8 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 
 export const getAllowedChains = (): Chain[] => {
   return isProd()
-    ? [polygon, mainnet, celo]
-    : [polygonMumbai, goerli, celoAlfajores];
+    ? [polygon, mainnet, celo, stellar]
+    : [polygonMumbai, goerli, celoAlfajores, stellar];
 };
 
 export const getStellarMarketCap = async (): Promise<number> => {

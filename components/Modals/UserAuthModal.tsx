@@ -43,6 +43,8 @@ export default function UserAuthModal() {
     email: "",
   });
 
+  console.log("connectors: ", connectors);
+
   const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
 
   const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(
