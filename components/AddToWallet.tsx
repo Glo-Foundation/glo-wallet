@@ -13,7 +13,6 @@ import { Tooltip } from "react-tooltip";
 import { useNetwork, useSwitchNetwork, useWalletClient } from "wagmi";
 
 import { chainConfig } from "@/lib/config";
-import { useOutsideClick } from "@/lib/hooks";
 import { getAllowedChains } from "@/lib/utils";
 
 export default function AddToWallet() {

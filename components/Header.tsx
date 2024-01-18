@@ -7,6 +7,7 @@ import { useConnect, useAccount } from "wagmi";
 import AddToWallet from "@/components/AddToWallet";
 import NetworkSwitcher from "@/components/NetworkSwitcher";
 import { ModalContext } from "@/lib/context";
+import { useFreighter } from "@/lib/hooks";
 import { sliceAddress } from "@/lib/utils";
 
 import UserAuthModal from "./Modals/UserAuthModal";
@@ -19,6 +20,9 @@ export default function Header({ idrissName }: { idrissName: string }) {
   const { openModal } = useContext(ModalContext);
   const isWalletIdriss = !!idrissName;
   const isSequenceWallet = connector?.id === "sequence";
+  const { isFreighterConnected } = useFreighter();
+
+  console.log("is freighter connected in header: ", isFreighterConnected);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -52,7 +56,7 @@ export default function Header({ idrissName }: { idrissName: string }) {
 
         {isLoading ? (
           <button className="primary-button">Connecting... </button>
-        ) : isConnected ? (
+        ) : isConnected || isFreighterConnected ? (
           <div className="flex z-10">
             {!isSequenceWallet ? <AddToWallet /> : ""}
             <NetworkSwitcher />

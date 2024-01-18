@@ -46,7 +46,7 @@ const ToS = () => (
 
 export default function UserAuthModal() {
   const { connect, connectors } = useConnect();
-  const { isFreighterConnected, connectFreighter } = useFreighter();
+  const { connectFreighter } = useFreighter();
   const { closeModal } = useContext(ModalContext);
   const [sendForm, setSendForm] = useState({
     email: "",
@@ -102,9 +102,11 @@ export default function UserAuthModal() {
   };
 
   const connectWithStellar = async () => {
-    console.log("going to connect with Stellar app");
-    const userInfo = await retrieveUserInfo();
-    closeModal();
+    requireUserAgreed(async () => {
+      console.log("going to connect with Stellar app");
+      const userInfo = await retrieveUserInfo();
+      closeModal();
+    });
   };
 
   const retrieveUserInfo = async () => {
@@ -137,7 +139,7 @@ export default function UserAuthModal() {
     }
 
     if (userInfo.publicKey) {
-      connectFreighter();
+      await connectFreighter();
     }
 
     return userInfo;
