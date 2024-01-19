@@ -7,6 +7,8 @@ import {
   polygonMumbai,
   celoAlfajores,
 } from "@wagmi/core/chains";
+import axios from "axios";
+import { BigNumber } from "ethers";
 import Cookies from "js-cookie";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -20,6 +22,7 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
+import { useFreighter } from "@/lib/hooks";
 import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
 import { getAllowedChains, api, initApi, isProd } from "@/lib/utils";
@@ -32,6 +35,13 @@ export default function Home() {
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
   const [idrissName, setIdrissName] = useState("");
+  const { isFreighterConnected, freighterAddress } = useFreighter();
+  const [stellarBalance, setStellarBalance] = useState({
+    decimals: 7,
+    symbol: "USDGLO",
+    formatted: "0",
+    value: BigInt(0),
+  });
 
   const usdcBalance = useBalance({
     address,
@@ -39,7 +49,6 @@ export default function Home() {
     watch: true,
     cacheTime: 2_000,
   });
-
   const polygonId = isProd() ? polygon.id : polygonMumbai.id;
   const { data: polygonBalance } = useBalance({
     address,
@@ -71,6 +80,7 @@ export default function Home() {
     ethereumBalance,
     polygonBalance,
     celoBalance,
+    stellarBalance,
   ]);
 
   const { setCTAs } = useUserStore();
@@ -84,6 +94,32 @@ export default function Home() {
       push("/");
     }
   }, []);
+
+  useEffect(() => {
+    const getStellarBalance = async () => {
+      const apiUrl = `https://horizon.stellar.org/accounts/${freighterAddress}`;
+      const res = await axios.get(apiUrl, {
+        headers: { Accept: "application/json" },
+      });
+      const stellarBalanceValue = await res.data.balances.reduce(
+        (acc, cur) =>
+          cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
+        0
+      );
+      const bigIntStellarBalance = BigInt(
+        `${stellarBalanceValue}`.replace(".", "")
+      );
+      setStellarBalance({
+        decimals: 7,
+        symbol: "USDGLO",
+        formatted: `${stellarBalanceValue}`,
+        value: bigIntStellarBalance,
+      });
+    };
+    if (isFreighterConnected) {
+      getStellarBalance();
+    }
+  }, [isFreighterConnected]);
 
   useEffect(() => {
     const allowedChains = getAllowedChains();
@@ -193,6 +229,7 @@ export default function Home() {
         <Header idrissName={idrissName} />
         <div className="flex flex-col space-y-4">
           <Balance
+            stellarBalance={stellarBalance}
             polygonBalance={polygonBalance}
             ethereumBalance={ethereumBalance}
             celoBalance={celoBalance}

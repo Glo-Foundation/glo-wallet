@@ -17,6 +17,7 @@ type Props = {
   celoBalance: FetchBalanceResult | undefined;
   totalBalance: FetchBalanceResult | undefined;
   usdcBalance: FetchBalanceResult | undefined;
+  stellarBalance: FetchBalanceResult | undefined;
 };
 
 export default function Balance({
@@ -25,6 +26,7 @@ export default function Balance({
   celoBalance,
   totalBalance,
   usdcBalance,
+  stellarBalance,
 }: Props) {
   const { openModal } = useContext(ModalContext);
 
@@ -35,6 +37,7 @@ export default function Balance({
   const celoBalanceFormatted = customFormatBalance(celoBalance);
   const totalBalanceFormatted = customFormatBalance(totalBalance);
   const usdcBalanceFormatted = customFormatBalance(usdcBalance);
+  const stellarBalanceformatted = customFormatBalance(stellarBalance);
   const { connector } = useAccount();
   const isSequenceWallet = connector?.id === "sequence";
 
