@@ -1,10 +1,3 @@
-import {
-  getUserInfo,
-  isAllowed,
-  setAllowed,
-  signTransaction,
-  signBlob,
-} from "@stellar/freighter-api";
 import { configureChains } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
 import clsx from "clsx";
@@ -93,18 +86,14 @@ export default function UserAuthModal() {
     closeModal();
   };
 
-  const connectWithConnector = (index: number) => {
-    requireUserAgreed(() => {
-      // Connect with EVM connectors
-      connect({ connector: connectors[index] });
-      closeModal();
-    });
-  };
-
-  const connectWithStellar = async () => {
+  const connectWithConnector = async (index: number) => {
     requireUserAgreed(async () => {
-      console.log("going to connect with Stellar app");
-      const userInfo = await connectFreighter();
+      if (index == 99) {
+        await connectFreighter();
+      } else {
+        // Connect with EVM connectors
+        await connect({ connector: connectors[index] });
+      }
       closeModal();
     });
   };
@@ -196,7 +185,7 @@ export default function UserAuthModal() {
               <button
                 className="auth-button"
                 data-testid="freighter-login-button"
-                onClick={() => connectWithStellar()}
+                onClick={() => connectWithConnector(99)}
               >
                 <h4>Freighter</h4>
                 <Image

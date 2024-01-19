@@ -59,7 +59,12 @@ export default function UserInfoModal({ address, idrissName }: Props) {
           <h5>Network:</h5>
           <div className="copy pseudo-input-text text-sm">
             <span data-testid="profile-network">
-              {chain?.name} ({chain?.id})
+              {isFreighterConnected && <div>Stellar</div>}
+              {!isFreighterConnected && (
+                <div>
+                  {chain?.name} ({chain?.id})
+                </div>
+              )}
             </span>
           </div>
 

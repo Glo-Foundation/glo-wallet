@@ -22,15 +22,13 @@ export default function Header({ idrissName }: { idrissName: string }) {
   const isSequenceWallet = connector?.id === "sequence";
   const { isFreighterConnected, freighterAddress } = useFreighter();
 
-  console.log("is freighter connected in header: ", isFreighterConnected);
-
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
 
-  const openUserInfoModal = () => {
+  const openUserInfoModal = (userAddress) => {
     openModal(<UserInfoModal address={address} idrissName={idrissName} />);
   };
 
@@ -78,7 +76,7 @@ export default function Header({ idrissName }: { idrissName: string }) {
             </button>
             <button
               className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal()}
+              onClick={() => openUserInfoModal(address)}
               data-testid="profile-button"
             >
               👤
@@ -99,7 +97,7 @@ export default function Header({ idrissName }: { idrissName: string }) {
             </button>
             <button
               className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal()}
+              onClick={() => openUserInfoModal(freighterAddress)}
               data-testid="profile-button"
             >
               👤
