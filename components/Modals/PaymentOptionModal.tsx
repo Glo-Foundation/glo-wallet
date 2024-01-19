@@ -11,7 +11,7 @@ import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { useFreighter } from "@/lib/hooks";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithSwap } from "@/payments";
+import { buyWithSwap, buyWithStellarX } from "@/payments";
 
 import BuyWithCoinbaseSequenceModal from "./BuyWithCoinbaseSequenceModal";
 import BuyWithZeroswapModal from "./BuyWithZeroswapModal";
@@ -236,7 +236,7 @@ export default function PaymentOptionModal({
         fees="0.1"
         worksFor="🔐 XLM"
         delay="⚡ Instant"
-        onclick={() => buyWithSwap(buyAmount, 0, "Matcha")}
+        onClick={() => buyWithStellarX()}
       />
     );
 
