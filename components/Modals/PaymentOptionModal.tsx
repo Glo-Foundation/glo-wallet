@@ -9,6 +9,7 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
+import { useFreighter } from "@/lib/hooks";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithSwap } from "@/payments";
 
@@ -22,6 +23,7 @@ export default function PaymentOptionModal({
 }) {
   const { address, connector, isConnected } = useAccount();
   const { chain } = useNetwork();
+  const { isFreighterConnected } = useFreighter();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
@@ -148,6 +150,7 @@ export default function PaymentOptionModal({
   const getBuyBoxList = () => {
     const sequenceAndCoinbase = (
       <BuyBox
+        key="sequence"
         name="Sequence (+ Coinbase)"
         icon="/sequence.svg"
         fees=".01-5"
@@ -161,6 +164,7 @@ export default function PaymentOptionModal({
 
     const coinbaseAndUniswap = (
       <BuyBox
+        key="coinbase"
         name="Coinbase + Uniswap"
         icon="/coinbase.png"
         fees=".01-5"
@@ -174,6 +178,7 @@ export default function PaymentOptionModal({
 
     const zeroSwap = (
       <BuyBox
+        key="zeroswap"
         name="Zeroswap [gasless]"
         icon="/zeroswap.svg"
         fees=".01"
@@ -187,6 +192,7 @@ export default function PaymentOptionModal({
 
     const uniswap = (
       <BuyBox
+        key="uniswap"
         name="Uniswap"
         icon="/uniswap.svg"
         fees=".01"
@@ -200,6 +206,7 @@ export default function PaymentOptionModal({
 
     const matcha = (
       <BuyBox
+        key="matcha"
         name="Matcha [gasless]"
         icon="/matcha.svg"
         fees=".01"
@@ -211,6 +218,7 @@ export default function PaymentOptionModal({
 
     const unlimitAndEmbr = (
       <BuyBox
+        key="unlimit"
         name="Unlimit + Embr"
         icon="/unlimit.png"
         fees="1-3"
@@ -220,7 +228,21 @@ export default function PaymentOptionModal({
       />
     );
 
-    if (!isConnected) {
+    const stellarx = (
+      <BuyBox
+        key="stellarx"
+        name="StellarX"
+        icon="/stellarx.png"
+        fees="0.1"
+        worksFor="🔐 XLM"
+        delay="⚡ Instant"
+        onclick={() => buyWithSwap(buyAmount, 0, "Matcha")}
+      />
+    );
+
+    if (isFreighterConnected) {
+      return [stellarx];
+    } else if (!isConnected) {
       return [uniswap, unlimitAndEmbr];
     } else if (isSequenceWallet) {
       return [sequenceAndCoinbase, uniswap, zeroSwap, unlimitAndEmbr];
