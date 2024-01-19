@@ -42,7 +42,7 @@ export function useFreighter() {
       return error;
     }
 
-    if (!userInfo.publicKey) {
+    if (!userInfo.publicKey && userInfo.publicKey !== "") {
       // we didn't get anything back. Maybe the app hasn't been authorixed?
 
       const isAccessAllowed = await isAllowed();
@@ -55,6 +55,9 @@ export function useFreighter() {
         // it should work now that this app is "allowed"
         userInfo = await getUserInfo();
       }
+    }
+    if (userInfo.publicKey == "") {
+      alert("Please unlock your Freighter wallet and then reconnect.");
     }
 
     return userInfo;
