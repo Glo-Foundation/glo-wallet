@@ -42,7 +42,7 @@ export function useFreighter() {
       return error;
     }
 
-    if (!userInfo.publicKey && userInfo.publicKey !== "") {
+    if (!userInfo.publicKey) {
       // we didn't get anything back. Maybe the app hasn't been authorixed?
 
       const isAccessAllowed = await isAllowed();
