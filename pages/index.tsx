@@ -102,7 +102,7 @@ export default function Home() {
         headers: { Accept: "application/json" },
       });
       const stellarBalanceValue = await res.data.balances.reduce(
-        (acc, cur) =>
+        (acc: any, cur: any) =>
           cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
         0
       );
@@ -118,6 +118,13 @@ export default function Home() {
     };
     if (isFreighterConnected) {
       getStellarBalance();
+    } else {
+      setStellarBalance({
+        decimals: 7,
+        symbol: "USDGLO",
+        formatted: `0`,
+        value: BigInt("0"),
+      });
     }
   }, [isFreighterConnected]);
 

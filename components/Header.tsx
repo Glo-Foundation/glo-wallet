@@ -28,8 +28,8 @@ export default function Header({ idrissName }: { idrissName: string }) {
     }
   }, [isCopiedTooltipOpen]);
 
-  const openUserInfoModal = (userAddress) => {
-    openModal(<UserInfoModal address={address} idrissName={idrissName} />);
+  const openUserInfoModal = (userAddress: string | undefined) => {
+    openModal(<UserInfoModal address={userAddress} idrissName={idrissName} />);
   };
 
   const openUserAuthModal = () => {
@@ -76,7 +76,7 @@ export default function Header({ idrissName }: { idrissName: string }) {
             </button>
             <button
               className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal(address)}
+              onClick={() => openUserInfoModal(address?.toString())}
               data-testid="profile-button"
             >
               👤
@@ -89,15 +89,15 @@ export default function Header({ idrissName }: { idrissName: string }) {
               data-tooltip-content="Copied!"
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
-                navigator.clipboard.writeText(freighterAddress);
+                navigator.clipboard.writeText(freighterAddress || "");
                 setIsCopiedTooltipOpen(true);
               }}
             >
-              {sliceAddress(freighterAddress)}
+              {sliceAddress(freighterAddress || "")}
             </button>
             <button
               className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal(freighterAddress)}
+              onClick={() => openUserInfoModal(freighterAddress || undefined)}
               data-testid="profile-button"
             >
               👤

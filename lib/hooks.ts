@@ -23,18 +23,18 @@ export const useOutsideClick = (ref: RefObject<HTMLElement>, callback: any) => {
 
 export function useFreighter() {
   const isFreighterConnected = JSON.parse(
-    localStorage.getItem("freighterConnected")
+    localStorage.getItem("freighterConnected") || "false"
   );
 
   const freighterAddress = localStorage.getItem("freighterAddress");
 
   const retrieveUserInfo = async () => {
-    let userInfo = { publicKey: "" };
+    let userInfo: any = { publicKey: "" };
     let error = "";
 
     try {
       userInfo = await getUserInfo();
-    } catch (e) {
+    } catch (e: any) {
       error = e;
     }
 
@@ -65,12 +65,13 @@ export function useFreighter() {
 
   async function connectFreighter() {
     const userInfo = await retrieveUserInfo();
-    localStorage.setItem("freighterAddress", userInfo.publicKey);
+    const publicKey = userInfo.publicKey;
+    localStorage.setItem("freighterAddress", publicKey);
     localStorage.setItem("freighterConnected", "true");
   }
 
   async function disconnectFreighter() {
-    localStorage.setItem("freighterAddress", null);
+    localStorage.setItem("freighterAddress", "");
     localStorage.setItem("freighterConnected", "false");
   }
 

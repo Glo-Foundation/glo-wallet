@@ -118,18 +118,17 @@ export default function CTA({
       description: shareImpactTextShort,
       action: () => openModal(<TweetModal tweetText={shareImpactText} />),
     },
-  };
-  let CTAS = DEFAULT_CTAS;
-
-  if (!isFreighterConnected) {
-    CTA_MAP["REGISTER_IDRISS"] = {
+    ["REGISTER_IDRISS"]: {
       title: "Claim free IDriss handle",
       iconPath: "/idriss.png",
       description:
         "Hold $100+ of Glo Dollar to claim an IDriss registration for this wallet",
       action: () => openModal(<IdrissModal balance={gloBalance} />),
-    };
-  } else {
+    },
+  };
+  let CTAS = DEFAULT_CTAS;
+
+  if (isFreighterConnected) {
     CTAS = DEFAULT_CTAS.slice(0, -1);
   }
 
