@@ -95,7 +95,6 @@ export default function Impact({
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
         <meta name="author" content="Glo" />
-        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@glodollar" />
         <meta name="twitter:creator" content="@glodollar" />
       </Head>
@@ -378,6 +377,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           name: "twitter:image",
           content: ogImage,
           key: "twimage",
+        },
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
+          key: "twsummary",
         },
         {
           name: "twitter:image:alt",
