@@ -103,7 +103,7 @@ export default function UserAuthModal() {
       <section className="flex flex-col items-center">
         <Image
           className="border-cyan-600 border-2 rounded-full mb-[-50px] z-50"
-          src="/jeff.svg"
+          src="/jasper.png"
           alt="glo logo"
           width={100}
           height={100}
@@ -111,7 +111,7 @@ export default function UserAuthModal() {
       </section>
       <section className="sticky pt-8 px-4 py-4 flex flex-col items-center text-center bg-white rounded-t-3xl">
         <h2 className="">👋 Welcome to the Glo App</h2>
-        <p className="copy text-lg -mt-5 mb-4">Jeff, Glo Foundation CEO</p>
+        <p className="copy text-lg -mt-5 mb-4">Jasper, Glo Foundation CEO</p>
         <p className="copy text m-0 max-w-[21rem] text-center">
           To see the impact of your Glo Dollars connect your wallet or submit
           your email to create an Eth wallet{" "}
