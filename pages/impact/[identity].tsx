@@ -380,6 +380,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           key: "twimage",
         },
         {
+          name: "twitter:image:alt",
+          content: "Glo Dollar impact per wallet",
+          key: "twimagealt",
+        },
+        {
+          name: "twitter:url",
+          content: ogUrl,
+          key: "twurl",
+        },
+        {
           name: "title",
           content: ogTitle,
           key: "title",
