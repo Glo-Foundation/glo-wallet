@@ -317,7 +317,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const ogDescription =
     "Glo Dollar is a fully backed stablecoin that redistributes all profits as basic income to people in extreme poverty. Let's end extreme poverty. Join the movement.";
   const ogUrl = `${process.env.VERCEL_OG_URL}${pathname}`;
-  const ogImage = `${process.env.VERCEL_OG_URL}/api/og/${balance}/${yearlyYield}`;
+  const ogImage = `${process.env.VERCEL_OG_URL}/api/og/${balance}/${yearlyYield}.png`;
 
   return {
     props: {
