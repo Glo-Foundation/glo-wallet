@@ -102,7 +102,7 @@ export default function UserAuthModal() {
     <>
       <section className="flex flex-col items-center">
         <Image
-          className="border-cyan-600 border-2 rounded-full mb-[-50px] z-50"
+          className="border-cyan-600 border-2 bg-white rounded-full mb-[-50px] z-50"
           src="/jasper.png"
           alt="glo logo"
           width={100}
