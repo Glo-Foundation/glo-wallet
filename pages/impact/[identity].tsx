@@ -380,11 +380,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           key: "twimage",
         },
         {
-          name: "twitter:url",
-          content: ogUrl,
-          key: "twurl",
-        },
-        {
           name: "title",
           content: ogTitle,
           key: "title",
