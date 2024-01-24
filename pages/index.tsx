@@ -246,7 +246,7 @@ export default function Home() {
 
           <CTA
             balance={totalBalance?.formatted}
-            identity={idrissName || address!}
+            identity={idrissName || address! || freighterAddress!}
           />
         </div>
       </div>

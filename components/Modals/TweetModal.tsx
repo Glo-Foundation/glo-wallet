@@ -85,7 +85,9 @@ export default function TweetModal({ tweetText }: { tweetText: string }) {
           Click the button to tweet the following message:
         </p>
         <p className="copy pseudo-input-text text-sm p-2 whitespace-pre-line my-6">
-          {tweetText.replace(/0x[a-fA-F0-9]+/, "0x...")}
+          {tweetText.includes("0x") || tweetText.slice(-50).includes("@")
+            ? tweetText.replace(/0x[a-fA-F0-9]+/, "0x...")
+            : tweetText.slice(0, -54) + "..."}
         </p>
 
         <p className="py-5 hidden">
