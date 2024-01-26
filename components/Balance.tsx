@@ -74,7 +74,9 @@ export default function Balance({
         <div
           className="flex flex-row font-semibold justify-center cursor-pointer"
           onClick={() => {
-            setShowBalanceDropdown(!showBalanceDropdown);
+            stellarBalance.value > 0
+              ? null
+              : setShowBalanceDropdown(!showBalanceDropdown);
           }}
         >
           <div className="flex flex-col justify-center items-center relative z-1">
