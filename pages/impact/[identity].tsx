@@ -53,7 +53,7 @@ export default function Impact({
 
   useEffect(() => {
     const seeWhenFirstGloTransaction = async () => {
-      if (!address) {
+      if (!address || !address.includes("0x")) {
         return;
       }
 
@@ -273,12 +273,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  let address, idrissIdentity;
+  let address = identity;
+  let idrissIdentity = "";
 
   if (identity.startsWith("0x")) {
     address = identity;
     idrissIdentity = await idriss.reverseResolve(address);
-  } else {
+  } else if (identity.includes("@")) {
     idrissIdentity = identity;
     // TODO: handle exception in resolving
     const idrissResolvedAddresses = await idriss.resolve(idrissIdentity);
