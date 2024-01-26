@@ -15,11 +15,11 @@ import { isProd } from "@/lib/utils";
 import { getBalance } from "@/utils";
 
 export const getBalances = async (address: string) => {
-  let balance = BigNumber.from("0");
+  let balance = 0;
   let [polygonBalance, ethereumBalance, celoBalance] = [
-    balance,
-    balance,
-    balance,
+    BigNumber.from("0"),
+    BigNumber.from("0"),
+    BigNumber.from("0"),
   ];
   if (address.slice(0, 4).includes("0x")) {
     [polygonBalance, ethereumBalance, celoBalance] = await Promise.all([
@@ -71,7 +71,7 @@ async function getChainBalance(
   return balance;
 }
 
-async function getStellarBalance(address): Promise<BigNumber> {
+async function getStellarBalance(address: string): Promise<BigNumber> {
   const cacheKey = `balance-${address}`;
   const cacheValue = await kv.hget(cacheKey, "Stellar");
 
