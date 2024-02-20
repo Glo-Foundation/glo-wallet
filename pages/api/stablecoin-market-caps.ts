@@ -26,6 +26,7 @@ export default async function handler(
     PYUSD: "#0070e0",
     GUSD: "#26ddf9",
     ZUSD: "#d62825",
+    USDV: "#000000",
   };
 
   const result = await getCMCMarketCap();
