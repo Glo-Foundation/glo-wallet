@@ -13,8 +13,6 @@ export default async function handler(
 ) {
   const cached = cache.get(CACHE_KEY);
 
-  console.log(_req.query);
-
   if (cached && !Object.keys(_req.query).includes("reset")) {
     return res.status(200).end(cached);
   }
