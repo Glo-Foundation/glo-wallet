@@ -13,9 +13,12 @@ export default async function handler(
 ) {
   const cached = cache.get(CACHE_KEY);
 
-  if (cached) {
+  console.log(_req.query);
+
+  if (cached && !Object.keys(_req.query).includes("reset")) {
     return res.status(200).end(cached);
   }
+
   const stablecoin_colors: { [key: string]: string } = {
     USDGLO: "#24e5df",
     USDT: "#009393",

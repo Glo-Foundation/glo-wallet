@@ -114,7 +114,7 @@ export const getCMCMarketCap = async (): Promise<BigNumber> => {
   const apiUrl =
     "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest";
   const res = await axios.get(apiUrl, {
-    params: { id: "825,3408,2563,26081,3330,27772,3306,23888,28443" }, // get all usd stablecoins from coinmarketcap
+    params: { id: "3408,2563,26081,3330,27772,3306,23888,28443,825" }, // get all usd stablecoins from coinmarketcap
     headers: { "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY },
   });
 
