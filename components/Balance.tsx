@@ -69,7 +69,7 @@ export default function Balance({
     <div className="bg-white rounded-[20px] pt-4">
       <div className="flex flex-col space-y-2 p-4">
         <div className="self-center text-sm text-pine-700/90 mb-1.5">
-          Balance
+          You own
         </div>
         <div
           className="flex flex-row font-semibold justify-center cursor-pointer"
@@ -145,7 +145,11 @@ export default function Balance({
           </a>
         )}
       </div>
-
+      <div className="flex flex-col space-y-2 px-4">
+        <div className="self-center text-sm text-pine-700/90 mb-1.5">
+          Generating
+        </div>
+      </div>
       <ImpactInset
         openModal={openModal}
         yearlyYield={totalBalanceFormatted.yearlyYield}
