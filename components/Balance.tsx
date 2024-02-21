@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { ModalContext } from "@/lib/context";
 import { customFormatBalance } from "@/utils";
 
+import CharitySelector from "./CharitySelector";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
 import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
@@ -146,12 +147,27 @@ export default function Balance({
         )}
       </div>
 
-      <ImpactInset
-        openModal={openModal}
-        yearlyYield={totalBalanceFormatted.yearlyYield}
-        yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldFormatted}
-        totalBalance={totalBalance}
-      />
+      <div className="flex flex-col">
+        <div className="self-center">Generating</div>
+      </div>
+
+      <div className="flex flex-row space-x-1">
+        <ImpactInset
+          openModal={openModal}
+          yearlyYield={totalBalanceFormatted.yearlyYield}
+          yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldFormatted}
+          totalBalance={totalBalance}
+        />
+        {totalBalance && totalBalance.value > 0 && (
+          <>
+            <div className="self-center">for</div>
+            <CharitySelector
+              openModal={openModal}
+              selectedCharity="GiveDirectly"
+            />
+          </>
+        )}
+      </div>
 
       <div
         className={`${
