@@ -164,6 +164,7 @@ export default function Balance({
             <CharitySelector
               openModal={openModal}
               selectedCharity="GiveDirectly"
+              yearlyYield={totalBalanceFormatted.yearlyYield}
             />
           </>
         )}

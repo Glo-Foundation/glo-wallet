@@ -9,6 +9,7 @@ import { sliceAddress } from "@/lib/utils";
 
 interface Props {
   selectedCharity: string;
+  yearlyYield: number;
 }
 
 interface CharityCardProps {
@@ -63,7 +64,10 @@ function CharityCard({
   );
 }
 
-export default function CharitySelectorModal({ selectedCharity }: Props) {
+export default function CharitySelectorModal({
+  selectedCharity,
+  yearlyYield,
+}: Props) {
   const { address } = useAccount();
   const { closeModal } = useContext(ModalContext);
 
@@ -79,7 +83,7 @@ export default function CharitySelectorModal({ selectedCharity }: Props) {
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2 pb-8">
       <div className="flex flex-row justify-between p-3">
         {/* fix hack */}
-        <button />
+        <div />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         <button
           className="copy cursor-pointer border-2 rounded-full border-cyan-200 px-3 py-1"
@@ -98,9 +102,20 @@ export default function CharitySelectorModal({ selectedCharity }: Props) {
       </div>
       <section className="text-center">
         <h3 className="pt-0">Choose funding recipient</h3>
-        <p className="text-sm py-4">
+        <p className="text-sm py-4 copy">
           You can decide where we donate the yield of the Glo Dollars you hold.
           Choose your favorite non-profit, public good or foundation below.
+        </p>
+      </section>
+      <section className="flex flex-row mb-3 space-x-2 items-center justify-center">
+        <Image
+          alt="glo-logo-small"
+          src="/glo-logo-small.png"
+          height={20}
+          width={20}
+        />
+        <p className="text-sm font-bold">
+          donate ~${yearlyYield} this month to
         </p>
       </section>
       <section>
@@ -109,28 +124,28 @@ export default function CharitySelectorModal({ selectedCharity }: Props) {
           name="GiveDirectly"
           description="Funds basic income programs for people in extreme poverty"
           type="default"
-          selected={false}
+          selected={selectedCharity === "GiveDirectly"}
         />
         <CharityCard
           iconPath="/one-tree-planted-logo.jpeg"
           name="One Tree Planted"
           description="Funds planting a forest together, one tree at a time"
           type="501(c)(3)"
-          selected={false}
+          selected={selectedCharity === "One Tree Planted"}
         />
         <CharityCard
           iconPath="/gitcoin-grants-logo.jpeg"
           name="Gitcoin Grants"
           description="Goes to a Quadratic Funding matching pool for Glo Consortium members"
           type="public good"
-          selected={false}
+          selected={selectedCharity === "Gitcoin Grants"}
         />
         <CharityCard
           iconPath="/optimism-logo.png"
           name="Optimism RetroPGF"
           description="Funds proportional matches to all recipients of Optimism's RetroPGF program"
           type="foundation"
-          selected={false}
+          selected={selectedCharity === "Optimism RetroPGF"}
         />
       </section>
 
