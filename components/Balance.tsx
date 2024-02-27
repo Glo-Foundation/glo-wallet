@@ -163,7 +163,6 @@ export default function Balance({
             <div className="self-center">for</div>
             <CharitySelector
               openModal={openModal}
-              selectedCharity="GiveDirectly"
               yearlyYield={totalBalanceFormatted.yearlyYield}
             />
           </>

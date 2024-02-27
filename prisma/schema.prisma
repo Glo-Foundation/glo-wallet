@@ -30,3 +30,22 @@ model CTAs {
 model IdrissInvite {
   address   String   @id @unique
 }
+
+enum Charity {
+  GIVE_DIRECTLY
+  ONE_TREE_PLANTED
+  GITCOIN_GRANTS
+  OPTIMISM_RETROPGF
+}
+
+model CharityChoice {
+  id          Int       @id @default(autoincrement())
+  name        Charity
+  address     String
+  creationDate DateTime  @default(now())
+  percent     Int
+  choiceNum   Int
+
+  @@unique([address, choiceNum, name]) // Ensures a charity can only be chosen once per choiceNum and address
+}
+

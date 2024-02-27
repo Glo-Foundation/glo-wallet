@@ -1,3 +1,4 @@
+import { Charity } from "@prisma/client";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
@@ -5,10 +6,9 @@ import { Tooltip } from "react-tooltip";
 import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
-import { sliceAddress } from "@/lib/utils";
+import { api, sliceAddress } from "@/lib/utils";
 
 interface Props {
-  selectedCharity: string;
   yearlyYield: number;
 }
 
@@ -18,6 +18,7 @@ interface CharityCardProps {
   type: string;
   iconPath: string;
   selected: boolean;
+  selectCharity: (name: string) => void;
 }
 
 function CharityCard({
@@ -26,6 +27,7 @@ function CharityCard({
   type,
   iconPath,
   selected,
+  selectCharity,
 }: CharityCardProps) {
   return (
     <div
@@ -33,7 +35,7 @@ function CharityCard({
         "cursor-pointer flex flex-col justify-center border-2 rounded-xl border-pine-100 hover:border-pine-400 mb-2",
         selected && "bg-cyan-600/20"
       )}
-      onClick={undefined}
+      onClick={() => selectCharity(name)}
     >
       <div className="flex flex-col justify-center">
         <div className="flex items-center p-3">
@@ -64,20 +66,48 @@ function CharityCard({
   );
 }
 
-export default function CharitySelectorModal({
-  selectedCharity,
-  yearlyYield,
-}: Props) {
+export default function CharitySelectorModal({ yearlyYield }: Props) {
   const { address } = useAccount();
   const { closeModal } = useContext(ModalContext);
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+  const [selectedCharity, setSelectedCharity] = useState(null);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
+
+  useEffect(() => {
+    if (!selectedCharity) {
+      getCurrentSelectedCharity();
+    }
+  }, []);
+
+  const getCurrentSelectedCharity = (): void => {
+    api()
+      .get(`/charity`)
+      .then((res) => {
+        const currentSelectedCharity = res.data[0].name;
+        setSelectedCharity(Charity[currentSelectedCharity]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const updateSelectedCharity = (name: Charity): void => {
+    api()
+      .post(`/charity`, [{ charity: name, percent: 100 }])
+      .then((res) => {
+        const newSelectedCharity = res.data[0].name;
+        setSelectedCharity(Charity[newSelectedCharity]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2 pb-8">
@@ -124,28 +154,32 @@ export default function CharitySelectorModal({
           name="GiveDirectly"
           description="Funds basic income programs for people in extreme poverty"
           type="default"
-          selected={selectedCharity === "GiveDirectly"}
+          selected={selectedCharity === Charity.GIVE_DIRECTLY}
+          selectCharity={() => updateSelectedCharity(Charity.GIVE_DIRECTLY)}
         />
         <CharityCard
           iconPath="/one-tree-planted-logo.jpeg"
           name="One Tree Planted"
           description="Funds planting a forest together, one tree at a time"
           type="501(c)(3)"
-          selected={selectedCharity === "One Tree Planted"}
+          selected={selectedCharity === Charity.ONE_TREE_PLANTED}
+          selectCharity={() => updateSelectedCharity(Charity.ONE_TREE_PLANTED)}
         />
         <CharityCard
           iconPath="/gitcoin-grants-logo.jpeg"
           name="Gitcoin Grants"
           description="Goes to a Quadratic Funding matching pool for Glo Consortium members"
           type="public good"
-          selected={selectedCharity === "Gitcoin Grants"}
+          selected={selectedCharity === Charity.GITCOIN_GRANTS}
+          selectCharity={() => updateSelectedCharity(Charity.GITCOIN_GRANTS)}
         />
         <CharityCard
           iconPath="/optimism-logo.png"
           name="Optimism RetroPGF"
           description="Funds proportional matches to all recipients of Optimism's RetroPGF program"
           type="foundation"
-          selected={selectedCharity === "Optimism RetroPGF"}
+          selected={selectedCharity === Charity.OPTIMISM_RETROPGF}
+          selectCharity={() => updateSelectedCharity(Charity.OPTIMISM_RETROPGF)}
         />
       </section>
 
