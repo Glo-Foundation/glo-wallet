@@ -71,7 +71,7 @@ export default function CharitySelectorModal({ yearlyYield }: Props) {
   const { closeModal } = useContext(ModalContext);
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [selectedCharity, setSelectedCharity] = useState(null);
+  const [selectedCharity, setSelectedCharity] = useState<Charity | null>(null);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -89,7 +89,7 @@ export default function CharitySelectorModal({ yearlyYield }: Props) {
     api()
       .get(`/charity`)
       .then((res) => {
-        const currentSelectedCharity = res.data[0].name;
+        const currentSelectedCharity = res.data[0].name as Charity;
         setSelectedCharity(Charity[currentSelectedCharity]);
       })
       .catch((err) => {
@@ -101,7 +101,7 @@ export default function CharitySelectorModal({ yearlyYield }: Props) {
     api()
       .post(`/charity`, [{ charity: name, percent: 100 }])
       .then((res) => {
-        const newSelectedCharity = res.data[0].name;
+        const newSelectedCharity = res.data[0].name as Charity;
         setSelectedCharity(Charity[newSelectedCharity]);
       })
       .catch((err) => {
