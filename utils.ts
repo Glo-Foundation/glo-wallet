@@ -279,7 +279,7 @@ export const customFormatBalance = (
 } => {
   const yearlyYield = getTotalYield(Number(balance ? balance.formatted : 0));
   const yearlyYieldFormatted =
-    yearlyYield > 0 ? `$0 - ${yearlyYield.toFixed(2)}` : "$0";
+    yearlyYield > 0 ? `~$${yearlyYield.toFixed(2)}` : "$0";
 
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
