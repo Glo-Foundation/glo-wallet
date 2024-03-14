@@ -153,7 +153,7 @@ export default function Balance({
         </div>
       </div>
 
-      <div className="flex flex-row space-x-1">
+      <div className="flex flex-row space-x-1 justify-center">
         <ImpactInset
           openModal={openModal}
           yearlyYield={totalBalanceFormatted.yearlyYield}
@@ -162,7 +162,9 @@ export default function Balance({
         />
         {totalBalance && totalBalance.value > 0 && (
           <>
-            <div className="self-center">for</div>
+            <div className="self-center text-sm text-pine-700/90 mb-1.5 mx-1">
+              for
+            </div>
             <CharitySelector
               openModal={openModal}
               yearlyYield={totalBalanceFormatted.yearlyYield}
