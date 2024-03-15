@@ -9,7 +9,7 @@ import { ModalContext } from "@/lib/context";
 import { api, sliceAddress } from "@/lib/utils";
 
 interface Props {
-  yearlyYield: number;
+  monthlyYield: number;
 }
 
 interface CharityCardProps {
@@ -66,7 +66,7 @@ function CharityCard({
   );
 }
 
-export default function CharitySelectorModal({ yearlyYield }: Props) {
+export default function CharitySelectorModal({ monthlyYield }: Props) {
   const { address } = useAccount();
   const { closeModal } = useContext(ModalContext);
 
@@ -145,7 +145,7 @@ export default function CharitySelectorModal({ yearlyYield }: Props) {
           width={20}
         />
         <p className="text-sm font-bold">
-          donate up to ~${yearlyYield} this month to
+          donate up to ~${monthlyYield} this month to
         </p>
       </section>
       <section>
