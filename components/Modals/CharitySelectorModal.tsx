@@ -145,7 +145,7 @@ export default function CharitySelectorModal({ yearlyYield }: Props) {
           width={20}
         />
         <p className="text-sm font-bold">
-          donate ~${yearlyYield} this month to
+          donate up to ~${yearlyYield} this month to
         </p>
       </section>
       <section>
