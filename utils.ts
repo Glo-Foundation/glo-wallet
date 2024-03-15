@@ -273,6 +273,7 @@ export const customFormatBalance = (
 ): {
   yearlyYield: number;
   yearlyYieldFormatted: string;
+  yearlyYieldUSFormatted: string;
   dblFmtBalance: string;
   fmtBalanceDollarPart: string;
   fmtBalanceCentPart: string;
@@ -280,6 +281,8 @@ export const customFormatBalance = (
   const yearlyYield = getTotalYield(Number(balance ? balance.formatted : 0));
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `~$${yearlyYield.toFixed(2)}` : "$0";
+  const yearlyYieldUSFormatted =
+    yearlyYield > 0 ? `~$${getUSFormattedNumber(yearlyYield)}` : "$0";
 
   const dblFmtBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
@@ -300,6 +303,7 @@ export const customFormatBalance = (
   return {
     yearlyYield,
     yearlyYieldFormatted,
+    yearlyYieldUSFormatted,
     dblFmtBalance,
     fmtBalanceDollarPart,
     fmtBalanceCentPart,

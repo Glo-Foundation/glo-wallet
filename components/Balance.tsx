@@ -153,11 +153,11 @@ export default function Balance({
         </div>
       </div>
 
-      <div className="flex flex-row space-x-1 justify-center">
+      <div className="flex flex-row justify-center">
         <ImpactInset
           openModal={openModal}
           yearlyYield={totalBalanceFormatted.yearlyYield}
-          yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldFormatted}
+          yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldUSFormatted}
           totalBalance={totalBalance}
         />
         {totalBalance && totalBalance.value > 0 && (
