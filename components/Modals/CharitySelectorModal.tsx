@@ -3,8 +3,10 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
+import useSWR from "swr";
 import { useAccount } from "wagmi";
 
+import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
 import { api, sliceAddress } from "@/lib/utils";
 
@@ -71,7 +73,6 @@ export default function CharitySelectorModal({ yearlyYield }: Props) {
   const { closeModal } = useContext(ModalContext);
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [selectedCharity, setSelectedCharity] = useState<Charity | null>(null);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -79,35 +80,16 @@ export default function CharitySelectorModal({ yearlyYield }: Props) {
     }
   }, [isCopiedTooltipOpen]);
 
-  useEffect(() => {
-    if (!selectedCharity) {
-      getCurrentSelectedCharity();
-    }
-  }, []);
+  const { data, error, mutate } = useSWR("/charity", getCurrentSelectedCharity);
+  if (error) {
+    console.error(error);
+  }
+  const selectedCharity = data && data[0].name;
 
-  const getCurrentSelectedCharity = (): void => {
-    api()
-      .get(`/charity`)
-      .then((res) => {
-        const currentSelectedCharity = res.data[0].name as Charity;
-        setSelectedCharity(Charity[currentSelectedCharity]);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const updateSelectedCharity = (name: Charity): void => {
+  const updateSelectedCharity = (name: Charity) =>
     api()
       .post(`/charity`, [{ charity: name, percent: 100 }])
-      .then((res) => {
-        const newSelectedCharity = res.data[0].name as Charity;
-        setSelectedCharity(Charity[newSelectedCharity]);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+      .then(() => mutate());
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2 pb-8">

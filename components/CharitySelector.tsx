@@ -1,4 +1,7 @@
+import useSWR from "swr";
+
 import CharitySelectorModal from "@/components/Modals/CharitySelectorModal";
+import { getCurrentSelectedCharity } from "@/fetchers";
 
 type Props = {
   openModal: (content: JSX.Element) => void;
@@ -6,6 +9,15 @@ type Props = {
 };
 
 export default function CharitySelector({ openModal, yearlyYield }: Props) {
+  const { data, error, isLoading } = useSWR(
+    "/charity",
+    getCurrentSelectedCharity
+  );
+  if (error) {
+    console.error(error);
+  }
+  const selectedCharity = data && data[0].name;
+
   return (
     <div className="m-1 relative z-0 flex justify-center">
       <button
@@ -14,7 +26,7 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
           openModal(<CharitySelectorModal yearlyYield={yearlyYield} />)
         }
       >
-        Charity
+        {isLoading ? "Loading" : selectedCharity}
       </button>
     </div>
   );
