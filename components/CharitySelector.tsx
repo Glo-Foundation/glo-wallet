@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import CharitySelectorModal from "@/components/Modals/CharitySelectorModal";
-import { api, sliceAddress } from "@/lib/utils";
+import { api } from "@/lib/utils";
 
 type Props = {
   openModal: (content: JSX.Element) => void;
@@ -12,21 +12,20 @@ type Props = {
 };
 
 export default function CharitySelector({ openModal, yearlyYield }: Props) {
-  const { address, isConnected, connector } = useAccount();
+  const { address, isConnected } = useAccount();
   const [selectedCharity, setSelectedCharity] = useState<Charity | null>(null);
   const loggedIn = localStorage.getItem("loggedIn");
 
   useEffect(() => {
-    console.log("loggedIn: ", loggedIn);
-    if (loggedIn && isConnected && !selectedCharity) {
+    if (api() && !selectedCharity) {
       getCurrentSelectedCharity();
     }
-  }, [loggedIn, isConnected]);
+  }, [api()]);
 
   const getCurrentSelectedCharity = async (): void => {
     // console.log(selectedCharity);
     // console.log("api: ", await api());
-    api()
+    await api()
       .get(`/charity`)
       .then((res) => {
         const currentSelectedCharity = res.data[0].name as Charity;
