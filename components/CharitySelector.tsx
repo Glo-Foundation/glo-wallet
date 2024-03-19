@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import CharitySelectorModal from "@/components/Modals/CharitySelectorModal";
-import { api } from "@/lib/utils";
+import { api, CHARITY_MAP } from "@/lib/utils";
 
 type Props = {
   openModal: (content: JSX.Element) => void;
@@ -28,6 +28,7 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
     await api()
       .get(`/charity`)
       .then((res) => {
+        console.log(res.data[0]);
         const currentSelectedCharity = res.data[0].name as Charity;
         setSelectedCharity(Charity[currentSelectedCharity]);
       })
@@ -52,7 +53,7 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
               height={16}
               alt="choose public good to fund"
             />
-            <p className="ml-2 text-sm">{selectedCharity}</p>
+            <p className="ml-2 text-sm">{CHARITY_MAP[selectedCharity].name}</p>
           </div>
         </div>
       </button>

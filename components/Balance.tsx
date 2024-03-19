@@ -149,7 +149,7 @@ export default function Balance({
 
       <div className="flex flex-col">
         <div className="self-center text-sm text-pine-700/90 mb-1.5">
-          Generating
+          Generating up to
         </div>
       </div>
 
