@@ -66,48 +66,20 @@ function CharityCard({
   );
 }
 
-export default function CharitySelectorModal({ monthlyYield }: Props) {
+export default function CharitySelectorModal({
+  monthlyYield,
+  selectedCharity,
+  updateSelectedCharity,
+}: Props) {
   const { address } = useAccount();
   const { closeModal } = useContext(ModalContext);
-
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [selectedCharity, setSelectedCharity] = useState<Charity | null>(null);
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
-
-  useEffect(() => {
-    if (!selectedCharity) {
-      getCurrentSelectedCharity();
-    }
-  }, []);
-
-  const getCurrentSelectedCharity = (): void => {
-    api()
-      .get(`/charity`)
-      .then((res) => {
-        const currentSelectedCharity = res.data[0].name as Charity;
-        setSelectedCharity(Charity[currentSelectedCharity]);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const updateSelectedCharity = (name: Charity): void => {
-    api()
-      .post(`/charity`, [{ charity: name, percent: 100 }])
-      .then((res) => {
-        const newSelectedCharity = res.data[0].name as Charity;
-        setSelectedCharity(Charity[newSelectedCharity]);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2 pb-8">

@@ -141,4 +141,13 @@ export const CHARITY_MAP = {
     description: "Funds basic income programs for people in extreme poverty",
     type: "default",
   },
+  ["ONE_TREE_PLANTED"]: {
+    name: "One Tree Planted",
+  },
+  ["GITCOIN_GRANTS"]: {
+    name: "Gitcoin",
+  },
+  ["OPTIMISM_RETROPGF"]: {
+    name: "Optimism",
+  },
 };

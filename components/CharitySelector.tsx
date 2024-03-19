@@ -20,7 +20,7 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
     if (api() && !selectedCharity) {
       getCurrentSelectedCharity();
     }
-  }, [api()]);
+  }, [api(), selectedCharity]);
 
   const getCurrentSelectedCharity = async (): void => {
     // console.log(selectedCharity);
@@ -37,12 +37,30 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
       });
   };
 
+  const updateSelectedCharity = (name: Charity): void => {
+    api()
+      .post(`/charity`, [{ charity: name, percent: 100 }])
+      .then((res) => {
+        const newSelectedCharity = res.data[0].name as Charity;
+        setSelectedCharity(Charity[newSelectedCharity]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <div className="m-1 relative z-0 flex justify-center">
       <button
         className={`flex flex-col bg-white border-2 border-cyan-600 text-impact-fg rounded-[36px] h-[32px] mb-3 px-2 py-5 font-normal items-baseline`}
         onClick={() =>
-          openModal(<CharitySelectorModal monthlyYield={yearlyYield / 12} />)
+          openModal(
+            <CharitySelectorModal
+              monthlyYield={yearlyYield / 12}
+              selectedCharity={selectedCharity}
+              updateSelectedCharity={updateSelectedCharity}
+            />
+          )
         }
       >
         <div className="flex w-full justify-center items-center space-y-2">
@@ -53,7 +71,9 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
               height={16}
               alt="choose public good to fund"
             />
-            <p className="ml-2 text-sm">{CHARITY_MAP[selectedCharity].name}</p>
+            <p className="ml-2 text-sm">
+              {selectedCharity ? CHARITY_MAP[selectedCharity].name : "Charity"}
+            </p>
           </div>
         </div>
       </button>
