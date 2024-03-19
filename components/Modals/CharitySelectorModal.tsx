@@ -10,6 +10,8 @@ import { api, sliceAddress } from "@/lib/utils";
 
 interface Props {
   monthlyYield: number;
+  selectedCharity: Charity | null;
+  updateSelectedCharity: (name: Charity) => void;
 }
 
 interface CharityCardProps {

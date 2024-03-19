@@ -22,10 +22,10 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
     }
   }, [api(), selectedCharity]);
 
-  const getCurrentSelectedCharity = async (): void => {
+  const getCurrentSelectedCharity = (): void => {
     // console.log(selectedCharity);
     // console.log("api: ", await api());
-    await api()
+    api()
       .get(`/charity`)
       .then((res) => {
         console.log(res.data[0]);
