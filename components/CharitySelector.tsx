@@ -1,10 +1,9 @@
-import { Charity } from "@prisma/client";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { useAccount } from "wagmi";
+import useSWR from "swr";
 
 import CharitySelectorModal from "@/components/Modals/CharitySelectorModal";
-import { api, CHARITY_MAP } from "@/lib/utils";
+import { getCurrentSelectedCharity } from "@/fetchers";
+import { CHARITY_MAP } from "@/lib/utils";
 
 type Props = {
   openModal: (content: JSX.Element) => void;
@@ -12,42 +11,14 @@ type Props = {
 };
 
 export default function CharitySelector({ openModal, yearlyYield }: Props) {
-  const { address, isConnected } = useAccount();
-  const [selectedCharity, setSelectedCharity] = useState<Charity | null>(null);
-  const loggedIn = localStorage.getItem("loggedIn");
-
-  useEffect(() => {
-    if (api() && !selectedCharity) {
-      getCurrentSelectedCharity();
-    }
-  }, [api(), selectedCharity]);
-
-  const getCurrentSelectedCharity = (): void => {
-    // console.log(selectedCharity);
-    // console.log("api: ", await api());
-    api()
-      .get(`/charity`)
-      .then((res) => {
-        console.log(res.data[0]);
-        const currentSelectedCharity = res.data[0].name as Charity;
-        setSelectedCharity(Charity[currentSelectedCharity]);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const updateSelectedCharity = (name: Charity): void => {
-    api()
-      .post(`/charity`, [{ charity: name, percent: 100 }])
-      .then((res) => {
-        const newSelectedCharity = res.data[0].name as Charity;
-        setSelectedCharity(Charity[newSelectedCharity]);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  const { data, error, isLoading } = useSWR(
+    "/charity",
+    getCurrentSelectedCharity
+  );
+  if (error) {
+    console.error(error);
+  }
+  const selectedCharity = data && data[0].name;
 
   return (
     <div className="m-1 relative z-0 flex justify-center">
