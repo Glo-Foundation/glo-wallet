@@ -23,7 +23,7 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
   return (
     <div className="m-1 relative z-0 flex justify-center">
       <button
-        className={`flex flex-col bg-white border-2 border-cyan-600 text-impact-fg rounded-[36px] h-[32px] mb-3 px-2 py-5 font-normal items-baseline`}
+        className={`flex flex-col bg-white border-2 border-cyan-600 text-impact-fg rounded-[36px] h-[32px] px-2 py-5 font-normal items-baseline`}
         onClick={() =>
           openModal(<CharitySelectorModal monthlyYield={yearlyYield / 12} />)
         }

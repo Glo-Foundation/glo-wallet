@@ -173,6 +173,12 @@ export default function Balance({
         )}
       </div>
 
+      <div className="flex flex-col">
+        <div className="self-center text-sm text-pine-700/90 mb-1.5">
+          per year
+        </div>
+      </div>
+
       <div
         className={`${
           totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
