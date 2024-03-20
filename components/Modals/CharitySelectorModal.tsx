@@ -12,8 +12,6 @@ import { api, sliceAddress } from "@/lib/utils";
 
 interface Props {
   monthlyYield: number;
-  selectedCharity: Charity | null;
-  updateSelectedCharity: (name: Charity) => void;
 }
 
 interface CharityCardProps {
@@ -70,11 +68,7 @@ function CharityCard({
   );
 }
 
-export default function CharitySelectorModal({
-  monthlyYield,
-  selectedCharity,
-  updateSelectedCharity,
-}: Props) {
+export default function CharitySelectorModal({ monthlyYield }: Props) {
   const { address } = useAccount();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);

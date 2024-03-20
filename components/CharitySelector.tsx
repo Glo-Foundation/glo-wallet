@@ -25,13 +25,7 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
       <button
         className={`flex flex-col bg-white border-2 border-cyan-600 text-impact-fg rounded-[36px] h-[32px] mb-3 px-2 py-5 font-normal items-baseline`}
         onClick={() =>
-          openModal(
-            <CharitySelectorModal
-              monthlyYield={yearlyYield / 12}
-              selectedCharity={selectedCharity}
-              updateSelectedCharity={updateSelectedCharity}
-            />
-          )
+          openModal(<CharitySelectorModal monthlyYield={yearlyYield / 12} />)
         }
       >
         <div className="flex w-full justify-center items-center space-y-2">
