@@ -3,8 +3,10 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
+import useSWR from "swr";
 import { useAccount } from "wagmi";
 
+import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
 import { api, sliceAddress } from "@/lib/utils";
 
@@ -66,11 +68,7 @@ function CharityCard({
   );
 }
 
-export default function CharitySelectorModal({
-  monthlyYield,
-  selectedCharity,
-  updateSelectedCharity,
-}: Props) {
+export default function CharitySelectorModal({ monthlyYield }: Props) {
   const { address } = useAccount();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -80,6 +78,17 @@ export default function CharitySelectorModal({
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
+
+  const { data, error, mutate } = useSWR("/charity", getCurrentSelectedCharity);
+  if (error) {
+    console.error(error);
+  }
+  const selectedCharity = data && data[0].name;
+
+  const updateSelectedCharity = (name: Charity) =>
+    api()
+      .post(`/charity`, [{ charity: name, percent: 100 }])
+      .then(() => mutate());
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2 pb-8">

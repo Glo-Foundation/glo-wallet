@@ -133,7 +133,7 @@ export const formatBalance = (balance: {
   }).format(formatted || 0);
 };
 
-export const CHARITY_MAP = {
+export const CHARITY_MAP: any = {
   ["GIVE_DIRECTLY"]: {
     name: "GiveDirectly",
     iconPath: "/give-directly-logo.jpeg",
