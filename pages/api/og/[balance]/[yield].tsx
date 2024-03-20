@@ -93,9 +93,9 @@ export default async function handler(request: NextRequest) {
             style={{ fontFamily: "PolySansMedian" }}
           >
             <div tw="flex flex-col justify-center items-center mb-16">
-              <span>Let&apos;s end</span>
-              <span>extreme</span>
-              <span>poverty with</span>
+              <span>Fund</span>
+              <span>public</span>
+              <span>goods with</span>
               <span>a stablecoin</span>
             </div>
             <img
@@ -133,7 +133,7 @@ export default async function handler(request: NextRequest) {
                   tw="text-[24px] leading-[20px] mb-4"
                   style={{ fontFamily: "PolySansNeutral" }}
                 >
-                  I create basic income of
+                  I create funding of
                 </span>
                 <span tw="text-[50px] leading-[60px] mb-4">
                   {yearlyYieldFormatted.split(" - ").length > 1
@@ -144,7 +144,7 @@ export default async function handler(request: NextRequest) {
                   tw="text-[16px] leading-[24px] ml-2"
                   style={{ fontFamily: "PolySansNeutral" }}
                 >
-                  for people in extreme poverty
+                  for charities and public goods
                 </span>
               </div>
               <div
@@ -155,7 +155,7 @@ export default async function handler(request: NextRequest) {
                   tw="text-[24px] mt-4"
                   style={{ fontFamily: "PolySansNeutral" }}
                 >
-                  Enough to buy
+                  Enough to fund
                 </span>
                 <span
                   tw="text-[38px] leading-[48px]"
