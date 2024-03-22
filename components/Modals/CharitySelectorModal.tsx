@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
 import { api, sliceAddress } from "@/lib/utils";
+import { CHARITY_MAP } from "@/lib/utils";
 
 interface Props {
   monthlyYield: number;
@@ -52,7 +53,13 @@ function CharityCard({
                 />
               </div>
             ) : (
-              <Image alt={iconPath} src={iconPath} height={32} width={32} />
+              <Image
+                alt={iconPath}
+                src={iconPath}
+                height={32}
+                width={32}
+                className="rounded-2xl"
+              />
             )}
           </div>
           <div className="pl-4">
@@ -85,7 +92,7 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
   }
   const selectedCharity = data && data[0].name;
 
-  const updateSelectedCharity = (name: Charity) =>
+  const updateSelectedCharity = (name: string) =>
     api()
       .post(`/charity`, [{ charity: name, percent: 100 }])
       .then(() => mutate());
@@ -114,8 +121,8 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
       <section className="text-center">
         <h3 className="pt-0">Choose funding recipient</h3>
         <p className="text-sm py-4 copy">
-          You can decide where we donate the yield of the Glo Dollars you hold.
-          Choose your favorite non-profit, public good or foundation below.
+          You can decide where we donate our revenue. Choose your favorite
+          charitable cause below.
         </p>
       </section>
       <section className="flex flex-row mb-3 space-x-2 items-center justify-center">
@@ -130,38 +137,19 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
         </p>
       </section>
       <section>
-        <CharityCard
-          iconPath="/give-directly-logo.jpeg"
-          name="GiveDirectly"
-          description="Funds basic income programs for people in extreme poverty"
-          type="default"
-          selected={selectedCharity === Charity.GIVE_DIRECTLY}
-          selectCharity={() => updateSelectedCharity(Charity.GIVE_DIRECTLY)}
-        />
-        <CharityCard
-          iconPath="/one-tree-planted-logo.jpeg"
-          name="One Tree Planted"
-          description="Funds planting a forest together, one tree at a time"
-          type="501(c)(3)"
-          selected={selectedCharity === Charity.ONE_TREE_PLANTED}
-          selectCharity={() => updateSelectedCharity(Charity.ONE_TREE_PLANTED)}
-        />
-        <CharityCard
-          iconPath="/gitcoin-grants-logo.jpeg"
-          name="Gitcoin Grants"
-          description="Goes to a Quadratic Funding matching pool for Glo Consortium members"
-          type="public good"
-          selected={selectedCharity === Charity.GITCOIN_GRANTS}
-          selectCharity={() => updateSelectedCharity(Charity.GITCOIN_GRANTS)}
-        />
-        <CharityCard
-          iconPath="/optimism-logo.png"
-          name="Optimism RetroPGF"
-          description="Funds proportional matches to all recipients of Optimism's RetroPGF program"
-          type="foundation"
-          selected={selectedCharity === Charity.OPTIMISM_RETROPGF}
-          selectCharity={() => updateSelectedCharity(Charity.OPTIMISM_RETROPGF)}
-        />
+        {Object.entries(CHARITY_MAP).map(([key, charity]) => {
+          return (
+            <CharityCard
+              key={key}
+              iconPath={charity.iconPath}
+              name={charity.name}
+              description={charity.description}
+              type={charity.type}
+              selected={selectedCharity === key}
+              selectCharity={() => updateSelectedCharity(key)}
+            />
+          );
+        })}
       </section>
 
       <button className="secondary-button h-[52px] mx-2 mt-4">

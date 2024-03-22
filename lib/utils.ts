@@ -133,20 +133,50 @@ export const formatBalance = (balance: {
   }).format(formatted || 0);
 };
 
-export const CHARITY_MAP: any = {
-  ["GIVE_DIRECTLY"]: {
-    name: "GiveDirectly",
+export const CHARITY_MAP: Record<string, any> = {
+  ["EXTREME_POVERTY"]: {
+    name: "Fight Extreme Poverty",
+    short_name: "Extreme poverty",
     iconPath: "/give-directly-logo.jpeg",
     description: "Funds basic income programs for people in extreme poverty",
     type: "default",
   },
-  ["ONE_TREE_PLANTED"]: {
-    name: "One Tree Planted",
+  ["OPEN_SOURCE"]: {
+    name: "Strengthen Web3 Open Source",
+    short_name: "Open Source",
+    iconPath: "/gitcoin-grants-logo.jpeg",
+    description:
+      "Supports NGOs that further the cause of open source software in and outside Web3",
+    type: "",
   },
-  ["GITCOIN_GRANTS"]: {
-    name: "Gitcoin",
+  ["CLIMATE"]: {
+    name: "Cure the Climate",
+    short_name: "Climate",
+    iconPath: "/giving-green-logo.png",
+    description:
+      "We'll donate to best in class charities that work to decarbonize the planet",
+    type: "",
   },
-  ["OPTIMISM_RETROPGF"]: {
-    name: "Optimism",
+  ["SAVE_LIVES"]: {
+    name: "Save Lives",
+    short_name: "Saving lives",
+    iconPath: "/givewell-logo.jpeg",
+    description:
+      "Funds charities that save or improve lives the most per dollar donated",
+    type: "",
   },
+  // ["REFUGEE_CRISIS"]: {
+  //   name: "Save Refugees' Lives",
+  //   short_name: "Refugees",
+  //   iconPath: "/give-directly-logo.jpeg",
+  //   description: "Funds basic income programs for people in extreme poverty",
+  //   type: "",
+  // },
+  // ["ANIMAL_LIVES"]: {
+  //   name: "Improve Animal Welfare",
+  //   short_name: "Animals",
+  //   iconPath: "/give-directly-logo.jpeg",
+  //   description: "Funds basic income programs for people in extreme poverty",
+  //   type: "",
+  // }
 };

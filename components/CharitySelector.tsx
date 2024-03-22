@@ -37,7 +37,9 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
               alt="choose public good to fund"
             />
             <p className="ml-2 text-sm">
-              {isLoading ? "Loading" : CHARITY_MAP[selectedCharity].name}
+              {isLoading
+                ? "Loading"
+                : CHARITY_MAP[selectedCharity]?.short_name || "Pending"}
             </p>
           </div>
         </div>
