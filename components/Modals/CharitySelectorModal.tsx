@@ -1,4 +1,5 @@
 import { Charity } from "@prisma/client";
+import { getWalletClient, SignMessageResult } from "@wagmi/core";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
@@ -95,10 +96,28 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
   }
   const selectedCharity = data && data[0].name;
 
-  const updateSelectedCharity = (name: string) =>
+  const signCharityUpdateMessage = async (
+    message: string
+  ): Promise<SignMessageResult | undefined> => {
+    const walletClient = await getWalletClient();
+    const sig = await walletClient?.signMessage({
+      message: message,
+    } as any);
+    return sig;
+  };
+
+  const updateSelectedCharity = async (name: string) => {
+    // backend has to verify the signature and also make sure the timestamp is after the last choice and before the current time
+    const currentDateTimeString = new Date().toISOString();
+    const signingMessage = `I am choosing to donate my GLO yield to ${name} at ${currentDateTimeString}`;
+
+    const signature = await signCharityUpdateMessage(signingMessage);
+    console.log("debug", signingMessage, signature, address);
+
     api()
       .post(`/charity`, [{ charity: name, percent: 100 }])
       .then(() => mutate());
+  };
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2 pb-8">
