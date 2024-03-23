@@ -5,12 +5,14 @@ import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import useSWR from "swr";
+import { Hex } from "viem/types/misc";
 import { useAccount } from "wagmi";
 
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
 import { api, sliceAddress } from "@/lib/utils";
 import { CHARITY_MAP } from "@/lib/utils";
+import { UpdateCharityChoiceBody } from "@/pages/api/charity";
 
 interface Props {
   monthlyYield: number;
@@ -106,16 +108,30 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
     return sig;
   };
 
-  const updateSelectedCharity = async (name: string) => {
+  const updateSelectedCharity = async (charity: Charity) => {
     // backend has to verify the signature and also make sure the timestamp is after the last choice and before the current time
     const currentDateTimeString = new Date().toISOString();
-    const signingMessage = `I am choosing to donate my GLO yield to ${name} at ${currentDateTimeString}`;
+    const signingBody = {
+      timestamp: currentDateTimeString,
+      charity: charity,
+      action: "Updating charity selection",
+    };
 
-    const signature = await signCharityUpdateMessage(signingMessage);
-    console.log("debug", signingMessage, signature, address);
+    const signingBodyString = JSON.stringify(signingBody);
+    const signature = await signCharityUpdateMessage(signingBodyString);
+
+    const apiBody: UpdateCharityChoiceBody = {
+      sigFields: {
+        timestamp: currentDateTimeString,
+        charity: charity,
+        action: "Updating charity selection",
+        sig: signature as Hex,
+      },
+      choices: [{ charity: charity, percent: 100 }],
+    };
 
     api()
-      .post(`/charity`, [{ charity: name, percent: 100 }])
+      .post(`/charity`, apiBody)
       .then(() => mutate());
   };
 
@@ -185,7 +201,7 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
         disabled={
           !locallySelectedCharity || locallySelectedCharity === selectedCharity
         }
-        onClick={() => updateSelectedCharity(locallySelectedCharity as string)}
+        onClick={() => updateSelectedCharity(locallySelectedCharity as Charity)}
       >
         Click on a recipient to vote
       </button>

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "CharityChoice" ALTER COLUMN "sig" DROP NOT NULL,
+ALTER COLUMN "sigMessage" DROP NOT NULL;

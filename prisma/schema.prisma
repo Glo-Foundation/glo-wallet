@@ -46,6 +46,8 @@ model CharityChoice {
   creationDate DateTime  @default(now())
   percent     Int
   choiceNum   Int
+  sig String?
+  sigMessage String?
 
   @@unique([address, choiceNum, name]) // Ensures a charity can only be chosen once per choiceNum and address
 }

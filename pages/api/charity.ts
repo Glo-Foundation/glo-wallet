@@ -1,7 +1,17 @@
 import { Charity } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
+import { createPublicClient, http } from "viem";
+import { mainnet } from "viem/chains";
+import { Address } from "wagmi";
 
 import prisma from "../../lib/prisma";
+
+import type { ByteArray, Hex } from "viem/types/misc";
+
+export const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
 
 async function getLatestCharityChoiceNumForAddress(
   address: string
@@ -48,16 +58,37 @@ async function getCharityChoiceForAddress(address: string) {
 }
 
 async function updateCharityChoicesForAddress(
-  address: string,
-  charityChoices: { charity: Charity; percent: number }[]
+  address: Address,
+  body: UpdateCharityChoiceBody
 ) {
-  const latestChoiceNum = await getLatestCharityChoiceNumForAddress(address);
+  const { choices, sigFields } = body;
+
+  const sigDate = new Date(sigFields.timestamp);
+  const latestCharityChoice = await getCharityChoiceForAddress(address);
+  if (sigDate <= latestCharityChoice[0].creationDate || sigDate > new Date()) {
+    throw new Error("Invalid date signature");
+  }
+
+  const message = JSON.stringify({
+    timestamp: sigFields.timestamp,
+    charity: choices[0].charity,
+    action: "Updating charity selection",
+  });
+
+  const valid = await publicClient.verifyMessage({
+    address: address,
+    message: message,
+    signature: sigFields.sig,
+  });
+
+  if (!valid) {
+    throw new Error("Invalid signature");
+  }
+
+  const latestChoiceNum = latestCharityChoice[0].choiceNum;
   const choiceNum = latestChoiceNum ? latestChoiceNum + 1 : 1;
 
-  const totalPercent = charityChoices.reduce(
-    (acc, curr) => acc + curr.percent,
-    0
-  );
+  const totalPercent = choices.reduce((acc, curr) => acc + curr.percent, 0);
   if (totalPercent !== 100) {
     throw new Error(
       `Total percent must equal 100. Current total: ${totalPercent}`
@@ -66,13 +97,15 @@ async function updateCharityChoicesForAddress(
 
   // todo: make sure to not update if its the same data as the current choices
   const newCharityChoices = await prisma.$transaction([
-    ...charityChoices.map((choice) =>
+    ...choices.map((choice) =>
       prisma.charityChoice.create({
         data: {
           address,
           choiceNum,
           name: choice.charity,
           percent: choice.percent,
+          sig: sigFields.sig,
+          sigMessage: message,
         },
       })
     ),
@@ -81,17 +114,30 @@ async function updateCharityChoicesForAddress(
   return newCharityChoices;
 }
 
+export interface UpdateCharityChoiceBody {
+  sigFields: {
+    timestamp: string;
+    charity: Charity;
+    action: string;
+    sig: Hex;
+  };
+  choices: {
+    charity: Charity;
+    percent: number;
+  }[];
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const address = req.headers["glo-pub-address"] as string;
+  const address = req.headers["glo-pub-address"] as Address;
 
   if (req.method === "POST") {
     // update charity choices for address
     const newCharityChoices = await updateCharityChoicesForAddress(
       address,
-      req.body
+      req.body as UpdateCharityChoiceBody
     );
     return res.status(201).json(newCharityChoices);
   } else {
