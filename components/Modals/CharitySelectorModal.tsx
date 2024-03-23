@@ -80,6 +80,9 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
+  const [locallySelectedCharity, setLocallySelectedCharity] =
+    useState<Charity | null>(null);
+
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
@@ -145,14 +148,26 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
               name={charity.name}
               description={charity.description}
               type={charity.type}
-              selected={selectedCharity === key}
-              selectCharity={() => updateSelectedCharity(key)}
+              selected={
+                locallySelectedCharity
+                  ? locallySelectedCharity === key
+                  : selectedCharity === key
+              }
+              selectCharity={() =>
+                setLocallySelectedCharity(Charity[key as keyof typeof Charity])
+              }
             />
           );
         })}
       </section>
 
-      <button className="secondary-button h-[52px] mx-2 mt-4">
+      <button
+        className="secondary-button h-[52px] mx-2 mt-4"
+        disabled={
+          !locallySelectedCharity || locallySelectedCharity === selectedCharity
+        }
+        onClick={() => updateSelectedCharity(locallySelectedCharity as string)}
+      >
         Click on a recipient to vote
       </button>
     </div>
