@@ -38,7 +38,7 @@ async function getCharityChoiceForAddress(address: string) {
       data: {
         address: address,
         choiceNum: 1,
-        name: Charity.GIVE_DIRECTLY,
+        name: Charity.EXTREME_POVERTY,
         percent: 100,
       },
     });

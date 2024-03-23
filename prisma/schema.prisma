@@ -32,10 +32,11 @@ model IdrissInvite {
 }
 
 enum Charity {
-  GIVE_DIRECTLY
-  ONE_TREE_PLANTED
-  GITCOIN_GRANTS
-  OPTIMISM_RETROPGF
+  EXTREME_POVERTY
+  OPEN_SOURCE
+  CLIMATE
+  REFUGEE_CRISIS
+  SAVE_LIVES
 }
 
 model CharityChoice {
