@@ -8,6 +8,8 @@ import {
   celo,
   optimism,
   optimismSepolia,
+  arbitrum,
+  arbitrumSepolia,
 } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
@@ -40,6 +42,10 @@ export default function AddToWallet() {
       case optimism.id:
       case optimismSepolia.id: {
         return "/optimism-logo.svg";
+      }
+      case arbitrum.id:
+      case arbitrumSepolia.id: {
+        return "/arbitrum-logo.svg";
       }
       default: {
         return "/question-mark.svg";
