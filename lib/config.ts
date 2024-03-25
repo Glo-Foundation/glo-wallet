@@ -7,6 +7,7 @@ import {
   base,
   celoAlfajores,
   optimism,
+  optimismSepolia,
   arbitrum,
 } from "viem/chains";
 
@@ -21,6 +22,7 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [base.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   [arbitrum.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   // Testnets
+  [optimismSepolia.id]: "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6", // this is actually USDC
   [polygonMumbai.id]: "0xbd05d3B38c400d95D52c2B8fF124DF511AB7EBfc",
   [goerli.id]: "0x2c872de03E91D2ee463308Cb5dA4Ed9e41bBB355",
   [celoAlfajores.id]: "0x6054aC9c220070F8c3093730d64E701ad23077C5",
@@ -71,6 +73,8 @@ const chainRPCUrl: { [id: number]: string } = {
   [polygonMumbai.id]: process.env.NEXT_PUBLIC_MUMBAI_RPC_URL as string,
   [goerli.id]: process.env.NEXT_PUBLIC_GOERLI_RPC_URL as string,
   [celoAlfajores.id]: process.env.NEXT_PUBLIC_ALFAJORES_RPC_URL as string,
+  [optimismSepolia.id]: process.env
+    .NEXT_PUBLIC_OPTIMISM_SEPOLIA_RPC_URL as string,
 };
 
 export const getChainRPCUrl = (chainId?: number) => {
@@ -109,6 +113,10 @@ export const getChainExplorerUrl = (chainId?: number) => {
       return "https://alfajores.celoscan.io";
     case goerli.id:
       return "https://goerli.etherscan.io";
+    case optimism.id:
+      return "https://optimistic.etherscan.io";
+    case optimismSepolia.id:
+      return "https://sepolia-optimism.etherscan.io";
     case mainnet.id:
     default:
       return "https://etherscan.io";

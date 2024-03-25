@@ -6,6 +6,8 @@ import {
   goerli,
   celoAlfajores,
   celo,
+  optimism,
+  optimismSepolia,
 } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -35,6 +37,10 @@ export default function NetworkSwitcher() {
       case celo.id:
       case celoAlfajores.id: {
         return "/celo-square-logo.svg";
+      }
+      case optimism.id:
+      case optimismSepolia.id: {
+        return "/optimism-logo.svg";
       }
       default: {
         return "/question-mark.svg";

@@ -6,6 +6,8 @@ import {
   goerli,
   celoAlfajores,
   celo,
+  optimism,
+  optimismSepolia,
 } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
@@ -34,6 +36,10 @@ export default function AddToWallet() {
       case celo.id:
       case celoAlfajores.id: {
         return "/celo-square-logo.svg";
+      }
+      case optimism.id:
+      case optimismSepolia.id: {
+        return "/optimism-logo.svg";
       }
       default: {
         return "/question-mark.svg";

@@ -40,7 +40,7 @@ const config = createConfig({
       options: {
         connect: {
           app: "Glo wallet",
-          networkId: defaultChainId(),
+          networkId: 1,
           askForEmail: true,
           settings: {
             theme: "light",

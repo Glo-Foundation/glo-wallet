@@ -4,6 +4,8 @@ import {
   celoAlfajores,
   goerli,
   mainnet,
+  optimism,
+  optimismSepolia,
   polygon,
   polygonMumbai,
 } from "@wagmi/core/chains";
@@ -148,6 +150,12 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
     case polygonMumbai.id: {
       return "0xF493Af87835D243058103006e829c72f3d34b891";
     }
+    case optimism.id: {
+      return "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
+    }
+    case optimismSepolia.id: {
+      return "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6";
+    }
     case polygon.id:
     default: {
       return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
@@ -189,6 +197,16 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     case celoAlfajores.id: {
       outputCurrency = getSmartContractAddress(celoAlfajores.id);
       swapChain = dex === "Uniswap" ? "celo_alfajores" : "celo";
+      break;
+    }
+    case optimism.id: {
+      outputCurrency = getSmartContractAddress(optimism.id);
+      swapChain = "optimism";
+      break;
+    }
+    case optimismSepolia.id: {
+      outputCurrency = getSmartContractAddress(optimismSepolia.id);
+      swapChain = "optimism_sepolia";
       break;
     }
     case polygonMumbai.id: {
