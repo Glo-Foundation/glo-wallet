@@ -98,6 +98,9 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
   }
   const selectedCharity = data && data[0].name;
 
+  const disableSubmit =
+    !locallySelectedCharity || locallySelectedCharity === selectedCharity;
+
   const signCharityUpdateMessage = async (
     message: string
   ): Promise<SignMessageResult | undefined> => {
@@ -197,13 +200,15 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
       </section>
 
       <button
-        className="secondary-button h-[52px] mx-2 mt-4"
-        disabled={
-          !locallySelectedCharity || locallySelectedCharity === selectedCharity
+        className={
+          disableSubmit
+            ? "secondary-button h-[52px] mx-2 mt-4"
+            : "primary-button h-[52px] mx-2 mt-4"
         }
+        disabled={disableSubmit}
         onClick={() => updateSelectedCharity(locallySelectedCharity as Charity)}
       >
-        Click on a recipient to vote
+        {disableSubmit ? "Click on a recipient to choose" : "Submit choice"}
       </button>
     </div>
   );
