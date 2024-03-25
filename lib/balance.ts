@@ -52,7 +52,7 @@ export const getBalances = async (address: string) => {
       .add(ethereumBalance)
       .add(celoBalance)
       .add(arbitrumBalance)
-      .add(sepoliaBalance)
+      .add(optimismBalance)
       .div(decimals)
       .toNumber();
   } else {
