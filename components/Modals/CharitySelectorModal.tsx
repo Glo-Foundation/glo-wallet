@@ -135,7 +135,8 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
 
     api()
       .post(`/charity`, apiBody)
-      .then(() => mutate());
+      .then(() => mutate())
+      .then(() => closeModal());
   };
 
   return (
