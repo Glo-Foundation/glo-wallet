@@ -10,9 +10,9 @@ import { useAccount } from "wagmi";
 
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
-import { api, sliceAddress } from "@/lib/utils";
-import { CHARITY_MAP } from "@/lib/utils";
+import { api, sliceAddress, CHARITY_MAP } from "@/lib/utils";
 import { UpdateCharityChoiceBody } from "@/pages/api/charity";
+import { getNiceNumber } from "@/utils";
 
 interface Props {
   monthlyYield: number;
@@ -175,7 +175,7 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
           width={20}
         />
         <p className="text-sm font-bold">
-          donate up to ~${monthlyYield} this month to
+          donate up to ~${getNiceNumber(monthlyYield)} this month to
         </p>
       </section>
       <section>
