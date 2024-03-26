@@ -150,7 +150,7 @@ export const CHARITY_MAP: Record<string, any> = {
     type: "",
   },
   ["CLIMATE"]: {
-    name: "Cure the Climate",
+    name: "Combat climate change",
     short_name: "Climate",
     iconPath: "/giving-green-logo.png",
     description:
