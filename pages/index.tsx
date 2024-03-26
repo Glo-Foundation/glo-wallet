@@ -178,6 +178,7 @@ export default function Home() {
 
         const idrissName = await getIdrissName(address!);
         setIdrissName(idrissName);
+        localStorage.setItem("loggedIn", "true");
       });
     } else {
       Cookies.remove("glo-email");
@@ -188,6 +189,7 @@ export default function Home() {
         openModal(<UserAuthModal />, "bg-transparent");
       }
       localStorage.setItem("showedLogin", "true");
+      localStorage.setItem("loggedIn", "false");
     }
   }, [isConnected]);
 

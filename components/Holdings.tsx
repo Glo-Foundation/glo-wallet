@@ -141,13 +141,15 @@ export default function Holdings({ glo, setGlo, yearlyYield }: Props) {
           <div className="h-2.5 w-2.5 bg-white -rotate-45 transform origin-top-left translate-x-36"></div>
         </div>
         <div className="flex flex-col pt-2 space-y-2">
-          <div className="font-normal text-base">To create basic income of</div>
+          <div className="font-normal text-base">
+            To generate charitable donations up to
+          </div>
           <div className="flex flex-row space-x-1 font-semibold items-baseline">
             <div
               data-testid="basic-income-created"
               className="text-[2.625rem] leading-[2.625rem] break-all font-neuehaasgrotesk"
             >
-              {yearlyYield === 0 ? "$0" : `$0-$${formattedYearlyYield}`}
+              {yearlyYield === 0 ? "$0" : `$${formattedYearlyYield}`}
             </div>
             <div className="text-base">/ year</div>
           </div>

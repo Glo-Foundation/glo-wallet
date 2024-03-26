@@ -184,7 +184,9 @@ export default function Impact({
               <div className="h-4 w-4 bg-white -rotate-45 transform origin-top-left translate-x-32"></div>
             </div>
             <div className="flex flex-col w-full justify-between items-start space-y-2">
-              <span className="my-2">Creating basic income of</span>
+              <span className="my-2">
+                Generating charitable donations up to
+              </span>
               <div
                 className="text-[2.625rem] leading-[2.625rem] break-all font-neuehaasgrotesk"
                 data-testid="yearlyYieldFormatted"
@@ -206,14 +208,14 @@ export default function Impact({
               </span>
             </div>
           </div>
-          <DetailedEnoughToBuy
+          {/*<DetailedEnoughToBuy
             yearlyYield={yearlyYield}
             noImpactCopyText="Nothing."
-          />
+          />*/}
         </div>
         <div className="flex flex-col items-center justify-center">
           <div className="font-normal leading-normal mt-3 mb-2">
-            Help end extreme poverty
+            Fund public goods by hodling Glo
           </div>
           <button
             className="primary-button px-6"
@@ -313,9 +315,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   // meta tags
   const ogTitle =
-    "Make an impact with Glo - the stablecoin that lifts people out of extreme poverty.";
+    "Make an impact with Glo - the stablecoin that funds public goods and charities.";
   const ogDescription =
-    "Glo Dollar is a fully backed stablecoin that redistributes all profits as basic income to people in extreme poverty. Let's end extreme poverty. Join the movement.";
+    "Glo Dollar is a fully backed stablecoin that redistributes all profits as donations to charitable causes. Fund what matters at zero cost to you. Join the movement.";
   const ogUrl = `${process.env.VERCEL_OG_URL}${pathname}`;
   const ogImage = `${process.env.VERCEL_OG_URL}/api/og/${balance}/${yearlyYield}.png`;
 

@@ -64,7 +64,6 @@ export const DEFAULT_CTAS: CTA[] = [
   "TWEEET_IMPACT",
   "JOIN_PROGRAM",
   "BUY_GLO_MERCH",
-  "REGISTER_IDRISS",
 ].map((cta) => ({ type: cta } as CTA));
 
 export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
@@ -132,4 +131,52 @@ export const formatBalance = (balance: {
     style: "currency",
     currency: "USD",
   }).format(formatted || 0);
+};
+
+export const CHARITY_MAP: Record<string, any> = {
+  ["EXTREME_POVERTY"]: {
+    name: "Fight Extreme Poverty",
+    short_name: "Extreme poverty",
+    iconPath: "/give-directly-logo.jpeg",
+    description: "Funds basic income programs for people in extreme poverty",
+    type: "default",
+  },
+  ["OPEN_SOURCE"]: {
+    name: "Strengthen Web3 Open Source",
+    short_name: "Open Source",
+    iconPath: "/gitcoin-grants-logo.jpeg",
+    description:
+      "Supports NGOs that further the cause of open source software in and outside Web3",
+    type: "",
+  },
+  ["CLIMATE"]: {
+    name: "Cure the Climate",
+    short_name: "Climate",
+    iconPath: "/giving-green-logo.png",
+    description:
+      "We'll donate to best in class charities that work to decarbonize the planet",
+    type: "",
+  },
+  ["SAVE_LIVES"]: {
+    name: "Save Lives",
+    short_name: "Saving lives",
+    iconPath: "/givewell-logo.jpeg",
+    description:
+      "Funds charities that save or improve lives the most per dollar donated",
+    type: "",
+  },
+  // ["REFUGEE_CRISIS"]: {
+  //   name: "Save Refugees' Lives",
+  //   short_name: "Refugees",
+  //   iconPath: "/give-directly-logo.jpeg",
+  //   description: "Funds basic income programs for people in extreme poverty",
+  //   type: "",
+  // },
+  // ["ANIMAL_LIVES"]: {
+  //   name: "Improve Animal Welfare",
+  //   short_name: "Animals",
+  //   iconPath: "/give-directly-logo.jpeg",
+  //   description: "Funds basic income programs for people in extreme poverty",
+  //   type: "",
+  // }
 };

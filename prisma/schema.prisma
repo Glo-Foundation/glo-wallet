@@ -30,3 +30,25 @@ model CTAs {
 model IdrissInvite {
   address   String   @id @unique
 }
+
+enum Charity {
+  EXTREME_POVERTY
+  OPEN_SOURCE
+  CLIMATE
+  REFUGEE_CRISIS
+  SAVE_LIVES
+}
+
+model CharityChoice {
+  id          Int       @id @default(autoincrement())
+  name        Charity
+  address     String
+  creationDate DateTime  @default(now())
+  percent     Int
+  choiceNum   Int
+  sig String?
+  sigMessage String?
+
+  @@unique([address, choiceNum, name]) // Ensures a charity can only be chosen once per choiceNum and address
+}
+

@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { ModalContext } from "@/lib/context";
 import { customFormatBalance } from "@/utils";
 
+import CharitySelector from "./CharitySelector";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
 import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
@@ -69,7 +70,7 @@ export default function Balance({
     <div className="bg-white rounded-[20px] pt-4">
       <div className="flex flex-col space-y-2 p-4">
         <div className="self-center text-sm text-pine-700/90 mb-1.5">
-          Balance
+          You own
         </div>
         <div
           className="flex flex-row font-semibold justify-center cursor-pointer"
@@ -146,12 +147,37 @@ export default function Balance({
         )}
       </div>
 
-      <ImpactInset
-        openModal={openModal}
-        yearlyYield={totalBalanceFormatted.yearlyYield}
-        yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldFormatted}
-        totalBalance={totalBalance}
-      />
+      <div className="flex flex-col">
+        <div className="self-center text-sm text-pine-700/90 mb-1.5">
+          Generating up to
+        </div>
+      </div>
+
+      <div className="flex flex-row justify-center">
+        <ImpactInset
+          openModal={openModal}
+          yearlyYield={totalBalanceFormatted.yearlyYield}
+          yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldUSFormatted}
+          totalBalance={totalBalance}
+        />
+        {totalBalance && totalBalance.value > 0 && (
+          <>
+            <div className="self-center text-sm text-pine-700/90 mb-1.5 mx-1">
+              for
+            </div>
+            <CharitySelector
+              openModal={openModal}
+              yearlyYield={totalBalanceFormatted.yearlyYield}
+            />
+          </>
+        )}
+      </div>
+
+      <div className="flex flex-col">
+        <div className="self-center text-sm text-pine-700/90 mb-1.5">
+          per year
+        </div>
+      </div>
 
       <div
         className={`${

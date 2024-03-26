@@ -25,7 +25,7 @@ export default function ImpactInset({
   return (
     <div className="m-1 relative z-0 flex justify-center">
       <button
-        className={`flex flex-col ${bgColorClass} text-impact-fg rounded-[36px] h-[32px] mb-3 px-5 py-7 w-[95%] font-normal items-baseline`}
+        className={`flex flex-col ${bgColorClass} border-2 border-cyan-600 text-impact-fg rounded-[36px] h-[32px] px-2 py-5 font-normal items-baseline`}
         onClick={() =>
           openModal(
             <BuyGloModal
@@ -36,10 +36,7 @@ export default function ImpactInset({
           )
         }
       >
-        <div className="">
-          <div className="fixed h-[13px] w-[13px] bg-white -rotate-45 transform origin-top-left translate-x-[124px] -translate-y-4"></div>
-        </div>
-        <div className="flex w-full justify-between items-center space-y-2">
+        <div className="flex w-full justify-center items-center space-y-2">
           <motion.div
             className="flex items-center"
             initial={{ opacity: 0 }}
@@ -47,9 +44,8 @@ export default function ImpactInset({
             transition={{ duration: 1.5 }}
           >
             <GloAnimated totalBalance={totalBalance} />
-            <p className="ml-2">{yearlyYieldFormatted} / year</p>
+            <p className="ml-2 text-sm">{yearlyYieldFormatted}</p>
           </motion.div>
-          <EnoughToBuy yearlyYield={yearlyYield} />
         </div>
       </button>
     </div>
