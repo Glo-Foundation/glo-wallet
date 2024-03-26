@@ -4,8 +4,12 @@ import {
   celoAlfajores,
   goerli,
   mainnet,
+  optimism,
+  optimismSepolia,
   polygon,
   polygonMumbai,
+  arbitrum,
+  arbitrumSepolia,
 } from "@wagmi/core/chains";
 import { BigNumber, ethers } from "ethers";
 
@@ -148,6 +152,18 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
     case polygonMumbai.id: {
       return "0xF493Af87835D243058103006e829c72f3d34b891";
     }
+    case optimism.id: {
+      return "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
+    }
+    case optimismSepolia.id: {
+      return "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6";
+    }
+    case arbitrum.id: {
+      return "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
+    }
+    case arbitrumSepolia.id: {
+      return "0xf3C3351D6Bd0098EEb33ca8f830FAf2a141Ea2E1";
+    }
     case polygon.id:
     default: {
       return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
@@ -189,6 +205,26 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     case celoAlfajores.id: {
       outputCurrency = getSmartContractAddress(celoAlfajores.id);
       swapChain = dex === "Uniswap" ? "celo_alfajores" : "celo";
+      break;
+    }
+    case optimism.id: {
+      outputCurrency = getSmartContractAddress(optimism.id);
+      swapChain = "optimism";
+      break;
+    }
+    case optimismSepolia.id: {
+      outputCurrency = getSmartContractAddress(optimismSepolia.id);
+      swapChain = "optimism_sepolia";
+      break;
+    }
+    case arbitrum.id: {
+      outputCurrency = getSmartContractAddress(arbitrum.id);
+      swapChain = "arbitrum";
+      break;
+    }
+    case arbitrumSepolia.id: {
+      outputCurrency = getSmartContractAddress(arbitrumSepolia.id);
+      swapChain = "arbitrum_sepolia";
       break;
     }
     case polygonMumbai.id: {
