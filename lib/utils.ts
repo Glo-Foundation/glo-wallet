@@ -142,11 +142,10 @@ export const CHARITY_MAP: Record<string, any> = {
     type: "default",
   },
   ["OPEN_SOURCE"]: {
-    name: "Strengthen Web3 Open Source",
-    short_name: "Open Source",
+    name: "Web3 Public Goods",
+    short_name: "Public Goods",
     iconPath: "/gitcoin-grants-logo.jpeg",
-    description:
-      "Supports NGOs that further the cause of open source software in and outside Web3",
+    description: "Supports NGOs that further the cause of Web3 public goods",
     type: "",
   },
   ["CLIMATE"]: {
