@@ -135,35 +135,35 @@ export const formatBalance = (balance: {
 
 export const CHARITY_MAP: Record<string, any> = {
   ["EXTREME_POVERTY"]: {
-    name: "Fight Extreme Poverty",
+    name: "Fight extreme poverty",
     short_name: "Extreme poverty",
     iconPath: "/give-directly-logo.jpeg",
     description: "Funds basic income programs for people in extreme poverty",
     type: "default",
   },
   ["OPEN_SOURCE"]: {
-    name: "Web3 Public Goods",
+    name: "Web3 public goods",
     short_name: "Public Goods",
     iconPath: "/gitcoin-grants-logo.jpeg",
     description: "Supports NGOs that further the cause of Web3 public goods",
     type: "",
   },
   ["CLIMATE"]: {
-    name: "Combat Climate Change",
+    name: "Combat climate change",
     short_name: "Climate",
     iconPath: "/giving-green-logo.png",
     description:
-      "We'll donate to best in class charities that work to decarbonize the planet",
+      "We'll donate to best-in-class charities that work to decarbonize the planet",
     type: "",
   },
-  ["SAVE_LIVES"]: {
-    name: "Save Lives",
-    short_name: "Saving lives",
-    iconPath: "/givewell-logo.jpeg",
-    description:
-      "Funds charities that save or improve lives the most per dollar donated",
-    type: "",
-  },
+  // ["SAVE_LIVES"]: {
+  //   name: "Save Lives",
+  //   short_name: "Saving lives",
+  //   iconPath: "/givewell-logo.jpeg",
+  //   description:
+  //     "Funds charities that save or improve lives the most per dollar donated",
+  //   type: "",
+  // },
   // ["REFUGEE_CRISIS"]: {
   //   name: "Save Refugees' Lives",
   //   short_name: "Refugees",
