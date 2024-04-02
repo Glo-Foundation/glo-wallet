@@ -1,7 +1,7 @@
 import { Charity } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
-import { mainnet } from "viem/chains";
+import { polygon } from "viem/chains";
 import { Address } from "wagmi";
 
 import prisma from "../../lib/prisma";
@@ -9,7 +9,7 @@ import prisma from "../../lib/prisma";
 import type { ByteArray, Hex } from "viem/types/misc";
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
+  chain: polygon,
   transport: http(),
 });
 
