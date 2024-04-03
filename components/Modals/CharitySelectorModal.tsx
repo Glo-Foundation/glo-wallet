@@ -200,6 +200,10 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
         })}
       </section>
 
+      <a className="self-center" href="https://t.me/bramglo">
+        Suggest another charity
+      </a>
+
       <button
         className={
           disableSubmit
