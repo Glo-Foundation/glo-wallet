@@ -58,7 +58,7 @@ async function getCharityChoiceForAddress(address: string) {
 }
 
 async function updateCharityChoicesForAddress(
-  address: Address,
+  address: string,
   body: UpdateCharityChoiceBody
 ) {
   const { choices, sigFields } = body;
@@ -75,14 +75,16 @@ async function updateCharityChoicesForAddress(
     action: "Updating charity selection",
   });
 
-  const valid = await publicClient.verifyMessage({
-    address: address,
-    message: message,
-    signature: sigFields.sig,
-  });
+  if (address.slice(0, 2) === "0x") {
+    const valid = await publicClient.verifyMessage({
+      address: address,
+      message: message,
+      signature: sigFields.sig,
+    });
 
-  if (!valid) {
-    throw new Error("Invalid signature");
+    if (!valid) {
+      throw new Error("Invalid signature");
+    }
   }
 
   const latestChoiceNum = latestCharityChoice[0].choiceNum;
@@ -131,10 +133,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const address = req.headers["glo-pub-address"] as Address;
+  const address = req.headers["glo-pub-address"] as string;
 
   if (req.method === "POST") {
     // update charity choices for address
+
     const newCharityChoices = await updateCharityChoicesForAddress(
       address,
       req.body as UpdateCharityChoiceBody
