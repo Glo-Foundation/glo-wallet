@@ -58,7 +58,7 @@ async function getCharityChoiceForAddress(address: string) {
 }
 
 async function updateCharityChoicesForAddress(
-  address: string,
+  address: Address,
   body: UpdateCharityChoiceBody
 ) {
   const { choices, sigFields } = body;
@@ -133,7 +133,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const address = req.headers["glo-pub-address"] as string;
+  const address = req.headers["glo-pub-address"] as Address;
 
   if (req.method === "POST") {
     // update charity choices for address
