@@ -60,7 +60,7 @@ const config = createConfig({
         showQrModal: true,
         qrModalOptions: {
           themeVariables: {
-            "--wcm-z-index": 11,
+            "--w3m-z-index": "11",
           },
           // explorerRecommendedWalletIds: ['d01c7758d741b363e637a817a09bcf579feae4db9f5bb16f599fdd1f66e2f974']
         },
