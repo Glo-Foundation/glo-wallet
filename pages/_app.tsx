@@ -58,6 +58,12 @@ const config = createConfig({
       options: {
         projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
         showQrModal: true,
+        qrModalOptions: {
+          themeVariables: {
+            "--wcm-z-index": 11,
+          },
+          // explorerRecommendedWalletIds: ['d01c7758d741b363e637a817a09bcf579feae4db9f5bb16f599fdd1f66e2f974']
+        },
       },
     }),
   ],
@@ -148,12 +154,6 @@ export default function App({ Component, pageProps }: AppProps) {
         ))}
       </Head>
       <Analytics />
-      {!router.pathname.includes("/impact") && (
-        <Script
-          src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
-          async={true}
-        />
-      )}
       <Script
         type="module"
         async={true}
@@ -180,6 +180,12 @@ export default function App({ Component, pageProps }: AppProps) {
           </WagmiConfig>
         )}
       </main>
+      {!router.pathname.includes("/impact") && (
+        <Script
+          src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
+          async={true}
+        />
+      )}
     </>
   );
 }
