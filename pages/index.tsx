@@ -147,8 +147,10 @@ export default function Home() {
   }, [switchNetwork]);
 
   useEffect(() => {
-    if (isConnected) {
-      const key = `glo-wallet-${address}`;
+    if (isConnected || isFreighterConnected) {
+      const key = `glo-wallet-${
+        isFreighterConnected ? freighterAddress : address
+      }`;
 
       const sign = async () => {
         return "public-signature";
@@ -163,7 +165,12 @@ export default function Home() {
       };
 
       sign().then(async (signature: string) => {
-        await initApi(address!, chain!.id, signature);
+        if (isConnected) {
+          await initApi(address!, chain!.id, signature);
+        } else if (isFreighterConnected) {
+          await initApi(freighterAddress!, 0, signature);
+        }
+
         const email = Cookies.get("glo-email") || null;
 
         const { data: userId } = await api().post<string>(`/sign-in`, {
@@ -176,8 +183,10 @@ export default function Home() {
           .get<CTA[]>(`/ctas`)
           .then((res) => setCTAs(res.data));
 
-        const idrissName = await getIdrissName(address!);
-        setIdrissName(idrissName);
+        if (isConnected) {
+          const idrissName = await getIdrissName(address!);
+          setIdrissName(idrissName);
+        }
         localStorage.setItem("loggedIn", "true");
       });
     } else {

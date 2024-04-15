@@ -131,4 +131,8 @@ body {
   .invisible-link {
     @apply cursor-pointer !important;
   }
+
+  #Smallchat {
+    z-index: -10;
+  }
 }

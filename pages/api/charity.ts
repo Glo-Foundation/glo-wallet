@@ -1,7 +1,7 @@
 import { Charity } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
-import { mainnet } from "viem/chains";
+import { polygon } from "viem/chains";
 import { Address } from "wagmi";
 
 import prisma from "../../lib/prisma";
@@ -9,7 +9,7 @@ import prisma from "../../lib/prisma";
 import type { ByteArray, Hex } from "viem/types/misc";
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
+  chain: polygon,
   transport: http(),
 });
 
@@ -75,14 +75,16 @@ async function updateCharityChoicesForAddress(
     action: "Updating charity selection",
   });
 
-  const valid = await publicClient.verifyMessage({
-    address: address,
-    message: message,
-    signature: sigFields.sig,
-  });
+  if (address.slice(0, 2) === "0x") {
+    const valid = await publicClient.verifyMessage({
+      address: address,
+      message: message,
+      signature: sigFields.sig,
+    });
 
-  if (!valid) {
-    throw new Error("Invalid signature");
+    if (!valid) {
+      throw new Error("Invalid signature");
+    }
   }
 
   const latestChoiceNum = latestCharityChoice[0].choiceNum;
@@ -135,6 +137,7 @@ export default async function handler(
 
   if (req.method === "POST") {
     // update charity choices for address
+
     const newCharityChoices = await updateCharityChoicesForAddress(
       address,
       req.body as UpdateCharityChoiceBody
