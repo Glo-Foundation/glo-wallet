@@ -24,7 +24,7 @@ export default async function handler(
     },
   });
 
-  const possibleFundingChoices = {};
+  const possibleFundingChoices: any = {};
 
   possibleFundingChoicesData.forEach((fundingChoice) => {
     possibleFundingChoices[fundingChoice.name] = 0;
