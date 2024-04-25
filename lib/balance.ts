@@ -7,6 +7,10 @@ import {
   mainnet,
   polygon,
   polygonMumbai,
+  optimism,
+  optimismSepolia,
+  arbitrum,
+  arbitrumSepolia,
 } from "@wagmi/core/chains";
 import axios from "axios";
 import { BigNumber } from "ethers";
@@ -16,21 +20,39 @@ import { getBalance } from "@/utils";
 
 export const getBalances = async (address: string) => {
   let balance = 0;
-  let [polygonBalance, ethereumBalance, celoBalance] = [
+  let [
+    polygonBalance,
+    ethereumBalance,
+    celoBalance,
+    optimismBalance,
+    arbitrumBalance,
+  ] = [
+    BigNumber.from("0"),
+    BigNumber.from("0"),
     BigNumber.from("0"),
     BigNumber.from("0"),
     BigNumber.from("0"),
   ];
   if (address.slice(0, 4).includes("0x")) {
-    [polygonBalance, ethereumBalance, celoBalance] = await Promise.all([
+    [
+      polygonBalance,
+      ethereumBalance,
+      celoBalance,
+      optimismBalance,
+      arbitrumBalance,
+    ] = await Promise.all([
       getChainBalance(address, isProd() ? polygon : polygonMumbai),
       getChainBalance(address, isProd() ? mainnet : goerli),
       getChainBalance(address, isProd() ? celo : celoAlfajores),
+      getChainBalance(address, isProd() ? optimism : optimismSepolia),
+      getChainBalance(address, isProd() ? arbitrum : arbitrumSepolia),
     ]);
     const decimals = BigInt(10 ** 18);
     balance = polygonBalance
       .add(ethereumBalance)
       .add(celoBalance)
+      .add(arbitrumBalance)
+      .add(optimismBalance)
       .div(decimals)
       .toNumber();
   } else {
@@ -44,6 +66,8 @@ export const getBalances = async (address: string) => {
     polygonBalance,
     ethereumBalance,
     celoBalance,
+    optimismBalance,
+    arbitrumBalance,
   };
 };
 

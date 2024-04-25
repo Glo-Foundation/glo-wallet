@@ -3,9 +3,13 @@ import {
   mainnet,
   polygon,
   celo,
+  optimism,
+  arbitrum,
   goerli,
   polygonMumbai,
   celoAlfajores,
+  optimismSepolia,
+  arbitrumSepolia,
 } from "@wagmi/core/chains";
 import axios from "axios";
 import { BigNumber } from "ethers";
@@ -76,10 +80,30 @@ export default function Home() {
     chainId: celoId,
   });
 
+  const optimismId = isProd() ? optimism.id : optimismSepolia.id;
+  const { data: optimismBalance } = useBalance({
+    address,
+    token: getSmartContractAddress(optimismId),
+    watch: true,
+    cacheTime: 5_000,
+    chainId: optimismId,
+  });
+
+  const arbitrumId = isProd() ? arbitrum.id : arbitrumSepolia.id;
+  const { data: arbitrumBalance } = useBalance({
+    address,
+    token: getSmartContractAddress(arbitrumId),
+    watch: true,
+    cacheTime: 5_000,
+    chainId: arbitrumId,
+  });
+
   const totalBalance = getTotalGloBalance([
     ethereumBalance,
     polygonBalance,
     celoBalance,
+    optimismBalance,
+    arbitrumBalance,
     stellarBalance,
   ]);
 
@@ -251,6 +275,8 @@ export default function Home() {
             polygonBalance={polygonBalance}
             ethereumBalance={ethereumBalance}
             celoBalance={celoBalance}
+            optimismBalance={optimismBalance}
+            arbitrumBalance={arbitrumBalance}
             totalBalance={totalBalance}
             usdcBalance={usdcBalance.data}
           />

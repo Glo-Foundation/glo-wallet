@@ -16,6 +16,8 @@ type Props = {
   polygonBalance: FetchBalanceResult | undefined;
   ethereumBalance: FetchBalanceResult | undefined;
   celoBalance: FetchBalanceResult | undefined;
+  optimismBalance: FetchBalanceResult | undefined;
+  arbitrumBalance: FetchBalanceResult | undefined;
   totalBalance: FetchBalanceResult | undefined;
   usdcBalance: FetchBalanceResult | undefined;
   stellarBalance: FetchBalanceResult | undefined;
@@ -25,6 +27,8 @@ export default function Balance({
   polygonBalance,
   ethereumBalance,
   celoBalance,
+  optimismBalance,
+  arbitrumBalance,
   totalBalance,
   usdcBalance,
   stellarBalance,
@@ -36,6 +40,8 @@ export default function Balance({
   const polygonBalanceFormatted = customFormatBalance(polygonBalance);
   const ethereumBalanceFormatted = customFormatBalance(ethereumBalance);
   const celoBalanceFormatted = customFormatBalance(celoBalance);
+  const optimismBalanceFormatted = customFormatBalance(optimismBalance);
+  const arbitrumBalanceFormatted = customFormatBalance(arbitrumBalance);
   const totalBalanceFormatted = customFormatBalance(totalBalance);
   const usdcBalanceFormatted = customFormatBalance(usdcBalance);
   const stellarBalanceformatted = customFormatBalance(stellarBalance);
@@ -64,6 +70,16 @@ export default function Balance({
       logo: "/celo-square-logo.svg",
       balance: celoBalanceFormatted,
     },
+    {
+      name: "Optimism",
+      logo: "/optimism-logo.svg",
+      balance: optimismBalanceFormatted,
+    },
+    {
+      name: "Arbitrum",
+      logo: "/arbitrum-logo.svg",
+      balance: arbitrumBalanceFormatted,
+    },
   ];
 
   return (
@@ -90,7 +106,7 @@ export default function Balance({
               </div>
             </div>
             {showBalanceDropdown && (
-              <div className="absolute top-10 z-10 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
+              <div className="absolute top-10 z-10 mt-1 w-[280px] h-[200px] bg-white border-2 border-pine-400/90 rounded-lg">
                 <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
 
                 <div className="flex flex-col justify-center items-center">

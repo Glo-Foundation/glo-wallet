@@ -6,6 +6,10 @@ import {
   polygonMumbai,
   celo,
   celoAlfajores,
+  optimism,
+  optimismSepolia,
+  arbitrum,
+  arbitrumSepolia,
 } from "@wagmi/core/chains";
 import axios, { AxiosInstance } from "axios";
 import { BigNumber, ethers } from "ethers";
@@ -54,7 +58,9 @@ export const getChains = (): Chain[] => {
     return [polygon] as Chain[];
   }
   return (
-    isProd() ? [polygon, mainnet, celo] : [polygonMumbai, goerli, celoAlfajores]
+    isProd()
+      ? [polygon, mainnet, celo, optimism, arbitrum]
+      : [polygonMumbai, goerli, celoAlfajores, optimismSepolia, arbitrumSepolia]
   ) as Chain[];
 };
 
@@ -81,8 +87,8 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 
 export const getAllowedChains = (): Chain[] => {
   return isProd()
-    ? [polygon, mainnet, celo]
-    : [polygonMumbai, goerli, celoAlfajores];
+    ? [polygon, mainnet, celo, optimism, arbitrum]
+    : [polygonMumbai, goerli, celoAlfajores, optimismSepolia, arbitrumSepolia];
 };
 
 export const getStellarMarketCap = async (): Promise<number> => {
