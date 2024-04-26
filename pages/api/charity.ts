@@ -2,16 +2,11 @@ import { Charity } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
-import { Address } from "wagmi";
+import { Address, Chain } from "wagmi";
 
 import prisma from "../../lib/prisma";
 
 import type { ByteArray, Hex } from "viem/types/misc";
-
-export const publicClient = createPublicClient({
-  chain: polygon,
-  transport: http(),
-});
 
 async function getLatestCharityChoiceNumForAddress(
   address: string
@@ -61,7 +56,12 @@ async function updateCharityChoicesForAddress(
   address: Address,
   body: UpdateCharityChoiceBody
 ) {
-  const { choices, sigFields } = body;
+  const { choices, sigFields, chain } = body;
+
+  const publicClient = createPublicClient({
+    chain: chain,
+    transport: http(),
+  });
 
   const sigDate = new Date(sigFields.timestamp);
   const latestCharityChoice = await getCharityChoiceForAddress(address);
@@ -127,6 +127,7 @@ export interface UpdateCharityChoiceBody {
     charity: Charity;
     percent: number;
   }[];
+  chain: Chain;
 }
 
 export default async function handler(

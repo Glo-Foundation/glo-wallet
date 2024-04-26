@@ -1,12 +1,12 @@
 import { Charity } from "@prisma/client";
-import { getWalletClient, SignMessageResult } from "@wagmi/core";
+import { getWalletClient, SignMessageResult, Chain } from "@wagmi/core";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import useSWR from "swr";
 import { Hex } from "viem/types/misc";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
@@ -82,6 +82,7 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
   const { address } = useAccount();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
+  const { chain } = useNetwork();
 
   const [locallySelectedCharity, setLocallySelectedCharity] =
     useState<Charity | null>(null);
@@ -111,7 +112,7 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
     return sig;
   };
 
-  const updateSelectedCharity = async (charity: Charity) => {
+  const updateSelectedCharity = async (charity: Charity, chain: Chain) => {
     // backend has to verify the signature and also make sure the timestamp is after the last choice and before the current time
     const currentDateTimeString = new Date().toISOString();
     const signingBody = {
@@ -131,6 +132,7 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
         sig: signature as Hex,
       },
       choices: [{ charity: charity, percent: 100 }],
+      chain: chain,
     };
 
     api()
@@ -211,7 +213,12 @@ export default function CharitySelectorModal({ monthlyYield }: Props) {
             : "primary-button h-[52px] mx-2 mt-4"
         }
         disabled={disableSubmit}
-        onClick={() => updateSelectedCharity(locallySelectedCharity as Charity)}
+        onClick={() =>
+          updateSelectedCharity(
+            locallySelectedCharity as Charity,
+            chain as Chain
+          )
+        }
       >
         {disableSubmit ? "Click on a recipient to choose" : "Submit choice"}
       </button>
