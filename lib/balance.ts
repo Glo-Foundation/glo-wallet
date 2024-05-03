@@ -107,7 +107,7 @@ async function getChainBalance(
 }
 
 async function getStellarBalance(address: string): Promise<BigNumber> {
-  const cacheKey = `balance-${address}-${utcDate}`;
+  const cacheKey = `balance-${address}`;
   const cacheValue = await kv.hget(cacheKey, "Stellar");
 
   let balance;
@@ -140,7 +140,7 @@ async function getChainBlockNumber(date: Date, chain: Chain): Promise<number> {
   const utcDate = date ? date.toJSON().substring(0, 10) : "";
 
   const cacheKey = `blocknumber-${utcDate}`;
-  const cacheValue = await kv.hget(cacheKey, chainName);
+  const cacheValue: string | null = await kv.hget(cacheKey, chainName);
 
   let blockNumber;
 
@@ -152,7 +152,7 @@ async function getChainBlockNumber(date: Date, chain: Chain): Promise<number> {
     });
     await kv.expire(cacheKey, 60 * 60 * 24 * 183);
   } else {
-    blockNumber = Number.from(cacheValue);
+    blockNumber = parseInt(cacheValue);
   }
   return blockNumber;
 }
