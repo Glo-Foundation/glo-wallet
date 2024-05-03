@@ -16,9 +16,9 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 
 import { isProd } from "@/lib/utils";
-import { getBalance } from "@/utils";
+import { getBalance, getBlockNumber } from "@/utils";
 
-export const getBalances = async (address: string) => {
+export const getBalances = async (address: string, onDate?: Date) => {
   let balance = 0;
   let [
     polygonBalance,
@@ -26,7 +26,9 @@ export const getBalances = async (address: string) => {
     celoBalance,
     optimismBalance,
     arbitrumBalance,
+    stellarBalance,
   ] = [
+    BigNumber.from("0"),
     BigNumber.from("0"),
     BigNumber.from("0"),
     BigNumber.from("0"),
@@ -41,11 +43,11 @@ export const getBalances = async (address: string) => {
       optimismBalance,
       arbitrumBalance,
     ] = await Promise.all([
-      getChainBalance(address, isProd() ? polygon : polygonMumbai),
-      getChainBalance(address, isProd() ? mainnet : goerli),
-      getChainBalance(address, isProd() ? celo : celoAlfajores),
-      getChainBalance(address, isProd() ? optimism : optimismSepolia),
-      getChainBalance(address, isProd() ? arbitrum : arbitrumSepolia),
+      getChainBalance(address, isProd() ? polygon : polygonMumbai, onDate),
+      getChainBalance(address, isProd() ? mainnet : goerli, onDate),
+      getChainBalance(address, isProd() ? celo : celoAlfajores, onDate),
+      getChainBalance(address, isProd() ? optimism : optimismSepolia, onDate),
+      getChainBalance(address, isProd() ? arbitrum : arbitrumSepolia, onDate),
     ]);
     const decimals = BigInt(10 ** 18);
     balance = polygonBalance
@@ -56,7 +58,7 @@ export const getBalances = async (address: string) => {
       .div(decimals)
       .toNumber();
   } else {
-    const stellarBalance = await getStellarBalance(address);
+    stellarBalance = await getStellarBalance(address);
     const decimals = BigInt(10 ** 7);
     balance = stellarBalance.div(decimals).toNumber();
   }
@@ -68,22 +70,31 @@ export const getBalances = async (address: string) => {
     celoBalance,
     optimismBalance,
     arbitrumBalance,
+    stellarBalance,
   };
 };
 
 async function getChainBalance(
   address: string,
-  chain: Chain
+  chain: Chain,
+  onDate?: Date
 ): Promise<BigNumber> {
   const chainName = chain.name.toLowerCase();
+  const utcDate = onDate ? onDate.toJSON().substring(0, 10) : "";
 
-  const cacheKey = `balance-${address}`;
+  const cacheKey = `balance-${address}-${utcDate}`;
   const cacheValue = await kv.hget(cacheKey, chainName);
 
   let balance;
 
   if (!cacheValue) {
-    balance = await getBalance(address as string, chain.id);
+    if (onDate) {
+      const blockNumber = await getChainBlockNumber(onDate, chain);
+      balance = await getBalance(address as string, chain.id, blockNumber);
+    } else {
+      balance = await getBalance(address as string, chain.id);
+    }
+
     await kv.hset(cacheKey, {
       chainName: balance.toString(),
     });
@@ -96,7 +107,7 @@ async function getChainBalance(
 }
 
 async function getStellarBalance(address: string): Promise<BigNumber> {
-  const cacheKey = `balance-${address}`;
+  const cacheKey = `balance-${address}-${utcDate}`;
   const cacheValue = await kv.hget(cacheKey, "Stellar");
 
   let balance;
@@ -122,4 +133,26 @@ async function getStellarBalance(address: string): Promise<BigNumber> {
   }
 
   return balance;
+}
+
+async function getChainBlockNumber(date: Date, chain: Chain): Promise<number> {
+  const chainName = chain.name.toLowerCase();
+  const utcDate = date ? date.toJSON().substring(0, 10) : "";
+
+  const cacheKey = `blocknumber-${utcDate}`;
+  const cacheValue = await kv.hget(cacheKey, chainName);
+
+  let blockNumber;
+
+  if (!cacheValue) {
+    blockNumber = await getBlockNumber(date, chain.id);
+
+    await kv.hset(cacheKey, {
+      chainName: blockNumber.toString(),
+    });
+    await kv.expire(cacheKey, 60 * 60 * 24 * 183);
+  } else {
+    blockNumber = Number.from(cacheValue);
+  }
+  return blockNumber;
 }

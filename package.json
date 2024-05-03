@@ -27,6 +27,7 @@
     "axios": "^1.4.0",
     "canvas-confetti": "^1.6.0",
     "clsx": "^1.2.1",
+    "ethereum-block-by-date": "^1.4.9",
     "ethers": "^5.7.2",
     "express-rate-limit": "^6.10.0",
     "framer-motion": "^10.12.17",
