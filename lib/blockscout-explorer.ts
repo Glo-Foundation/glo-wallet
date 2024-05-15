@@ -1,3 +1,4 @@
+import { Chain } from "@wagmi/core";
 import { celo, celoAlfajores } from "@wagmi/core/chains";
 import axios from "axios";
 
@@ -5,7 +6,6 @@ import { getChainBlockNumber } from "@/lib/balance";
 
 import { getFirstGloBlock, getSmartContractAddress } from "./config";
 import { isProd } from "./utils";
-
 
 const chainAlias = isProd() ? "mainnet" : "alfajores";
 const chainId = isProd() ? celo.id : celoAlfajores.id;

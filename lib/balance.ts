@@ -168,8 +168,11 @@ export async function getAverageBalance(
   endDate: Date,
   endBalance: BigNumber,
   transactions: TokenTransfer[]
-): Promise<number> {
-  const milisecondsInMonth = BigNumber.from((endDate - startDate).toString());
+): Promise<BigNumber> {
+  const milisecondsInMonthString = endDate.valueOf() - startDate.valueOf();
+  const milisecondsInMonth = BigNumber.from(
+    milisecondsInMonthString.toString()
+  );
   console.log("milisecondsInMonth: ", milisecondsInMonth.toString());
   let totalBalance = BigNumber.from("0");
   let currentDate = endDate;
@@ -179,8 +182,10 @@ export async function getAverageBalance(
   console.log("currentBalance: ", currentBalance.toString());
 
   transactions.forEach((transaction) => {
-    const txDate = new Date(transaction["timeStamp"] * 1000);
-    const balanceTime = BigNumber.from((currentDate - txDate).toString());
+    const txDate = new Date(parseInt(transaction["timeStamp"]) * 1000);
+    const balanceTime = BigNumber.from(
+      (currentDate.valueOf() - txDate.valueOf()).toString()
+    );
     const weightedBalance = currentBalance.mul(balanceTime);
     console.log(weightedBalance.toString());
     totalBalance = totalBalance.add(weightedBalance);
@@ -194,7 +199,7 @@ export async function getAverageBalance(
     console.log("new currentBalance: ", currentBalance.toString());
   });
 
-  const balanceTime = currentDate - startDate;
+  const balanceTime = currentDate.valueOf() - startDate.valueOf();
   const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
   totalBalance = totalBalance.add(weightedBalance);
   console.log("final totalbalance: ", totalBalance.toString());
