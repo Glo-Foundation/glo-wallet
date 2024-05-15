@@ -15,8 +15,10 @@ import {
 import axios from "axios";
 import { BigNumber } from "ethers";
 
+import { TokenTransfer } from "@/lib/blockscout-explorer";
 import { isProd } from "@/lib/utils";
 import { getBalance, getBlockNumber } from "@/utils";
+// import { EVMTransaction } from "@/pages/api/transfers/first-glo/[address]"
 
 export const getBalances = async (address: string, onDate?: Date) => {
   let balance = 0;
@@ -96,11 +98,11 @@ async function getChainBalance(
     }
 
     await kv.hset(cacheKey, {
-      chainName: balance.toString(),
+      [chainName]: balance.toString(),
     });
     await kv.expire(cacheKey, 60 * 60 * 24);
   } else {
-    balance = BigNumber.from(cacheValue);
+    balance = BigNumber.from(cacheValue.toString());
   }
 
   return balance;
@@ -135,7 +137,10 @@ async function getStellarBalance(address: string): Promise<BigNumber> {
   return balance;
 }
 
-async function getChainBlockNumber(date: Date, chain: Chain): Promise<number> {
+export async function getChainBlockNumber(
+  date: Date,
+  chain: Chain
+): Promise<number> {
   const chainName = chain.name.toLowerCase();
   const utcDate = date ? date.toJSON().substring(0, 10) : "";
 
@@ -148,11 +153,54 @@ async function getChainBlockNumber(date: Date, chain: Chain): Promise<number> {
     blockNumber = await getBlockNumber(date, chain.id);
 
     await kv.hset(cacheKey, {
-      chainName: blockNumber.toString(),
+      [chainName]: blockNumber.toString(),
     });
     await kv.expire(cacheKey, 60 * 60 * 24 * 183);
   } else {
     blockNumber = parseInt(cacheValue);
   }
   return blockNumber;
+}
+
+export async function getAverageBalance(
+  walletAddress: string,
+  startDate: Date,
+  endDate: Date,
+  endBalance: BigNumber,
+  transactions: TokenTransfer[]
+): Promise<number> {
+  const milisecondsInMonth = BigNumber.from((endDate - startDate).toString());
+  console.log("milisecondsInMonth: ", milisecondsInMonth.toString());
+  let totalBalance = BigNumber.from("0");
+  let currentDate = endDate;
+  let currentBalance = endBalance;
+
+  // console.log("transactions: ", transactions);
+  console.log("currentBalance: ", currentBalance.toString());
+
+  transactions.forEach((transaction) => {
+    const txDate = new Date(transaction["timeStamp"] * 1000);
+    const balanceTime = BigNumber.from((currentDate - txDate).toString());
+    const weightedBalance = currentBalance.mul(balanceTime);
+    console.log(weightedBalance.toString());
+    totalBalance = totalBalance.add(weightedBalance);
+    console.log("new totalBalance: ", totalBalance.toString());
+    currentDate = txDate;
+    const transactionDelta = BigNumber.from(transaction["value"]);
+    currentBalance =
+      transaction["from"].toLowerCase() === walletAddress.toLowerCase()
+        ? currentBalance.add(transactionDelta)
+        : currentBalance.sub(transactionDelta);
+    console.log("new currentBalance: ", currentBalance.toString());
+  });
+
+  const balanceTime = currentDate - startDate;
+  const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
+  totalBalance = totalBalance.add(weightedBalance);
+  console.log("final totalbalance: ", totalBalance.toString());
+
+  const decimals = BigInt(10 ** 18);
+  const averageBalance = totalBalance.div(milisecondsInMonth);
+
+  return averageBalance;
 }
