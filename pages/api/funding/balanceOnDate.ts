@@ -1,3 +1,4 @@
+import { Charity } from "@prisma/client";
 import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -49,11 +50,14 @@ export default async function handler(
     },
   });
 
-  const possibleFundingChoices: object = {};
-
-  possibleFundingChoicesData.forEach((fundingChoice) => {
-    possibleFundingChoices[fundingChoice.name] = 0;
-  });
+  const possibleFundingChoices = Object.keys(Charity).reduce(function (
+    map,
+    obj
+  ) {
+    map[obj] = 0;
+    return map;
+  },
+  {});
 
   let fundingChoicesSummed = 0;
 
