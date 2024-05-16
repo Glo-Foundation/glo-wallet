@@ -27,6 +27,7 @@
     "axios": "^1.4.0",
     "canvas-confetti": "^1.6.0",
     "clsx": "^1.2.1",
+    "ethereum-block-by-date": "^1.4.9",
     "ethers": "^5.7.2",
     "express-rate-limit": "^6.10.0",
     "framer-motion": "^10.12.17",
@@ -53,6 +54,7 @@
   "devDependencies": {
     "@guardianui/test": "^1.0.4",
     "@types/canvas-confetti": "^1.6.0",
+    "@types/ethereum-block-by-date": "^1.4.1",
     "@types/google-spreadsheet": "^3.3.2",
     "@types/js-cookie": "^3.0.3",
     "@types/node": "18.11.18",

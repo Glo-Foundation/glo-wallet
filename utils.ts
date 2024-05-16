@@ -11,6 +11,7 @@ import {
   arbitrum,
   arbitrumSepolia,
 } from "@wagmi/core/chains";
+import EthDater from "ethereum-block-by-date";
 import { BigNumber, ethers } from "ethers";
 
 import {
@@ -264,7 +265,8 @@ export const getUSDCToUSDGLOSwapDeeplink = (
 
 export const getBalance = async (
   address: string,
-  chainId?: number
+  chainId?: number,
+  blockTag?: number
 ): Promise<BigNumber> => {
   const provider = new ethers.providers.JsonRpcProvider(
     getChainRPCUrl(chainId)
@@ -275,7 +277,14 @@ export const getBalance = async (
     abi,
     provider
   );
-  return await usdgloContract.balanceOf(address);
+
+  if (blockTag !== null) {
+    return await usdgloContract.balanceOf.call(undefined, address, {
+      blockTag: blockTag,
+    });
+  } else {
+    return await usdgloContract.balanceOf(address);
+  }
 };
 
 export const numberToHex = (num: number): string => {
@@ -344,4 +353,19 @@ export const customFormatBalance = (
     fmtBalanceDollarPart,
     fmtBalanceCentPart,
   };
+};
+
+export const getBlockNumber = async (
+  date: Date,
+  chainId: number
+): Promise<number> => {
+  const provider = new ethers.providers.JsonRpcProvider(
+    getChainRPCUrl(chainId)
+  );
+
+  const dater = new EthDater(provider);
+
+  const blockObject = await dater.getDate(date.toString());
+
+  return blockObject.block;
 };
