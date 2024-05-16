@@ -12,7 +12,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const chains = getChains();
-  const chainsObject = chains.reduce(
+  const chainsObject: object = chains.reduce(
     (a, v) => ({
       ...a,
       [["Ethereum", "Polygon"].includes(v.name)
@@ -49,7 +49,7 @@ export default async function handler(
     },
   });
 
-  const possibleFundingChoices: any = {};
+  const possibleFundingChoices: object = {};
 
   possibleFundingChoicesData.forEach((fundingChoice) => {
     possibleFundingChoices[fundingChoice.name] = 0;
@@ -60,12 +60,13 @@ export default async function handler(
   allFundingChoices.forEach(async (fundingChoice) => {
     if (fundingChoice.name !== "EXTREME_POVERTY") {
       const walletAddress = fundingChoice.address;
-      const balancesEndOfMonth = await getBalances(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const balancesEndOfMonth: any = await getBalances(
         walletAddress,
         firstThisMonth
       );
-
-      const balancesStartOfMonth = await getBalances(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const balancesStartOfMonth: any = await getBalances(
         walletAddress,
         firstLastMonth
       );
@@ -86,7 +87,6 @@ export default async function handler(
           if (endBalance !== startBalance && key !== "totalBalance") {
             const chainName = key.replace("Balance", "");
             console.log("checking balance of: ", chainName);
-            const chainWithTransactions = chainsObject[chainName];
             const gloTransactionsLastMonth = await fetchGloTransactions(
               walletAddress,
               chainsObject[chainName],

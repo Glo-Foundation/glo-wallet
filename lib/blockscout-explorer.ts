@@ -12,7 +12,8 @@ const chainId = isProd() ? celo.id : celoAlfajores.id;
 const GLO_ADDRESS = getSmartContractAddress(chainId);
 const FIRST_BLOCK = getFirstGloBlock(chainId);
 
-const instances = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const instances: any = {
   polygon: `https://polygon.blockscout.com/api`,
   optimism: `https://optimism.blockscout.com/api`,
   arbitrum: `https://arbitrum.blockscout.com/api`,
@@ -56,8 +57,8 @@ export const fetchGloTransactions = async (
   address: string,
   chain: Chain,
   chainName: string,
-  fromDate: date,
-  toDate: date,
+  fromDate: Date,
+  toDate: Date,
   page?: number,
   offset?: number
 ): Promise<TokenTransfer[]> => {
