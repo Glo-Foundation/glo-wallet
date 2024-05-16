@@ -47,12 +47,6 @@ export type TokenTransfer = {
   blockTimestamp?: Date;
 };
 
-/*
-E.g.
-curl -X GET "https://explorer.celo.org/mainnet/api?module=account&action=tokentx&address=0xa76d7873b01fa564ec3e49a651c2e6e40dfa311f&contractaddress=0x4f604735c1cf31399c6e711d5962b2b3e0225ad3&start_block=20910330" -H "accept: application/json"
-*/
-
-//
 export const fetchGloTransactions = async (
   address: string,
   chain: Chain,

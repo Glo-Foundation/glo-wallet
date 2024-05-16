@@ -27,7 +27,6 @@ export default async function handler(
   const firstThisMonth = new Date(
     Date.UTC(date.getFullYear(), date.getMonth(), 1)
   );
-  // const firstThisMonth = new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
   const firstLastMonth = new Date(
     Date.UTC(date.getFullYear(), date.getMonth() - 1, 1)
   );
@@ -74,23 +73,17 @@ export default async function handler(
         walletAddress,
         firstLastMonth
       );
-
       let averageTotalBalanceThisMonth = BigNumber.from("0");
-
-      console.log("going to start processing: ", walletAddress);
 
       if (
         balancesEndOfMonth.totalBalance !== balancesStartOfMonth.totalBalance
       ) {
-        console.log("balances end of month: ", balancesEndOfMonth);
-        console.log("balances start of month: ", balancesStartOfMonth);
         for (const [key, value] of Object.entries(balancesEndOfMonth)) {
           const startBalance = balancesStartOfMonth[key].toString();
           const endBalance = balancesEndOfMonth[key].toString();
 
           if (endBalance !== startBalance && key !== "totalBalance") {
             const chainName = key.replace("Balance", "");
-            console.log("checking balance of: ", chainName);
             const gloTransactionsLastMonth = await fetchGloTransactions(
               walletAddress,
               chainsObject[chainName],

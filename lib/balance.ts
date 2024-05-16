@@ -18,7 +18,6 @@ import { BigNumber } from "ethers";
 import { TokenTransfer } from "@/lib/blockscout-explorer";
 import { isProd } from "@/lib/utils";
 import { getBalance, getBlockNumber } from "@/utils";
-// import { EVMTransaction } from "@/pages/api/transfers/first-glo/[address]"
 
 export const getBalances = async (address: string, onDate?: Date) => {
   let balance = 0;
@@ -173,13 +172,9 @@ export async function getAverageBalance(
   const milisecondsInMonth = BigNumber.from(
     milisecondsInMonthString.toString()
   );
-  console.log("milisecondsInMonth: ", milisecondsInMonth.toString());
   let totalBalance = BigNumber.from("0");
   let currentDate = endDate;
   let currentBalance = endBalance;
-
-  // console.log("transactions: ", transactions);
-  console.log("currentBalance: ", currentBalance.toString());
 
   transactions.forEach((transaction) => {
     const txDate = new Date(parseInt(transaction["timeStamp"]) * 1000);
@@ -187,22 +182,18 @@ export async function getAverageBalance(
       (currentDate.valueOf() - txDate.valueOf()).toString()
     );
     const weightedBalance = currentBalance.mul(balanceTime);
-    console.log(weightedBalance.toString());
     totalBalance = totalBalance.add(weightedBalance);
-    console.log("new totalBalance: ", totalBalance.toString());
     currentDate = txDate;
     const transactionDelta = BigNumber.from(transaction["value"]);
     currentBalance =
       transaction["from"].toLowerCase() === walletAddress.toLowerCase()
         ? currentBalance.add(transactionDelta)
         : currentBalance.sub(transactionDelta);
-    console.log("new currentBalance: ", currentBalance.toString());
   });
 
   const balanceTime = currentDate.valueOf() - startDate.valueOf();
   const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
   totalBalance = totalBalance.add(weightedBalance);
-  console.log("final totalbalance: ", totalBalance.toString());
 
   const decimals = BigInt(10 ** 18);
   const averageBalance = totalBalance.div(milisecondsInMonth);
