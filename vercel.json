@@ -4,5 +4,10 @@
       "path": "/api/eas?key=$VERCEL_WEBHOOK_KEY",
       "schedule": "0 0 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "api/*.ts": {
+      "maxDuration": 240
+    }
+  }
 }
