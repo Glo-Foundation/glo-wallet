@@ -13,7 +13,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const chains = getChains();
-  const chainsObject: object = chains.reduce(
+  const chainsObject: Record<string, any> = chains.reduce(
     (a, v) => ({
       ...a,
       [["Ethereum", "Polygon"].includes(v.name)
@@ -51,8 +51,8 @@ export default async function handler(
   });
 
   const possibleFundingChoices = Object.keys(Charity).reduce(function (
-    map,
-    obj
+    map: Record<string, number>,
+    obj: string
   ) {
     map[obj] = 0;
     return map;
