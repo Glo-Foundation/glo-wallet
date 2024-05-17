@@ -162,6 +162,14 @@ export const CHARITY_MAP: Record<string, any> = {
       "We'll donate to best-in-class charities that work to decarbonize the planet",
     type: "",
   },
+  ["ENDAOMENT"]: {
+    name: "Endaoment Universal Impact Pool",
+    short_name: "Endaoment",
+    iconPath: "/endaoment-logo.svg",
+    description:
+      "Grows Endaoment's UIP, which amplifies on-chain caritable giving",
+    type: "",
+  },
   // ["SAVE_LIVES"]: {
   //   name: "Save Lives",
   //   short_name: "Saving lives",
