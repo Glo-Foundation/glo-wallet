@@ -144,14 +144,14 @@ export const CHARITY_MAP: Record<string, any> = {
     name: "Fight extreme poverty",
     short_name: "Extreme poverty",
     iconPath: "/give-directly-logo.jpeg",
-    description: "Funds basic income programs for people in extreme poverty",
+    description: "Fund basic income programs for people in extreme poverty",
     type: "default",
   },
   ["OPEN_SOURCE"]: {
     name: "Web3 public goods",
     short_name: "Public Goods",
     iconPath: "/gitcoin-grants-logo.jpeg",
-    description: "Supports NGOs that further the cause of Web3 public goods",
+    description: "Support causes that advance public goods in Web3",
     type: "",
   },
   ["CLIMATE"]: {
@@ -159,7 +159,7 @@ export const CHARITY_MAP: Record<string, any> = {
     short_name: "Climate",
     iconPath: "/giving-green-logo.png",
     description:
-      "We'll donate to best-in-class charities that work to decarbonize the planet",
+      "Donate to best-in-class charities working to decarbonize the planet",
     type: "",
   },
   ["ENDAOMENT"]: {
@@ -167,7 +167,7 @@ export const CHARITY_MAP: Record<string, any> = {
     short_name: "Endaoment",
     iconPath: "/endaoment-logo.svg",
     description:
-      "Grows Endaoment's UIP, which amplifies on-chain caritable giving",
+      "Can't decide? Follow group wisdom. Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
   // ["SAVE_LIVES"]: {
