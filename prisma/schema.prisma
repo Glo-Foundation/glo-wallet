@@ -37,6 +37,7 @@ enum Charity {
   CLIMATE
   REFUGEE_CRISIS
   SAVE_LIVES
+  ENDAOMENT
 }
 
 model CharityChoice {
