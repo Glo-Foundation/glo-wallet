@@ -58,11 +58,6 @@ async function updateCharityChoicesForAddress(
 ) {
   const { choices, sigFields, chain } = body;
 
-  const publicClient = createPublicClient({
-    chain: chain,
-    transport: http(),
-  });
-
   const sigDate = new Date(sigFields.timestamp);
   const latestCharityChoice = await getCharityChoiceForAddress(address);
   if (sigDate <= latestCharityChoice[0].creationDate || sigDate > new Date()) {
@@ -76,6 +71,11 @@ async function updateCharityChoicesForAddress(
   });
 
   if (address.slice(0, 2) === "0x") {
+    const publicClient = createPublicClient({
+      chain: chain,
+      transport: http(),
+    });
+
     const valid = await publicClient.verifyMessage({
       address: address,
       message: message,
