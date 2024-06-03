@@ -22,7 +22,7 @@ import {
 import { getAllowedChains } from "@/lib/utils";
 
 const TOTAL_DAYS = 365;
-const ANNUAL_INTEREST_RATE = 0.024;
+const ANNUAL_INTEREST_RATE = 0.042;
 
 export const getTotalYield = (amount: number): number => {
   return (amount * ANNUAL_INTEREST_RATE * TOTAL_DAYS) / 365;
