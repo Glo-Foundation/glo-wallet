@@ -24,7 +24,7 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [arbitrum.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   // Testnets
   [arbitrumSepolia.id]: "0xf3C3351D6Bd0098EEb33ca8f830FAf2a141Ea2E1", // this is actually USDC
-  [optimismSepolia.id]: "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6", // this is actually USDC
+  [optimismSepolia.id]: "0x5fd84259d66Cd46123540766Be93DFE6D43130D7", // this is actually USDC
   [polygonMumbai.id]: "0xbd05d3B38c400d95D52c2B8fF124DF511AB7EBfc",
   [goerli.id]: "0x2c872de03E91D2ee463308Cb5dA4Ed9e41bBB355",
   [celoAlfajores.id]: "0x6054aC9c220070F8c3093730d64E701ad23077C5",
