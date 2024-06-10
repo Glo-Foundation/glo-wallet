@@ -20,10 +20,10 @@ export default function Header({
   setStellarAddress,
 }: {
   idrissName: string;
-  stellarConnected: string;
+  stellarConnected: boolean;
   stellarAddress: string;
-  setStellarConnected: void;
-  setStellarAddress: void;
+  setStellarConnected: (bool: boolean) => void;
+  setStellarAddress: (str: string) => void;
 }) {
   const { isLoading } = useConnect();
   const { address, isConnected, connector } = useAccount();

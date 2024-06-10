@@ -20,7 +20,7 @@ export default function PaymentOptionModal({
   stellarConnected = false,
 }: {
   buyAmount: number;
-  stellarConnected: boolean;
+  stellarConnected?: boolean;
 }) {
   const { address, connector, isConnected } = useAccount();
   const { chain } = useNetwork();

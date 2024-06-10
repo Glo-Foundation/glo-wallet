@@ -12,14 +12,17 @@ import { sliceAddress } from "@/lib/utils";
 type Props = {
   address?: string;
   idrissName?: string;
+  stellarConnected: boolean;
+  setStellarConnected: (bool: boolean) => void;
+  setStellarAddress: (str: string) => void;
 };
 
 export default function UserInfoModal({
   address,
   idrissName,
   stellarConnected,
-  setStellarAddress,
   setStellarConnected,
+  setStellarAddress,
 }: Props) {
   const { disconnect } = useDisconnect();
   const { chain } = useNetwork();

@@ -2,6 +2,7 @@ import {
   StellarWalletsKit,
   WalletNetwork,
   allowAllModules,
+  ISupportedWallet,
   XBULL_ID,
 } from "@creit.tech/stellar-wallets-kit/build/index";
 import { configureChains } from "@wagmi/core";
@@ -12,7 +13,6 @@ import Image from "next/image";
 import { useContext, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
-
 
 import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
@@ -47,8 +47,8 @@ export default function UserAuthModal({
   setStellarConnected,
   setStellarAddress,
 }: {
-  setStellarConnected: void;
-  setStellarAddress: void;
+  setStellarConnected: (bool: boolean) => void;
+  setStellarAddress: (str: string) => void;
 }) {
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
@@ -110,7 +110,7 @@ export default function UserAuthModal({
   };
 
   const stellarKit: StellarWalletsKit = new StellarWalletsKit({
-    network: isProd() ? WalletNetwork.MAINNET : WalletNetwork.TESTNET,
+    network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
     selectedWalletId: XBULL_ID,
     modules: allowAllModules(),
   });

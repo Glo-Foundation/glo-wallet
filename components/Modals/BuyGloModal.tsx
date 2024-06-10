@@ -9,10 +9,10 @@ import PaymentOptionModal from "./PaymentOptionModal";
 
 export default function BuyGloModal({
   totalBalance,
-  stellarConnected,
+  stellarConnected = false,
 }: {
   totalBalance: number;
-  stellarConnected: boolean;
+  stellarConnected?: boolean;
 }) {
   const { openModal } = useContext(ModalContext);
 
