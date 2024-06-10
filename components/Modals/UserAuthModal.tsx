@@ -1,3 +1,9 @@
+import {
+  StellarWalletsKit,
+  WalletNetwork,
+  allowAllModules,
+  XBULL_ID,
+} from "@creit.tech/stellar-wallets-kit/build/index";
 import { configureChains } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
 import clsx from "clsx";
@@ -7,11 +13,11 @@ import { useContext, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
 
+
 import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { useFreighter } from "@/lib/hooks";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
-import { getAllowedChains } from "@/lib/utils";
+import { getAllowedChains, isProd } from "@/lib/utils";
 
 const TOS_COOKIE = "tos-agreed";
 
@@ -37,9 +43,14 @@ const ToS = () => (
   </span>
 );
 
-export default function UserAuthModal() {
+export default function UserAuthModal({
+  setStellarConnected,
+  setStellarAddress,
+}: {
+  setStellarConnected: void;
+  setStellarAddress: void;
+}) {
   const { connect, connectors } = useConnect();
-  const { connectFreighter } = useFreighter();
   const { closeModal } = useContext(ModalContext);
   const [sendForm, setSendForm] = useState({
     email: "",
@@ -89,7 +100,7 @@ export default function UserAuthModal() {
   const connectWithConnector = async (index: number) => {
     requireUserAgreed(async () => {
       if (index == 99) {
-        await connectFreighter();
+        await connectStellar();
       } else {
         // Connect with EVM connectors
         await connect({ connector: connectors[index] });
@@ -97,6 +108,25 @@ export default function UserAuthModal() {
       closeModal();
     });
   };
+
+  const stellarKit: StellarWalletsKit = new StellarWalletsKit({
+    network: isProd() ? WalletNetwork.MAINNET : WalletNetwork.TESTNET,
+    selectedWalletId: XBULL_ID,
+    modules: allowAllModules(),
+  });
+
+  async function connectStellar() {
+    const modal = await stellarKit.openModal({
+      onWalletSelected: async (option: ISupportedWallet) => {
+        stellarKit.setWallet(option.id);
+        const publicKey = await stellarKit.getPublicKey();
+        await localStorage.setItem("stellarConnected", "true");
+        await localStorage.setItem("stellarAddress", publicKey);
+        setStellarConnected(true);
+        setStellarAddress(publicKey);
+      },
+    });
+  }
 
   return (
     <>
@@ -184,13 +214,13 @@ export default function UserAuthModal() {
 
               <button
                 className="auth-button"
-                data-testid="freighter-login-button"
+                data-testid="stellar-login-button"
                 onClick={() => connectWithConnector(99)}
               >
-                <h4>Freighter</h4>
+                <h4>Stellar wallets</h4>
                 <Image
-                  alt="freighter"
-                  src="/freighter.svg"
+                  alt="stellar"
+                  src="/stellar-logo.svg"
                   width={35}
                   height={35}
                 />

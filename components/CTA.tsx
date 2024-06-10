@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useContext } from "react";
 
 import { ModalContext } from "@/lib/context";
-import { useFreighter } from "@/lib/hooks";
 import { useUserStore } from "@/lib/store";
 import { DEFAULT_CTAS, api } from "@/lib/utils";
 import { getImpactItems, getTotalYield } from "@/utils";
@@ -78,7 +77,6 @@ export default function CTA({
 }) {
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
-  const { isFreighterConnected } = useFreighter();
 
   const gloBalance = Number(balance) || 100;
   const totalYield = getTotalYield(gloBalance);
@@ -126,11 +124,7 @@ export default function CTA({
       action: () => openModal(<IdrissModal balance={gloBalance} />),
     },
   };
-  let CTAS = DEFAULT_CTAS;
-
-  if (isFreighterConnected) {
-    CTAS = DEFAULT_CTAS.slice(0, -1);
-  }
+  const CTAS = DEFAULT_CTAS;
 
   const ctaList: CTA[] = ctas.length > 0 ? ctas : CTAS;
 

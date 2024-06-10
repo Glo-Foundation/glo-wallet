@@ -6,7 +6,6 @@ import { Tooltip } from "react-tooltip";
 import { useDisconnect, useNetwork } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
-import { useFreighter } from "@/lib/hooks";
 import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
@@ -15,13 +14,18 @@ type Props = {
   idrissName?: string;
 };
 
-export default function UserInfoModal({ address, idrissName }: Props) {
+export default function UserInfoModal({
+  address,
+  idrissName,
+  stellarConnected,
+  setStellarAddress,
+  setStellarConnected,
+}: Props) {
   const { disconnect } = useDisconnect();
   const { chain } = useNetwork();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs } = useUserStore();
-  const { isFreighterConnected, disconnectFreighter } = useFreighter();
 
   const email = Cookies.get("glo-email");
 
@@ -32,8 +36,8 @@ export default function UserInfoModal({ address, idrissName }: Props) {
   }, [isCopiedTooltipOpen]);
 
   const handleLogout = () => {
-    if (isFreighterConnected) {
-      disconnectFreighter();
+    if (stellarConnected) {
+      disconnectStellar();
     } else {
       disconnect();
     }
@@ -42,6 +46,13 @@ export default function UserInfoModal({ address, idrissName }: Props) {
     localStorage.setItem("showedLogin", "true");
     closeModal();
   };
+
+  async function disconnectStellar() {
+    localStorage.setItem("stellarAddress", "");
+    localStorage.setItem("stellarConnected", "false");
+    setStellarAddress("");
+    setStellarConnected(false);
+  }
 
   return (
     <div className="py-6 px-10">
@@ -59,8 +70,8 @@ export default function UserInfoModal({ address, idrissName }: Props) {
           <h5>Network:</h5>
           <div className="copy pseudo-input-text text-sm">
             <span data-testid="profile-network">
-              {isFreighterConnected && <div>Stellar</div>}
-              {!isFreighterConnected && (
+              {stellarConnected && <div>Stellar</div>}
+              {!stellarConnected && (
                 <div>
                   {chain?.name} ({chain?.id})
                 </div>
