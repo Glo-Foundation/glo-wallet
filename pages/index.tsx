@@ -150,9 +150,7 @@ export default function Home() {
         value: bigIntStellarBalance,
       });
     };
-    console.log("stellar connected? ", stellarConnected);
     if (stellarConnected) {
-      console.log("When does it detect whether this has changed?");
       getStellarBalance();
     } else {
       setStellarBalance({
