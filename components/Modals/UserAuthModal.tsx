@@ -1,9 +1,16 @@
 import {
   StellarWalletsKit,
   WalletNetwork,
-  allowAllModules,
   ISupportedWallet,
   XBULL_ID,
+  xBullModule,
+  FreighterModule,
+  HanaModule,
+  LobstrModule,
+  RabetModule,
+  AlbedoModule,
+  WalletConnectModule,
+  WalletConnectAllowedMethods,
 } from "@creit.tech/stellar-wallets-kit/build/index";
 import { configureChains } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
@@ -112,7 +119,23 @@ export default function UserAuthModal({
   const stellarKit: StellarWalletsKit = new StellarWalletsKit({
     network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
     selectedWalletId: XBULL_ID,
-    modules: allowAllModules(),
+    modules: [
+      new FreighterModule(),
+      new xBullModule(),
+      new HanaModule(),
+      new LobstrModule(),
+      new RabetModule(),
+      new AlbedoModule(),
+      new WalletConnectModule({
+        url: "https://app.glodollar.org",
+        projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+        method: WalletConnectAllowedMethods.SIGN,
+        description: `Glo Dollar App allows you to select which public good to fund`,
+        name: "Glo Dollar",
+        icons: ["public/glo-logo.svg"],
+        network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
+      }),
+    ],
   });
 
   async function connectStellar() {
