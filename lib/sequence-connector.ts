@@ -75,7 +75,6 @@ export class GloSequenceConnector extends Connector<
       this.getAccount(),
     ]);
     const chain = this.chains.find((x) => x.id === chainId) as Chain;
-    console.log("chain type: ", chain);
     if (!provider) throw new Error("provider is required.");
     return createWalletClient({
       account,

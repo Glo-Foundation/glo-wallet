@@ -111,10 +111,6 @@ export default async function handler(
         averageTotalBalanceThisMonth.add(balancesEndOfMonth["totalBalance"]);
       }
 
-      console.log(
-        "average balances ",
-        "" + walletAddress + ": " + averageTotalBalanceThisMonth
-      );
       const balance = averageTotalBalanceThisMonth.div(decimals).toNumber();
       possibleFundingChoices[fundingChoice.name] =
         possibleFundingChoices[fundingChoice.name] + balance;

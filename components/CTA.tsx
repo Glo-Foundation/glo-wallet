@@ -5,8 +5,7 @@ import { useContext } from "react";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
-import { DEFAULT_CTAS, api } from "@/lib/utils";
-import { getImpactItems, getTotalYield } from "@/utils";
+import { DEFAULT_CTAS } from "@/lib/utils";
 
 import { CompletedIcon } from "./CompletedIcon";
 import IdrissModal from "./Modals/IdrissModal";
@@ -79,11 +78,6 @@ export default function CTA({
   const { openModal } = useContext(ModalContext);
 
   const gloBalance = Number(balance) || 100;
-  const totalYield = getTotalYield(gloBalance);
-  const item = getImpactItems(totalYield)[0];
-  const icons = item
-    ? `${item.emoji} x ${item.count} ${item.description}`
-    : "?";
 
   const email = Cookies.get("glo-email") || "";
 
@@ -100,7 +94,6 @@ export default function CTA({
       description: "Visit the Glo store to get a hoodie!",
       iconPath: "/buy.svg",
       url: "https://merch.glodollar.org",
-      // action: () => open a modal in the future,
     },
     ["JOIN_PROGRAM"]: {
       title: "Join the movement",

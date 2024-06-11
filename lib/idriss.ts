@@ -14,5 +14,11 @@ export const isIdriss = async (address: string, email?: string) => {
   return !!result;
 };
 
-export const getIdrissName = async (address: string) =>
-  idriss.reverseResolve(address);
+export const getIdrissName = async (address: string) => {
+  try {
+    return await idriss.reverseResolve(address);
+  } catch (err) {
+    console.log("Could not resolve Idriss");
+    return "";
+  }
+};
