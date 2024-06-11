@@ -110,7 +110,7 @@ export default function Transactions() {
             <span> No transactions to show - </span>
             <button
               className="inline cursor-pointer hover:decoration-solid text-blue-500"
-              onClick={() => openModal(<UserAuthModal />, "bg-transparent")}
+              onClick={() => console.log("implement opening userauth modal")}
             >
               please log in
             </button>

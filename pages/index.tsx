@@ -26,7 +26,6 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { useFreighter } from "@/lib/hooks";
 import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
 import { getAllowedChains, api, initApi, isProd } from "@/lib/utils";
@@ -39,7 +38,12 @@ export default function Home() {
   const { switchNetwork } = useSwitchNetwork();
   const { openModal, closeModal } = useContext(ModalContext);
   const [idrissName, setIdrissName] = useState("");
-  const { isFreighterConnected, freighterAddress } = useFreighter();
+  const [stellarConnected, setStellarConnected] = useState(
+    localStorage.getItem("stellarConnected") === "true"
+  );
+  const [stellarAddress, setStellarAddress] = useState(
+    localStorage.getItem("stellarAddress") || ""
+  );
   const [stellarBalance, setStellarBalance] = useState({
     decimals: 7,
     symbol: "USDGLO",
@@ -113,7 +117,13 @@ export default function Home() {
   const { asPath, push } = useRouter();
   useEffect(() => {
     if ((!isConnected && !showedLogin) || asPath === "/sign-in") {
-      openModal(<UserAuthModal />, "bg-transparent");
+      openModal(
+        <UserAuthModal
+          setStellarConnected={setStellarConnected}
+          setStellarAddress={setStellarAddress}
+        />,
+        "bg-transparent"
+      );
       localStorage.setItem("showedLogin", "true");
       push("/");
     }
@@ -121,7 +131,7 @@ export default function Home() {
 
   useEffect(() => {
     const getStellarBalance = async () => {
-      const apiUrl = `https://horizon.stellar.org/accounts/${freighterAddress}`;
+      const apiUrl = `https://horizon.stellar.org/accounts/${stellarAddress}`;
       const res = await axios.get(apiUrl, {
         headers: { Accept: "application/json" },
       });
@@ -140,7 +150,9 @@ export default function Home() {
         value: bigIntStellarBalance,
       });
     };
-    if (isFreighterConnected) {
+    console.log("stellar connected? ", stellarConnected);
+    if (stellarConnected) {
+      console.log("When does it detect whether this has changed?");
       getStellarBalance();
     } else {
       setStellarBalance({
@@ -150,7 +162,7 @@ export default function Home() {
         value: BigInt("0"),
       });
     }
-  }, [isFreighterConnected]);
+  }, [stellarConnected]);
 
   useEffect(() => {
     const allowedChains = getAllowedChains();
@@ -171,10 +183,8 @@ export default function Home() {
   }, [switchNetwork]);
 
   useEffect(() => {
-    if (isConnected || isFreighterConnected) {
-      const key = `glo-wallet-${
-        isFreighterConnected ? freighterAddress : address
-      }`;
+    if (isConnected || stellarConnected) {
+      const key = `glo-wallet-${stellarConnected ? stellarAddress : address}`;
 
       const sign = async () => {
         return "public-signature";
@@ -191,8 +201,8 @@ export default function Home() {
       sign().then(async (signature: string) => {
         if (isConnected) {
           await initApi(address!, chain!.id, signature);
-        } else if (isFreighterConnected) {
-          await initApi(freighterAddress!, 0, signature);
+        } else if (stellarConnected) {
+          await initApi(stellarAddress!, 0, signature);
         }
 
         const email = Cookies.get("glo-email") || null;
@@ -219,7 +229,13 @@ export default function Home() {
 
       if (!localStorage.getItem("showedLogin")) {
         closeModal();
-        openModal(<UserAuthModal />, "bg-transparent");
+        openModal(
+          <UserAuthModal
+            setStellarConnected={setStellarConnected}
+            setStellarAddress={setStellarAddress}
+          />,
+          "bg-transparent"
+        );
       }
       localStorage.setItem("showedLogin", "true");
       localStorage.setItem("loggedIn", "false");
@@ -268,7 +284,13 @@ export default function Home() {
         <meta name="twitter:image:alt" content="Glo Dollar logo" />
       </Head>
       <div className="mt-4 px-6 bg-pine-100">
-        <Header idrissName={idrissName} />
+        <Header
+          idrissName={idrissName}
+          stellarConnected={stellarConnected}
+          stellarAddress={stellarAddress}
+          setStellarConnected={setStellarConnected}
+          setStellarAddress={setStellarAddress}
+        />
         <div className="flex flex-col space-y-4">
           <Balance
             stellarBalance={stellarBalance}
@@ -279,11 +301,12 @@ export default function Home() {
             arbitrumBalance={arbitrumBalance}
             totalBalance={totalBalance}
             usdcBalance={usdcBalance.data}
+            stellarConnected={stellarConnected}
           />
 
           <CTA
             balance={totalBalance?.formatted}
-            identity={idrissName || address! || freighterAddress!}
+            identity={idrissName || address! || stellarAddress!}
           />
         </div>
       </div>

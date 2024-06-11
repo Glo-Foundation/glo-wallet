@@ -7,20 +7,30 @@ import { useConnect, useAccount } from "wagmi";
 import AddToWallet from "@/components/AddToWallet";
 import NetworkSwitcher from "@/components/NetworkSwitcher";
 import { ModalContext } from "@/lib/context";
-import { useFreighter } from "@/lib/hooks";
 import { sliceAddress } from "@/lib/utils";
 
 import UserAuthModal from "./Modals/UserAuthModal";
 import UserInfoModal from "./Modals/UserInfoModal";
 
-export default function Header({ idrissName }: { idrissName: string }) {
+export default function Header({
+  idrissName,
+  stellarConnected,
+  stellarAddress,
+  setStellarConnected,
+  setStellarAddress,
+}: {
+  idrissName: string;
+  stellarConnected: boolean;
+  stellarAddress: string;
+  setStellarConnected: (bool: boolean) => void;
+  setStellarAddress: (str: string) => void;
+}) {
   const { isLoading } = useConnect();
   const { address, isConnected, connector } = useAccount();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal } = useContext(ModalContext);
   const isWalletIdriss = !!idrissName;
   const isSequenceWallet = connector?.id === "sequence";
-  const { isFreighterConnected, freighterAddress } = useFreighter();
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -29,11 +39,25 @@ export default function Header({ idrissName }: { idrissName: string }) {
   }, [isCopiedTooltipOpen]);
 
   const openUserInfoModal = (userAddress: string | undefined) => {
-    openModal(<UserInfoModal address={userAddress} idrissName={idrissName} />);
+    openModal(
+      <UserInfoModal
+        address={userAddress}
+        idrissName={idrissName}
+        stellarConnected={stellarConnected}
+        setStellarConnected={setStellarConnected}
+        setStellarAddress={setStellarAddress}
+      />
+    );
   };
 
   const openUserAuthModal = () => {
-    openModal(<UserAuthModal />, "bg-transparent");
+    openModal(
+      <UserAuthModal
+        setStellarConnected={setStellarConnected}
+        setStellarAddress={setStellarAddress}
+      />,
+      "bg-transparent"
+    );
   };
 
   return (
@@ -82,22 +106,22 @@ export default function Header({ idrissName }: { idrissName: string }) {
               👤
             </button>
           </div>
-        ) : isFreighterConnected ? (
+        ) : stellarConnected ? (
           <div className="flex z-10">
             <button
               data-tooltip-id="copy-wallet-tooltip"
               data-tooltip-content="Copied!"
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
-                navigator.clipboard.writeText(freighterAddress || "");
+                navigator.clipboard.writeText(stellarAddress || "");
                 setIsCopiedTooltipOpen(true);
               }}
             >
-              {sliceAddress(freighterAddress || "")}
+              {sliceAddress(stellarAddress || "")}
             </button>
             <button
               className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal(freighterAddress || undefined)}
+              onClick={() => openUserInfoModal(stellarAddress || undefined)}
               data-testid="profile-button"
             >
               👤

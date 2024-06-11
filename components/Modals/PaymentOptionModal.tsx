@@ -9,7 +9,6 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { useFreighter } from "@/lib/hooks";
 import { sliceAddress } from "@/lib/utils";
 import { buyWithSwap, buyWithStellarX } from "@/payments";
 
@@ -18,12 +17,13 @@ import BuyWithZeroswapModal from "./BuyWithZeroswapModal";
 
 export default function PaymentOptionModal({
   buyAmount,
+  stellarConnected = false,
 }: {
   buyAmount: number;
+  stellarConnected?: boolean;
 }) {
   const { address, connector, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { isFreighterConnected } = useFreighter();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
@@ -240,7 +240,7 @@ export default function PaymentOptionModal({
       />
     );
 
-    if (isFreighterConnected) {
+    if (stellarConnected) {
       return [stellarx];
     } else if (!isConnected) {
       return [uniswap, unlimitAndEmbr];

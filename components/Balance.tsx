@@ -21,6 +21,7 @@ type Props = {
   totalBalance: FetchBalanceResult | undefined;
   usdcBalance: FetchBalanceResult | undefined;
   stellarBalance: FetchBalanceResult | undefined;
+  stellarConnected: boolean;
 };
 
 export default function Balance({
@@ -32,6 +33,7 @@ export default function Balance({
   totalBalance,
   usdcBalance,
   stellarBalance,
+  stellarConnected,
 }: Props) {
   const { openModal } = useContext(ModalContext);
 
@@ -152,6 +154,7 @@ export default function Balance({
                     buyAmount={Number(
                       usdcBalanceFormatted.fmtBalanceDollarPart
                     )}
+                    stellarConnected={stellarConnected}
                   />
                 )
               );
@@ -203,6 +206,7 @@ export default function Balance({
           openModal(
             <BuyGloModal
               totalBalance={Number(totalBalanceFormatted.fmtBalanceDollarPart)}
+              stellarConnected={stellarConnected}
             />
           )
         }

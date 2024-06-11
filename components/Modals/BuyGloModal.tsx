@@ -9,8 +9,10 @@ import PaymentOptionModal from "./PaymentOptionModal";
 
 export default function BuyGloModal({
   totalBalance,
+  stellarConnected = false,
 }: {
   totalBalance: number;
+  stellarConnected?: boolean;
 }) {
   const { openModal } = useContext(ModalContext);
 
@@ -32,7 +34,12 @@ export default function BuyGloModal({
         className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6 mt-6 mb-6"
         disabled={glo === 0}
         onClick={() =>
-          openModal(<PaymentOptionModal buyAmount={Math.floor(glo)} />)
+          openModal(
+            <PaymentOptionModal
+              buyAmount={Math.floor(glo)}
+              stellarConnected={stellarConnected}
+            />
+          )
         }
       >
         Buy ${formattedGlo} Glo Dollar
