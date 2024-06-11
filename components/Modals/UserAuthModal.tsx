@@ -256,7 +256,7 @@ export default function UserAuthModal({
             data-testid="walletconnect-login-button"
             onClick={() => connectWithConnector(2)}
           >
-            <h4>WalletConnect</h4>
+            <h4>WalletConnect (EVM)</h4>
             <Image
               alt="walletconnect"
               src="/walletconnect.svg"
