@@ -113,7 +113,8 @@ export default async function handler(
           }
         }
       } else {
-        averageTotalBalanceThisMonth.add(balancesEndOfMonth["totalBalance"]);
+        const number = BigInt(balancesEndOfMonth["totalBalance"]) * decimals;
+        averageTotalBalanceThisMonth = BigNumber.from(number);
       }
 
       const balance = averageTotalBalanceThisMonth.div(decimals).toNumber();
