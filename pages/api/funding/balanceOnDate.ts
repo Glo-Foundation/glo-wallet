@@ -33,6 +33,11 @@ export default async function handler(
   const decimals = BigInt(10 ** 18);
 
   const allFundingChoices = await prisma.charityChoice.findMany({
+    where: {
+      creationDate: {
+        lt: firstThisMonth.toISOString(),
+      },
+    },
     distinct: ["address"],
     orderBy: {
       choiceNum: "desc",
