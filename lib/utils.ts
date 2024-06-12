@@ -145,13 +145,21 @@ export const CHARITY_MAP: Record<string, any> = {
     short_name: "Extreme poverty",
     iconPath: "/give-directly-logo.jpeg",
     description: "Fund basic income programs for people in extreme poverty",
-    type: "default",
+    type: "",
   },
   ["OPEN_SOURCE"]: {
     name: "Web3 public goods",
     short_name: "Public Goods",
     iconPath: "/gitcoin-grants-logo.jpeg",
     description: "Support causes that advance public goods in Web3",
+    type: "",
+  },
+  ["REFUGEE_CRISIS"]: {
+    name: "Help refugees",
+    short_name: "Refugees",
+    iconPath: "/refugee-camp.png",
+    description:
+      "Save lives and build better futures for people forced to flee their homes",
     type: "",
   },
   ["CLIMATE"]: {
@@ -176,13 +184,6 @@ export const CHARITY_MAP: Record<string, any> = {
   //   iconPath: "/givewell-logo.jpeg",
   //   description:
   //     "Funds charities that save or improve lives the most per dollar donated",
-  //   type: "",
-  // },
-  // ["REFUGEE_CRISIS"]: {
-  //   name: "Save Refugees' Lives",
-  //   short_name: "Refugees",
-  //   iconPath: "/give-directly-logo.jpeg",
-  //   description: "Funds basic income programs for people in extreme poverty",
   //   type: "",
   // },
   // ["ANIMAL_LIVES"]: {
