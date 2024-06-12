@@ -240,7 +240,7 @@ export default function Home() {
       localStorage.setItem("showedLogin", "true");
       localStorage.setItem("loggedIn", "false");
     }
-  }, [isConnected]);
+  }, [isConnected, stellarConnected]);
 
   useEffect(() => {
     if (isConnected && asPath === "/buy") {
