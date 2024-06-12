@@ -91,9 +91,11 @@ export default function Balance({
           You own
         </div>
         <div
-          className="flex flex-row font-semibold justify-center cursor-pointer"
+          className={`flex flex-row font-semibold justify-center ${
+            stellarConnected ? "" : "cursor-pointer"
+          }`}
           onClick={() => {
-            stellarBalance && stellarBalance?.value > 0
+            stellarConnected
               ? null
               : setShowBalanceDropdown(!showBalanceDropdown);
           }}
