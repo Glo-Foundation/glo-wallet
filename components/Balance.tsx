@@ -184,10 +184,7 @@ export default function Balance({
             <div className="self-center text-sm text-pine-700/90 mb-1.5 mx-1">
               for
             </div>
-            <CharitySelector
-              openModal={openModal}
-              yearlyYield={totalBalanceFormatted.yearlyYield}
-            />
+            <CharitySelector />
           </>
         )}
       </div>

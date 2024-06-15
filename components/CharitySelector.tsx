@@ -1,32 +1,30 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import useSWR from "swr";
 
-import CharitySelectorModal from "@/components/Modals/CharitySelectorModal";
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { CHARITY_MAP } from "@/lib/utils";
 
-type Props = {
-  openModal: (content: JSX.Element) => void;
-  yearlyYield: number;
-};
-
-export default function CharitySelector({ openModal, yearlyYield }: Props) {
+export default function CharitySelector() {
   const { data, error, isLoading } = useSWR(
     "/charity",
     getCurrentSelectedCharity
   );
+  const { push } = useRouter();
   if (error) {
     console.error(error);
   }
-  const selectedCharity = data && data[0].name;
+  const selected =
+    data &&
+    (data.length > 1
+      ? `${data.length} recipients`
+      : CHARITY_MAP[data[0].name]?.short_name);
 
   return (
     <div className="m-1 relative z-0 flex justify-center">
       <button
         className={`flex flex-col bg-white border-2 border-cyan-600 text-impact-fg rounded-[36px] h-[32px] px-2 py-5 font-normal items-baseline`}
-        onClick={() =>
-          openModal(<CharitySelectorModal monthlyYield={yearlyYield / 12} />)
-        }
+        onClick={() => push("/recipients")}
       >
         <div className="flex w-full justify-center items-center space-y-2">
           <div className="flex items-center">
@@ -37,9 +35,7 @@ export default function CharitySelector({ openModal, yearlyYield }: Props) {
               alt="choose public good to fund"
             />
             <p className="ml-2 text-sm">
-              {isLoading
-                ? "Loading"
-                : CHARITY_MAP[selectedCharity]?.short_name || "Pending"}
+              {isLoading ? "Loading" : selected || "Pending"}
             </p>
           </div>
         </div>

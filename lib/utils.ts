@@ -145,7 +145,7 @@ export const CHARITY_MAP: Record<string, any> = {
     short_name: "Extreme poverty",
     iconPath: "/give-directly-logo.jpeg",
     description: "Fund basic income programs for people in extreme poverty",
-    type: "default",
+    type: "",
   },
   ["OPEN_SOURCE"]: {
     name: "Web3 public goods",
