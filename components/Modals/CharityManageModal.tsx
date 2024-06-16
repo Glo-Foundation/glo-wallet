@@ -50,7 +50,7 @@ const CharitySlider = ({
         </div>
         <div className="pl-4">
           <div className="flex justify-between">
-            <h5 className="text-sm mb-2">{name}</h5>
+            <h5 className="text-sm">{name}</h5>
           </div>
         </div>
         {onDelete && (
@@ -65,7 +65,7 @@ const CharitySlider = ({
         )}
       </div>
     </div>
-    <div className="px-6 py-2 mb-8">
+    <div className="px-3 py-2 mb-8">
       <Slider
         min={0}
         max={100}
@@ -83,8 +83,7 @@ const CharitySlider = ({
           height: "28px",
           width: "28px",
           backgroundColor: "white",
-          borderColor: "rgb(36 229 223)",
-          border: "8px solid",
+          border: "8px solid rgb(36 229 223)",
           opacity: 1,
           marginTop: "-13px",
         }}
@@ -165,7 +164,7 @@ export default function CharityManageModal(props: Props) {
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
-      <div className="flex flex-row justify-end p-3">
+      <div className="flex flex-row justify-end p-2">
         <button onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>

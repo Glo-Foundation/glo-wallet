@@ -180,12 +180,13 @@ export default function App({ Component, pageProps }: AppProps) {
           </WagmiConfig>
         )}
       </main>
-      {!router.pathname.includes("/impact") && (
-        <Script
-          src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
-          async={true}
-        />
-      )}
+      {!router.pathname.includes("/impact") &&
+        !router.pathname.includes("/recipients") && (
+          <Script
+            src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
+            async={true}
+          />
+        )}
     </>
   );
 }

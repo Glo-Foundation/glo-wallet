@@ -68,7 +68,7 @@ export default function Recipients({ yearlyYield }: Props) {
             </div>
           </div>
           <p className="text-sm py-4 copy text-left">
-            You&apos;re generating <b>~{yearlyYield || 0}$/year.</b>
+            You&apos;re generating <b>~{yearlyYield.toFixed(2) || 0}$/year.</b>
           </p>
         </section>
         <section>
@@ -106,7 +106,7 @@ export default function Recipients({ yearlyYield }: Props) {
         </section>
       </div>
       {!!selectedKeys.length && (
-        <div className="flex justify-between justify-center bg-white absolute bottom-0 w-auto">
+        <div className="flex p-2 justify-between content-center bg-white fixed bottom-0 left-0 right-0">
           <p>
             {selectedKeys.length} recipient{selectedKeys.length > 1 ? "s" : ""}{" "}
             selected
