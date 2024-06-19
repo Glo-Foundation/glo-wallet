@@ -111,7 +111,7 @@ export default function Home() {
     stellarBalance,
   ]);
 
-  const { setCTAs } = useUserStore();
+  const { setCTAs, isRecipientsView } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();
@@ -291,7 +291,7 @@ export default function Home() {
           setStellarAddress={setStellarAddress}
         />
         <div className="flex flex-col space-y-4">
-          {asPath === "/recipients" ? (
+          {isRecipientsView ? (
             <Recipients
               yearlyYield={customFormatBalance(totalBalance).yearlyYield}
             />

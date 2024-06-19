@@ -9,6 +9,7 @@ import { useNetwork } from "wagmi";
 
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
+import { useToastStore } from "@/lib/store";
 import { api, CHARITY_MAP } from "@/lib/utils";
 import { UpdateCharityChoiceBody } from "@/pages/api/charity";
 
@@ -107,6 +108,9 @@ export default function CharityManageModal(props: Props) {
 
   const { chain } = useNetwork();
   const [percentMap, setPercentMap] = useState(props.percentMap);
+
+  const { setShowToast } = useToastStore();
+
   const selectedKeys = Object.keys(percentMap);
   const charities = Object.entries(CHARITY_MAP).filter((x) =>
     selectedKeys.includes(x[0])
@@ -159,13 +163,27 @@ export default function CharityManageModal(props: Props) {
     api()
       .post(`/charity`, apiBody)
       .then(() => mutate())
-      .then(() => closeModal());
+      .then(() => closeModal())
+      .then(() =>
+        setShowToast({
+          showToast: true,
+          message: "123",
+        })
+      );
   };
 
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-end p-2">
-        <button onClick={() => closeModal()}>
+        <button
+          onClick={() => {
+            setShowToast({
+              showToast: true,
+              message: "123",
+            });
+            // closeModal();
+          }}
+        >
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>

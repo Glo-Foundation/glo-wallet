@@ -170,19 +170,19 @@ export const CHARITY_MAP: Record<string, any> = {
       "Can't decide? Follow group wisdom. Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
+  ["REFUGEE_CRISIS"]: {
+    name: "Save Refugees' Lives",
+    short_name: "Refugees",
+    iconPath: "/give-directly-logo.jpeg",
+    description: "Funds basic income programs for people in extreme poverty",
+    type: "",
+  },
   // ["SAVE_LIVES"]: {
   //   name: "Save Lives",
   //   short_name: "Saving lives",
   //   iconPath: "/givewell-logo.jpeg",
   //   description:
   //     "Funds charities that save or improve lives the most per dollar donated",
-  //   type: "",
-  // },
-  // ["REFUGEE_CRISIS"]: {
-  //   name: "Save Refugees' Lives",
-  //   short_name: "Refugees",
-  //   iconPath: "/give-directly-logo.jpeg",
-  //   description: "Funds basic income programs for people in extreme poverty",
   //   type: "",
   // },
   // ["ANIMAL_LIVES"]: {
