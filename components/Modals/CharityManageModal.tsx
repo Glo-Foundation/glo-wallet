@@ -1,4 +1,4 @@
-import { Charity, CharityChoice } from "@prisma/client";
+import { Charity } from "@prisma/client";
 import { getWalletClient, SignMessageResult, Chain } from "@wagmi/core";
 import Image from "next/image";
 import Slider from "rc-slider";
@@ -15,7 +15,6 @@ import { UpdateCharityChoiceBody } from "@/pages/api/charity";
 
 interface Props {
   yearlyYield: number;
-  selectedCharities: CharityChoice[];
   percentMap: { [id: string]: number };
   isAddNewMode?: boolean;
 }
@@ -66,7 +65,7 @@ const CharitySlider = ({
         )}
       </div>
     </div>
-    <div className="px-3 py-2 mb-8">
+    <div className="px-5 py-2 mb-8">
       <Slider
         min={0}
         max={100}
@@ -107,10 +106,9 @@ export default function CharityManageModal(props: Props) {
   const { closeModal } = useContext(ModalContext);
 
   const { chain } = useNetwork();
-  const [percentMap, setPercentMap] = useState(props.percentMap);
+  const [percentMap, setPercentMap] = useState({ ...props.percentMap });
 
   const { setShowToast } = useToastStore();
-
   const selectedKeys = Object.keys(percentMap);
   const charities = Object.entries(CHARITY_MAP).filter((x) =>
     selectedKeys.includes(x[0])
@@ -167,7 +165,7 @@ export default function CharityManageModal(props: Props) {
       .then(() =>
         setShowToast({
           showToast: true,
-          message: "123",
+          message: "Distribution updated",
         })
       );
   };
@@ -175,15 +173,7 @@ export default function CharityManageModal(props: Props) {
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-end p-2">
-        <button
-          onClick={() => {
-            setShowToast({
-              showToast: true,
-              message: "123",
-            });
-            // closeModal();
-          }}
-        >
+        <button onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
@@ -226,11 +216,11 @@ export default function CharityManageModal(props: Props) {
         onClick={() => updateSelectedCharity(percentMap, chain as Chain)}
         disabled={!canSave}
       >
-        {props.isAddNewMode
+        {!canSave
+          ? "Sum need to be 100"
+          : props.isAddNewMode
           ? "Confirm"
-          : canSave
-          ? "Save"
-          : "Sum need to be 100"}
+          : "Save"}
       </button>
     </div>
   );

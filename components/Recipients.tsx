@@ -67,8 +67,7 @@ export default function Recipients({ yearlyYield }: Props) {
               onClick={() => {
                 openModal(
                   <CharityManageModal
-                    selectedCharities={selectedCharities || []}
-                    percentMap={percentMap}
+                    percentMap={{ ...percentMap }}
                     yearlyYield={yearlyYield}
                   />
                 );
@@ -139,7 +138,6 @@ export default function Recipients({ yearlyYield }: Props) {
               onClick={() =>
                 openModal(
                   <CharityManageModal
-                    selectedCharities={selectedCharities || []}
                     percentMap={{
                       ...percentMap,
                       ...selectedKeys.reduce(
