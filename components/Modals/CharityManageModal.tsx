@@ -17,6 +17,7 @@ interface Props {
   yearlyYield: number;
   percentMap: { [id: string]: number };
   isAddNewMode?: boolean;
+  onClose?: () => void;
 }
 
 interface CharityCardProps {
@@ -118,6 +119,10 @@ export default function CharityManageModal(props: Props) {
     Object.values(percentMap).reduce((acc, cur) => acc + cur, 0) == 100;
   const { mutate } = useSWR("/charity", getCurrentSelectedCharity);
 
+  const onClose = () => {
+    if (props.onClose) props.onClose();
+  };
+
   const signCharityUpdateMessage = async (
     message: string
   ): Promise<SignMessageResult | undefined> => {
@@ -173,7 +178,12 @@ export default function CharityManageModal(props: Props) {
   return (
     <div className="flex flex-col max-w-[343px] text-pine-900 p-2">
       <div className="flex flex-row justify-end p-2">
-        <button onClick={() => closeModal()}>
+        <button
+          onClick={() => {
+            closeModal();
+            onClose();
+          }}
+        >
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
@@ -213,7 +223,10 @@ export default function CharityManageModal(props: Props) {
 
       <button
         className={"primary-button m-2"}
-        onClick={() => updateSelectedCharity(percentMap, chain as Chain)}
+        onClick={() => {
+          updateSelectedCharity(percentMap, chain as Chain);
+          onClose();
+        }}
         disabled={!canSave}
       >
         {!canSave

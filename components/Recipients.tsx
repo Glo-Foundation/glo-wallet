@@ -147,6 +147,7 @@ export default function Recipients({ yearlyYield }: Props) {
                     }}
                     isAddNewMode={true}
                     yearlyYield={yearlyYield}
+                    onClose={() => setSelected({})}
                   />
                 )
               }
