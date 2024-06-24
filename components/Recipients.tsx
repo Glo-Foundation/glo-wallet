@@ -54,7 +54,7 @@ export default function Recipients({ yearlyYield }: Props) {
   return (
     <>
       <div className="bg-white rounded-[20px] p-4">
-        <div className="flex flex-row justify-end p-2">
+        <div className="flex flex-row justify-end px-2">
           <button onClick={() => setRecipientsView(false)}>
             <Image alt="x" src="/x.svg" height={16} width={16} />
           </button>

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import Sheet from "react-modal-sheet";
+import Image from "next/image";
+import { useEffect } from "react";
 
 import { useToastStore } from "@/lib/store";
 
@@ -9,40 +9,23 @@ export default function Toast() {
     showToast: store.showToast,
     setShowToast: store.setShowToast,
   }));
-  const [open, setOpen] = useState(false);
 
-  // Ensure it animates in when loaded
   useEffect(() => {
-    showToast && setOpen(true);
+    if (showToast) {
+      setTimeout(() => setShowToast({ showToast: false }), 3000);
+    }
   }, [message, showToast]);
 
-  const handleCLose = () => {
-    setOpen(false);
-    setShowToast({ showToast: false });
-  };
+  if (!showToast) {
+    return null;
+  }
 
   return (
-    <Sheet
-      isOpen={open}
-      onClose={handleCLose}
-      detent="content-height"
-      style={{
-        maxWidth: "500px",
-        left: "0",
-        right: "0",
-        margin: "auto",
-        overflow: "visible",
-      }}
-      tweenConfig={{ ease: "easeInOut", duration: 1.5 }}
-    >
-      <Sheet.Container>
-        <Sheet.Header style={{ cursor: "pointer" }} onTap={handleCLose} />
-        <Sheet.Content>
-          <div className="flex justify-between items-center pb-6 px-8 copy z-90">
-            <span className="font-semibold">{message}</span>
-          </div>
-        </Sheet.Content>
-      </Sheet.Container>
-    </Sheet>
+    <div className="flex items-center justify-center">
+      <div className="fixed bottom-2 flex items-center justify-center px-3 py-1 rounded copy z-1000 bg-impact-bg">
+        <Image alt="checkmark" src="check-alpha.svg" height={12} width={12} />
+        <span className="font-semibold ml-2">{message}</span>
+      </div>
+    </div>
   );
 }

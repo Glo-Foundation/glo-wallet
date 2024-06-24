@@ -115,8 +115,10 @@ export default function CharityManageModal(props: Props) {
     selectedKeys.includes(x[0])
   );
 
-  const canSave =
-    Object.values(percentMap).reduce((acc, cur) => acc + cur, 0) == 100;
+  const sumPercentages = Object.values(percentMap).reduce(
+    (acc, cur) => acc + cur,
+    0
+  );
   const { mutate } = useSWR("/charity", getCurrentSelectedCharity);
 
   const onClose = () => {
@@ -143,9 +145,11 @@ export default function CharityManageModal(props: Props) {
       charity: x[0] as Charity,
       percent: x[1],
     }));
+
+    const nonZeroCharities = charities.filter((x) => x.percent > 0);
     const signingBody = {
       timestamp: currentDateTimeString,
-      charities,
+      charities: nonZeroCharities,
       action: "Updating charity selection",
     };
 
@@ -155,11 +159,11 @@ export default function CharityManageModal(props: Props) {
     const apiBody: UpdateCharityChoiceBody = {
       sigFields: {
         timestamp: currentDateTimeString,
-        charities,
+        charities: nonZeroCharities,
         action: "Updating charity selection",
         sig: signature as Hex,
       },
-      choices: charities,
+      choices: nonZeroCharities,
       chain: chain,
     };
 
@@ -227,10 +231,10 @@ export default function CharityManageModal(props: Props) {
           updateSelectedCharity(percentMap, chain as Chain);
           onClose();
         }}
-        disabled={!canSave}
+        disabled={sumPercentages < 100}
       >
-        {!canSave
-          ? "Sum need to be 100"
+        {sumPercentages < 100
+          ? `Please add ${100 - sumPercentages}%`
           : props.isAddNewMode
           ? "Confirm"
           : "Save"}
