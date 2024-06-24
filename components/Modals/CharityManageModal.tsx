@@ -2,7 +2,7 @@ import { Charity } from "@prisma/client";
 import { getWalletClient, SignMessageResult, Chain } from "@wagmi/core";
 import Image from "next/image";
 import Slider from "rc-slider";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import { Hex } from "viem/types/misc";
 import { useNetwork } from "wagmi";
@@ -108,6 +108,19 @@ export default function CharityManageModal(props: Props) {
 
   const { chain } = useNetwork();
   const [percentMap, setPercentMap] = useState({ ...props.percentMap });
+  useEffect(() => {
+    if (props.isAddNewMode) {
+      const count = Object.keys(props.percentMap).length;
+      const equal = Math.floor(100 / count);
+      const last = equal + (100 - equal * count);
+      const updated: { [id: string]: number } = {};
+
+      Object.entries(percentMap).forEach(([key], index) => {
+        updated[key] = index < count - 1 ? equal : last;
+      });
+      setPercentMap({ ...updated });
+    }
+  }, []);
 
   const { setShowToast } = useToastStore();
   const selectedKeys = Object.keys(percentMap);
@@ -231,9 +244,9 @@ export default function CharityManageModal(props: Props) {
           updateSelectedCharity(percentMap, chain as Chain);
           onClose();
         }}
-        disabled={sumPercentages < 100}
+        disabled={sumPercentages != 100}
       >
-        {sumPercentages < 100
+        {sumPercentages != 100
           ? `Please add ${100 - sumPercentages}%`
           : props.isAddNewMode
           ? "Confirm"
