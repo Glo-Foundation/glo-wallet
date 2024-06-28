@@ -131,7 +131,9 @@ export default function Home() {
 
   useEffect(() => {
     const getStellarBalance = async () => {
-      const apiUrl = `https://horizon.stellar.org/accounts/${stellarAddress}`;
+      const apiUrl = `https://horizon${
+        isProd() ? "" : "-testnet"
+      }.stellar.org/accounts/${stellarAddress}`;
       const res = await axios.get(apiUrl, {
         headers: { Accept: "application/json" },
       });

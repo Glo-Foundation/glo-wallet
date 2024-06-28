@@ -1,7 +1,10 @@
 import { Charity } from "@prisma/client";
+import * as StellarSdk from "@stellar/stellar-sdk";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
 import { Address, Chain } from "wagmi";
+
+import { isProd } from "@/lib/utils";
 
 import prisma from "../../lib/prisma";
 
@@ -57,6 +60,10 @@ async function updateCharityChoicesForAddress(
 ) {
   const { choices, sigFields, chain } = body;
 
+  if (!sigFields.sig) {
+    throw new Error("Missing signature");
+  }
+
   const sigDate = new Date(sigFields.timestamp);
   const latestCharityChoice = await getCharityChoiceForAddress(address);
   if (sigDate <= latestCharityChoice[0].creationDate || sigDate > new Date()) {
@@ -82,6 +89,23 @@ async function updateCharityChoicesForAddress(
     });
 
     if (!valid) {
+      throw new Error("Invalid signature");
+    }
+  } else {
+    // isStellar
+    const tx = StellarSdk.TransactionBuilder.fromXDR(
+      sigFields.sig,
+      isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
+    );
+    const sig = tx.signatures[0].signature();
+
+    const isValid = StellarSdk.verify(
+      tx.hash(),
+      sig,
+      new StellarSdk.Address(address).toBuffer()
+    );
+
+    if (!isValid) {
       throw new Error("Invalid signature");
     }
   }

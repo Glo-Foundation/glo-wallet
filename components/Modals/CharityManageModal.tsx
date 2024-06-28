@@ -1,3 +1,9 @@
+import {
+  allowAllModules,
+  StellarWalletsKit,
+  WalletNetwork,
+  XBULL_ID,
+} from "@creit.tech/stellar-wallets-kit/build/index";
 import { Charity } from "@prisma/client";
 import { getWalletClient, SignMessageResult, Chain } from "@wagmi/core";
 import Image from "next/image";
@@ -10,7 +16,7 @@ import { useNetwork } from "wagmi";
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
 import { useToastStore } from "@/lib/store";
-import { api, CHARITY_MAP } from "@/lib/utils";
+import { api, buildStellarTx, CHARITY_MAP, isProd } from "@/lib/utils";
 import { UpdateCharityChoiceBody } from "@/pages/api/charity";
 
 interface Props {
@@ -140,11 +146,41 @@ export default function CharityManageModal(props: Props) {
 
   const signCharityUpdateMessage = async (
     message: string
-  ): Promise<SignMessageResult | undefined> => {
+  ): Promise<SignMessageResult | string | undefined> => {
     const walletClient = await getWalletClient();
+
+    const isStellar = !walletClient;
+
+    if (isStellar) {
+      const stellarNetwork = isProd()
+        ? WalletNetwork.PUBLIC
+        : WalletNetwork.TESTNET;
+      const stellarWalletId =
+        localStorage.getItem("stellarWalletId") || XBULL_ID;
+
+      const kit: StellarWalletsKit = new StellarWalletsKit({
+        network: stellarNetwork,
+        selectedWalletId: stellarWalletId,
+        modules: allowAllModules(),
+      });
+
+      console.log({ kit });
+      const publicKey = await kit.getPublicKey();
+
+      const tx = buildStellarTx(publicKey);
+      const { result: sig } = await kit.signTx({
+        xdr: tx.toXDR(),
+        publicKeys: [publicKey],
+        network: stellarNetwork,
+      });
+
+      return sig;
+    }
+
     const sig = await walletClient?.signMessage({
       message: message,
     } as any);
+
     return sig;
   };
 
