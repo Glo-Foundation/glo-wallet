@@ -5,6 +5,13 @@ import {
   XBULL_ID,
 } from "@creit.tech/stellar-wallets-kit/build/index";
 import { Charity } from "@prisma/client";
+import {
+  Account,
+  Asset,
+  Networks,
+  Operation,
+  TransactionBuilder,
+} from "@stellar/stellar-sdk";
 import { getWalletClient, SignMessageResult, Chain } from "@wagmi/core";
 import Image from "next/image";
 import Slider from "rc-slider";
@@ -16,7 +23,7 @@ import { useNetwork } from "wagmi";
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
 import { useToastStore } from "@/lib/store";
-import { api, buildStellarTx, CHARITY_MAP, isProd } from "@/lib/utils";
+import { api, CHARITY_MAP, isProd } from "@/lib/utils";
 import { UpdateCharityChoiceBody } from "@/pages/api/charity";
 
 interface Props {
@@ -167,7 +174,20 @@ export default function CharityManageModal(props: Props) {
       console.log({ kit });
       const publicKey = await kit.getPublicKey();
 
-      const tx = buildStellarTx(publicKey);
+      const tx = new TransactionBuilder(new Account(publicKey, "0"), {
+        fee: "1",
+        networkPassphrase: isProd() ? Networks.PUBLIC : Networks.TESTNET,
+      })
+        .addOperation(
+          Operation.payment({
+            destination: publicKey,
+            amount: "1",
+            asset: Asset.native(),
+          })
+        )
+        .setTimeout(30)
+        .build();
+
       const { result: sig } = await kit.signTx({
         xdr: tx.toXDR(),
         publicKeys: [publicKey],

@@ -200,18 +200,3 @@ export const CHARITY_MAP: Record<string, any> = {
   //   type: "",
   // }
 };
-
-export const buildStellarTx = (publicKey: string) =>
-  new TransactionBuilder(new Account(publicKey, "0"), {
-    fee: "1",
-    networkPassphrase: isProd() ? Networks.PUBLIC : Networks.TESTNET,
-  })
-    .addOperation(
-      Operation.payment({
-        destination: publicKey,
-        amount: "1",
-        asset: Asset.native(),
-      })
-    )
-    .setTimeout(30)
-    .build();
