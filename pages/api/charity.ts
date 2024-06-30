@@ -45,7 +45,9 @@ async function getCharityChoiceForAddress(address: string) {
       data: {
         address: address,
         choiceNum: 1,
-        name: Charity.EXTREME_POVERTY,
+        name: address.slice(0, 4).includes("0x")
+          ? Charity.EXTREME_POVERTY
+          : Charity.REFUGEE_CRISIS,
         percent: 100,
       },
     });

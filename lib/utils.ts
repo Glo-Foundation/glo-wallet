@@ -161,6 +161,14 @@ export const CHARITY_MAP: Record<string, any> = {
     description: "Support causes that advance public goods in Web3",
     type: "",
   },
+  ["REFUGEE_CRISIS"]: {
+    name: "Help refugees",
+    short_name: "Refugees",
+    iconPath: "/refugee-camp.png",
+    description:
+      "Save lives and build better futures for people forced to flee their homes",
+    type: "",
+  },
   ["CLIMATE"]: {
     name: "Combat climate change",
     short_name: "Climate",
