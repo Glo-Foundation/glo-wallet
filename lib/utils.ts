@@ -185,13 +185,6 @@ export const CHARITY_MAP: Record<string, any> = {
       "Can't decide? Follow group wisdom. Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
-  ["REFUGEE_CRISIS"]: {
-    name: "Save Refugees' Lives",
-    short_name: "Refugees",
-    iconPath: "/give-directly-logo.jpeg",
-    description: "Funds basic income programs for people in extreme poverty",
-    type: "",
-  },
   // ["SAVE_LIVES"]: {
   //   name: "Save Lives",
   //   short_name: "Saving lives",
