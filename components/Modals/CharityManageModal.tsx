@@ -171,7 +171,6 @@ export default function CharityManageModal(props: Props) {
         modules: allowAllModules(),
       });
 
-      console.log({ kit });
       const publicKey = await kit.getPublicKey();
 
       const tx = new TransactionBuilder(new Account(publicKey, "0"), {
