@@ -28,7 +28,7 @@ export default function UserInfoModal({
   const { chain } = useNetwork();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const { setTransfers, setCTAs } = useUserStore();
+  const { setTransfers, setCTAs, setRecipientsView } = useUserStore();
 
   const email = Cookies.get("glo-email");
 
@@ -47,12 +47,15 @@ export default function UserInfoModal({
     setTransfers({ transfers: [] });
     setCTAs([]);
     localStorage.setItem("showedLogin", "true");
+    setRecipientsView(false);
+
     closeModal();
   };
 
   async function disconnectStellar() {
     localStorage.setItem("stellarAddress", "");
     localStorage.setItem("stellarConnected", "false");
+    localStorage.setItem("stellarWalletId", "");
     setStellarAddress("");
     setStellarConnected(false);
   }

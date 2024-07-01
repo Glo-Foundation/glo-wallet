@@ -1,12 +1,14 @@
 import { Charity } from "@prisma/client";
+import * as StellarSdk from "@stellar/stellar-sdk";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
-import { polygon } from "viem/chains";
 import { Address, Chain } from "wagmi";
+
+import { isProd } from "@/lib/utils";
 
 import prisma from "../../lib/prisma";
 
-import type { ByteArray, Hex } from "viem/types/misc";
+import type { Hex } from "viem/types/misc";
 
 async function getLatestCharityChoiceNumForAddress(
   address: string
@@ -43,7 +45,9 @@ async function getCharityChoiceForAddress(address: string) {
       data: {
         address: address,
         choiceNum: 1,
-        name: Charity.EXTREME_POVERTY,
+        name: address.slice(0, 4).includes("0x")
+          ? Charity.EXTREME_POVERTY
+          : Charity.REFUGEE_CRISIS,
         percent: 100,
       },
     });
@@ -58,6 +62,10 @@ async function updateCharityChoicesForAddress(
 ) {
   const { choices, sigFields, chain } = body;
 
+  if (!sigFields.sig) {
+    throw new Error("Missing signature");
+  }
+
   const sigDate = new Date(sigFields.timestamp);
   const latestCharityChoice = await getCharityChoiceForAddress(address);
   if (sigDate <= latestCharityChoice[0].creationDate || sigDate > new Date()) {
@@ -66,7 +74,7 @@ async function updateCharityChoicesForAddress(
 
   const message = JSON.stringify({
     timestamp: sigFields.timestamp,
-    charity: choices[0].charity,
+    charities: choices,
     action: "Updating charity selection",
   });
 
@@ -83,6 +91,23 @@ async function updateCharityChoicesForAddress(
     });
 
     if (!valid) {
+      throw new Error("Invalid signature");
+    }
+  } else {
+    // isStellar
+    const tx = StellarSdk.TransactionBuilder.fromXDR(
+      sigFields.sig,
+      isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
+    );
+    const sig = tx.signatures[0].signature();
+
+    const isValid = StellarSdk.verify(
+      tx.hash(),
+      sig,
+      new StellarSdk.Address(address).toBuffer()
+    );
+
+    if (!isValid) {
       throw new Error("Invalid signature");
     }
   }
@@ -119,7 +144,10 @@ async function updateCharityChoicesForAddress(
 export interface UpdateCharityChoiceBody {
   sigFields: {
     timestamp: string;
-    charity: Charity;
+    charities: {
+      charity: Charity;
+      percent: number;
+    }[];
     action: string;
     sig: Hex;
   };

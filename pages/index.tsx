@@ -12,7 +12,6 @@ import {
   arbitrumSepolia,
 } from "@wagmi/core/chains";
 import axios from "axios";
-import { BigNumber } from "ethers";
 import Cookies from "js-cookie";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -24,12 +23,13 @@ import CTA from "@/components/CTA";
 import Header from "@/components/Header";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
+import Recipients from "@/components/Recipients";
 import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
 import { getAllowedChains, api, initApi, isProd } from "@/lib/utils";
-import { getTotalGloBalance } from "@/utils";
+import { customFormatBalance, getTotalGloBalance } from "@/utils";
 import { getUSDCContractAddress } from "@/utils";
 
 export default function Home() {
@@ -111,7 +111,7 @@ export default function Home() {
     stellarBalance,
   ]);
 
-  const { setCTAs } = useUserStore();
+  const { setCTAs, isRecipientsView } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();
@@ -131,7 +131,9 @@ export default function Home() {
 
   useEffect(() => {
     const getStellarBalance = async () => {
-      const apiUrl = `https://horizon.stellar.org/accounts/${stellarAddress}`;
+      const apiUrl = `https://horizon${
+        isProd() ? "" : "-testnet"
+      }.stellar.org/accounts/${stellarAddress}`;
       const res = await axios.get(apiUrl, {
         headers: { Accept: "application/json" },
       });
@@ -248,7 +250,6 @@ export default function Home() {
       push("/");
     }
   }, []);
-
   return (
     <>
       <Head>
@@ -292,22 +293,30 @@ export default function Home() {
           setStellarAddress={setStellarAddress}
         />
         <div className="flex flex-col space-y-4">
-          <Balance
-            stellarBalance={stellarBalance}
-            polygonBalance={polygonBalance}
-            ethereumBalance={ethereumBalance}
-            celoBalance={celoBalance}
-            optimismBalance={optimismBalance}
-            arbitrumBalance={arbitrumBalance}
-            totalBalance={totalBalance}
-            usdcBalance={usdcBalance.data}
-            stellarConnected={stellarConnected}
-          />
+          {isRecipientsView ? (
+            <Recipients
+              yearlyYield={customFormatBalance(totalBalance).yearlyYield}
+            />
+          ) : (
+            <>
+              <Balance
+                stellarBalance={stellarBalance}
+                polygonBalance={polygonBalance}
+                ethereumBalance={ethereumBalance}
+                celoBalance={celoBalance}
+                optimismBalance={optimismBalance}
+                arbitrumBalance={arbitrumBalance}
+                totalBalance={totalBalance}
+                usdcBalance={usdcBalance.data}
+                stellarConnected={stellarConnected}
+              />
 
-          <CTA
-            balance={totalBalance?.formatted}
-            identity={idrissName || address! || stellarAddress!}
-          />
+              <CTA
+                balance={totalBalance?.formatted}
+                identity={idrissName || address! || stellarAddress!}
+              />
+            </>
+          )}
         </div>
       </div>
     </>

@@ -103,7 +103,7 @@ export default function UserAuthModal({
         await connectStellar();
       } else {
         // Connect with EVM connectors
-        await connect({ connector: connectors[index] });
+        connect({ connector: connectors[index] });
       }
       closeModal();
     });
@@ -116,12 +116,13 @@ export default function UserAuthModal({
   });
 
   async function connectStellar() {
-    const modal = await stellarKit.openModal({
+    await stellarKit.openModal({
       onWalletSelected: async (option: ISupportedWallet) => {
         stellarKit.setWallet(option.id);
         const publicKey = await stellarKit.getPublicKey();
-        await localStorage.setItem("stellarConnected", "true");
-        await localStorage.setItem("stellarAddress", publicKey);
+        localStorage.setItem("stellarConnected", "true");
+        localStorage.setItem("stellarAddress", publicKey);
+        localStorage.setItem("stellarWalletId", option.id);
         setStellarConnected(true);
         setStellarAddress(publicKey);
       },
