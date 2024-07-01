@@ -14,6 +14,8 @@ import {
 } from "@creit.tech/stellar-wallets-kit/build/index";
 import { configureChains } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
+import { WalletConnectModal } from "@walletconnect/modal";
+import { SignClient } from "@walletconnect/sign-client";
 import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -116,29 +118,37 @@ export default function UserAuthModal({
     });
   };
 
-  const stellarKit: StellarWalletsKit = new StellarWalletsKit({
-    network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
-    selectedWalletId: XBULL_ID,
-    modules: [
-      new FreighterModule(),
-      new xBullModule(),
-      new HanaModule(),
-      new LobstrModule(),
-      new RabetModule(),
-      new AlbedoModule(),
-      new WalletConnectModule({
-        url: "https://app.glodollar.org",
-        projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-        method: WalletConnectAllowedMethods.SIGN,
-        description: `Glo Dollar App allows you to select which public good to fund`,
-        name: "Glo Dollar",
-        icons: ["public/glo-logo.svg"],
-        network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
-      }),
-    ],
-  });
-
   async function connectStellar() {
+    const signClient = await SignClient.init({
+      projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+    });
+
+    const stellarKit: StellarWalletsKit = new StellarWalletsKit({
+      network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
+      selectedWalletId: XBULL_ID,
+      modules: [
+        new FreighterModule(),
+        new xBullModule(),
+        new HanaModule(),
+        new LobstrModule(),
+        new RabetModule(),
+        new AlbedoModule(),
+        new WalletConnectModule({
+          url: "https://app.glodollar.org",
+          projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+          method: WalletConnectAllowedMethods.SIGN,
+          description: `Glo Dollar App allows you to select which public good to fund`,
+          name: "Glo Dollar",
+          icons: ["public/glo-logo.svg"],
+          network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
+          modal: new WalletConnectModal({
+            projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+          }),
+          client: signClient as any, // Hmmmm
+        }),
+      ],
+    });
+
     await stellarKit.openModal({
       onWalletSelected: async (option: ISupportedWallet) => {
         stellarKit.setWallet(option.id);
