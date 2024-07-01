@@ -33,6 +33,11 @@ export default async function handler(
   const decimals = BigInt(10 ** 18);
 
   const allFundingChoices = await prisma.charityChoice.findMany({
+    where: {
+      creationDate: {
+        lt: firstThisMonth.toISOString(),
+      },
+    },
     distinct: ["address"],
     orderBy: {
       choiceNum: "desc",
@@ -108,7 +113,8 @@ export default async function handler(
           }
         }
       } else {
-        averageTotalBalanceThisMonth.add(balancesEndOfMonth["totalBalance"]);
+        const number = BigInt(balancesEndOfMonth["totalBalance"]) * decimals;
+        averageTotalBalanceThisMonth = BigNumber.from(number);
       }
 
       const balance = averageTotalBalanceThisMonth.div(decimals).toNumber();

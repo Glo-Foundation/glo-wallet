@@ -91,9 +91,11 @@ export default function Balance({
           You own
         </div>
         <div
-          className="flex flex-row font-semibold justify-center cursor-pointer"
+          className={`flex flex-row font-semibold justify-center ${
+            stellarConnected ? "" : "cursor-pointer"
+          }`}
           onClick={() => {
-            stellarBalance && stellarBalance?.value > 0
+            stellarConnected
               ? null
               : setShowBalanceDropdown(!showBalanceDropdown);
           }}
@@ -184,10 +186,7 @@ export default function Balance({
             <div className="self-center text-sm text-pine-700/90 mb-1.5 mx-1">
               for
             </div>
-            <CharitySelector
-              openModal={openModal}
-              yearlyYield={totalBalanceFormatted.yearlyYield}
-            />
+            <CharitySelector />
           </>
         )}
       </div>

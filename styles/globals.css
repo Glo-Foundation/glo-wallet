@@ -108,10 +108,6 @@ body {
     @apply mr-4 flex border justify-center min-w-[32px] min-h-[32px] rounded-full bg-pine-200;
   }
 
-  .react-modal-sheet-container {
-    @apply shadow-xl !important;
-  }
-
   .animated-impact-list {
     @apply m-0 h-[24px] overflow-hidden !important;
   }

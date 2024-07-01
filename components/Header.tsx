@@ -92,7 +92,7 @@ export default function Header({
               data-tooltip-content="Copied!"
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
-                navigator.clipboard.writeText(idrissName!);
+                navigator.clipboard.writeText(idrissName || address!);
                 setIsCopiedTooltipOpen(true);
               }}
             >
