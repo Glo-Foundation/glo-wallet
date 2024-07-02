@@ -67,7 +67,7 @@ export default function Header({
       </Head>
 
       <nav className="mt-4 mb-6 flex justify-between items-center">
-        <a href="https://glodollar.org/" target="_blank" rel="noreferrer">
+        <a href={window.location.origin} rel="noreferrer">
           <Image
             src="/glo-logo-text.svg"
             alt="glo logo"
@@ -136,13 +136,6 @@ export default function Header({
             >
               Log in
             </button>
-            <a
-              target="_blank"
-              href="https://www.notion.so/Glo-FAQ-946e21901e934fc19992df43a3008077"
-              rel="noreferrer"
-            >
-              <button className="secondary-button">?</button>
-            </a>
           </div>
         )}
       </nav>
