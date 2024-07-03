@@ -2,8 +2,6 @@ import { Chain } from "@wagmi/core";
 import {
   polygon,
   mainnet,
-  polygonMumbai,
-  goerli,
   celoAlfajores,
   celo,
   optimism,
@@ -28,12 +26,10 @@ export default function NetworkSwitcher() {
 
   const getChainLogoPath = (chain: Chain): string => {
     switch (chain.id) {
-      case mainnet.id:
-      case goerli.id: {
+      case mainnet.id: {
         return "/ethereum-square-logo.svg";
       }
-      case polygon.id:
-      case polygonMumbai.id: {
+      case polygon.id: {
         return "/polygon-matic-logo.svg";
       }
       case celo.id:
