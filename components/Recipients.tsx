@@ -18,6 +18,7 @@ interface Props {
 export default function Recipients({ yearlyYield }: Props) {
   const { openModal } = useContext(ModalContext);
   const [selected, setSelected] = useState({} as { [key: string]: boolean });
+  const [search, setSearch] = useState("");
   const { setRecipientsView } = useUserStore();
 
   useEffect(() => {
@@ -42,8 +43,14 @@ export default function Recipients({ yearlyYield }: Props) {
   const selectedCharitiesMap = Object.entries(CHARITY_MAP).filter((x) =>
     selectedCharitiesNames.includes(x[0] as Charity)
   );
+  const searchPhrase = search.toLowerCase();
+
   const availableCharitiesMap = Object.entries(CHARITY_MAP).filter(
-    (x) => !selectedCharitiesNames.includes(x[0] as Charity)
+    (x) =>
+      !selectedCharitiesNames.includes(x[0] as Charity) &&
+      (!search.length ||
+        x[1].description.toLowerCase().includes(searchPhrase) ||
+        x[1].name.toLowerCase().includes(searchPhrase))
   );
   const percentMap: { [id: string]: number } =
     selectedCharities?.reduce(
@@ -103,6 +110,23 @@ export default function Recipients({ yearlyYield }: Props) {
         <section className="text-left p-2">
           <h3 className="pt-0">Explore recipients</h3>
           <p className="text-sm py-4 copy">You can pick as many as you want.</p>
+        </section>
+
+        <section className="text-left pb-4 relative">
+          <Image
+            className="ml-2 mt-1.5 absolute left-0"
+            src="/search.svg"
+            width={16}
+            height={16}
+            alt="search"
+          />
+          <input
+            className="pl-7 w-full rounded-full bg-white border-2 rounded-xl border-pine-100"
+            placeholder={"Search..."}
+            value={search}
+            data-testid="submit-email-input"
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </section>
         <section>
           {availableCharitiesMap.map(([key, charity]) => (

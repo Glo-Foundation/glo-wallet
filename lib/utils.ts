@@ -137,7 +137,15 @@ export const formatBalance = (balance: {
   }).format(formatted || 0);
 };
 
-export const CHARITY_MAP: Record<string, any> = {
+export type CharityRecord = {
+  name: string;
+  short_name: string;
+  iconPath: string;
+  description: string;
+  type: string;
+};
+
+export const CHARITY_MAP: Record<string, CharityRecord> = {
   ["EXTREME_POVERTY"]: {
     name: "Fight extreme poverty",
     short_name: "Extreme poverty",
