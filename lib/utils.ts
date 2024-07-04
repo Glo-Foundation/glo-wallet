@@ -55,11 +55,7 @@ export const getChains = (): Chain[] => {
   if (isE2E()) {
     return [polygon] as Chain[];
   }
-  return (
-    isProd()
-      ? [polygon, mainnet, celo, optimism, arbitrum]
-      : [optimismSepolia, arbitrumSepolia, celoAlfajores]
-  ) as Chain[];
+  return getAllowedChains();
 };
 
 export const signMsgContent = "glo-wallet";
@@ -85,7 +81,7 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 
 export const getAllowedChains = (): Chain[] => {
   return isProd()
-    ? [polygon, mainnet, celo, optimism, arbitrum]
+    ? [optimism, polygon, mainnet, celo, arbitrum]
     : [optimismSepolia, arbitrumSepolia, celoAlfajores];
 };
 
