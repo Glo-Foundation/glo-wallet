@@ -8,7 +8,6 @@ import CharityCard from "@/components/Modals/CharityCard";
 import CharityManageModal from "@/components/Modals/CharityManageModal";
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
-import { useUserStore } from "@/lib/store";
 import { CHARITY_MAP } from "@/lib/utils";
 
 interface Props {
@@ -18,7 +17,7 @@ interface Props {
 export default function Recipients({ yearlyYield }: Props) {
   const { openModal } = useContext(ModalContext);
   const [selected, setSelected] = useState({} as { [key: string]: boolean });
-  const { setRecipientsView } = useUserStore();
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const x = document.getElementById("Smallchat");
@@ -42,8 +41,14 @@ export default function Recipients({ yearlyYield }: Props) {
   const selectedCharitiesMap = Object.entries(CHARITY_MAP).filter((x) =>
     selectedCharitiesNames.includes(x[0] as Charity)
   );
+  const searchPhrase = search.toLowerCase();
+
   const availableCharitiesMap = Object.entries(CHARITY_MAP).filter(
-    (x) => !selectedCharitiesNames.includes(x[0] as Charity)
+    (x) =>
+      !selectedCharitiesNames.includes(x[0] as Charity) &&
+      (!search.length ||
+        x[1].description.toLowerCase().includes(searchPhrase) ||
+        x[1].name.toLowerCase().includes(searchPhrase))
   );
   const percentMap: { [id: string]: number } =
     selectedCharities?.reduce(
@@ -54,11 +59,6 @@ export default function Recipients({ yearlyYield }: Props) {
   return (
     <>
       <div className="bg-white rounded-[20px] p-4">
-        <div className="flex flex-row justify-end px-2">
-          <button onClick={() => setRecipientsView(false)}>
-            <Image alt="x" src="/x.svg" height={16} width={16} />
-          </button>
-        </div>
         <section className="text-center p-2">
           <div className="flex justify-between">
             <h3 className="pt-0">My recipients</h3>
@@ -103,6 +103,23 @@ export default function Recipients({ yearlyYield }: Props) {
         <section className="text-left p-2">
           <h3 className="pt-0">Explore recipients</h3>
           <p className="text-sm py-4 copy">You can pick as many as you want.</p>
+        </section>
+
+        <section className="text-left pb-4 relative">
+          <Image
+            className="ml-2 mt-1.5 absolute left-0"
+            src="/search.svg"
+            width={16}
+            height={16}
+            alt="search"
+          />
+          <input
+            className="pl-7 w-full rounded-full bg-white border-2 rounded-xl border-pine-100"
+            placeholder={"Search..."}
+            value={search}
+            data-testid="submit-email-input"
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </section>
         <section>
           {availableCharitiesMap.map(([key, charity]) => (

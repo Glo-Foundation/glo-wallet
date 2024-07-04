@@ -55,11 +55,7 @@ export const getChains = (): Chain[] => {
   if (isE2E()) {
     return [polygon] as Chain[];
   }
-  return (
-    isProd()
-      ? [polygon, mainnet, celo, optimism, arbitrum]
-      : [optimismSepolia, arbitrumSepolia, celoAlfajores]
-  ) as Chain[];
+  return getAllowedChains();
 };
 
 export const signMsgContent = "glo-wallet";
@@ -85,7 +81,7 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 
 export const getAllowedChains = (): Chain[] => {
   return isProd()
-    ? [polygon, mainnet, celo, optimism, arbitrum]
+    ? [optimism, polygon, mainnet, celo, arbitrum]
     : [optimismSepolia, arbitrumSepolia, celoAlfajores];
 };
 
@@ -137,7 +133,15 @@ export const formatBalance = (balance: {
   }).format(formatted || 0);
 };
 
-export const CHARITY_MAP: Record<string, any> = {
+export type CharityRecord = {
+  name: string;
+  short_name: string;
+  iconPath: string;
+  description: string;
+  type: string;
+};
+
+export const CHARITY_MAP: Record<string, CharityRecord> = {
   ["EXTREME_POVERTY"]: {
     name: "Fight extreme poverty",
     short_name: "Extreme poverty",
