@@ -1,16 +1,7 @@
-import {
-  Account,
-  Asset,
-  Networks,
-  Operation,
-  TransactionBuilder,
-} from "@stellar/stellar-sdk";
 import { Chain } from "@wagmi/core";
 import {
-  goerli,
   mainnet,
   polygon,
-  polygonMumbai,
   celo,
   celoAlfajores,
   optimism,
@@ -67,7 +58,7 @@ export const getChains = (): Chain[] => {
   return (
     isProd()
       ? [polygon, mainnet, celo, optimism, arbitrum]
-      : [polygonMumbai, goerli, celoAlfajores, optimismSepolia, arbitrumSepolia]
+      : [optimismSepolia, arbitrumSepolia, celoAlfajores]
   ) as Chain[];
 };
 
@@ -95,7 +86,7 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 export const getAllowedChains = (): Chain[] => {
   return isProd()
     ? [polygon, mainnet, celo, optimism, arbitrum]
-    : [polygonMumbai, goerli, celoAlfajores, optimismSepolia, arbitrumSepolia];
+    : [optimismSepolia, arbitrumSepolia, celoAlfajores];
 };
 
 export const getStellarMarketCap = async (): Promise<number> => {
