@@ -8,7 +8,6 @@ import CharityCard from "@/components/Modals/CharityCard";
 import CharityManageModal from "@/components/Modals/CharityManageModal";
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
-import { useUserStore } from "@/lib/store";
 import { CHARITY_MAP } from "@/lib/utils";
 
 interface Props {
@@ -19,7 +18,6 @@ export default function Recipients({ yearlyYield }: Props) {
   const { openModal } = useContext(ModalContext);
   const [selected, setSelected] = useState({} as { [key: string]: boolean });
   const [search, setSearch] = useState("");
-  const { setRecipientsView } = useUserStore();
 
   useEffect(() => {
     const x = document.getElementById("Smallchat");
@@ -61,11 +59,6 @@ export default function Recipients({ yearlyYield }: Props) {
   return (
     <>
       <div className="bg-white rounded-[20px] p-4">
-        <div className="flex flex-row justify-end px-2">
-          <button onClick={() => setRecipientsView(false)}>
-            <Image alt="x" src="/x.svg" height={16} width={16} />
-          </button>
-        </div>
         <section className="text-center p-2">
           <div className="flex justify-between">
             <h3 className="pt-0">My recipients</h3>
