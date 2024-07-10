@@ -10,6 +10,8 @@ import {
   celoAlfajores,
   optimismSepolia,
   arbitrumSepolia,
+  base,
+  baseSepolia,
 } from "@wagmi/core/chains";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -102,6 +104,15 @@ export default function Home() {
     chainId: arbitrumId,
   });
 
+  const baseId = isProd() ? base.id : baseSepolia.id;
+  const { data: baseBalance } = useBalance({
+    address,
+    token: getSmartContractAddress(baseId),
+    watch: true,
+    cacheTime: 5_000,
+    chainId: optimismId,
+  });
+
   const totalBalance = getTotalGloBalance([
     ethereumBalance,
     polygonBalance,
@@ -109,6 +120,7 @@ export default function Home() {
     optimismBalance,
     arbitrumBalance,
     stellarBalance,
+    baseBalance,
   ]);
 
   const { setCTAs, isRecipientsView } = useUserStore();
@@ -306,6 +318,7 @@ export default function Home() {
                 celoBalance={celoBalance}
                 optimismBalance={optimismBalance}
                 arbitrumBalance={arbitrumBalance}
+                baseBalance={baseBalance}
                 totalBalance={totalBalance}
                 usdcBalance={usdcBalance.data}
                 stellarConnected={stellarConnected}
