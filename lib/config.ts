@@ -70,7 +70,6 @@ export const PROHIBITED_REGIONS = [
   "UA-43", // Avtonomna Respublika Krym
   "UA-14", // Donetska oblast
   "UA-09", // Luhanska oblast
-  "US-NY", // Test
 ];
 
 const chainRPCUrl: { [id: number]: string } = {
