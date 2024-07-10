@@ -2,7 +2,7 @@ import { rateLimit } from "express-rate-limit";
 import { NextResponse, NextRequest } from "next/server";
 
 import { isAuthenticated } from "./lib/auth";
-import { PROHIBITED_COUNTRIES } from "./lib/config";
+import { PROHIBITED_COUNTRIES, PROHIBITED_REGIONS } from "./lib/config";
 
 export async function middleware(req: NextRequest, res: NextResponse) {
   try {
@@ -12,7 +12,13 @@ export async function middleware(req: NextRequest, res: NextResponse) {
   }
 
   const country = req.geo?.country || "";
-  if (PROHIBITED_COUNTRIES.includes(country)) {
+  const region = req.geo?.region || "";
+  const regionCode = `${country}-${region}`;
+
+  if (
+    PROHIBITED_COUNTRIES.includes(country) ||
+    PROHIBITED_REGIONS.includes(regionCode)
+  ) {
     return new Response("Blocked for legal reasons", { status: 451 });
   }
 

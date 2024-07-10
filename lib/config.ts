@@ -57,10 +57,20 @@ export const PROHIBITED_COUNTRIES = [
   "SS", // South Sudan
   "SD", // Sudan
   "SY", // Syrian Arab Republic
-  "UA", // Ukraine
   "VE", // Venezuela
   "YE", // Yemen
   "ZW", // Zimbabwe
+];
+
+// Geo loc demo: https://edge-functions-geolocation.vercel.sh/
+
+// https://en.wikipedia.org/wiki/ISO_3166-2:UA
+export const PROHIBITED_REGIONS = [
+  "UA-40", // Sevastopol
+  "UA-43", // Avtonomna Respublika Krym
+  "UA-14", // Donetska oblast
+  "UA-09", // Luhanska oblast
+  "US-NY", // Test
 ];
 
 const chainRPCUrl: { [id: number]: string } = {
