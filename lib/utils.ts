@@ -8,6 +8,8 @@ import {
   optimismSepolia,
   arbitrum,
   arbitrumSepolia,
+  base,
+  baseSepolia,
 } from "@wagmi/core/chains";
 import axios, { AxiosInstance } from "axios";
 import { BigNumber, ethers } from "ethers";
@@ -81,8 +83,8 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 
 export const getAllowedChains = (): Chain[] => {
   return isProd()
-    ? [optimism, polygon, mainnet, celo, arbitrum]
-    : [optimismSepolia, arbitrumSepolia, celoAlfajores];
+    ? [optimism, polygon, mainnet, celo, arbitrum, base]
+    : [optimismSepolia, arbitrumSepolia, celoAlfajores, baseSepolia];
 };
 
 export const getStellarMarketCap = async (): Promise<number> => {
