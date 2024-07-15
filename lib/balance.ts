@@ -11,6 +11,8 @@ import {
   optimismSepolia,
   arbitrum,
   arbitrumSepolia,
+  base,
+  baseSepolia,
 } from "@wagmi/core/chains";
 import axios from "axios";
 import { BigNumber } from "ethers";
@@ -28,7 +30,9 @@ export const getBalances = async (address: string, onDate?: Date) => {
     optimismBalance,
     arbitrumBalance,
     stellarBalance,
+    baseBalance,
   ] = [
+    BigNumber.from("0"),
     BigNumber.from("0"),
     BigNumber.from("0"),
     BigNumber.from("0"),
@@ -43,12 +47,14 @@ export const getBalances = async (address: string, onDate?: Date) => {
       celoBalance,
       optimismBalance,
       arbitrumBalance,
+      baseBalance,
     ] = await Promise.all([
       getChainBalance(address, isProd() ? polygon : polygonMumbai, onDate),
       getChainBalance(address, isProd() ? mainnet : goerli, onDate),
       getChainBalance(address, isProd() ? celo : celoAlfajores, onDate),
       getChainBalance(address, isProd() ? optimism : optimismSepolia, onDate),
       getChainBalance(address, isProd() ? arbitrum : arbitrumSepolia, onDate),
+      getChainBalance(address, isProd() ? base : baseSepolia, onDate),
     ]);
     const decimals = BigInt(10 ** 18);
     balance = polygonBalance
@@ -56,6 +62,7 @@ export const getBalances = async (address: string, onDate?: Date) => {
       .add(celoBalance)
       .add(arbitrumBalance)
       .add(optimismBalance)
+      .add(baseBalance)
       .div(decimals)
       .toNumber();
   } else {
@@ -71,6 +78,7 @@ export const getBalances = async (address: string, onDate?: Date) => {
     celoBalance,
     optimismBalance,
     arbitrumBalance,
+    baseBalance,
     stellarBalance,
   };
 };

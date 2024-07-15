@@ -21,6 +21,7 @@ type Props = {
   totalBalance: FetchBalanceResult | undefined;
   usdcBalance: FetchBalanceResult | undefined;
   stellarBalance: FetchBalanceResult | undefined;
+  baseBalance: FetchBalanceResult | undefined;
   stellarConnected: boolean;
 };
 
@@ -33,6 +34,7 @@ export default function Balance({
   totalBalance,
   usdcBalance,
   stellarBalance,
+  baseBalance,
   stellarConnected,
 }: Props) {
   const { openModal } = useContext(ModalContext);
@@ -46,6 +48,7 @@ export default function Balance({
   const arbitrumBalanceFormatted = customFormatBalance(arbitrumBalance);
   const totalBalanceFormatted = customFormatBalance(totalBalance);
   const usdcBalanceFormatted = customFormatBalance(usdcBalance);
+  const baseBalanceformatted = customFormatBalance(baseBalance);
   const stellarBalanceformatted = customFormatBalance(stellarBalance);
   const { connector } = useAccount();
   const isSequenceWallet = connector?.id === "sequence";
@@ -82,6 +85,11 @@ export default function Balance({
       logo: "/arbitrum-logo.svg",
       balance: arbitrumBalanceFormatted,
     },
+    {
+      name: "Base",
+      logo: "/base-logo.svg",
+      balance: baseBalanceformatted,
+    },
   ];
 
   return (
@@ -110,7 +118,7 @@ export default function Balance({
               </div>
             </div>
             {showBalanceDropdown && (
-              <div className="absolute top-10 z-10 mt-1 w-[280px] h-[200px] bg-white border-2 border-pine-400/90 rounded-lg">
+              <div className="absolute top-10 z-10 mt-1 w-[280px] h-[220px] bg-white border-2 border-pine-400/90 rounded-lg">
                 <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
 
                 <div className="flex flex-col justify-center items-center">

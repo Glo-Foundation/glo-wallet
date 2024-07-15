@@ -7,6 +7,7 @@ import { useConnect, useAccount } from "wagmi";
 import AddToWallet from "@/components/AddToWallet";
 import NetworkSwitcher from "@/components/NetworkSwitcher";
 import { ModalContext } from "@/lib/context";
+import { useUserStore } from "@/lib/store";
 import { sliceAddress } from "@/lib/utils";
 
 import UserAuthModal from "./Modals/UserAuthModal";
@@ -29,7 +30,8 @@ export default function Header({
   const { address, isConnected, connector } = useAccount();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal } = useContext(ModalContext);
-  const isWalletIdriss = !!idrissName;
+  const { setRecipientsView } = useUserStore();
+
   const isSequenceWallet = connector?.id === "sequence";
 
   useEffect(() => {
@@ -67,7 +69,7 @@ export default function Header({
       </Head>
 
       <nav className="mt-4 mb-6 flex justify-between items-center">
-        <a href="https://glodollar.org/" target="_blank" rel="noreferrer">
+        <a className="cursor-pointer" onClick={() => setRecipientsView(false)}>
           <Image
             src="/glo-logo-text.svg"
             alt="glo logo"
@@ -136,13 +138,6 @@ export default function Header({
             >
               Log in
             </button>
-            <a
-              target="_blank"
-              href="https://www.notion.so/Glo-FAQ-946e21901e934fc19992df43a3008077"
-              rel="noreferrer"
-            >
-              <button className="secondary-button">?</button>
-            </a>
           </div>
         )}
       </nav>

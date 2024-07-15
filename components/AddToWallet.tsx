@@ -1,57 +1,16 @@
 import { Chain } from "@wagmi/core";
-import {
-  polygon,
-  mainnet,
-  polygonMumbai,
-  goerli,
-  celoAlfajores,
-  celo,
-  optimism,
-  optimismSepolia,
-  arbitrum,
-  arbitrumSepolia,
-} from "@wagmi/core/chains";
 import Image from "next/image";
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { useNetwork, useSwitchNetwork, useWalletClient } from "wagmi";
+import { useNetwork, useWalletClient } from "wagmi";
 
 import { chainConfig } from "@/lib/config";
-import { getAllowedChains } from "@/lib/utils";
 
 export default function AddToWallet() {
   const { chain } = useNetwork();
   const { data: walletClient } = useWalletClient();
   const [isAddToWalletTooltipOpen, setIsAddToWalletTooltipOpen] =
     useState(false);
-
-  const getChainLogoPath = (chain: Chain): string => {
-    switch (chain.id) {
-      case mainnet.id:
-      case goerli.id: {
-        return "/ethereum-square-logo.svg";
-      }
-      case polygon.id:
-      case polygonMumbai.id: {
-        return "/polygon-matic-logo.svg";
-      }
-      case celo.id:
-      case celoAlfajores.id: {
-        return "/celo-square-logo.svg";
-      }
-      case optimism.id:
-      case optimismSepolia.id: {
-        return "/optimism-logo.svg";
-      }
-      case arbitrum.id:
-      case arbitrumSepolia.id: {
-        return "/arbitrum-logo.svg";
-      }
-      default: {
-        return "/question-mark.svg";
-      }
-    }
-  };
 
   function addTokenToWallet(chain: Chain) {
     try {

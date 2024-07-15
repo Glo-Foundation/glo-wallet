@@ -1,22 +1,15 @@
-import {
-  Account,
-  Asset,
-  Networks,
-  Operation,
-  TransactionBuilder,
-} from "@stellar/stellar-sdk";
 import { Chain } from "@wagmi/core";
 import {
-  goerli,
   mainnet,
   polygon,
-  polygonMumbai,
   celo,
   celoAlfajores,
   optimism,
   optimismSepolia,
   arbitrum,
   arbitrumSepolia,
+  base,
+  baseSepolia,
 } from "@wagmi/core/chains";
 import axios, { AxiosInstance } from "axios";
 import { BigNumber, ethers } from "ethers";
@@ -64,11 +57,7 @@ export const getChains = (): Chain[] => {
   if (isE2E()) {
     return [polygon] as Chain[];
   }
-  return (
-    isProd()
-      ? [polygon, mainnet, celo, optimism, arbitrum]
-      : [optimismSepolia, arbitrumSepolia]
-  ) as Chain[];
+  return getAllowedChains();
 };
 
 export const signMsgContent = "glo-wallet";
@@ -94,8 +83,8 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
 
 export const getAllowedChains = (): Chain[] => {
   return isProd()
-    ? [polygon, mainnet, celo, optimism, arbitrum]
-    : [optimismSepolia, arbitrumSepolia];
+    ? [optimism, polygon, mainnet, celo, arbitrum, base]
+    : [optimismSepolia, arbitrumSepolia, celoAlfajores, baseSepolia];
 };
 
 export const getStellarMarketCap = async (): Promise<number> => {
@@ -126,7 +115,7 @@ export const getCMCMarketCap = async (): Promise<BigNumber> => {
   const apiUrl =
     "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest";
   const res = await axios.get(apiUrl, {
-    params: { id: "3408,2563,26081,3330,27772,3306,23888,28443,825" }, // get all usd stablecoins from coinmarketcap
+    params: { id: "3408,2563,26081,3330,27772,3306,23888,28443,825,29569" }, // get all usd stablecoins from coinmarketcap
     headers: { "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY },
   });
 
@@ -146,7 +135,15 @@ export const formatBalance = (balance: {
   }).format(formatted || 0);
 };
 
-export const CHARITY_MAP: Record<string, any> = {
+export type CharityRecord = {
+  name: string;
+  short_name: string;
+  iconPath: string;
+  description: string;
+  type: string;
+};
+
+export const CHARITY_MAP: Record<string, CharityRecord> = {
   ["EXTREME_POVERTY"]: {
     name: "Fight extreme poverty",
     short_name: "Extreme poverty",

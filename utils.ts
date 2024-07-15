@@ -10,6 +10,8 @@ import {
   polygonMumbai,
   arbitrum,
   arbitrumSepolia,
+  base,
+  baseSepolia,
 } from "@wagmi/core/chains";
 import EthDater from "ethereum-block-by-date";
 import { BigNumber, ethers } from "ethers";
@@ -157,13 +159,19 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
       return "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
     }
     case optimismSepolia.id: {
-      return "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6";
+      return "0x5fd84259d66Cd46123540766Be93DFE6D43130D7";
     }
     case arbitrum.id: {
       return "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
     }
     case arbitrumSepolia.id: {
       return "0xf3C3351D6Bd0098EEb33ca8f830FAf2a141Ea2E1";
+    }
+    case base.id: {
+      return "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+    }
+    case baseSepolia.id: {
+      return "0x036cbd53842c5426634e7929541ec2318f3dcf7e";
     }
     case polygon.id:
     default: {
@@ -226,6 +234,16 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     case arbitrumSepolia.id: {
       outputCurrency = getSmartContractAddress(arbitrumSepolia.id);
       swapChain = "arbitrum_sepolia";
+      break;
+    }
+    case base.id: {
+      outputCurrency = getSmartContractAddress(base.id);
+      swapChain = "base";
+      break;
+    }
+    case baseSepolia.id: {
+      outputCurrency = getSmartContractAddress(baseSepolia.id);
+      swapChain = "base_sepolia";
       break;
     }
     case polygonMumbai.id: {

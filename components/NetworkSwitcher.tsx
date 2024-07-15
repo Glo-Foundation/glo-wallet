@@ -2,14 +2,14 @@ import { Chain } from "@wagmi/core";
 import {
   polygon,
   mainnet,
-  polygonMumbai,
-  goerli,
   celoAlfajores,
   celo,
   optimism,
   optimismSepolia,
   arbitrum,
   arbitrumSepolia,
+  base,
+  baseSepolia,
 } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -28,12 +28,10 @@ export default function NetworkSwitcher() {
 
   const getChainLogoPath = (chain: Chain): string => {
     switch (chain.id) {
-      case mainnet.id:
-      case goerli.id: {
+      case mainnet.id: {
         return "/ethereum-square-logo.svg";
       }
-      case polygon.id:
-      case polygonMumbai.id: {
+      case polygon.id: {
         return "/polygon-matic-logo.svg";
       }
       case celo.id:
@@ -47,6 +45,10 @@ export default function NetworkSwitcher() {
       case arbitrum.id:
       case arbitrumSepolia.id: {
         return "/arbitrum-logo.svg";
+      }
+      case base.id:
+      case baseSepolia.id: {
+        return "/base-logo.svg";
       }
       default: {
         return "/question-mark.svg";
