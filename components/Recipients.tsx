@@ -83,7 +83,8 @@ export default function Recipients({ yearlyYield }: Props) {
             </div>
           </div>
           <p className="text-sm py-4 copy text-left">
-            You&apos;re generating <b>~{yearlyYield.toFixed(2) || 0}$/year.</b>
+            You&apos;re generating up to{" "}
+            <b>~{yearlyYield.toFixed(2) || 0}$/year.</b>
           </p>
         </section>
         <section>
