@@ -143,6 +143,7 @@ async function getStellarBalance(address: string): Promise<BigNumber> {
         "Something went wrong getting the stellar balances for: ",
         address
       );
+      balance = BigNumber.from(0);
     }
   } else {
     balance = BigNumber.from(cacheValue);
