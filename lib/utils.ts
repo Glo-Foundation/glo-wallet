@@ -171,6 +171,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     short_name: "Optimism RPGF",
     iconPath: "/optimism-logo.svg",
     description: "Grow the funding pool for Superchain builders via Retro PGF",
+    type: "",
   },
   ["CLIMATE"]: {
     name: "Combat climate change",
