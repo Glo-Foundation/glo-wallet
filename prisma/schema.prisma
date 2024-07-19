@@ -38,6 +38,7 @@ enum Charity {
   REFUGEE_CRISIS
   SAVE_LIVES
   ENDAOMENT
+  RETRO_PG_OP
 }
 
 model CharityChoice {
