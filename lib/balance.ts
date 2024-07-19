@@ -122,21 +122,28 @@ async function getStellarBalance(address: string): Promise<BigNumber> {
   let balance;
 
   if (!cacheValue) {
-    const apiUrl = `https://horizon.stellar.org/accounts/${address}`;
-    const res = await axios.get(apiUrl, {
-      headers: { Accept: "application/json" },
-    });
-    const stellarBalanceValue = await res.data.balances.reduce(
-      (acc: any, cur: any) =>
-        cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
-      0
-    );
-    balance = BigNumber.from(`${stellarBalanceValue}`.replace(".", ""));
+    try {
+      const apiUrl = `https://horizon.stellar.org/accounts/${address}`;
+      const res = await axios.get(apiUrl, {
+        headers: { Accept: "application/json" },
+      });
+      const stellarBalanceValue = await res.data.balances.reduce(
+        (acc: any, cur: any) =>
+          cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
+        0
+      );
+      balance = BigNumber.from(`${stellarBalanceValue}`.replace(".", ""));
 
-    await kv.hset(cacheKey, {
-      chainName: balance.toString(),
-    });
-    await kv.expire(cacheKey, 60 * 60 * 24);
+      await kv.hset(cacheKey, {
+        chainName: balance.toString(),
+      });
+      await kv.expire(cacheKey, 60 * 60 * 24);
+    } catch {
+      console.error(
+        "Something went wrong getting the stellar balances for: ",
+        address
+      );
+    }
   } else {
     balance = BigNumber.from(cacheValue);
   }
