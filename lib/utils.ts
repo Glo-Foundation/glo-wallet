@@ -155,7 +155,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     name: "Web3 public goods",
     short_name: "Public Goods",
     iconPath: "/gitcoin-grants-logo.jpeg",
-    description: "Support causes that advance public goods in Web3",
+    description: "Support causes that fund developers in Web3",
     type: "",
   },
   ["REFUGEE_CRISIS"]: {
@@ -165,6 +165,12 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     description:
       "Save lives and build better futures for people forced to flee their homes",
     type: "",
+  },
+  ["RETRO_PG_OP"]: {
+    name: "Optimism Retro Funding",
+    short_name: "Optimism RPGF",
+    iconPath: "/optimism-logo.svg",
+    description: "Grow the funding pool for Superchain builders via Retro PGF",
   },
   ["CLIMATE"]: {
     name: "Combat climate change",
@@ -182,6 +188,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
       "Can't decide? Follow group wisdom. Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
+
   // ["SAVE_LIVES"]: {
   //   name: "Save Lives",
   //   short_name: "Saving lives",
