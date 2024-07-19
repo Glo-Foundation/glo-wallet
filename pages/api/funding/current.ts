@@ -16,7 +16,7 @@ export default async function handler(
 
   const possibleFundingChoicesData = await prisma.charityChoice.findMany({
     where: {
-      name: { not: "EXTREME_POVERTY" },
+      name: { not: "OPEN_SOURCE" },
     },
     distinct: ["name"],
     select: {
@@ -33,7 +33,7 @@ export default async function handler(
   let fundingChoicesSummed = 0;
 
   allFundingChoices.forEach(async (fundingChoice) => {
-    if (fundingChoice.name !== "EXTREME_POVERTY") {
+    if (fundingChoice.name !== "OPEN_SOURCE") {
       const { totalBalance: balance } = await getBalances(
         fundingChoice.address
       );
