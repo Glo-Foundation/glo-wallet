@@ -18,14 +18,7 @@ import Cookies from "js-cookie";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useContext, useState } from "react";
-import {
-  useAccount,
-  useBalance,
-  useEnsAddress,
-  useEnsName,
-  useNetwork,
-  useSwitchNetwork,
-} from "wagmi";
+import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
@@ -53,18 +46,6 @@ export default function Home() {
   const [stellarAddress, setStellarAddress] = useState(
     localStorage.getItem("stellarAddress") || ""
   );
-
-  const { data: ens } = useEnsName({
-    address: "0x225f137127d9067788314bc7fcc1f36746a3c3B5",
-    cacheTime: 2_000,
-  });
-  const { data: ensName } = useEnsAddress({
-    name: "luc.eth", // The name to lookup
-    chainId: 1, // The chainId to lookup on
-    cacheTime: 2_000,
-  });
-
-  console.log({ ens, ensName });
 
   const [stellarBalance, setStellarBalance] = useState({
     decimals: 7,

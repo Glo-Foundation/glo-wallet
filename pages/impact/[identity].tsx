@@ -6,10 +6,11 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
+import { createPublicClient, http } from "viem";
+import { getEnsAddress, normalize } from "viem/ens";
+import { mainnet } from "wagmi";
 
-import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
-import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Navbar from "@/components/Navbar";
 import { getBalances } from "@/lib/balance";
 import { ModalContext } from "@/lib/context";
@@ -26,6 +27,7 @@ import { KVResponse } from "../api/transfers/first-glo/[address]";
 export default function Impact({
   address,
   idrissIdentity,
+  ensIdentity,
   balance,
   yearlyYield,
   polygonBalanceFormatted,
@@ -44,6 +46,7 @@ export default function Impact({
   const formattedBalance = getUSFormattedNumber(balance);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
+  address;
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -123,7 +126,7 @@ export default function Impact({
                 </button>
                 <div className="flex flex-col text-[14px] font-normal leading-normal text-pine-900/90">
                   <span>{sliceAddress(address as string, 4)}</span>
-                  <span>{idrissIdentity}</span>
+                  <span>{idrissIdentity || ensIdentity}</span>
                   <span>{whenFirstGlo}</span>
                 </div>
               </div>
@@ -277,10 +280,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   let address = identity;
   let idrissIdentity = "";
+  let ensIdentity = "";
 
   if (identity.startsWith("0x")) {
     address = identity;
-    idrissIdentity = await idriss.reverseResolve(address);
+    try {
+      idrissIdentity = await idriss.reverseResolve(address);
+    } catch {}
   } else if (identity.includes("@")) {
     idrissIdentity = identity;
     // TODO: handle exception in resolving
@@ -288,6 +294,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (idrissResolvedAddresses) {
       address = Object.values(idrissResolvedAddresses)[0];
     }
+  } else if (identity.endsWith(".eth")) {
+    const client = createPublicClient({
+      chain: mainnet,
+      transport: http(),
+    });
+    const ensAddress = await getEnsAddress(client, {
+      name: normalize(identity),
+    });
+    ensIdentity = identity;
+    address = ensAddress!;
   }
 
   if (!address) {
@@ -325,6 +341,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: {
       address,
       idrissIdentity,
+      ensIdentity,
       balance,
       yearlyYield,
       polygonBalanceFormatted: formatBalance(polygonBalance),
