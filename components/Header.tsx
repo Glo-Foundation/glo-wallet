@@ -15,12 +15,14 @@ import UserInfoModal from "./Modals/UserInfoModal";
 
 export default function Header({
   idrissName,
+  ensName,
   stellarConnected,
   stellarAddress,
   setStellarConnected,
   setStellarAddress,
 }: {
   idrissName: string;
+  ensName: string;
   stellarConnected: boolean;
   stellarAddress: string;
   setStellarConnected: (bool: boolean) => void;
@@ -45,6 +47,7 @@ export default function Header({
       <UserInfoModal
         address={userAddress}
         idrissName={idrissName}
+        ensName={ensName}
         stellarConnected={stellarConnected}
         setStellarConnected={setStellarConnected}
         setStellarAddress={setStellarAddress}

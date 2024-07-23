@@ -284,9 +284,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   if (identity.startsWith("0x")) {
     address = identity;
-    try {
-      idrissIdentity = await idriss.reverseResolve(address);
-    } catch {}
+    idrissIdentity = await idriss.reverseResolve(address);
   } else if (identity.includes("@")) {
     idrissIdentity = identity;
     // TODO: handle exception in resolving
