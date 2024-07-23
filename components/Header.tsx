@@ -97,11 +97,13 @@ export default function Header({
               data-tooltip-content="Copied!"
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
-                navigator.clipboard.writeText(idrissName || address!);
+                navigator.clipboard.writeText(
+                  ensName || idrissName || address!
+                );
                 setIsCopiedTooltipOpen(true);
               }}
             >
-              {idrissName || sliceAddress(address!)}
+              {ensName || idrissName || sliceAddress(address!)}
             </button>
             <button
               className="primary-button w-9 h-9"
