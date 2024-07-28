@@ -18,7 +18,13 @@ import Cookies from "js-cookie";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useContext, useState } from "react";
-import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
+import {
+  useAccount,
+  useBalance,
+  useEnsName,
+  useNetwork,
+  useSwitchNetwork,
+} from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
@@ -52,6 +58,8 @@ export default function Home() {
     formatted: "0",
     value: BigInt(0),
   });
+
+  const { data: ensName } = useEnsName({ address });
 
   const usdcBalance = useBalance({
     address,
@@ -297,6 +305,7 @@ export default function Home() {
       <div className="mt-4 px-6 bg-pine-100">
         <Header
           idrissName={idrissName}
+          ensName={ensName || ""}
           stellarConnected={stellarConnected}
           stellarAddress={stellarAddress}
           setStellarConnected={setStellarConnected}

@@ -12,6 +12,7 @@ import { sliceAddress } from "@/lib/utils";
 type Props = {
   address?: string;
   idrissName?: string;
+  ensName?: string;
   stellarConnected: boolean;
   setStellarConnected: (bool: boolean) => void;
   setStellarAddress: (str: string) => void;
@@ -20,6 +21,7 @@ type Props = {
 export default function UserInfoModal({
   address,
   idrissName,
+  ensName,
   stellarConnected,
   setStellarConnected,
   setStellarAddress,
@@ -117,6 +119,14 @@ export default function UserInfoModal({
               <h5 className="mt-6">IDriss ID:</h5>
               <div className="copy pseudo-input-text text-sm">
                 <span data-testid="profile-idriss">{idrissName}</span>
+              </div>
+            </>
+          )}
+          {ensName && (
+            <>
+              <h5 className="mt-6">Ens:</h5>
+              <div className="copy pseudo-input-text text-sm">
+                <span data-testid="profile-ens">{ensName}</span>
               </div>
             </>
           )}

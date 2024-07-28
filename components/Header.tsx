@@ -15,12 +15,14 @@ import UserInfoModal from "./Modals/UserInfoModal";
 
 export default function Header({
   idrissName,
+  ensName,
   stellarConnected,
   stellarAddress,
   setStellarConnected,
   setStellarAddress,
 }: {
   idrissName: string;
+  ensName: string;
   stellarConnected: boolean;
   stellarAddress: string;
   setStellarConnected: (bool: boolean) => void;
@@ -45,6 +47,7 @@ export default function Header({
       <UserInfoModal
         address={userAddress}
         idrissName={idrissName}
+        ensName={ensName}
         stellarConnected={stellarConnected}
         setStellarConnected={setStellarConnected}
         setStellarAddress={setStellarAddress}
@@ -94,11 +97,13 @@ export default function Header({
               data-tooltip-content="Copied!"
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
-                navigator.clipboard.writeText(idrissName || address!);
+                navigator.clipboard.writeText(
+                  ensName || idrissName || address!
+                );
                 setIsCopiedTooltipOpen(true);
               }}
             >
-              {idrissName || sliceAddress(address!)}
+              {ensName || idrissName || sliceAddress(address!)}
             </button>
             <button
               className="primary-button w-9 h-9"
