@@ -59,6 +59,10 @@ export default async function handler(
 
   for await (const walletAddress of Object.keys(choicesByAddress)) {
     const choices = choicesByAddress[walletAddress];
+    const lastChoiceNum = Math.max(...choices.map((x) => x.choiceNum));
+    const filteredChoices = choices.filter(
+      (x) => x.choiceNum === lastChoiceNum
+    );
     if (!choices.length) {
       return;
     }
@@ -112,7 +116,7 @@ export default async function handler(
       averageTotalBalanceThisMonth = BigNumber.from(number);
     }
 
-    choices.forEach((choice) => {
+    filteredChoices.forEach((choice) => {
       const { percent, name } = choice;
       const balance = averageTotalBalanceThisMonth
         .mul(percent)
