@@ -1,11 +1,10 @@
-import { Charity } from "@prisma/client";
+import { Charity, CharityChoice } from "@prisma/client";
 import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getBalances, getAverageBalance } from "@/lib/balance";
 import { fetchGloTransactions } from "@/lib/blockscout-explorer";
 import { getChains } from "@/lib/utils";
-import { getBalance } from "@/utils";
 import prisma from "lib/prisma";
 
 export default async function handler(
@@ -37,93 +36,96 @@ export default async function handler(
       creationDate: {
         lt: firstThisMonth.toISOString(),
       },
+      name: { not: "OPEN_SOURCE" },
     },
-    distinct: ["address"],
+    distinct: ["address", "name"],
     orderBy: {
       choiceNum: "desc",
     },
   });
 
-  const possibleFundingChoicesData = await prisma.charityChoice.findMany({
-    where: {
-      name: { not: "OPEN_SOURCE" },
-    },
-    distinct: ["name"],
-    select: {
-      name: true,
-    },
-  });
+  const possibleFundingChoices: { [key: string]: number } = Object.keys(
+    Charity
+  ).reduce((acc, cur) => ({ ...acc, [cur]: 0 }), {});
+  delete possibleFundingChoices["OPEN_SOURCE"];
 
-  const possibleFundingChoices = Object.keys(Charity).reduce(function (
-    map: Record<string, number>,
-    obj: string
-  ) {
-    map[obj] = 0;
-    return map;
-  },
-  {});
+  const choicesByAddress = allFundingChoices.reduce(
+    (acc, cur) => ({
+      ...acc,
+      [cur.address]: [...(acc[cur.address] || []), cur],
+    }),
+    {} as { [key: string]: CharityChoice[] }
+  );
 
-  let fundingChoicesSummed = 0;
+  for await (const walletAddress of Object.keys(choicesByAddress)) {
+    const choices = choicesByAddress[walletAddress];
+    const lastChoiceNum = Math.max(...choices.map((x) => x.choiceNum));
+    const filteredChoices = choices.filter(
+      (x) => x.choiceNum === lastChoiceNum
+    );
+    if (!choices.length) {
+      return;
+    }
 
-  allFundingChoices.forEach(async (fundingChoice) => {
-    if (fundingChoice.name !== "OPEN_SOURCE") {
-      const walletAddress = fundingChoice.address;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const balancesEndOfMonth: any = await getBalances(
-        walletAddress,
-        firstThisMonth
-      );
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const balancesStartOfMonth: any = await getBalances(
-        walletAddress,
-        firstLastMonth
-      );
-      let averageTotalBalanceThisMonth = BigNumber.from("0");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const balancesEndOfMonth: any = await getBalances(
+      walletAddress,
+      firstThisMonth
+    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const balancesStartOfMonth: any = await getBalances(
+      walletAddress,
+      firstLastMonth
+    );
 
-      if (
-        balancesEndOfMonth.totalBalance !== balancesStartOfMonth.totalBalance
-      ) {
-        for (const [key, value] of Object.entries(balancesEndOfMonth)) {
-          const startBalance = balancesStartOfMonth[key].toString();
-          const endBalance = balancesEndOfMonth[key].toString();
+    let averageTotalBalanceThisMonth = BigNumber.from("0");
 
-          if (endBalance !== startBalance && key !== "totalBalance") {
-            const chainName = key.replace("Balance", "");
-            const gloTransactionsLastMonth = await fetchGloTransactions(
-              walletAddress,
-              chainsObject[chainName],
-              chainName,
-              firstLastMonth,
-              firstThisMonth
-            );
-            const averageBalance = await getAverageBalance(
-              walletAddress,
-              firstLastMonth,
-              firstThisMonth,
-              balancesEndOfMonth[key],
-              gloTransactionsLastMonth
-            );
-            averageTotalBalanceThisMonth =
-              averageTotalBalanceThisMonth.add(averageBalance);
-          } else if (key !== "totalBalance") {
-            // populate end of month balances
-            averageTotalBalanceThisMonth = averageTotalBalanceThisMonth.add(
-              balancesEndOfMonth[key]
-            );
-          }
+    if (balancesEndOfMonth.totalBalance !== balancesStartOfMonth.totalBalance) {
+      for (const [key] of Object.entries(balancesEndOfMonth)) {
+        const startBalance = balancesStartOfMonth[key].toString();
+        const endBalance = balancesEndOfMonth[key].toString();
+
+        if (endBalance !== startBalance && key !== "totalBalance") {
+          const chainName = key.replace("Balance", "");
+          const gloTransactionsLastMonth = await fetchGloTransactions(
+            walletAddress,
+            chainsObject[chainName],
+            chainName,
+            firstLastMonth,
+            firstThisMonth
+          );
+          const averageBalance = await getAverageBalance(
+            walletAddress,
+            firstLastMonth,
+            firstThisMonth,
+            balancesEndOfMonth[key],
+            gloTransactionsLastMonth
+          );
+
+          averageTotalBalanceThisMonth =
+            averageTotalBalanceThisMonth.add(averageBalance);
+        } else if (key !== "totalBalance") {
+          // populate end of month balances
+          averageTotalBalanceThisMonth = averageTotalBalanceThisMonth.add(
+            balancesEndOfMonth[key]
+          );
         }
-      } else {
-        const number = BigInt(balancesEndOfMonth["totalBalance"]) * decimals;
-        averageTotalBalanceThisMonth = BigNumber.from(number);
       }
+    } else {
+      const number = BigInt(balancesEndOfMonth["totalBalance"]) * decimals;
+      averageTotalBalanceThisMonth = BigNumber.from(number);
+    }
 
-      const balance = averageTotalBalanceThisMonth.div(decimals).toNumber();
-      possibleFundingChoices[fundingChoice.name] =
-        possibleFundingChoices[fundingChoice.name] + balance;
-    }
-    fundingChoicesSummed++;
-    if (fundingChoicesSummed === allFundingChoices.length) {
-      return res.status(200).json({ possibleFundingChoices });
-    }
-  });
+    filteredChoices.forEach((choice) => {
+      const { percent, name } = choice;
+      const balance = averageTotalBalanceThisMonth
+        .mul(percent)
+        .div(100)
+        .div(decimals)
+        .toNumber();
+      possibleFundingChoices[name] = possibleFundingChoices[name] + balance;
+    });
+  }
+
+  return res.status(200).json({ possibleFundingChoices });
 }
