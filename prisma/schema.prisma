@@ -39,6 +39,7 @@ enum Charity {
   SAVE_LIVES
   ENDAOMENT
   RETRO_PG_OP
+  CELO_PG
 }
 
 model CharityChoice {
