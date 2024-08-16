@@ -156,7 +156,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     short_name: "Refugees",
     iconPath: "/refugee-camp.png",
     description:
-      "Save lives and build better futures for people forced to flee their homes",
+      "Save lives & build better futures for people forced to flee home",
     type: "",
   },
   ["RETRO_PG_OP"]: {
@@ -170,8 +170,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     name: "Celo Public Goods",
     short_name: "Celo PG",
     iconPath: "/celo-square-logo.svg",
-    description:
-      "Fund Public Goods supporting Celo in becoming a digital regenerative economy",
+    description: "Fund Public Goods helping Celo become a regenerative economy",
     type: "",
   },
   ["EXTREME_POVERTY"]: {
