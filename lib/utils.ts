@@ -144,13 +144,6 @@ export type CharityRecord = {
 };
 
 export const CHARITY_MAP: Record<string, CharityRecord> = {
-  ["EXTREME_POVERTY"]: {
-    name: "Fight extreme poverty",
-    short_name: "Extreme poverty",
-    iconPath: "/give-directly-logo.jpeg",
-    description: "Fund basic income programs for people in extreme poverty",
-    type: "",
-  },
   ["OPEN_SOURCE"]: {
     name: "Web3 public goods",
     short_name: "Public Goods",
@@ -163,7 +156,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     short_name: "Refugees",
     iconPath: "/refugee-camp.png",
     description:
-      "Save lives and build better futures for people forced to flee their homes",
+      "Save lives & build better futures for people forced to flee home",
     type: "",
   },
   ["RETRO_PG_OP"]: {
@@ -171,6 +164,20 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     short_name: "Optimism RPGF",
     iconPath: "/optimism-logo.svg",
     description: "Grow the funding pool for Superchain builders via Retro PGF",
+    type: "",
+  },
+  ["CELO_PG"]: {
+    name: "Celo Public Goods",
+    short_name: "Celo PG",
+    iconPath: "/celo-square-logo.svg",
+    description: "Fund Public Goods helping Celo become a regenerative economy",
+    type: "",
+  },
+  ["EXTREME_POVERTY"]: {
+    name: "Fight extreme poverty",
+    short_name: "Extreme poverty",
+    iconPath: "/give-directly-logo.jpeg",
+    description: "Fund basic income programs for people in extreme poverty",
     type: "",
   },
   ["CLIMATE"]: {
