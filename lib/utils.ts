@@ -170,7 +170,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     name: "Celo Public Goods",
     short_name: "Celo PG",
     iconPath: "/celo-square-logo.svg",
-    description: "Fund Public Goods helping Celo become a regenerative economy",
+    description: "Empower teams helping Celo become a regenerative economy",
     type: "",
   },
   ["EXTREME_POVERTY"]: {
