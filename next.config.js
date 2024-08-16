@@ -53,6 +53,13 @@ const nextConfig = {
         ],
       },
       {
+        source: "/api/total-transactions",
+        headers: [
+          // Replace with glodollar.org
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
+      {
         source: "/.well-known/stellar.toml",
         headers: [{ key: "Content-Type", value: "text/plain" }],
       },
