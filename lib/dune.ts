@@ -25,5 +25,5 @@ export const fetchTotalTransactions = async () => {
 
   const row = rows.length ? rows[0] : { distinct_transactions: "-" };
 
-  return row.total_usdglo_transactions.toString();
+  return row.distinct_transactions.toString();
 };
