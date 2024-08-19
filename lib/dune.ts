@@ -23,7 +23,7 @@ export const fetchTotalTransactions = async () => {
 
   const { rows } = res.data.result;
 
-  const row = rows.length ? rows[0] : { distinct_holders: "-" };
+  const row = rows.length ? rows[0] : { distinct_transactions: "-" };
 
   return row.total_usdglo_transactions.toString();
 };
