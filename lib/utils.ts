@@ -213,3 +213,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
   //   type: "",
   // }
 };
+
+export const horrizonUrl = `https://horizon${
+  isProd() ? "" : "-testnet"
+}.stellar.org`;

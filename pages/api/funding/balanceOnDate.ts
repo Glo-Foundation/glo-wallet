@@ -1,8 +1,9 @@
 import { Charity, CharityChoice } from "@prisma/client";
 import { BigNumber } from "ethers";
+import { parseUnits } from "ethers/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getBalances, getAverageBalance } from "@/lib/balance";
+import { getBalances, getAverageBalance, getStellarTxs } from "@/lib/balance";
 import { fetchGloTransactions } from "@/lib/blockscout-explorer";
 import { getChains } from "@/lib/utils";
 import prisma from "lib/prisma";
@@ -23,11 +24,11 @@ export default async function handler(
   );
 
   const date = new Date();
-  const firstThisMonth = new Date(
-    Date.UTC(date.getFullYear(), date.getMonth(), 1)
-  );
   const firstLastMonth = new Date(
     Date.UTC(date.getFullYear(), date.getMonth() - 1, 1)
+  );
+  const firstThisMonth = new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), 1)
   );
   const decimals = BigInt(10 ** 18);
 
@@ -72,48 +73,89 @@ export default async function handler(
       walletAddress,
       firstThisMonth
     );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const balancesStartOfMonth: any = await getBalances(
-      walletAddress,
-      firstLastMonth
-    );
 
     let averageTotalBalanceThisMonth = BigNumber.from("0");
 
-    if (balancesEndOfMonth.totalBalance !== balancesStartOfMonth.totalBalance) {
-      for (const [key] of Object.entries(balancesEndOfMonth)) {
-        const startBalance = balancesStartOfMonth[key].toString();
-        const endBalance = balancesEndOfMonth[key].toString();
+    const getAverageStellarBalance = async (
+      address: string,
+      start: Date,
+      end: Date,
+      balance: BigNumber
+    ) => {
+      const milisecondsInMonthString = end.valueOf() - start.valueOf();
+      const milisecondsInMonth = BigNumber.from(
+        milisecondsInMonthString.toString()
+      );
+      let totalBalance = BigNumber.from("0");
+      let currentDate = end;
+      let currentBalance = balance;
 
-        if (endBalance !== startBalance && key !== "totalBalance") {
-          const chainName = key.replace("Balance", "");
-          const gloTransactionsLastMonth = await fetchGloTransactions(
-            walletAddress,
-            chainsObject[chainName],
-            chainName,
-            firstLastMonth,
-            firstThisMonth
-          );
-          const averageBalance = await getAverageBalance(
-            walletAddress,
-            firstLastMonth,
-            firstThisMonth,
-            balancesEndOfMonth[key],
-            gloTransactionsLastMonth
-          );
+      const txs = await getStellarTxs(address, firstLastMonth, firstThisMonth);
+      for (const tx of txs) {
+        const txDate = new Date(1000 * parseInt(tx.timeBounds?.maxTime || "0"));
 
-          averageTotalBalanceThisMonth =
-            averageTotalBalanceThisMonth.add(averageBalance);
-        } else if (key !== "totalBalance") {
-          // populate end of month balances
-          averageTotalBalanceThisMonth = averageTotalBalanceThisMonth.add(
-            balancesEndOfMonth[key]
-          );
+        const balanceTime = BigNumber.from(
+          (currentDate.valueOf() - txDate.valueOf()).toString()
+        );
+        let transactionDelta = BigNumber.from(0);
+        for (const op of tx.operations) {
+          if (op.type === "payment" && op.asset.code === "USDGLO") {
+            const incoming = op.destination === address;
+            const x = BigNumber.from(op.amount.replace(".", ""));
+            transactionDelta = incoming
+              ? transactionDelta.add(x)
+              : transactionDelta.sub(x);
+          }
         }
+
+        const weightedBalance = currentBalance.mul(balanceTime);
+        totalBalance = totalBalance.add(weightedBalance);
+        currentDate = txDate;
+        currentBalance = currentBalance.add(transactionDelta);
       }
-    } else {
-      const number = BigInt(balancesEndOfMonth["totalBalance"]) * decimals;
-      averageTotalBalanceThisMonth = BigNumber.from(number);
+
+      const balanceTime = currentDate.valueOf() - start.valueOf();
+      const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
+      totalBalance = totalBalance.add(weightedBalance);
+
+      const averageBalance = totalBalance.div(milisecondsInMonth);
+
+      return averageBalance;
+    };
+
+    for (const [key] of Object.entries(balancesEndOfMonth)) {
+      if (key == "totalBalance") {
+        continue;
+      }
+      if (key == "stellarBalance") {
+        const stellarBalance = await getAverageStellarBalance(
+          walletAddress,
+          firstLastMonth,
+          firstThisMonth,
+          balancesEndOfMonth[key]
+        );
+        averageTotalBalanceThisMonth = averageTotalBalanceThisMonth.add(
+          stellarBalance.mul(BigInt(10 ** 11)) // To ETH precision
+        );
+      } else {
+        const chainName = key.replace("Balance", "");
+        const gloTransactionsLastMonth = await fetchGloTransactions(
+          walletAddress,
+          chainsObject[chainName],
+          chainName,
+          firstLastMonth,
+          firstThisMonth
+        );
+        const averageBalance = await getAverageBalance(
+          walletAddress,
+          firstLastMonth,
+          firstThisMonth,
+          balancesEndOfMonth[key],
+          gloTransactionsLastMonth
+        );
+        averageTotalBalanceThisMonth =
+          averageTotalBalanceThisMonth.add(averageBalance);
+      }
     }
 
     filteredChoices.forEach((choice) => {

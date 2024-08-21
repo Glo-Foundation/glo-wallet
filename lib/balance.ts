@@ -1,3 +1,4 @@
+import * as StellarSdk from "@stellar/stellar-sdk";
 import { kv } from "@vercel/kv";
 import { Chain } from "@wagmi/core";
 import {
@@ -18,7 +19,7 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 
 import { TokenTransfer } from "@/lib/blockscout-explorer";
-import { isProd } from "@/lib/utils";
+import { horrizonUrl, isProd } from "@/lib/utils";
 import { getBalance, getBlockNumber } from "@/utils";
 
 export const getBalances = async (address: string, onDate?: Date) => {
@@ -66,7 +67,7 @@ export const getBalances = async (address: string, onDate?: Date) => {
       .div(decimals)
       .toNumber();
   } else {
-    stellarBalance = await getStellarBalance(address);
+    stellarBalance = await getStellarBalance(address, onDate);
     const decimals = BigInt(10 ** 7);
     balance = stellarBalance.div(decimals).toNumber();
   }
@@ -115,42 +116,100 @@ async function getChainBalance(
   return balance;
 }
 
-async function getStellarBalance(address: string): Promise<BigNumber> {
+async function getStellarBalance(
+  address: string,
+  onDate?: Date
+): Promise<BigNumber> {
   const cacheKey = `balance-${address}`;
   const cacheValue = await kv.hget(cacheKey, "Stellar");
 
-  let balance;
-
-  if (!cacheValue) {
-    try {
-      const apiUrl = `https://horizon.stellar.org/accounts/${address}`;
-      const res = await axios.get(apiUrl, {
-        headers: { Accept: "application/json" },
-      });
-      const stellarBalanceValue = await res.data.balances.reduce(
-        (acc: any, cur: any) =>
-          cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
-        0
-      );
-      balance = BigNumber.from(`${stellarBalanceValue}`.replace(".", ""));
-
-      await kv.hset(cacheKey, {
-        chainName: balance.toString(),
-      });
-      await kv.expire(cacheKey, 60 * 60 * 24);
-    } catch {
-      console.error(
-        "Something went wrong getting the stellar balances for: ",
-        address
-      );
-      balance = BigNumber.from(0);
-    }
-  } else {
-    balance = BigNumber.from(cacheValue);
+  if (cacheValue) {
+    return BigNumber.from(cacheValue);
   }
 
-  return balance;
+  try {
+    const apiUrl = `${horrizonUrl}/accounts/${address}`;
+    const res = await axios.get(apiUrl, {
+      headers: { Accept: "application/json" },
+    });
+    let stellarBalanceValue = res.data.balances.reduce(
+      (acc: any, cur: any) =>
+        cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
+      0
+    );
+
+    if (onDate) {
+      const sum = await calculateStellarBalance(address, onDate);
+      stellarBalanceValue += sum;
+    }
+
+    const balance = BigNumber.from(`${stellarBalanceValue}`.replace(".", ""));
+
+    await kv.hset(cacheKey, {
+      chainName: balance.toString(),
+    });
+    await kv.expire(cacheKey, 60 * 60 * 24);
+
+    return balance;
+  } catch (err) {
+    console.log(err);
+    console.error(
+      "Something went wrong getting the stellar balances for: ",
+      address
+    );
+    return BigNumber.from(0);
+  }
 }
+
+export const getStellarTxs = async (
+  address: string,
+  from: Date,
+  to = new Date()
+) => {
+  const records = [];
+  let url = `${horrizonUrl}/accounts/${address}/transactions?order=desc&limit=200`;
+  while (true) {
+    const res2 = await axios.get(url, {
+      headers: { Accept: "application/json" },
+    });
+
+    const data = res2.data["_embedded"]["records"];
+    records.push(...data);
+
+    const firstDate = records[records.length - 1]["created_at"];
+
+    if (data.length < 200 || new Date(firstDate) < from) {
+      break;
+    }
+    url = res2.data["_links"]["next"]["href"];
+  }
+
+  return records
+    .filter(
+      (x) => new Date(x["created_at"]) >= from && new Date(x["created_at"]) < to
+    )
+    .map(
+      (record) =>
+        StellarSdk.TransactionBuilder.fromXDR(
+          record.envelope_xdr,
+          isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
+        ) as StellarSdk.Transaction
+    );
+};
+
+const calculateStellarBalance = async (address: string, onDate: Date) => {
+  let sum = 0;
+  const txs = await getStellarTxs(address, onDate);
+  for (const tx of txs) {
+    for (const op of tx.operations) {
+      if (op.type === "payment" && op.asset.code === "USDGLO") {
+        const incoming = op.destination === address;
+        sum += parseFloat(op.amount) * (incoming ? +1 : -1);
+      }
+    }
+  }
+  return sum;
+};
 
 export async function getChainBlockNumber(
   date: Date,
