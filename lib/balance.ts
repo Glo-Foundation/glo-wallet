@@ -19,7 +19,7 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 
 import { TokenTransfer } from "@/lib/blockscout-explorer";
-import { horrizonUrl, isProd } from "@/lib/utils";
+import { horizonUrl, isProd } from "@/lib/utils";
 import { getBalance, getBlockNumber } from "@/utils";
 
 export const getBalances = async (address: string, onDate?: Date) => {
@@ -128,7 +128,7 @@ async function getStellarBalance(
   }
 
   try {
-    const apiUrl = `${horrizonUrl}/accounts/${address}`;
+    const apiUrl = `${horizonUrl}/accounts/${address}`;
     const res = await axios.get(apiUrl, {
       headers: { Accept: "application/json" },
     });
@@ -167,7 +167,7 @@ export const getStellarTxs = async (
   to = new Date()
 ) => {
   const records = [];
-  let url = `${horrizonUrl}/accounts/${address}/transactions?order=desc&limit=200`;
+  let url = `${horizonUrl}/accounts/${address}/transactions?order=desc&limit=200`;
   while (true) {
     const res2 = await axios.get(url, {
       headers: { Accept: "application/json" },

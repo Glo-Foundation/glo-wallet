@@ -36,7 +36,13 @@ import { defaultChainId, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
-import { getAllowedChains, api, initApi, isProd } from "@/lib/utils";
+import {
+  getAllowedChains,
+  api,
+  initApi,
+  isProd,
+  horizonUrl,
+} from "@/lib/utils";
 import { customFormatBalance, getTotalGloBalance } from "@/utils";
 import { getUSDCContractAddress } from "@/utils";
 
@@ -151,9 +157,7 @@ export default function Home() {
 
   useEffect(() => {
     const getStellarBalance = async () => {
-      const apiUrl = `https://horizon${
-        isProd() ? "" : "-testnet"
-      }.stellar.org/accounts/${stellarAddress}`;
+      const apiUrl = `${horizonUrl}/accounts/${stellarAddress}`;
       const res = await axios.get(apiUrl, {
         headers: { Accept: "application/json" },
       });

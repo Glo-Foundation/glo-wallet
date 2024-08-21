@@ -214,6 +214,6 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
   // }
 };
 
-export const horrizonUrl = `https://horizon${
+export const horizonUrl = `https://horizon${
   isProd() ? "" : "-testnet"
 }.stellar.org`;
