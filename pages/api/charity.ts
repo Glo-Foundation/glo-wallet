@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
 import { Address, Chain } from "wagmi";
 
-import { isProd } from "@/lib/utils";
+import { DEFAULT_CHARITY_PER_CHAIN, isProd } from "@/lib/utils";
 
 import prisma from "../../lib/prisma";
 
@@ -28,7 +28,7 @@ async function getLatestCharityChoiceNumForAddress(
   return latestChoiceNum ? latestChoiceNum.choiceNum : null;
 }
 
-async function getCharityChoiceForAddress(address: string) {
+async function getCharityChoiceForAddress(address: string, chainId: string) {
   const latestChoiceNum = await getLatestCharityChoiceNumForAddress(address);
 
   if (latestChoiceNum) {
@@ -40,24 +40,23 @@ async function getCharityChoiceForAddress(address: string) {
     });
 
     return latestCharityChoices;
-  } else {
-    const newCharityChoice = await prisma.charityChoice.create({
-      data: {
-        address: address,
-        choiceNum: 1,
-        name: address.slice(0, 4).includes("0x")
-          ? Charity.OPEN_SOURCE
-          : Charity.REFUGEE_CRISIS,
-        percent: 100,
-      },
-    });
-
-    return [newCharityChoice];
   }
+
+  const newCharityChoice = await prisma.charityChoice.create({
+    data: {
+      address: address,
+      choiceNum: 1,
+      name: DEFAULT_CHARITY_PER_CHAIN(chainId),
+      percent: 100,
+    },
+  });
+
+  return [newCharityChoice];
 }
 
 async function updateCharityChoicesForAddress(
   address: Address,
+  chainId: string,
   body: UpdateCharityChoiceBody
 ) {
   const { choices, sigFields, chain } = body;
@@ -67,7 +66,10 @@ async function updateCharityChoicesForAddress(
   }
 
   const sigDate = new Date(sigFields.timestamp);
-  const latestCharityChoice = await getCharityChoiceForAddress(address);
+  const latestCharityChoice = await getCharityChoiceForAddress(
+    address,
+    chainId
+  );
   if (sigDate <= latestCharityChoice[0].creationDate || sigDate > new Date()) {
     throw new Error("Invalid date signature");
   }
@@ -163,18 +165,20 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const address = req.headers["glo-pub-address"] as Address;
+  const chainId = req.headers["glo-chain-id"] as string;
 
   if (req.method === "POST") {
-    // update charity choices for address
-
     const newCharityChoices = await updateCharityChoicesForAddress(
       address,
+      chainId,
       req.body as UpdateCharityChoiceBody
     );
     return res.status(201).json(newCharityChoices);
-  } else {
-    //return charity choices for address
-    const currentCharityChoices = await getCharityChoiceForAddress(address);
-    return res.status(200).json(currentCharityChoices);
   }
+
+  const currentCharityChoices = await getCharityChoiceForAddress(
+    address,
+    chainId
+  );
+  return res.status(200).json(currentCharityChoices);
 }

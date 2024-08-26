@@ -1,3 +1,4 @@
+import { Charity } from "@prisma/client";
 import { Chain } from "@wagmi/core";
 import {
   mainnet,
@@ -212,6 +213,14 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
   //   description: "Funds basic income programs for people in extreme poverty",
   //   type: "",
   // }
+};
+
+export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
+  const DEFAULTS: { [key: string]: Charity } = {
+    [polygon.id]: Charity.OPEN_SOURCE,
+    "0": Charity.REFUGEE_CRISIS, // Stellar
+  };
+  return DEFAULTS[chainId] || Charity.OPEN_SOURCE;
 };
 
 export const horizonUrl = `https://horizon${
