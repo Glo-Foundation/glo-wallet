@@ -49,7 +49,7 @@ body {
   }
 
   dialog {
-    @apply rounded-3xl p-0 max-h-[80vh];
+    @apply rounded-3xl p-0 max-h-[95vh];
   }
 }
 
