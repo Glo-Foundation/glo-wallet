@@ -218,6 +218,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
 export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
   const DEFAULTS: { [key: string]: Charity } = {
     [polygon.id]: Charity.OPEN_SOURCE,
+    [celo.id]: Charity.CELO_PG,
     "0": Charity.REFUGEE_CRISIS, // Stellar
   };
   return DEFAULTS[chainId] || Charity.OPEN_SOURCE;
