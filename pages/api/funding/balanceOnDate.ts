@@ -123,11 +123,13 @@ export default async function handler(
       return averageBalance;
     };
 
+    const isStellar = !walletAddress.startsWith("0x");
+
     for (const [key] of Object.entries(balancesEndOfMonth)) {
       if (key == "totalBalance") {
         continue;
       }
-      if (key == "stellarBalance") {
+      if (key == "stellarBalance" && isStellar) {
         const stellarBalance = await getAverageStellarBalance(
           walletAddress,
           firstLastMonth,
@@ -137,7 +139,7 @@ export default async function handler(
         averageTotalBalanceThisMonth = averageTotalBalanceThisMonth.add(
           stellarBalance.mul(BigInt(10 ** 11)) // To ETH precision
         );
-      } else {
+      } else if (!isStellar) {
         const chainName = key.replace("Balance", "");
         const gloTransactionsLastMonth = await fetchGloTransactions(
           walletAddress,
