@@ -152,10 +152,8 @@ async function getStellarBalance(
 
     return balance;
   } catch (err) {
-    console.log(err);
     console.error(
-      "Something went wrong getting the stellar balances for: ",
-      address
+      `Something went wrong getting the stellar balances for: ${address}`
     );
     return BigNumber.from(0);
   }
@@ -169,19 +167,26 @@ export const getStellarTxs = async (
   const records = [];
   let url = `${horizonUrl}/accounts/${address}/transactions?order=desc&limit=200`;
   while (true) {
-    const res2 = await axios.get(url, {
-      headers: { Accept: "application/json" },
-    });
+    try {
+      const res2 = await axios.get(url, {
+        headers: { Accept: "application/json" },
+      });
 
-    const data = res2.data["_embedded"]["records"];
-    records.push(...data);
+      const data = res2.data["_embedded"]["records"];
+      records.push(...data);
 
-    const firstDate = records[records.length - 1]["created_at"];
+      const firstDate = records[records.length - 1]["created_at"];
 
-    if (data.length < 200 || new Date(firstDate) < from) {
-      break;
+      if (data.length < 200 || new Date(firstDate) < from) {
+        break;
+      }
+      url = res2.data["_links"]["next"]["href"];
+    } catch (err) {
+      console.error(
+        `Something went wrong getting the stellar transactions for: ${address}`
+      );
+      return [];
     }
-    url = res2.data["_links"]["next"]["href"];
   }
 
   return records

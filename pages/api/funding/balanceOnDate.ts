@@ -1,6 +1,5 @@
 import { Charity, CharityChoice } from "@prisma/client";
 import { BigNumber } from "ethers";
-import { parseUnits } from "ethers/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getBalances, getAverageBalance, getStellarTxs } from "@/lib/balance";
@@ -129,7 +128,10 @@ export default async function handler(
       if (key == "totalBalance") {
         continue;
       }
-      if (key == "stellarBalance" && isStellar) {
+      if (key == "stellarBalance") {
+        if (!isStellar) {
+          continue;
+        }
         const stellarBalance = await getAverageStellarBalance(
           walletAddress,
           firstLastMonth,
@@ -141,6 +143,7 @@ export default async function handler(
         );
       } else if (!isStellar) {
         const chainName = key.replace("Balance", "");
+
         const gloTransactionsLastMonth = await fetchGloTransactions(
           walletAddress,
           chainsObject[chainName],
