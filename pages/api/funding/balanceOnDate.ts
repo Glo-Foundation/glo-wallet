@@ -214,7 +214,7 @@ const calculateRemainingPerCharity = async (
 
   for (const chain of chainObjects) {
     const { id, name } = chain;
-    console.log({ id, name });
+
     const marketCap = await (id > 0
       ? getMarketCap(id)
       : getStellarMarketCap().then((x) =>
@@ -222,10 +222,6 @@ const calculateRemainingPerCharity = async (
         ));
     const charity = DEFAULT_CHARITY_PER_CHAIN(id.toString());
 
-    console.log({
-      marketCap: marketCap.toString(),
-      allocated: allocated[name].toString(),
-    });
     choices[charity] += marketCap
       .sub(allocated[name])
       .div(BigInt(10 ** 18))
