@@ -55,3 +55,19 @@ model CharityChoice {
   @@unique([address, choiceNum, name]) // Ensures a charity can only be chosen once per choiceNum and address
 }
 
+model BalanceOnDate {
+  id            Int       @id @default(autoincrement())
+  ts            DateTime  @updatedAt
+  isProcessed   Boolean   @default(false)
+  balancesData  Json?
+  entries       BalanceCharity[]
+}
+
+model BalanceCharity {
+  id            Int           @id @default(autoincrement())
+  BalanceOnDate BalanceOnDate @relation(fields: [runId], references: [id])
+  runId         Int
+  address       String
+  balancesData  Json?
+  charityData    Json?
+}
