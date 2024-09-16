@@ -230,8 +230,12 @@ const processAccount = async (address: string, choices: Choice[]) => {
   });
 
   return {
-    possibleFundingChoices,
-    allocated,
+    possibleFundingChoices: Object.fromEntries(
+      Object.entries(possibleFundingChoices).filter(([, value]) => value > 0)
+    ),
+    allocated: Object.fromEntries(
+      Object.entries(allocated).filter(([, value]) => !value.isZero())
+    ),
   };
 };
 
