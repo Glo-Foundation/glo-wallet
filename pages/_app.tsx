@@ -180,12 +180,13 @@ export default function App({ Component, pageProps }: AppProps) {
           </WagmiConfig>
         )}
       </main>
-      {!router.pathname.includes("/impact") && (
+      {/* Temp disable chat */}
+      {/* {!router.pathname.includes("/impact") && (
         <Script
           src="https://embed.small.chat/T02LCAUGWAWC05CXUFHJCF.js"
           async={true}
         />
-      )}
+      )} */}
     </>
   );
 }
