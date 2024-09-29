@@ -1,3 +1,4 @@
+import { useWallet } from "@vechain/dapp-kit-react";
 import Head from "next/head";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -33,6 +34,9 @@ export default function Header({
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal } = useContext(ModalContext);
   const { setRecipientsView } = useUserStore();
+  const { account: veAccount } = useWallet();
+
+  const isVeConnected = !!veAccount;
 
   const isSequenceWallet = connector?.id === "sequence";
 
@@ -48,7 +52,8 @@ export default function Header({
         address={userAddress}
         idrissName={idrissName}
         ensName={ensName}
-        stellarConnected={stellarConnected}
+        isStellarConnected={stellarConnected}
+        isVeConnected={isVeConnected}
         setStellarConnected={setStellarConnected}
         setStellarAddress={setStellarAddress}
       />
@@ -129,6 +134,27 @@ export default function Header({
             <button
               className="primary-button w-9 h-9"
               onClick={() => openUserInfoModal(stellarAddress || undefined)}
+              data-testid="profile-button"
+            >
+              👤
+            </button>
+          </div>
+        ) : isVeConnected ? (
+          <div className="flex z-10">
+            <button
+              data-tooltip-id="copy-wallet-tooltip"
+              data-tooltip-content="Copied!"
+              className="text-sm text-pine-800 mr-3 font-normal"
+              onClick={() => {
+                navigator.clipboard.writeText(veAccount || "");
+                setIsCopiedTooltipOpen(true);
+              }}
+            >
+              {sliceAddress(veAccount || "")}
+            </button>
+            <button
+              className="primary-button w-9 h-9"
+              onClick={() => openUserInfoModal(veAccount || undefined)}
               data-testid="profile-button"
             >
               👤

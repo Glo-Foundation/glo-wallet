@@ -12,6 +12,7 @@ import {
   WalletConnectModule,
   WalletConnectAllowedMethods,
 } from "@creit.tech/stellar-wallets-kit/build/index";
+import { useWalletModal } from "@vechain/dapp-kit-react";
 import { configureChains } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
 import { WalletConnectModal } from "@walletconnect/modal";
@@ -52,19 +53,23 @@ const ToS = () => (
   </span>
 );
 
+type UserAuthModalProps = {
+  setStellarConnected: (bool: boolean) => void;
+  setStellarAddress: (str: string) => void;
+};
+
 export default function UserAuthModal({
   setStellarConnected,
   setStellarAddress,
-}: {
-  setStellarConnected: (bool: boolean) => void;
-  setStellarAddress: (str: string) => void;
-}) {
+}: UserAuthModalProps) {
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
+
+  const { open } = useWalletModal();
+
   const [sendForm, setSendForm] = useState({
     email: "",
   });
-
   const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
 
   const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(
@@ -274,6 +279,17 @@ export default function UserAuthModal({
               width={35}
               height={35}
             />
+          </button>
+          <button
+            className="auth-button"
+            data-testid="vechain-login-button"
+            onClick={() => {
+              open();
+              closeModal();
+            }}
+          >
+            <h4>VeChain</h4>
+            <Image alt="ve" src="/ve.png" width={35} height={35} />
           </button>
         </div>
 

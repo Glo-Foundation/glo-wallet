@@ -11,6 +11,7 @@ import {
   arbitrumSepolia,
   base,
   baseSepolia,
+  vechain,
 } from "@wagmi/core/chains";
 import axios, { AxiosInstance } from "axios";
 import { BigNumber, ethers } from "ethers";
@@ -219,6 +220,8 @@ export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
   const DEFAULTS: { [key: string]: Charity } = {
     [celo.id]: Charity.CELO_PG,
     "0": Charity.REFUGEE_CRISIS, // Stellar
+    // TODO:
+    [vechain.id]: Charity.CLIMATE, // Ve
   };
   return DEFAULTS[chainId] || Charity.OPEN_SOURCE;
 };
