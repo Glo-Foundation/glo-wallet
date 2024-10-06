@@ -135,6 +135,9 @@ const getVeTransactions = async (
             _to: address,
           },
         ],
+        unit: "block",
+        from: startBlock,
+        to: endBlock,
         limit: 500,
         offset,
         order: "desc",
@@ -142,12 +145,7 @@ const getVeTransactions = async (
 
       records.push(
         ...res.data
-          .filter(
-            (x: RawEvent) =>
-              x._value != "0" &&
-              x._meta.blockNumber >= startBlock &&
-              x._meta.blockNumber <= endBlock
-          )
+          .filter((x: RawEvent) => x._value != "0")
           .map(
             (x: RawEvent) =>
               ({
