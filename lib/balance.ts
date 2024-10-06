@@ -14,6 +14,7 @@ import {
   arbitrumSepolia,
   base,
   baseSepolia,
+  vechain,
 } from "@wagmi/core/chains";
 import axios from "axios";
 import { BigNumber } from "ethers";
@@ -32,6 +33,7 @@ export const getBalances = async (address: string, onDate?: Date) => {
     arbitrumBalance,
     stellarBalance,
     baseBalance,
+    vechainBalance,
   ] = [
     BigNumber.from("0"),
     BigNumber.from("0"),
@@ -40,8 +42,9 @@ export const getBalances = async (address: string, onDate?: Date) => {
     BigNumber.from("0"),
     BigNumber.from("0"),
     BigNumber.from("0"),
+    BigNumber.from("0"),
   ];
-  if (address.slice(0, 4).includes("0x")) {
+  if (address.slice(0, 2) === "0x") {
     [
       polygonBalance,
       ethereumBalance,
@@ -66,6 +69,11 @@ export const getBalances = async (address: string, onDate?: Date) => {
       .add(baseBalance)
       .div(decimals)
       .toNumber();
+  } else if (address.slice(0, 2) === "ve") {
+    vechainBalance = await getChainBalance(address.slice(2), vechain, onDate);
+
+    const decimals = BigInt(10 ** 18);
+    balance = vechainBalance.div(decimals).toNumber();
   } else {
     stellarBalance = await getStellarBalance(address, onDate);
     const decimals = BigInt(10 ** 7);
@@ -81,6 +89,7 @@ export const getBalances = async (address: string, onDate?: Date) => {
     arbitrumBalance,
     baseBalance,
     stellarBalance,
+    vechainBalance,
   };
 };
 

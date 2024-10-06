@@ -47,7 +47,7 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [base.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   [arbitrum.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   // TODO:
-  [vechain.id]: "0x89FD13624F64aaF03D1ff25ff5ce617cde65ee69",
+  [vechain.id]: "0x5ef79995FE8a89e0812330E4378eB2660ceDe699", // B3TR
   // Testnets
   [arbitrumSepolia.id]: "0xf3C3351D6Bd0098EEb33ca8f830FAf2a141Ea2E1", // this is actually USDC
   [optimismSepolia.id]: "0x5fd84259d66Cd46123540766Be93DFE6D43130D7", // this is actually USDC
@@ -108,6 +108,7 @@ const chainRPCUrl: { [id: number]: string } = {
   [optimism.id]: process.env.NEXT_PUBLIC_OPTIMISM_RPC_URL as string,
   [arbitrum.id]: process.env.NEXT_PUBLIC_ARBITRUM_RPC_URL as string,
   [base.id]: process.env.NEXT_PUBLIC_BASE_RPC_URL as string,
+  [vechain.id]: process.env.NEXT_PUBLIC_VECHAIN_RPC_URL as string,
   // Testnets
   [polygonMumbai.id]: process.env.NEXT_PUBLIC_MUMBAI_RPC_URL as string,
   [goerli.id]: process.env.NEXT_PUBLIC_GOERLI_RPC_URL as string,
