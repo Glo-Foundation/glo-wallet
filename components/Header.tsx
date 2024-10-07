@@ -74,9 +74,9 @@ export default function Header({
       <nav className="mt-4 mb-6 flex justify-between items-center">
         <a className="cursor-pointer" onClick={() => setRecipientsView(false)}>
           <Image
-            src="/glo-logo-text.svg"
+            src="/glo-logo.png"
             alt="glo logo"
-            width={74}
+            width={34}
             height={26}
           />
         </a>
