@@ -88,10 +88,10 @@ export default function Header({
 
         {isLoading ? (
           <button className="primary-button">Connecting... </button>
-        ) : isConnected ? (
+        ) : isConnected || isSequenceWallet || isVeConnected ? (
           <div className="flex z-10">
-            {!isSequenceWallet ? <AddToWallet /> : ""}
-            <NetworkSwitcher />
+            {isConnected && <AddToWallet />}
+            {isConnected && <NetworkSwitcher />}
             <Tooltip
               id="copy-wallet-tooltip"
               content="Copied!"
@@ -103,58 +103,29 @@ export default function Header({
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
                 navigator.clipboard.writeText(
-                  ensName || idrissName || address!
+                  ensName ||
+                    idrissName ||
+                    address! ||
+                    stellarAddress ||
+                    veAccount!
                 );
                 setIsCopiedTooltipOpen(true);
               }}
             >
-              {ensName || idrissName || sliceAddress(address!)}
+              {ensName ||
+                idrissName ||
+                sliceAddress(address! || stellarAddress || veAccount || "")}
             </button>
             <button
               className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal(address?.toString())}
-              data-testid="profile-button"
-            >
-              👤
-            </button>
-          </div>
-        ) : stellarConnected ? (
-          <div className="flex z-10">
-            <button
-              data-tooltip-id="copy-wallet-tooltip"
-              data-tooltip-content="Copied!"
-              className="text-sm text-pine-800 mr-3 font-normal"
-              onClick={() => {
-                navigator.clipboard.writeText(stellarAddress || "");
-                setIsCopiedTooltipOpen(true);
-              }}
-            >
-              {sliceAddress(stellarAddress || "")}
-            </button>
-            <button
-              className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal(stellarAddress || undefined)}
-              data-testid="profile-button"
-            >
-              👤
-            </button>
-          </div>
-        ) : isVeConnected ? (
-          <div className="flex z-10">
-            <button
-              data-tooltip-id="copy-wallet-tooltip"
-              data-tooltip-content="Copied!"
-              className="text-sm text-pine-800 mr-3 font-normal"
-              onClick={() => {
-                navigator.clipboard.writeText(veAccount || "");
-                setIsCopiedTooltipOpen(true);
-              }}
-            >
-              {sliceAddress(veAccount || "")}
-            </button>
-            <button
-              className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal(veAccount || undefined)}
+              onClick={() =>
+                openUserInfoModal(
+                  address?.toString() ||
+                    stellarAddress ||
+                    veAccount ||
+                    undefined
+                )
+              }
               data-testid="profile-button"
             >
               👤
