@@ -16,7 +16,7 @@ import {
 
 import { isProd } from "./utils";
 
-const VECHAIN_TESTNET = {
+export const VECHAIN_TESTNET = {
   id: -1,
   name: "vechain_testnet",
   network: "homestead",
