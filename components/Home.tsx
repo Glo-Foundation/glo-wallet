@@ -374,7 +374,9 @@ export default function Home() {
 
               <CTA
                 balance={totalBalance?.formatted}
-                identity={idrissName || address! || stellarAddress!}
+                identity={
+                  idrissName || address! || stellarAddress! || veAddress!
+                }
               />
             </>
           )}
