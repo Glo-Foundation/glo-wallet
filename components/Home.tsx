@@ -196,23 +196,27 @@ export default function Home() {
   useEffect(() => {
     const getStellarBalance = async () => {
       const apiUrl = `${horizonUrl}/accounts/${stellarAddress}`;
-      const res = await axios.get(apiUrl, {
-        headers: { Accept: "application/json" },
-      });
-      const stellarBalanceValue = await res.data.balances.reduce(
-        (acc: any, cur: any) =>
-          cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
-        0
-      );
-      const bigIntStellarBalance = BigInt(
-        `${stellarBalanceValue}`.replace(".", "")
-      );
-      setStellarBalance({
-        decimals: 7,
-        symbol: "USDGLO",
-        formatted: `${stellarBalanceValue}`,
-        value: bigIntStellarBalance,
-      });
+      try {
+        const res = await axios.get(apiUrl, {
+          headers: { Accept: "application/json" },
+        });
+        const stellarBalanceValue = await res.data.balances.reduce(
+          (acc: any, cur: any) =>
+            cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
+          0
+        );
+        const bigIntStellarBalance = BigInt(
+          `${stellarBalanceValue}`.replace(".", "")
+        );
+        setStellarBalance({
+          decimals: 7,
+          symbol: "USDGLO",
+          formatted: `${stellarBalanceValue}`,
+          value: bigIntStellarBalance,
+        });
+      } catch (err) {
+        console.log("Could not fetch Stellar balance");
+      }
     };
     if (stellarConnected) {
       getStellarBalance();
