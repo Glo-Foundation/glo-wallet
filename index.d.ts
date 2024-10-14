@@ -23,11 +23,7 @@ type TransfersPage = {
   cursor?: string;
 };
 
-type CTAType =
-  | "BUY_GLO_MERCH"
-  | "JOIN_PROGRAM"
-  | "TWEEET_IMPACT"
-  | "REGISTER_IDRISS";
+type CTAType = "JOIN_CONSORTIUM" | "TWEEET_IMPACT" | "REGISTER_IDRISS";
 
 type CTA = {
   type: CTAType;
