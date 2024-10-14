@@ -106,7 +106,7 @@ const CharitySlider = ({
             <>
               <h5 className="text-sm mt-[2px]">{percent}%</h5>
               <p className="mt-[-10px]">
-                (~{((percent / 100) * yearlyYield).toFixed(2)}$)
+                ({((percent / 100) * yearlyYield).toFixed(2)}$)
               </p>
             </>
           ),
