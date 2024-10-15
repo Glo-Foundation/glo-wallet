@@ -63,7 +63,7 @@ export const getChains = (): Chain[] => {
 
 export const signMsgContent = "glo-wallet";
 
-export const DEFAULT_CTAS: CTA[] = ["JOIN_CONSORTIUM", "TWEEET_IMPACT"].map(
+export const DEFAULT_CTAS: CTA[] = ["TWEEET_IMPACT", "JOIN_CONSORTIUM"].map(
   (cta) => ({ type: cta } as CTA)
 );
 
