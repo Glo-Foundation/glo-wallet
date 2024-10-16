@@ -71,7 +71,7 @@ const CharitySlider = ({
           <Image
             className="ml-auto cursor-pointer"
             alt="trash"
-            src="trash.svg"
+            src="/trash.svg"
             height={16}
             width={16}
             onClick={() => onDelete()}
@@ -118,9 +118,11 @@ const CharitySlider = ({
 
 export default function CharityManageModal(props: Props) {
   const { closeModal } = useContext(ModalContext);
-
   const { chain } = useNetwork();
   const [percentMap, setPercentMap] = useState({ ...props.percentMap });
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+  const [isAutoDistributed, setIsAutoDistributed] = useState(false);
+  
   useEffect(() => {
     if (props.isAddNewMode) {
       const count = Object.keys(props.percentMap).length;
@@ -150,6 +152,61 @@ export default function CharityManageModal(props: Props) {
   const onClose = () => {
     if (props.onClose) props.onClose();
   };
+
+  const autoDistribute = () => {
+    // Get total allocated percentage from the touched recipients
+    const totalTouchedPercentage = Object.keys(percentMap)
+      .filter((key) => touched[key])
+      .reduce((acc, key) => acc + percentMap[key], 0);
+  
+    // Calculate the remaining percentage for untouched recipients
+    const untouchedKeys = Object.keys(percentMap).filter(
+      (key) => !touched[key]
+    );
+    const untouchedCount = untouchedKeys.length;
+  
+    const remainingPercentage = 100 - totalTouchedPercentage;
+  
+    if (remainingPercentage < 0) {
+      // If touched ones exceed 100%, set untouched recipients to 0%
+      untouchedKeys.forEach((key) => {
+        percentMap[key] = 0;
+      });
+    } else if (untouchedCount > 0) {
+      // Distribute the remaining percentage equally among untouched recipients
+      const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
+      const distributedTotal = equalDistribution * untouchedCount;
+      
+      untouchedKeys.forEach((key) => {
+        percentMap[key] = equalDistribution;
+      });
+  
+      // Add the leftover to the first untouched recipient if there's any
+      const leftover = remainingPercentage - distributedTotal;
+      if (leftover > 0) {
+        percentMap[untouchedKeys[0]] += leftover;
+      }
+    }
+  
+    setPercentMap({ ...percentMap });
+    setIsAutoDistributed(true);
+  };
+
+  const handleSave = () => {
+    if (!isAutoDistributed) {
+      autoDistribute(); // Auto-distribute on first save
+      setShowToast({
+        showToast: true,
+        message: "Please press save again to confirm.",
+      });
+    } else {
+      // Proceed with signing and API call on second save
+      updateSelectedCharity(percentMap, chain as Chain);
+      onClose();
+    }
+  };
+
+  
 
   const signCharityUpdateMessage = async (
     message: string
@@ -279,12 +336,14 @@ export default function CharityManageModal(props: Props) {
             yearlyYield={props.yearlyYield}
             setPercent={(value: number) => {
               percentMap[key] = value;
+              setTouched((prev) => ({ ...prev, [key]: true }));
               setPercentMap({ ...percentMap });
             }}
             onDelete={
               charities.length > 1
                 ? () => {
                     delete percentMap[key];
+                    setTouched((prev) => ({ ...prev, [key]: false }));
                     setPercentMap({ ...percentMap });
                   }
                 : undefined
@@ -292,20 +351,14 @@ export default function CharityManageModal(props: Props) {
           />
         ))}
       </section>
-
       <button
         className={"primary-button m-2"}
         onClick={() => {
-          updateSelectedCharity(percentMap, chain as Chain);
-          onClose();
+          handleSave()
         }}
-        disabled={sumPercentages != 100}
+       
       >
-        {sumPercentages != 100
-          ? `Please add ${100 - sumPercentages}%`
-          : props.isAddNewMode
-          ? "Confirm"
-          : "Save"}
+        {isAutoDistributed ? "Confirm" : "Save"}
       </button>
     </div>
   );
