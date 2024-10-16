@@ -356,7 +356,6 @@ export default function CharityManageModal(props: Props) {
         onClick={() => {
           handleSave()
         }}
-       
       >
         {isAutoDistributed ? "Confirm" : "Save"}
       </button>
