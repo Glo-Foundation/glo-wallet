@@ -89,19 +89,11 @@ export default function CTA({
   }...`.replace("\n\n", "\n");
 
   const CTA_MAP: { [key in CTAType]: ActionButton } = {
-    ["BUY_GLO_MERCH"]: {
-      title: "Buy Glo Dollar Merch",
-      description: "Visit the Glo store to get a hoodie!",
-      iconPath: "/buy.svg",
-      url: "https://merch.glodollar.org",
-    },
-    ["JOIN_PROGRAM"]: {
-      title: "Join the movement",
-      description:
-        "Get listed as a Glo Supporter to help us get the ball rolling.",
+    ["JOIN_CONSORTIUM"]: {
+      title: "Join the Consortium",
+      description: "Embed philanthropy into your organization.",
       iconPath: "/za-warudo.svg",
-      url: "https://www.glodollar.org/get-started",
-      slug: `?email=${email}`,
+      url: "https://www.glodollar.org/glo-consortium",
     },
     ["TWEEET_IMPACT"]: {
       title: "Tweet your impact",

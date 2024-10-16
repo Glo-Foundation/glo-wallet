@@ -1,11 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/lib/prisma";
-import {
-  addNewGloAppUserToSheet,
-  fetchEarlyAdoptersEmails,
-  getReferrer,
-} from "@/lib/spreadsheet";
 
 const getOrCreate = async (address: string, email: string) => {
   try {
@@ -26,22 +21,6 @@ const getOrCreate = async (address: string, email: string) => {
         email,
       },
     });
-
-    // Verify if new user has already completed the EA cta
-    const emails = await fetchEarlyAdoptersEmails();
-
-    if (emails.has(email)) {
-      await prisma.cTAs.create({
-        data: {
-          type: "JOIN_PROGRAM" as CTAType,
-          userId: user.id,
-          isCompleted: true,
-        },
-      });
-    }
-
-    // Append to marketing outreach spreadsheet
-    await addNewGloAppUserToSheet(user);
 
     return user.id;
   }

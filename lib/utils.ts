@@ -63,11 +63,9 @@ export const getChains = (): Chain[] => {
 
 export const signMsgContent = "glo-wallet";
 
-export const DEFAULT_CTAS: CTA[] = [
-  "TWEEET_IMPACT",
-  "JOIN_PROGRAM",
-  "BUY_GLO_MERCH",
-].map((cta) => ({ type: cta } as CTA));
+export const DEFAULT_CTAS: CTA[] = ["TWEEET_IMPACT", "JOIN_CONSORTIUM"].map(
+  (cta) => ({ type: cta } as CTA)
+);
 
 export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
   const provider = new ethers.providers.JsonRpcProvider(
