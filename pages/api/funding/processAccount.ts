@@ -59,7 +59,7 @@ export default async function handler(
   });
 
   if (Object.keys(choicesByAddress).length > 1) {
-    axios.post(
+    await axios.post(
       `/api/funding/processAccount`,
       {
         runId,

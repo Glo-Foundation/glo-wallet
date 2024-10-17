@@ -106,7 +106,7 @@ export default async function handler(
     } adresses`
   );
 
-  axios.post(
+  await axios.post(
     `/api/funding/processAccount`,
     {
       runId,
