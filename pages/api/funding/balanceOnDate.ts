@@ -1,7 +1,18 @@
-import { Charity, CharityChoice } from "@prisma/client";
+import { readFileSync } from "fs";
+
+import { BalanceCharity, Charity, CharityChoice } from "@prisma/client";
 import axios from "axios";
+import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
+import {
+  backendUrl,
+  CHARITY_MAP,
+  DEFAULT_CHARITY_PER_CHAIN,
+  getChainsObjects,
+  getMarketCap,
+  getStellarMarketCap,
+} from "@/lib/utils";
 import prisma from "lib/prisma";
 
 export default async function handler(
@@ -37,15 +48,6 @@ export default async function handler(
   const isExpired =
     !last || new Date().getTime() - last?.ts.getTime() > oneDayMili;
 
-  if (last && !isExpired) {
-    return res.status(200).json({
-      runId: last.id,
-      generatedAt: last.ts,
-      isProcessing: false,
-      possibleFundingChoices: last.balancesData,
-    });
-  }
-
   const previous = await prisma.balanceOnDate.findFirst({
     where: {
       isProcessed: true,
@@ -54,6 +56,24 @@ export default async function handler(
       ts: "desc",
     },
   });
+
+  if (last && !isExpired) {
+    const isProcessing = !last.isProcessed;
+    const previousRun = {
+      runId: previous?.id,
+      possibleFundingChoices: previous?.balancesData,
+      generatedAt: previous?.ts,
+    };
+    return res.status(200).json({
+      runId: last.id,
+      generatedAt: last.ts,
+      isProcessing,
+      ...(last.balancesData
+        ? { possibleFundingChoices: last.balancesData }
+        : {}),
+      ...(isProcessing ? { previousRun } : {}),
+    });
+  }
 
   const job = await prisma.balanceOnDate.create({ data: {} });
   const { id: runId } = job;
@@ -91,27 +111,120 @@ export default async function handler(
     }));
   }
 
-  await axios.post(
-    `${process.env.VERCEL_OG_URL}/api/funding/processAccount`,
-    {
-      runId,
-      choicesByAddress: filteredChoicesByAddress,
-    },
-    {
-      headers: {
-        Authorization: process.env.WEBHOOK_API_KEY,
-      },
-    }
+  console.log(
+    `BalanceOnDate - processing ${
+      Object.keys(filteredChoicesByAddress).length
+    } adresses`
   );
+
+  for (const address of Object.keys(filteredChoicesByAddress)) {
+    await axios.post(
+      `${backendUrl}/api/funding/processAccount`,
+      {
+        runId,
+        address,
+        choices: filteredChoicesByAddress[address],
+      },
+      {
+        headers: {
+          Authorization: process.env.WEBHOOK_API_KEY,
+        },
+      }
+    );
+  }
+
+  console.log("BalanceOnDate - building summary");
+
+  const result = await buildSummary(runId);
+
+  await prisma.balanceOnDate.update({
+    where: {
+      id: runId,
+    },
+    data: {
+      balancesData: result,
+      isProcessed: true,
+    },
+  });
 
   return res.status(200).json({
     runId: job.id,
     generatedAt: job.ts,
     isProcessing: true,
-    previousRun: {
-      runId: previous?.id,
-      possibleFundingChoices: previous?.balancesData,
-      generatedAt: previous?.ts,
-    },
+    possibleFundingChoices: result,
   });
 }
+
+const buildSummary = async (runId: number) => {
+  const records = await prisma.balanceCharity.findMany({
+    where: {
+      runId,
+    },
+  });
+
+  const { allocated, choices } = flattenRecords(records!);
+  const possibleFundingChoices = await calculateBalances(allocated, choices);
+
+  return possibleFundingChoices;
+};
+
+const flattenRecords = (records: BalanceCharity[]) => {
+  const choices = Object.keys(CHARITY_MAP).reduce(
+    (acc, cur) => ({ ...acc, [cur]: 0 }),
+    {} as { [key: string]: number }
+  );
+  const allocated = Object.keys(getChainsObjects()).reduce(
+    (acc, cur) => ({ ...acc, [cur]: BigNumber.from(0) }),
+    { stellar: BigNumber.from(0) } as { [key: string]: BigNumber }
+  );
+  for (const r of records) {
+    const balances = r.balancesData as {
+      [key: string]: string;
+    };
+    const choicesData = r.charityData as {
+      [key: string]: number;
+    };
+    for (const [choice, value] of Object.entries(choicesData)) {
+      choices[choice] += value;
+    }
+    for (const [chain, value] of Object.entries(balances)) {
+      allocated[chain] = allocated[chain].add(BigNumber.from(value));
+    }
+  }
+
+  return { allocated, choices };
+};
+
+const calculateBalances = async (
+  allocated: {
+    [key: string]: BigNumber;
+  },
+  choices: {
+    [key: string]: number;
+  }
+) => {
+  const chainObjects = Object.entries(getChainsObjects()).map(
+    ([key, chain]) => ({
+      id: chain.id,
+      name: key,
+    })
+  );
+  chainObjects.push({ id: 0, name: "stellar" });
+
+  for (const chain of chainObjects) {
+    const { id, name } = chain;
+
+    const marketCap = await (id > 0
+      ? getMarketCap(id)
+      : getStellarMarketCap().then((x) =>
+          BigNumber.from(x).mul(BigInt(10 ** 18))
+        ));
+    const charity = DEFAULT_CHARITY_PER_CHAIN(id.toString());
+
+    choices[charity] += marketCap
+      .sub(allocated[name])
+      .div(BigInt(10 ** 18))
+      .toNumber();
+  }
+  return choices;
+};

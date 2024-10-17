@@ -94,7 +94,13 @@ const fetchFirstGloTransaction = async (
   }
 
   // find first minting transaction
-  const mintingTxs = await findMintingTxs(chain, address);
+  let mintingTxs: Erc20Transaction[] | null;
+  try {
+    mintingTxs = await findMintingTxs(chain, address);
+  } catch (err) {
+    // Invalid or not supported chain
+    return null;
+  }
 
   // find all incoming transactions
   let cursor = null;
