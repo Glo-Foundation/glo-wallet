@@ -7,6 +7,7 @@ import { Chain } from "viem";
 import { getAverageBalance, getBalances, getStellarTxs } from "@/lib/balance";
 import { fetchGloTransactions } from "@/lib/blockscout-explorer";
 import {
+  backendUrl,
   CHARITY_MAP,
   DEFAULT_CHARITY_PER_CHAIN,
   getChains,
@@ -59,9 +60,8 @@ export default async function handler(
   });
 
   if (Object.keys(choicesByAddress).length > 1) {
-    const url = `https://${process.env.VERCEL_URL}/api/funding/processAccount`;
     await axios.post(
-      url,
+      `${backendUrl}/api/funding/processAccount`,
       {
         runId,
         choicesByAddress,

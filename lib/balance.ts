@@ -23,6 +23,12 @@ import { horizonUrl, isProd } from "@/lib/utils";
 import { getBalance, getBlockNumber } from "@/utils";
 
 export const getBalances = async (address: string, onDate?: Date) => {
+  if (!isProd()) {
+    return {
+      totalBalance: 0,
+    };
+  }
+
   let balance = 0;
   let [
     polygonBalance,
@@ -42,18 +48,6 @@ export const getBalances = async (address: string, onDate?: Date) => {
     BigNumber.from("0"),
   ];
 
-  if (!isProd()) {
-    return {
-      totalBalance: balance,
-      polygonBalance,
-      ethereumBalance,
-      celoBalance,
-      optimismBalance,
-      arbitrumBalance,
-      baseBalance,
-      stellarBalance,
-    };
-  }
   if (address.slice(0, 4).includes("0x")) {
     [
       polygonBalance,

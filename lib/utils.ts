@@ -224,3 +224,7 @@ export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
 export const horizonUrl = `https://horizon${
   isProd() ? "" : "-testnet"
 }.stellar.org`;
+
+export const backendUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}/api/funding/processAccount`
+  : "http://localhost:3000";

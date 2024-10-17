@@ -2,6 +2,7 @@ import { Charity, CharityChoice } from "@prisma/client";
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { backendUrl } from "@/lib/utils";
 import prisma from "lib/prisma";
 
 export default async function handler(
@@ -106,9 +107,8 @@ export default async function handler(
     } adresses`
   );
 
-  const url = `https://${process.env.VERCEL_URL}/api/funding/processAccount`;
   await axios.post(
-    url,
+    `${backendUrl}/api/funding/processAccount`,
     {
       runId,
       choicesByAddress: filteredChoicesByAddress,
