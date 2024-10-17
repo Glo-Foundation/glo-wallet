@@ -60,7 +60,7 @@ export default async function handler(
 
   if (Object.keys(choicesByAddress).length > 1) {
     axios.post(
-      `${process.env.VERCEL_OG_URL}/api/funding/processAccount`,
+      `/api/funding/processAccount`,
       {
         runId,
         choicesByAddress,

@@ -57,7 +57,9 @@ export default async function handler(
       runId: last.id,
       generatedAt: last.ts,
       isProcessing,
-      possibleFundingChoices: last.balancesData,
+      ...(last.balancesData
+        ? { possibleFundingChoices: last.balancesData }
+        : {}),
       ...(isProcessing ? { previousRun } : {}),
     });
   }
@@ -105,7 +107,7 @@ export default async function handler(
   );
 
   axios.post(
-    `${process.env.VERCEL_OG_URL}/api/funding/processAccount`,
+    `/api/funding/processAccount`,
     {
       runId,
       choicesByAddress: filteredChoicesByAddress,
