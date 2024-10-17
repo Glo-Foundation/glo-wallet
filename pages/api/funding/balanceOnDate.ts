@@ -98,6 +98,12 @@ export default async function handler(
     }));
   }
 
+  console.log(
+    `BalanceOnDate - processing ${
+      Object.keys(filteredChoicesByAddress).length
+    } adresses`
+  );
+
   axios.post(
     `${process.env.VERCEL_OG_URL}/api/funding/processAccount`,
     {

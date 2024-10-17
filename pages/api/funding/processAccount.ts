@@ -123,6 +123,8 @@ const processAccount = async (address: string, choices: Choice[]) => {
     Charity
   ).reduce((acc, cur) => ({ ...acc, [cur]: 0 }), {});
 
+  console.log(`ProcessAccount - ${address}`);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const balancesEndOfMonth: any = await getBalances(address, firstThisMonth);
 
