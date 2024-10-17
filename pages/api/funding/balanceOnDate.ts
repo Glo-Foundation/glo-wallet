@@ -2,7 +2,6 @@ import { Charity, CharityChoice } from "@prisma/client";
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getBaseURL } from "@/tests/utils";
 import prisma from "lib/prisma";
 
 export default async function handler(
@@ -93,7 +92,7 @@ export default async function handler(
   }
 
   await axios.post(
-    `${getBaseURL()}/api/funding/processAccount`,
+    `${process.env.VERCEL_OG_URL}/api/funding/processAccount`,
     {
       runId,
       choicesByAddress: filteredChoicesByAddress,

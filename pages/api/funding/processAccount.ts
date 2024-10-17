@@ -13,7 +13,6 @@ import {
   getMarketCap,
   getStellarMarketCap,
 } from "@/lib/utils";
-import { getBaseURL } from "@/tests/utils";
 
 type ChoicesDict = {
   [key: string]: Choice[];
@@ -60,7 +59,7 @@ export default async function handler(
 
   if (Object.keys(choicesByAddress).length > 1) {
     await axios.post(
-      `${getBaseURL()}/api/funding/processAccount`,
+      `${process.env.VERCEL_OG_URL}/api/funding/processAccount`,
       {
         runId,
         choicesByAddress,
