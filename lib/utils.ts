@@ -228,3 +228,17 @@ export const horizonUrl = `https://horizon${
 export const backendUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
+
+export const getChainsObjects = () => {
+  const chains = getChains();
+  const chainsObject: Record<string, Chain> = chains.reduce(
+    (a, v) => ({
+      ...a,
+      [["Ethereum", "Polygon"].includes(v.name)
+        ? v.name.toLowerCase()
+        : v.network]: v,
+    }),
+    {}
+  );
+  return chainsObject;
+};

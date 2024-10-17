@@ -1,32 +1,21 @@
-import { BalanceCharity, Charity } from "@prisma/client";
-import axios from "axios";
+import { Charity } from "@prisma/client";
 import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Chain } from "viem";
 
 import { getAverageBalance, getBalances, getStellarTxs } from "@/lib/balance";
 import { fetchGloTransactions } from "@/lib/blockscout-explorer";
-import {
-  backendUrl,
-  CHARITY_MAP,
-  DEFAULT_CHARITY_PER_CHAIN,
-  getChains,
-  getMarketCap,
-  getStellarMarketCap,
-} from "@/lib/utils";
+import { getChainsObjects } from "@/lib/utils";
 import prisma from "lib/prisma";
-
-type ChoicesDict = {
-  [key: string]: Choice[];
-};
 
 type Choice = {
   name: Charity;
   percent: number;
 };
+
 type Body = {
   runId: number;
-  choicesByAddress: ChoicesDict;
+  address: string;
+  choices: Choice[];
 };
 
 export default async function handler(
@@ -39,13 +28,9 @@ export default async function handler(
   ) {
     return res.status(401).json({ message: "Incorrect token" });
   }
-  const { runId, choicesByAddress } = req.body as Body;
+  const { runId, address, choices } = req.body as Body;
 
-  const address = Object.keys(choicesByAddress)[0];
-  const choicesArr = choicesByAddress[address];
-  delete choicesByAddress[address];
-
-  const processed = await processAccount(address, choicesArr);
+  const processed = await processAccount(address, choices);
 
   await prisma.balanceCharity.create({
     data: {
@@ -59,49 +44,8 @@ export default async function handler(
     },
   });
 
-  if (Object.keys(choicesByAddress).length > 1) {
-    await axios.post(
-      `${backendUrl}/api/funding/processAccount`,
-      {
-        runId,
-        choicesByAddress,
-      },
-      {
-        headers: {
-          Authorization: process.env.WEBHOOK_API_KEY,
-        },
-      }
-    );
-    return res.status(200).json({});
-  }
-
-  const result = await buildSummary(runId);
-
-  await prisma.balanceOnDate.update({
-    where: {
-      id: runId,
-    },
-    data: {
-      balancesData: result,
-      isProcessed: true,
-    },
-  });
-
   return res.status(200).json({});
 }
-
-const buildSummary = async (runId: number) => {
-  const records = await prisma.balanceCharity.findMany({
-    where: {
-      runId,
-    },
-  });
-
-  const { allocated, choices } = flattenRecords(records!);
-  const possibleFundingChoices = await calculateBalances(allocated, choices);
-
-  return possibleFundingChoices;
-};
 
 const processAccount = async (address: string, choices: Choice[]) => {
   const chainsObject = getChainsObjects();
@@ -240,79 +184,4 @@ const processAccount = async (address: string, choices: Choice[]) => {
       Object.entries(allocated).filter(([, value]) => !value.isZero())
     ),
   };
-};
-
-const flattenRecords = (records: BalanceCharity[]) => {
-  const choices = Object.keys(CHARITY_MAP).reduce(
-    (acc, cur) => ({ ...acc, [cur]: 0 }),
-    {} as { [key: string]: number }
-  );
-  const allocated = Object.keys(getChainsObjects()).reduce(
-    (acc, cur) => ({ ...acc, [cur]: BigNumber.from(0) }),
-    { stellar: BigNumber.from(0) } as { [key: string]: BigNumber }
-  );
-  for (const r of records) {
-    const balances = r.balancesData as {
-      [key: string]: string;
-    };
-    const choicesData = r.charityData as {
-      [key: string]: number;
-    };
-    for (const [choice, value] of Object.entries(choicesData)) {
-      choices[choice] += value;
-    }
-    for (const [chain, value] of Object.entries(balances)) {
-      allocated[chain] = allocated[chain].add(BigNumber.from(value));
-    }
-  }
-
-  return { allocated, choices };
-};
-
-const calculateBalances = async (
-  allocated: {
-    [key: string]: BigNumber;
-  },
-  choices: {
-    [key: string]: number;
-  }
-) => {
-  const chainObjects = Object.entries(getChainsObjects()).map(
-    ([key, chain]) => ({
-      id: chain.id,
-      name: key,
-    })
-  );
-  chainObjects.push({ id: 0, name: "stellar" });
-
-  for (const chain of chainObjects) {
-    const { id, name } = chain;
-
-    const marketCap = await (id > 0
-      ? getMarketCap(id)
-      : getStellarMarketCap().then((x) =>
-          BigNumber.from(x).mul(BigInt(10 ** 18))
-        ));
-    const charity = DEFAULT_CHARITY_PER_CHAIN(id.toString());
-
-    choices[charity] += marketCap
-      .sub(allocated[name])
-      .div(BigInt(10 ** 18))
-      .toNumber();
-  }
-  return choices;
-};
-
-const getChainsObjects = () => {
-  const chains = getChains();
-  const chainsObject: Record<string, Chain> = chains.reduce(
-    (a, v) => ({
-      ...a,
-      [["Ethereum", "Polygon"].includes(v.name)
-        ? v.name.toLowerCase()
-        : v.network]: v,
-    }),
-    {}
-  );
-  return chainsObject;
 };
