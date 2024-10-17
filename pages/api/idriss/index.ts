@@ -31,7 +31,6 @@ export default async function handler(
 
   // 0 for testing, 1 for live version
   const apiType = Number(isProd());
-  console.log({ url: `${apiUrl}?addresses=${address}&type=${apiType}` });
   try {
     const result = await axios.get(
       `${apiUrl}?addresses=${address}&type=${apiType}`,
