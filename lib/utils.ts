@@ -226,5 +226,5 @@ export const horizonUrl = `https://horizon${
 }.stellar.org`;
 
 export const backendUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}/api/funding/processAccount`
+  ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
