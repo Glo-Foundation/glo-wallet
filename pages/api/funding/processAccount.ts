@@ -13,6 +13,7 @@ import {
   getMarketCap,
   getStellarMarketCap,
 } from "@/lib/utils";
+import prisma from "lib/prisma";
 
 type ChoicesDict = {
   [key: string]: Choice[];
@@ -45,7 +46,7 @@ export default async function handler(
 
   const processed = await processAccount(address, choicesArr);
 
-  await prisma?.balanceCharity.create({
+  await prisma.balanceCharity.create({
     data: {
       address,
       runId: runId,
@@ -75,7 +76,7 @@ export default async function handler(
 
   const result = await buildSummary(runId);
 
-  await prisma?.balanceOnDate.update({
+  await prisma.balanceOnDate.update({
     where: {
       id: runId,
     },
@@ -89,7 +90,7 @@ export default async function handler(
 }
 
 const buildSummary = async (runId: number) => {
-  const records = await prisma?.balanceCharity.findMany({
+  const records = await prisma.balanceCharity.findMany({
     where: {
       runId,
     },
