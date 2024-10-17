@@ -24,7 +24,7 @@ import { getBalance, getBlockNumber } from "@/utils";
 
 export const getBalances = async (address: string, onDate?: Date) => {
   if (!isProd()) {
-    return { totalBalance: BigNumber.from("0") };
+    return { totalBalance: 0 };
   }
 
   let balance = 0;
