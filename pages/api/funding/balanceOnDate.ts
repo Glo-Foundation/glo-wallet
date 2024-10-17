@@ -106,24 +106,19 @@ export default async function handler(
     } adresses`
   );
 
-  try {
-    const url = `https://${process.env.VERCEL_URL}/api/funding/processAccount`;
-    console.log(url);
-    await axios.post(
-      url,
-      {
-        runId,
-        choicesByAddress: filteredChoicesByAddress,
+  const url = `https://${process.env.VERCEL_URL}/api/funding/processAccount`;
+  await axios.post(
+    url,
+    {
+      runId,
+      choicesByAddress: filteredChoicesByAddress,
+    },
+    {
+      headers: {
+        Authorization: process.env.WEBHOOK_API_KEY,
       },
-      {
-        headers: {
-          Authorization: process.env.WEBHOOK_API_KEY,
-        },
-      }
-    );
-  } catch (err) {
-    console.log(err);
-  }
+    }
+  );
 
   return res.status(200).json({
     runId: job.id,

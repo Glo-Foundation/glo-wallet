@@ -59,8 +59,9 @@ export default async function handler(
   });
 
   if (Object.keys(choicesByAddress).length > 1) {
+    const url = `https://${process.env.VERCEL_URL}/api/funding/processAccount`;
     await axios.post(
-      `/api/funding/processAccount`,
+      url,
       {
         runId,
         choicesByAddress,
