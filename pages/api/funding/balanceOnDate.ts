@@ -37,15 +37,6 @@ export default async function handler(
   const isExpired =
     !last || new Date().getTime() - last?.ts.getTime() > oneDayMili;
 
-  if (last && !isExpired) {
-    return res.status(200).json({
-      runId: last.id,
-      generatedAt: last.ts,
-      isProcessing: false,
-      possibleFundingChoices: last.balancesData,
-    });
-  }
-
   const previous = await prisma.balanceOnDate.findFirst({
     where: {
       isProcessed: true,
@@ -54,6 +45,22 @@ export default async function handler(
       ts: "desc",
     },
   });
+
+  if (last && !isExpired) {
+    const isProcessing = !last.isProcessed;
+    const previousRun = {
+      runId: previous?.id,
+      possibleFundingChoices: previous?.balancesData,
+      generatedAt: previous?.ts,
+    };
+    return res.status(200).json({
+      runId: last.id,
+      generatedAt: last.ts,
+      isProcessing,
+      possibleFundingChoices: last.balancesData,
+      ...(isProcessing ? { previousRun } : {}),
+    });
+  }
 
   const job = await prisma.balanceOnDate.create({ data: {} });
   const { id: runId } = job;
@@ -91,7 +98,7 @@ export default async function handler(
     }));
   }
 
-  await axios.post(
+  axios.post(
     `${process.env.VERCEL_OG_URL}/api/funding/processAccount`,
     {
       runId,

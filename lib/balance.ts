@@ -23,6 +23,10 @@ import { horizonUrl, isProd } from "@/lib/utils";
 import { getBalance, getBlockNumber } from "@/utils";
 
 export const getBalances = async (address: string, onDate?: Date) => {
+  if (!isProd()) {
+    return { totalBalance: BigNumber.from("0") };
+  }
+
   let balance = 0;
   let [
     polygonBalance,
@@ -95,24 +99,27 @@ async function getChainBalance(
   const cacheKey = `balance-${address}-${utcDate}`;
   const cacheValue = await kv.hget(cacheKey, chainName);
 
-  let balance;
+  let balance = BigNumber.from(0);
 
-  if (!cacheValue) {
-    if (onDate) {
-      const blockNumber = await getChainBlockNumber(onDate, chain);
-      balance = await getBalance(address as string, chain.id, blockNumber);
+  try {
+    if (!cacheValue) {
+      if (onDate) {
+        const blockNumber = await getChainBlockNumber(onDate, chain);
+        balance = await getBalance(address as string, chain.id, blockNumber);
+      } else {
+        balance = await getBalance(address as string, chain.id);
+      }
+
+      await kv.hset(cacheKey, {
+        [chainName]: balance.toString(),
+      });
+      await kv.expire(cacheKey, 60 * 60 * 24);
     } else {
-      balance = await getBalance(address as string, chain.id);
+      balance = BigNumber.from(cacheValue.toString());
     }
-
-    await kv.hset(cacheKey, {
-      [chainName]: balance.toString(),
-    });
-    await kv.expire(cacheKey, 60 * 60 * 24);
-  } else {
-    balance = BigNumber.from(cacheValue.toString());
+  } catch (_err) {
+    console.log(`Can't fetch balance for ${address}`);
   }
-
   return balance;
 }
 
