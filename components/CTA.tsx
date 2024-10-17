@@ -1,3 +1,4 @@
+import { useWallet } from "@vechain/dapp-kit-react";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -77,13 +78,19 @@ export default function CTA({
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
 
+  const { account: veAddress } = useWallet();
+  const isVe = !!veAddress;
+
   const gloBalance = Number(balance) || 100;
 
   const email = Cookies.get("glo-email") || "";
 
   const shareImpactText = `I just bought ${nf.format(
     gloBalance
-  )} @glodollar, the stablecoin that funds public goods and charities.\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${identity}`;
+  )} @glodollar, the stablecoin that funds public goods and charities.\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${
+    isVe ? "ve/" : ""
+  }${identity}`;
+
   const shareImpactTextShort = `${
     shareImpactText.split("public goods")[0]
   }...`.replace("\n\n", "\n");

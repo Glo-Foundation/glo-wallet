@@ -22,7 +22,9 @@ type Props = {
   usdcBalance: FetchBalanceResult | undefined;
   stellarBalance: FetchBalanceResult | undefined;
   baseBalance: FetchBalanceResult | undefined;
+  veBalance: FetchBalanceResult | undefined;
   stellarConnected: boolean;
+  veConnected: boolean;
 };
 
 export default function Balance({
@@ -33,9 +35,9 @@ export default function Balance({
   arbitrumBalance,
   totalBalance,
   usdcBalance,
-  stellarBalance,
   baseBalance,
   stellarConnected,
+  veConnected,
 }: Props) {
   const { openModal } = useContext(ModalContext);
 
@@ -49,7 +51,6 @@ export default function Balance({
   const totalBalanceFormatted = customFormatBalance(totalBalance);
   const usdcBalanceFormatted = customFormatBalance(usdcBalance);
   const baseBalanceformatted = customFormatBalance(baseBalance);
-  const stellarBalanceformatted = customFormatBalance(stellarBalance);
   const { connector } = useAccount();
   const isSequenceWallet = connector?.id === "sequence";
 
@@ -100,10 +101,10 @@ export default function Balance({
         </div>
         <div
           className={`flex flex-row font-semibold justify-center ${
-            stellarConnected ? "" : "cursor-pointer"
+            veConnected || stellarConnected ? "" : "cursor-pointer"
           }`}
           onClick={() => {
-            stellarConnected
+            veConnected || stellarConnected
               ? null
               : setShowBalanceDropdown(!showBalanceDropdown);
           }}

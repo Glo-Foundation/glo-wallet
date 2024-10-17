@@ -3,6 +3,7 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Chain } from "viem";
+import { vechain } from "viem/chains";
 
 import { getAverageBalance, getBalances, getStellarTxs } from "@/lib/balance";
 import { fetchGloTransactions } from "@/lib/blockscout-explorer";
@@ -175,8 +176,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
     return averageBalance;
   };
 
-  const isStellar = !address.startsWith("0x");
-
+  const isStellar = !address.includes("0x");
   for (const [key] of Object.entries(balancesEndOfMonth)) {
     if (key == "totalBalance") {
       continue;
@@ -206,7 +206,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
         firstThisMonth
       );
       const averageBalance = await getAverageBalance(
-        address,
+        address.startsWith("ve") ? address.slice(2) : address,
         firstLastMonth,
         firstThisMonth,
         balancesEndOfMonth[key],
@@ -301,7 +301,7 @@ const calculateBalances = async (
 };
 
 const getChainsObjects = () => {
-  const chains = getChains();
+  const chains = [...getChains(), vechain];
   const chainsObject: Record<string, Chain> = chains.reduce(
     (a, v) => ({
       ...a,
