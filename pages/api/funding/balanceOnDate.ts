@@ -1,5 +1,3 @@
-import { readFileSync } from "fs";
-
 import { BalanceCharity, Charity, CharityChoice } from "@prisma/client";
 import axios from "axios";
 import { BigNumber } from "ethers";
@@ -48,35 +46,37 @@ export default async function handler(
   const isExpired =
     !last || new Date().getTime() - last?.ts.getTime() > oneDayMili;
 
-  const previous = await prisma.balanceOnDate.findFirst({
-    where: {
-      isProcessed: true,
-    },
-    orderBy: {
-      ts: "desc",
-    },
-  });
-
-  if (last && !isExpired) {
-    const isProcessing = !last.isProcessed;
-    const previousRun = {
-      runId: previous?.id,
-      possibleFundingChoices: previous?.balancesData,
-      generatedAt: previous?.ts,
-    };
+  if (last && last.isProcessed && !isExpired) {
     return res.status(200).json({
       runId: last.id,
       generatedAt: last.ts,
-      isProcessing,
+      isProcessing: true,
       ...(last.balancesData
         ? { possibleFundingChoices: last.balancesData }
         : {}),
-      ...(isProcessing ? { previousRun } : {}),
     });
   }
 
-  const job = await prisma.balanceOnDate.create({ data: {} });
-  const { id: runId } = job;
+  const alreadyProcessedAddresses: string[] = [];
+
+  let runId: number;
+  let jobTs = last?.ts;
+  if (!last || last?.isProcessed) {
+    const job = await prisma.balanceOnDate.create({ data: {} });
+    runId = job.id;
+    jobTs = job.ts;
+  } else {
+    runId = last.id;
+    const res = await prisma.balanceCharity.findMany({
+      where: {
+        runId,
+      },
+      select: {
+        address: true,
+      },
+    });
+    alreadyProcessedAddresses.push(...res.map((x) => x.address));
+  }
 
   const choicesByAddress = allFundingChoices.reduce(
     (acc, cur) => ({
@@ -114,23 +114,34 @@ export default async function handler(
   console.log(
     `BalanceOnDate - processing ${
       Object.keys(filteredChoicesByAddress).length
-    } adresses`
+    } adresses (already processes ${alreadyProcessedAddresses.length})`
   );
 
   for (const address of Object.keys(filteredChoicesByAddress)) {
-    await axios.post(
-      `${backendUrl}/api/funding/processAccount`,
-      {
-        runId,
-        address,
-        choices: filteredChoicesByAddress[address],
-      },
-      {
-        headers: {
-          Authorization: process.env.WEBHOOK_API_KEY,
+    if (alreadyProcessedAddresses.includes(address)) {
+      continue;
+    }
+
+    try {
+      await axios.post(
+        `${backendUrl}/api/funding/processAccount`,
+        {
+          runId,
+          address,
+          choices: filteredChoicesByAddress[address],
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: process.env.WEBHOOK_API_KEY,
+          },
+        }
+      );
+    } catch (err) {
+      console.error(err);
+      return res.status(200).json({
+        msg: "Probably a timetout",
+      });
+    }
   }
 
   console.log("BalanceOnDate - building summary");
@@ -148,9 +159,9 @@ export default async function handler(
   });
 
   return res.status(200).json({
-    runId: job.id,
-    generatedAt: job.ts,
-    isProcessing: true,
+    runId,
+    generatedAt: jobTs,
+    isProcessing: false,
     possibleFundingChoices: result,
   });
 }
