@@ -107,6 +107,8 @@ export default async function handler(
     } adresses`
   );
 
+  console.log({ xxx: `${backendUrl}/api/funding/processAccount` });
+
   await axios.post(
     `${backendUrl}/api/funding/processAccount`,
     {
