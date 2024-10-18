@@ -121,6 +121,7 @@ export default function CharityManageModal(props: Props) {
   const { chain } = useNetwork();
   const [percentMap, setPercentMap] = useState({ ...props.percentMap });
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+  const [lastTouchedKey, setLastTouchedKey] = useState<string | null>(null);
   const [isAutoDistributed, setIsAutoDistributed] = useState(false);
   
   useEffect(() => {
@@ -156,51 +157,44 @@ export default function CharityManageModal(props: Props) {
   const autoDistribute = () => {
     const allKeys = Object.keys(percentMap);
     const totalTouchedPercentage = allKeys
-      .filter((key) => touched[key])
+      .filter((key) => key !== lastTouchedKey) // Exclude the last touched key
       .reduce((acc, key) => acc + percentMap[key], 0);
   
-    const untouchedKeys = allKeys.filter((key) => !touched[key]);
-    const untouchedCount = untouchedKeys.length;
+    const remainingPercentage = 100 - (percentMap[lastTouchedKey!] || 0); // Remaining percentage excluding the last touched
   
     if (allKeys.length === 1) {
       // If there's only one recipient, set its percentage to 100%
       percentMap[allKeys[0]] = 100;
-    } else if (totalTouchedPercentage > 100) {
-      // Scale down touched percentages proportionally to fit within 100%
-      const scalingFactor = 100 / totalTouchedPercentage;
+    } else if (totalTouchedPercentage > remainingPercentage) {
+      // Scale down the other recipients to fit within the remaining percentage
+      const scalingFactor = remainingPercentage / totalTouchedPercentage;
       allKeys.forEach((key) => {
-        if (touched[key]) {
+        if (key !== lastTouchedKey) {
           percentMap[key] = Math.floor(percentMap[key] * scalingFactor);
         }
       });
   
-      // Adjust for rounding issues
       const scaledTotal = Object.values(percentMap).reduce((acc, cur) => acc + cur, 0);
       const leftover = 100 - scaledTotal;
-      if (leftover > 0) {
-        percentMap[allKeys[0]] += leftover;
+  
+      if (leftover > 0 && lastTouchedKey) {
+        percentMap[lastTouchedKey] += leftover;
       }
-    } else if (totalTouchedPercentage < 100) {
-      const remainingPercentage = 100 - totalTouchedPercentage;
+    } else {
+      // Distribute the remaining percentage equally among untouched recipients
+      const untouchedKeys = allKeys.filter((key) => key !== lastTouchedKey);
+      const untouchedCount = untouchedKeys.length;
   
-      if (untouchedCount > 0) {
-        // Distribute the remaining percentage equally among untouched recipients
-        const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
-        const distributedTotal = equalDistribution * untouchedCount;
+      const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
+      const distributedTotal = equalDistribution * untouchedCount;
   
-        untouchedKeys.forEach((key) => {
-          percentMap[key] = equalDistribution;
-        });
+      untouchedKeys.forEach((key) => {
+        percentMap[key] = equalDistribution;
+      });
   
-        // Handle any leftover due to rounding
-        const leftover = remainingPercentage - distributedTotal;
-        if (leftover > 0) {
-          percentMap[untouchedKeys[0]] += leftover;
-        }
-      } else {
-        // If all recipients are touched, adjust the last one to fit 100%
-        const lastKey = allKeys[allKeys.length - 1];
-        percentMap[lastKey] += remainingPercentage;
+      const leftover = remainingPercentage - distributedTotal;
+      if (leftover > 0 && lastTouchedKey) {
+        percentMap[lastTouchedKey] += leftover;
       }
     }
   
@@ -208,10 +202,6 @@ export default function CharityManageModal(props: Props) {
     setIsAutoDistributed(true);
   };
   
-  
-  
-  
-
   const validateAndSave = () => {
     if (sumPercentages!== 100) {
       autoDistribute();
@@ -359,6 +349,7 @@ export default function CharityManageModal(props: Props) {
             setPercent={(value: number) => {
               percentMap[key] = value;
               setTouched((prev) => ({ ...prev, [key]: true }));
+              setLastTouchedKey(key);
               setPercentMap({ ...percentMap });
             }}
             onDelete={
