@@ -345,6 +345,8 @@ export default function CharityManageModal(props: Props) {
                     delete percentMap[key];
                     setTouched((prev) => ({ ...prev, [key]: false }));
                     setPercentMap({ ...percentMap });
+                    setIsAutoDistributed(false); // Reset auto-distribute state
+                    autoDistribute(); // Re-run auto-distribute
                   }
                 : undefined
             }
