@@ -232,16 +232,11 @@ export default function UserAuthModal({
           </button>
           <button
             className="auth-button"
-            data-testid="stellar-login-button"
-            onClick={() => connectWithConnector(99)}
+            data-testid="coinbase-login-button"
+            onClick={() => connectWithConnector(3)}
           >
-            <h4>Stellar wallets</h4>
-            <Image
-              alt="stellar"
-              src="/stellar-logo.svg"
-              width={35}
-              height={35}
-            />
+            <h4>Coinbase</h4>
+            <Image alt="coinbase" src="/coinbase.png" width={35} height={35} />
           </button>
           {!isMobile && (
             <div>
@@ -260,6 +255,19 @@ export default function UserAuthModal({
               </button>
             </div>
           )}
+          <button
+            className="auth-button"
+            data-testid="stellar-login-button"
+            onClick={() => connectWithConnector(99)}
+          >
+            <h4>Stellar wallets</h4>
+            <Image
+              alt="stellar"
+              src="/stellar-logo.svg"
+              width={35}
+              height={35}
+            />
+          </button>
 
           <button
             className="auth-button"

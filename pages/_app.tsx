@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
+import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
@@ -64,6 +65,12 @@ const config = createConfig({
           },
           // explorerRecommendedWalletIds: ['d01c7758d741b363e637a817a09bcf579feae4db9f5bb16f599fdd1f66e2f974']
         },
+      },
+    }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: {
+        appName: "Glo Dollar",
       },
     }),
   ],
