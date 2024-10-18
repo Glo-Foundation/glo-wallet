@@ -153,9 +153,7 @@ export default function CharityManageModal(props: Props) {
     if (props.onClose) props.onClose();
   };
 
-  const autoDistribute = () => {
-    console.log(1111);
-  
+  const autoDistribute = () => {  
     const totalTouchedPercentage = Object.keys(percentMap)
       .filter((key) => touched[key])
       .reduce((acc, key) => acc + percentMap[key], 0);
@@ -165,11 +163,9 @@ export default function CharityManageModal(props: Props) {
     const untouchedCount = untouchedKeys.length;
   
     if (allKeys.length === 1) {
-      console.log("Only one recipient left, setting to 100%");
       // If there's only one recipient, set its percentage to 100%
       percentMap[allKeys[0]] = 100;
     } else if (totalTouchedPercentage > 100) {
-      console.log("Scaling down percentages to fit within 100%");
       // Scale down touched percentages proportionally to fit within 100%
       const scalingFactor = 100 / totalTouchedPercentage;
       allKeys.forEach((key) => {
@@ -185,7 +181,6 @@ export default function CharityManageModal(props: Props) {
         percentMap[allKeys[0]] += leftover;
       }
     } else if (totalTouchedPercentage < 100 && untouchedCount > 0) {
-      console.log("Distributing remaining percentage among untouched recipients");
       // Distribute remaining percentage equally among untouched recipients
       const remainingPercentage = 100 - totalTouchedPercentage;
       const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
