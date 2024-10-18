@@ -153,18 +153,26 @@ export default function CharityManageModal(props: Props) {
     if (props.onClose) props.onClose();
   };
 
-  const autoDistribute = () => {  
+  const autoDistribute = () => {
+    console.log(1111);
+  
     const totalTouchedPercentage = Object.keys(percentMap)
       .filter((key) => touched[key])
       .reduce((acc, key) => acc + percentMap[key], 0);
   
     const untouchedKeys = Object.keys(percentMap).filter((key) => !touched[key]);
+    const allKeys = Object.keys(percentMap);
     const untouchedCount = untouchedKeys.length;
   
-    if (totalTouchedPercentage > 100) {
+    if (allKeys.length === 1) {
+      console.log("Only one recipient left, setting to 100%");
+      // If there's only one recipient, set its percentage to 100%
+      percentMap[allKeys[0]] = 100;
+    } else if (totalTouchedPercentage > 100) {
+      console.log("Scaling down percentages to fit within 100%");
       // Scale down touched percentages proportionally to fit within 100%
       const scalingFactor = 100 / totalTouchedPercentage;
-      Object.keys(percentMap).forEach((key) => {
+      allKeys.forEach((key) => {
         if (touched[key]) {
           percentMap[key] = Math.floor(percentMap[key] * scalingFactor);
         }
@@ -174,9 +182,10 @@ export default function CharityManageModal(props: Props) {
       const leftover = 100 - scaledTotal;
   
       if (leftover > 0) {
-        percentMap[Object.keys(percentMap)[0]] += leftover;
+        percentMap[allKeys[0]] += leftover;
       }
     } else if (totalTouchedPercentage < 100 && untouchedCount > 0) {
+      console.log("Distributing remaining percentage among untouched recipients");
       // Distribute remaining percentage equally among untouched recipients
       const remainingPercentage = 100 - totalTouchedPercentage;
       const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
@@ -197,13 +206,14 @@ export default function CharityManageModal(props: Props) {
   };
   
   
+  
 
   const validateAndSave = () => {
     if (sumPercentages!== 100) {
       autoDistribute();
       setShowToast({
         showToast: true,
-        message: `Auto-distributed. Please press confirm to proceed: ${sumPercentages}.`,
+        message: `Auto-distributed. Please press confirm to proceed.`,
       });
     
     } 
