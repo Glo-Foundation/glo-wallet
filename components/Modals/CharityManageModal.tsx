@@ -153,35 +153,39 @@ export default function CharityManageModal(props: Props) {
     if (props.onClose) props.onClose();
   };
 
-  const autoDistribute = () => {
-    // Get total allocated percentage from the touched recipients
+  const autoDistribute = () => {  
     const totalTouchedPercentage = Object.keys(percentMap)
       .filter((key) => touched[key])
       .reduce((acc, key) => acc + percentMap[key], 0);
   
-    // Calculate the remaining percentage for untouched recipients
-    const untouchedKeys = Object.keys(percentMap).filter(
-      (key) => !touched[key]
-    );
+    const untouchedKeys = Object.keys(percentMap).filter((key) => !touched[key]);
     const untouchedCount = untouchedKeys.length;
   
-    const remainingPercentage = 100 - totalTouchedPercentage;
-  
-    if (remainingPercentage < 0) {
-      // If touched ones exceed 100%, set untouched recipients to 0%
-      untouchedKeys.forEach((key) => {
-        percentMap[key] = 0;
+    if (totalTouchedPercentage > 100) {
+      // Scale down touched percentages proportionally to fit within 100%
+      const scalingFactor = 100 / totalTouchedPercentage;
+      Object.keys(percentMap).forEach((key) => {
+        if (touched[key]) {
+          percentMap[key] = Math.floor(percentMap[key] * scalingFactor);
+        }
       });
-    } else if (untouchedCount > 0) {
-      // Distribute the remaining percentage equally among untouched recipients
+  
+      const scaledTotal = Object.values(percentMap).reduce((acc, cur) => acc + cur, 0);
+      const leftover = 100 - scaledTotal;
+  
+      if (leftover > 0) {
+        percentMap[Object.keys(percentMap)[0]] += leftover;
+      }
+    } else if (totalTouchedPercentage < 100 && untouchedCount > 0) {
+      // Distribute remaining percentage equally among untouched recipients
+      const remainingPercentage = 100 - totalTouchedPercentage;
       const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
       const distributedTotal = equalDistribution * untouchedCount;
-      
+  
       untouchedKeys.forEach((key) => {
         percentMap[key] = equalDistribution;
       });
   
-      // Add the leftover to the first untouched recipient if there's any
       const leftover = remainingPercentage - distributedTotal;
       if (leftover > 0) {
         percentMap[untouchedKeys[0]] += leftover;
@@ -191,16 +195,20 @@ export default function CharityManageModal(props: Props) {
     setPercentMap({ ...percentMap });
     setIsAutoDistributed(true);
   };
+  
+  
 
-  const handleSave = () => {
-    if (!isAutoDistributed) {
-      autoDistribute(); // Auto-distribute on first save
+  const validateAndSave = () => {
+    if (sumPercentages!== 100) {
+      autoDistribute();
       setShowToast({
         showToast: true,
-        message: "Please press save again to confirm.",
+        message: `Auto-distributed. Please press confirm to proceed: ${sumPercentages}.`,
       });
-    } else {
-      // Proceed with signing and API call on second save
+    
+    } 
+     else {
+      // Proceed with signing if total is already 100%
       updateSelectedCharity(percentMap, chain as Chain);
       onClose();
     }
@@ -356,7 +364,7 @@ export default function CharityManageModal(props: Props) {
       <button
         className={"primary-button m-2"}
         onClick={() => {
-          handleSave()
+          validateAndSave()
         }}
       >
         {isAutoDistributed ? "Confirm" : "Save"}
