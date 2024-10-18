@@ -153,13 +153,13 @@ export default function CharityManageModal(props: Props) {
     if (props.onClose) props.onClose();
   };
 
-  const autoDistribute = () => {  
-    const totalTouchedPercentage = Object.keys(percentMap)
+  const autoDistribute = () => {
+    const allKeys = Object.keys(percentMap);
+    const totalTouchedPercentage = allKeys
       .filter((key) => touched[key])
       .reduce((acc, key) => acc + percentMap[key], 0);
   
-    const untouchedKeys = Object.keys(percentMap).filter((key) => !touched[key]);
-    const allKeys = Object.keys(percentMap);
+    const untouchedKeys = allKeys.filter((key) => !touched[key]);
     const untouchedCount = untouchedKeys.length;
   
     if (allKeys.length === 1) {
@@ -174,31 +174,40 @@ export default function CharityManageModal(props: Props) {
         }
       });
   
+      // Adjust for rounding issues
       const scaledTotal = Object.values(percentMap).reduce((acc, cur) => acc + cur, 0);
       const leftover = 100 - scaledTotal;
-  
       if (leftover > 0) {
         percentMap[allKeys[0]] += leftover;
       }
-    } else if (totalTouchedPercentage < 100 && untouchedCount > 0) {
-      // Distribute remaining percentage equally among untouched recipients
+    } else if (totalTouchedPercentage < 100) {
       const remainingPercentage = 100 - totalTouchedPercentage;
-      const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
-      const distributedTotal = equalDistribution * untouchedCount;
   
-      untouchedKeys.forEach((key) => {
-        percentMap[key] = equalDistribution;
-      });
+      if (untouchedCount > 0) {
+        // Distribute the remaining percentage equally among untouched recipients
+        const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
+        const distributedTotal = equalDistribution * untouchedCount;
   
-      const leftover = remainingPercentage - distributedTotal;
-      if (leftover > 0) {
-        percentMap[untouchedKeys[0]] += leftover;
+        untouchedKeys.forEach((key) => {
+          percentMap[key] = equalDistribution;
+        });
+  
+        // Handle any leftover due to rounding
+        const leftover = remainingPercentage - distributedTotal;
+        if (leftover > 0) {
+          percentMap[untouchedKeys[0]] += leftover;
+        }
+      } else {
+        // If all recipients are touched, adjust the last one to fit 100%
+        const lastKey = allKeys[allKeys.length - 1];
+        percentMap[lastKey] += remainingPercentage;
       }
     }
   
     setPercentMap({ ...percentMap });
     setIsAutoDistributed(true);
   };
+  
   
   
   
