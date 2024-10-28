@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { useConnect, useAccount } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 
 import AddToWallet from "@/components/AddToWallet";
 import NetworkSwitcher from "@/components/NetworkSwitcher";
@@ -28,13 +28,14 @@ export default function Header({
   setStellarConnected: (bool: boolean) => void;
   setStellarAddress: (str: string) => void;
 }) {
-  const { isLoading } = useConnect();
+  const { isPending } = useConnect();
   const { address, isConnected, connector } = useAccount();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal } = useContext(ModalContext);
   const { setRecipientsView } = useUserStore();
 
   const isSequenceWallet = connector?.id === "sequence";
+  const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -73,19 +74,14 @@ export default function Header({
 
       <nav className="mt-4 mb-6 flex justify-between items-center">
         <a className="cursor-pointer" onClick={() => setRecipientsView(false)}>
-          <Image
-            src="/glo-logo.png"
-            alt="glo logo"
-            width={34}
-            height={26}
-          />
+          <Image src="/glo-logo.png" alt="glo logo" width={34} height={26} />
         </a>
 
-        {isLoading ? (
+        {isPending ? (
           <button className="primary-button">Connecting... </button>
         ) : isConnected ? (
           <div className="flex z-10">
-            {!isSequenceWallet ? <AddToWallet /> : ""}
+            {!isSequenceWallet && !isCoinbaseWallet && <AddToWallet />}
             <NetworkSwitcher />
             <Tooltip
               id="copy-wallet-tooltip"

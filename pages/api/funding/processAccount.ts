@@ -1,5 +1,4 @@
 import { Charity } from "@prisma/client";
-import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getAverageBalance, getBalances, getStellarTxs } from "@/lib/balance";
@@ -58,11 +57,12 @@ const processAccount = async (address: string, choices: Choice[]) => {
   );
   const decimals = BigInt(10 ** 18);
 
-  const allocated: { [key: string]: BigNumber } = Object.keys(
-    chainsObject
-  ).reduce((acc, cur) => ({ ...acc, [cur]: BigNumber.from(0) }), {
-    stellar: BigNumber.from(0),
-  });
+  const allocated: { [key: string]: bigint } = Object.keys(chainsObject).reduce(
+    (acc, cur) => ({ ...acc, [cur]: BigInt(0) }),
+    {
+      stellar: BigInt(0),
+    }
+  );
 
   const possibleFundingChoices: { [key: string]: number } = Object.keys(
     Charity
@@ -73,19 +73,17 @@ const processAccount = async (address: string, choices: Choice[]) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const balancesEndOfMonth: any = await getBalances(address, firstThisMonth);
 
-  let averageTotalBalanceThisMonth = BigNumber.from("0");
+  let averageTotalBalanceThisMonth = BigInt("0");
 
   const getAverageStellarBalance = async (
     address: string,
     start: Date,
     end: Date,
-    balance: BigNumber
+    balance: bigint
   ) => {
     const milisecondsInMonthString = end.valueOf() - start.valueOf();
-    const milisecondsInMonth = BigNumber.from(
-      milisecondsInMonthString.toString()
-    );
-    let totalBalance = BigNumber.from("0");
+    const milisecondsInMonth = BigInt(milisecondsInMonthString.toString());
+    let totalBalance = BigInt(0);
     let currentDate = end;
     let currentBalance = balance;
 
@@ -93,31 +91,31 @@ const processAccount = async (address: string, choices: Choice[]) => {
     for (const tx of txs) {
       const txDate = new Date(1000 * parseInt(tx.timeBounds?.maxTime || "0"));
 
-      const balanceTime = BigNumber.from(
+      const balanceTime = BigInt(
         (currentDate.valueOf() - txDate.valueOf()).toString()
       );
-      let transactionDelta = BigNumber.from(0);
+      let transactionDelta = BigInt(0);
       for (const op of tx.operations) {
         if (op.type === "payment" && op.asset.code === "USDGLO") {
           const incoming = op.destination === address;
-          const x = BigNumber.from(op.amount.replace(".", ""));
+          const x = BigInt(op.amount.replace(".", ""));
           transactionDelta = incoming
-            ? transactionDelta.add(x)
-            : transactionDelta.sub(x);
+            ? transactionDelta + x
+            : transactionDelta - x;
         }
       }
 
-      const weightedBalance = currentBalance.mul(balanceTime);
-      totalBalance = totalBalance.add(weightedBalance);
+      const weightedBalance = currentBalance * balanceTime;
+      totalBalance = totalBalance + weightedBalance;
       currentDate = txDate;
-      currentBalance = currentBalance.add(transactionDelta);
+      currentBalance = currentBalance + transactionDelta;
     }
 
     const balanceTime = currentDate.valueOf() - start.valueOf();
-    const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
-    totalBalance = totalBalance.add(weightedBalance);
+    const weightedBalance = currentBalance * BigInt(balanceTime);
+    totalBalance = totalBalance + weightedBalance;
 
-    const averageBalance = totalBalance.div(milisecondsInMonth);
+    const averageBalance = totalBalance / milisecondsInMonth;
 
     return averageBalance;
   };
@@ -138,10 +136,10 @@ const processAccount = async (address: string, choices: Choice[]) => {
         firstThisMonth,
         balancesEndOfMonth[key]
       );
-      const stellarAdjusted = stellarBalance.mul(BigInt(10 ** 11)); // To ETH precision;
+      const stellarAdjusted = stellarBalance * BigInt(10 ** 11); // To ETH precision;
       averageTotalBalanceThisMonth =
-        averageTotalBalanceThisMonth.add(stellarAdjusted);
-      allocated["stellar"] = allocated["stellar"].add(stellarAdjusted);
+        averageTotalBalanceThisMonth + stellarAdjusted;
+      allocated["stellar"] = allocated["stellar"] + stellarAdjusted;
     } else if (!isStellar) {
       const chainName = key.replace("Balance", "");
 
@@ -160,20 +158,18 @@ const processAccount = async (address: string, choices: Choice[]) => {
         gloTransactionsLastMonth
       );
       averageTotalBalanceThisMonth =
-        averageTotalBalanceThisMonth.add(averageBalance);
+        averageTotalBalanceThisMonth + averageBalance;
 
-      allocated[chainName] = allocated[chainName].add(averageBalance);
+      allocated[chainName] = allocated[chainName] + averageBalance;
     }
   }
 
   choices.forEach((choice) => {
     const { percent, name } = choice;
-    const balance = averageTotalBalanceThisMonth
-      .mul(percent)
-      .div(100)
-      .div(decimals)
-      .toNumber();
-    possibleFundingChoices[name] = possibleFundingChoices[name] + balance;
+    const balance =
+      (averageTotalBalanceThisMonth * BigInt(percent)) / BigInt(100) / decimals;
+    possibleFundingChoices[name] =
+      possibleFundingChoices[name] + Number(balance);
   });
 
   return {
@@ -181,7 +177,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
       Object.entries(possibleFundingChoices).filter(([, value]) => value > 0)
     ),
     allocated: Object.fromEntries(
-      Object.entries(allocated).filter(([, value]) => !value.isZero())
+      Object.entries(allocated).filter(([, value]) => value != BigInt(0))
     ),
   };
 };

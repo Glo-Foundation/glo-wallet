@@ -1,3 +1,9 @@
+// import {
+//   allowAllModules,
+//   StellarWalletsKit,
+//   WalletNetwork,
+//   XBULL_ID,
+// } from "@creit.tech/stellar-wallets-kit";
 import {
   allowAllModules,
   StellarWalletsKit,
@@ -17,8 +23,8 @@ import Image from "next/image";
 import Slider from "rc-slider";
 import { useContext, useEffect, useState } from "react";
 import useSWR from "swr";
-import { Hex } from "viem/types/misc";
-import { useNetwork } from "wagmi";
+import { Hex } from "viem";
+import { useAccount } from "wagmi";
 
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
@@ -119,7 +125,7 @@ const CharitySlider = ({
 export default function CharityManageModal(props: Props) {
   const { closeModal } = useContext(ModalContext);
 
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const [percentMap, setPercentMap] = useState({ ...props.percentMap });
   useEffect(() => {
     if (props.isAddNewMode) {
@@ -171,29 +177,30 @@ export default function CharityManageModal(props: Props) {
         modules: allowAllModules(),
       });
 
-      const publicKey = await kit.getPublicKey();
+      // const { address } = await kit.getAddress();
 
-      const tx = new TransactionBuilder(new Account(publicKey, "0"), {
-        fee: "1",
-        networkPassphrase: isProd() ? Networks.PUBLIC : Networks.TESTNET,
-      })
-        .addOperation(
-          Operation.payment({
-            destination: publicKey,
-            amount: "1",
-            asset: Asset.native(),
-          })
-        )
-        .setTimeout(30)
-        .build();
+      //   const tx = new TransactionBuilder(new Account(address, "0"), {
+      //     fee: "1",
+      //     networkPassphrase: isProd() ? Networks.PUBLIC : Networks.TESTNET,
+      //   })
+      //     .addOperation(
+      //       Operation.payment({
+      //         destination: address,
+      //         amount: "1",
+      //         asset: Asset.native(),
+      //       })
+      //     )
+      //     .setTimeout(30)
+      //     .build();
 
-      const { result: sig } = await kit.signTx({
-        xdr: tx.toXDR(),
-        publicKeys: [publicKey],
-        network: stellarNetwork,
-      });
+      //   // TODO: cry
+      //   // const { result: sig } = await kit.signTx({
+      //   //   xdr: tx.toXDR(),
+      //   //   publicKeys: [address],
+      //   //   network: stellarNetwork,
+      //   // });
 
-      return sig;
+      //   // return sig;
     }
 
     const sig = await walletClient?.signMessage({

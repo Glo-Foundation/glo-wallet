@@ -5,9 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 import { api } from "@/lib/utils";
+import { POPUP_PROPS } from "@/utils";
 
-const POPUP_PROPS =
-  "toolbar=1,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1,width=900, height=800,top=0";
 const BUTTON_CLASS_NAME = "bg-pine-100 text-pine-900 h-[52px] py-3.5 m-1 p-10";
 
 const TwitterLogo = () => (

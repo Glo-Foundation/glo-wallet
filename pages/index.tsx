@@ -18,13 +18,7 @@ import Cookies from "js-cookie";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useContext, useState } from "react";
-import {
-  useAccount,
-  useBalance,
-  useEnsName,
-  useNetwork,
-  useSwitchNetwork,
-} from "wagmi";
+import { useAccount, useBalance, useEnsName, useSwitchChain } from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
@@ -47,9 +41,9 @@ import { customFormatBalance, getTotalGloBalance } from "@/utils";
 import { getUSDCContractAddress } from "@/utils";
 
 export default function Home() {
-  const { address, isConnected, connector } = useAccount();
-  const { chain } = useNetwork();
-  const { switchNetwork } = useSwitchNetwork();
+  const { address, isConnected, connector, chain } = useAccount();
+  const { switchChain } = useSwitchChain();
+
   const { openModal, closeModal } = useContext(ModalContext);
   const [idrissName, setIdrissName] = useState("");
   const [stellarConnected, setStellarConnected] = useState(
@@ -70,15 +64,15 @@ export default function Home() {
   const usdcBalance = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
-    watch: true,
-    cacheTime: 2_000,
+    // watch: true,
+    // cacheTime: 2_000,
   });
   const polygonId = isProd() ? polygon.id : polygonMumbai.id;
   const { data: polygonBalance } = useBalance({
     address,
     token: getSmartContractAddress(polygonId),
-    watch: true,
-    cacheTime: 5_000,
+    // watch: true,
+    // cacheTime: 5_000,
     chainId: polygonId,
   });
 
@@ -86,8 +80,8 @@ export default function Home() {
   const { data: ethereumBalance } = useBalance({
     address,
     token: getSmartContractAddress(ethereumId),
-    watch: true,
-    cacheTime: 5_000,
+    // watch: true,
+    // cacheTime: 5_000,
     chainId: ethereumId,
   });
 
@@ -95,8 +89,8 @@ export default function Home() {
   const { data: celoBalance } = useBalance({
     address,
     token: getSmartContractAddress(celoId),
-    watch: true,
-    cacheTime: 5_000,
+    // watch: true,
+    // cacheTime: 5_000,
     chainId: celoId,
   });
 
@@ -104,8 +98,8 @@ export default function Home() {
   const { data: optimismBalance } = useBalance({
     address,
     token: getSmartContractAddress(optimismId),
-    watch: true,
-    cacheTime: 5_000,
+    // watch: true,
+    // cacheTime: 5_000,
     chainId: optimismId,
   });
 
@@ -113,8 +107,8 @@ export default function Home() {
   const { data: arbitrumBalance } = useBalance({
     address,
     token: getSmartContractAddress(arbitrumId),
-    watch: true,
-    cacheTime: 5_000,
+    // watch: true,
+    // cacheTime: 5_000,
     chainId: arbitrumId,
   });
 
@@ -122,8 +116,8 @@ export default function Home() {
   const { data: baseBalance } = useBalance({
     address,
     token: getSmartContractAddress(baseId),
-    watch: true,
-    cacheTime: 5_000,
+    // watch: true,
+    // cacheTime: 5_000,
     chainId: optimismId,
   });
 
@@ -158,23 +152,33 @@ export default function Home() {
   useEffect(() => {
     const getStellarBalance = async () => {
       const apiUrl = `${horizonUrl}/accounts/${stellarAddress}`;
-      const res = await axios.get(apiUrl, {
-        headers: { Accept: "application/json" },
-      });
-      const stellarBalanceValue = await res.data.balances.reduce(
-        (acc: any, cur: any) =>
-          cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
-        0
-      );
-      const bigIntStellarBalance = BigInt(
-        `${stellarBalanceValue}`.replace(".", "")
-      );
-      setStellarBalance({
-        decimals: 7,
-        symbol: "USDGLO",
-        formatted: `${stellarBalanceValue}`,
-        value: bigIntStellarBalance,
-      });
+      try {
+        const res = await axios.get(apiUrl, {
+          headers: { Accept: "application/json" },
+        });
+        const stellarBalanceValue = await res.data.balances.reduce(
+          (acc: any, cur: any) =>
+            cur.asset_code == "USDGLO" ? (acc += parseFloat(cur.balance)) : acc,
+          0
+        );
+        const bigIntStellarBalance = BigInt(
+          `${stellarBalanceValue}`.replace(".", "")
+        );
+        setStellarBalance({
+          decimals: 7,
+          symbol: "USDGLO",
+          formatted: `${stellarBalanceValue}`,
+          value: bigIntStellarBalance,
+        });
+      } catch (err) {
+        console.log(`Cannot fetch Stellar balance for ${stellarAddress}`);
+        setStellarBalance({
+          decimals: 7,
+          symbol: "USDGLO",
+          formatted: `0`,
+          value: BigInt("0"),
+        });
+      }
     };
     if (stellarConnected) {
       getStellarBalance();
@@ -201,10 +205,10 @@ export default function Home() {
     if (isConnected && shouldSwitchToDefault) {
       // This timeout avoids some Sequence condition race
       setTimeout(() => {
-        switchNetwork?.(defaultChainId());
+        switchChain?.({ chainId: defaultChainId() });
       }, 0);
     }
-  }, [switchNetwork]);
+  }, [switchChain]);
 
   useEffect(() => {
     if (isConnected || stellarConnected) {
@@ -224,6 +228,10 @@ export default function Home() {
 
       sign().then(async (signature: string) => {
         if (isConnected) {
+          if (!chain) {
+            // Chain not confirmed on the phone
+            return;
+          }
           await initApi(address!, chain!.id, signature);
         } else if (stellarConnected) {
           await initApi(stellarAddress!, 0, signature);

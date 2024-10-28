@@ -13,14 +13,14 @@ import {
 } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 
 import { useOutsideClick } from "@/lib/hooks";
 import { getAllowedChains } from "@/lib/utils";
 
 export default function NetworkSwitcher() {
-  const { switchNetwork } = useSwitchNetwork();
-  const { chain } = useNetwork();
+  const { switchChain } = useSwitchChain();
+  const { chain } = useAccount();
   const [dropdownActive, setDropdownActive] = useState(false);
 
   const ref = useRef(null);
@@ -61,8 +61,8 @@ export default function NetworkSwitcher() {
     return chains.map((chain) => (
       <li
         className="hover:bg-pine-100 px-2 py-2.5 rounded-lg"
-        onClick={() => {
-          switchNetwork?.(chain.id);
+        onClick={async () => {
+          switchChain({ chainId: chain.id });
           setDropdownActive(false);
         }}
         key={chain.id}

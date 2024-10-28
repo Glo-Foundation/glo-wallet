@@ -1,118 +1,73 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
+import "@coinbase/onchainkit/styles.css";
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
-import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
-import localFont from "next/font/local";
+import { sequenceWallet } from "@0xsequence/wagmi-connector";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
-import { configureChains, Connector, createConfig, WagmiConfig } from "wagmi";
-import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { createClient, http } from "viem";
+import { createConfig, WagmiProvider } from "wagmi";
+import { metaMask, walletConnect, coinbaseWallet } from "wagmi/connectors";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
 import { defaultChainId, getChainRPCUrl } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { GloSequenceConnector } from "@/lib/sequence-connector";
+import { neueHaasGrotesk, polySans } from "@/utils";
 
 import { getChains } from "../lib/utils";
 
 import type { AppProps } from "next/app";
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  getChains(),
-  [
-    jsonRpcProvider({
-      rpc: (chain) => ({
-        http: getChainRPCUrl(chain.id),
-      }),
-    }),
-  ]
-);
+const queryClient = new QueryClient();
 
 const config = createConfig({
-  autoConnect: true,
+  // autoConnect: true,
+
+  chains: getChains(),
+  client({ chain }) {
+    return createClient({ chain, transport: http(getChainRPCUrl(chain.id)) });
+  },
   connectors: [
-    new GloSequenceConnector({
-      options: {
-        connect: {
-          app: "Glo wallet",
-          networkId: defaultChainId(),
-          askForEmail: true,
-          settings: {
-            theme: "light",
-            bannerUrl: "https://i.imgur.com/P8l8pFh.png",
-          },
+    sequenceWallet({
+      connectOptions: {
+        app: "Glo wallet",
+        askForEmail: true,
+        settings: {
+          theme: "light",
+          bannerUrl: "https://i.imgur.com/P8l8pFh.png",
         },
+        projectAccessKey: "...", // TODO: add ?
       },
-      chains,
-    }) as unknown as Connector,
-    new MetaMaskConnector({
-      chains,
+      defaultNetwork: defaultChainId(),
     }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-        showQrModal: true,
-        qrModalOptions: {
-          themeVariables: {
-            "--w3m-z-index": "11",
-          },
-          // explorerRecommendedWalletIds: ['d01c7758d741b363e637a817a09bcf579feae4db9f5bb16f599fdd1f66e2f974']
+    metaMask({
+      dappMetadata: {
+        url: "https://app.glodollar.org",
+      },
+    }),
+    walletConnect({
+      projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+      showQrModal: true,
+      qrModalOptions: {
+        themeVariables: {
+          "--wcm-z-index": "11",
         },
       },
     }),
-    new CoinbaseWalletConnector({
-      chains,
-      options: {
-        appName: "Glo Dollar",
-      },
+    coinbaseWallet({
+      appName: "Glo Dollar",
     }),
   ],
-  publicClient,
-  webSocketPublicClient,
-});
-
-const neueHaasGrotesk = localFont({
-  src: [
-    {
-      path: "../public/fonts/NeueHaasGroteskText65Medium.woff2",
-      weight: "400",
-    },
-    {
-      path: "../public/fonts/NeueHaasGroteskText75Bold.woff2",
-      weight: "600",
-    },
-  ],
-  variable: "--font-neuehaasgrotesk",
-  display: "swap",
-});
-
-const polySans = localFont({
-  src: [
-    {
-      path: "../public/fonts/PolySans-Neutral.woff2",
-      weight: "400",
-    },
-    {
-      path: "../public/fonts/PolySans-Median.woff2",
-      weight: "600",
-    },
-  ],
-  variable: "--font-polysans",
-  display: "swap",
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   const [modalContent, setModalContent] = useState(<div />);
   const [modalClassName, setModalClassName] = useState("");
   const [isMounted, setIsMounted] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -170,21 +125,23 @@ export default function App({ Component, pageProps }: AppProps) {
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >
         {isMounted && (
-          <WagmiConfig config={config}>
-            <ModalContext.Provider
-              value={{ openModal, closeModal, setModalClass }}
-            >
-              <Component {...pageProps} />
-              <dialog
-                ref={dialogRef}
-                onClick={dialogClickHandler}
-                className={`${modalClassName} outline-none bg-white`}
+          <WagmiProvider config={config}>
+            <QueryClientProvider client={queryClient}>
+              <ModalContext.Provider
+                value={{ openModal, closeModal, setModalClass }}
               >
-                <div ref={contentRef}>{modalContent}</div>
-              </dialog>
-            </ModalContext.Provider>
-            <Toast />
-          </WagmiConfig>
+                <Component {...pageProps} />
+                <dialog
+                  ref={dialogRef}
+                  onClick={dialogClickHandler}
+                  className={`${modalClassName} outline-none bg-white`}
+                >
+                  <div ref={contentRef}>{modalContent}</div>
+                </dialog>
+              </ModalContext.Provider>
+              <Toast />
+            </QueryClientProvider>
+          </WagmiProvider>
         )}
       </main>
       {/* Temp disable chat */}

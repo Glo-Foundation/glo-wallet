@@ -3,7 +3,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
@@ -22,15 +22,13 @@ export default function PaymentOptionModal({
   buyAmount: number;
   stellarConnected?: boolean;
 }) {
-  const { address, connector, isConnected } = useAccount();
-  const { chain } = useNetwork();
+  const { address, connector, isConnected, chain } = useAccount();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal, closeModal } = useContext(ModalContext);
 
   const isSequenceWallet = connector?.id === "sequence";
-  const isMetamaskWallet = connector?.id === "metaMask";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {

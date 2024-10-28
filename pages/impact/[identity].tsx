@@ -1,5 +1,4 @@
 import axios from "axios";
-import { BigNumber } from "ethers";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -7,8 +6,8 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { createPublicClient, http } from "viem";
+import { mainnet } from "viem/chains";
 import { getEnsAddress, normalize } from "viem/ens";
-import { mainnet } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import Navbar from "@/components/Navbar";
@@ -243,7 +242,7 @@ const beautifyDate = (date?: Date) => {
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
 
-function formatBalance(balance: BigNumber) {
+function formatBalance(balance: bigint) {
   const balanceValue = BigInt(balance.toString()) / BigInt(10 ** 18);
   return customFormatBalance({
     decimals: 18,
@@ -342,13 +341,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ensIdentity,
       balance,
       yearlyYield,
-      polygonBalanceFormatted: formatBalance(
-        polygonBalance || BigNumber.from(0)
-      ),
-      ethereumBalanceFormatted: formatBalance(
-        ethereumBalance || BigNumber.from(0)
-      ),
-      celoBalanceFormatted: formatBalance(celoBalance || BigNumber.from(0)),
+      polygonBalanceFormatted: formatBalance(polygonBalance || BigInt(0)),
+      ethereumBalanceFormatted: formatBalance(ethereumBalance || BigInt(0)),
+      celoBalanceFormatted: formatBalance(celoBalance || BigInt(0)),
       openGraphData: [
         {
           property: "og:image",

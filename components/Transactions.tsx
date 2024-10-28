@@ -1,20 +1,18 @@
 import { motion, useCycle, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useContext } from "react";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
 
 import AllTransactionsModal from "./Modals/AllTransactionsModal";
-import UserAuthModal from "./Modals/UserAuthModal";
 import TransactionsList from "./TransactionsList";
 
 export default function Transactions() {
   const { transfers } = useUserStore();
-  const { isConnected } = useAccount();
-  const { chain } = useNetwork();
+  const { isConnected, chain } = useAccount();
   const { openModal } = useContext(ModalContext);
 
   const [isOpen, toggleOpen] = useCycle(false, true);

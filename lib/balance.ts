@@ -16,7 +16,6 @@ import {
   baseSepolia,
 } from "@wagmi/core/chains";
 import axios from "axios";
-import { BigNumber } from "ethers";
 
 import { TokenTransfer } from "@/lib/blockscout-explorer";
 import { horizonUrl, isProd } from "@/lib/utils";
@@ -29,7 +28,7 @@ export const getBalances = async (address: string, onDate?: Date) => {
     };
   }
 
-  let balance = 0;
+  let balance = BigInt(0);
   let [
     polygonBalance,
     ethereumBalance,
@@ -39,13 +38,13 @@ export const getBalances = async (address: string, onDate?: Date) => {
     stellarBalance,
     baseBalance,
   ] = [
-    BigNumber.from("0"),
-    BigNumber.from("0"),
-    BigNumber.from("0"),
-    BigNumber.from("0"),
-    BigNumber.from("0"),
-    BigNumber.from("0"),
-    BigNumber.from("0"),
+    BigInt(0),
+    BigInt(0),
+    BigInt(0),
+    BigInt(0),
+    BigInt(0),
+    BigInt(0),
+    BigInt(0),
   ];
 
   if (address.slice(0, 4).includes("0x")) {
@@ -65,22 +64,23 @@ export const getBalances = async (address: string, onDate?: Date) => {
       getChainBalance(address, isProd() ? base : baseSepolia, onDate),
     ]);
     const decimals = BigInt(10 ** 18);
-    balance = polygonBalance
-      .add(ethereumBalance)
-      .add(celoBalance)
-      .add(arbitrumBalance)
-      .add(optimismBalance)
-      .add(baseBalance)
-      .div(decimals)
-      .toNumber();
+    decimals;
+    balance =
+      polygonBalance +
+      ethereumBalance +
+      celoBalance +
+      arbitrumBalance +
+      optimismBalance +
+      baseBalance;
+    balance /= decimals;
   } else {
     stellarBalance = await getStellarBalance(address, onDate);
     const decimals = BigInt(10 ** 7);
-    balance = stellarBalance.div(decimals).toNumber();
+    balance = stellarBalance / decimals;
   }
 
   return {
-    totalBalance: balance,
+    totalBalance: Number(balance),
     polygonBalance,
     ethereumBalance,
     celoBalance,
@@ -95,14 +95,14 @@ async function getChainBalance(
   address: string,
   chain: Chain,
   onDate?: Date
-): Promise<BigNumber> {
+): Promise<bigint> {
   const chainName = chain.name.toLowerCase();
   const utcDate = onDate ? onDate.toJSON().substring(0, 10) : "";
 
   const cacheKey = `balance-${address}-${utcDate}`;
   const cacheValue = await kv.hget(cacheKey, chainName);
 
-  let balance = BigNumber.from(0);
+  let balance = BigInt(0);
 
   try {
     if (!cacheValue) {
@@ -118,7 +118,7 @@ async function getChainBalance(
       });
       await kv.expire(cacheKey, 60 * 60 * 24);
     } else {
-      balance = BigNumber.from(cacheValue.toString());
+      balance = BigInt(cacheValue.toString());
     }
   } catch (_err) {
     console.log(`Can't fetch balance for ${address}`);
@@ -129,12 +129,12 @@ async function getChainBalance(
 async function getStellarBalance(
   address: string,
   onDate?: Date
-): Promise<BigNumber> {
+): Promise<bigint> {
   const cacheKey = `balance-${address}`;
-  const cacheValue = await kv.hget(cacheKey, "Stellar");
+  const cacheValue: string | null = await kv.hget(cacheKey, "Stellar");
 
   if (cacheValue) {
-    return BigNumber.from(cacheValue);
+    return BigInt(cacheValue);
   }
 
   try {
@@ -153,7 +153,7 @@ async function getStellarBalance(
       stellarBalanceValue += sum;
     }
 
-    const balance = BigNumber.from(`${stellarBalanceValue}`.replace(".", ""));
+    const balance = BigInt(`${stellarBalanceValue}`.replace(".", ""));
 
     await kv.hset(cacheKey, {
       chainName: balance.toString(),
@@ -165,7 +165,7 @@ async function getStellarBalance(
     console.error(
       `Something went wrong getting the stellar balances for: ${address}`
     );
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 }
 
@@ -255,38 +255,35 @@ export async function getAverageBalance(
   walletAddress: string,
   startDate: Date,
   endDate: Date,
-  endBalance: BigNumber,
+  endBalance: bigint,
   transactions: TokenTransfer[]
-): Promise<BigNumber> {
+): Promise<bigint> {
   const milisecondsInMonthString = endDate.valueOf() - startDate.valueOf();
-  const milisecondsInMonth = BigNumber.from(
-    milisecondsInMonthString.toString()
-  );
-  let totalBalance = BigNumber.from("0");
+  const milisecondsInMonth = BigInt(milisecondsInMonthString.toString());
+  let totalBalance = BigInt("0");
   let currentDate = endDate;
   let currentBalance = endBalance;
 
   transactions.forEach((transaction) => {
     const txDate = new Date(parseInt(transaction["timeStamp"]) * 1000);
-    const balanceTime = BigNumber.from(
+    const balanceTime = BigInt(
       (currentDate.valueOf() - txDate.valueOf()).toString()
     );
-    const weightedBalance = currentBalance.mul(balanceTime);
-    totalBalance = totalBalance.add(weightedBalance);
+    const weightedBalance = currentBalance * balanceTime;
+    totalBalance = totalBalance + weightedBalance;
     currentDate = txDate;
-    const transactionDelta = BigNumber.from(transaction["value"]);
+    const transactionDelta = BigInt(transaction["value"]);
     currentBalance =
       transaction["from"].toLowerCase() === walletAddress.toLowerCase()
-        ? currentBalance.add(transactionDelta)
-        : currentBalance.sub(transactionDelta);
+        ? currentBalance + transactionDelta
+        : currentBalance - transactionDelta;
   });
 
   const balanceTime = currentDate.valueOf() - startDate.valueOf();
-  const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
-  totalBalance = totalBalance.add(weightedBalance);
+  const weightedBalance = currentBalance * BigInt(balanceTime);
+  totalBalance = totalBalance + weightedBalance;
 
-  const decimals = BigInt(10 ** 18);
-  const averageBalance = totalBalance.div(milisecondsInMonth);
+  const averageBalance = totalBalance / milisecondsInMonth;
 
   return averageBalance;
 }

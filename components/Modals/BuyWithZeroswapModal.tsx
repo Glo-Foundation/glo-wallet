@@ -3,7 +3,7 @@ import { polygon } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useState, useEffect, useContext } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 
 import StepCard from "@/components/Modals/StepCard";
 import { getSmartContractAddress } from "@/lib/config";
@@ -17,11 +17,10 @@ interface Props {
   buyAmount: number;
 }
 export default function BuyWithZeroswapModal({ buyAmount }: Props) {
-  const { address, connector } = useAccount();
+  const { address, connector, chain } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
 
-  const { chain } = useNetwork();
-  const { switchNetwork } = useSwitchNetwork();
+  const { switchChain } = useSwitchChain();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isCopiedStepDone, setIsCopiedStepDone] = useState(false);
@@ -77,7 +76,7 @@ export default function BuyWithZeroswapModal({ buyAmount }: Props) {
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
           action={() => {
-            switchNetwork!(polygon.id);
+            switchChain!({ chainId: polygon.id });
           }}
           done={userIsOnPolygon}
         />

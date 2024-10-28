@@ -1,3 +1,5 @@
+/* eslint-disable import/order */
+import { sequenceWallet } from "@0xsequence/wagmi-connector";
 import {
   StellarWalletsKit,
   WalletNetwork,
@@ -12,9 +14,7 @@ import {
   WalletConnectModule,
   WalletConnectAllowedMethods,
 } from "@creit.tech/stellar-wallets-kit/build/index";
-import { configureChains } from "@wagmi/core";
-import { publicProvider } from "@wagmi/core/providers/public";
-import { WalletConnectModal } from "@walletconnect/modal";
+
 import { SignClient } from "@walletconnect/sign-client";
 import clsx from "clsx";
 import Cookies from "js-cookie";
@@ -25,8 +25,7 @@ import { useConnect } from "wagmi";
 
 import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { GloSequenceConnector } from "@/lib/sequence-connector";
-import { getAllowedChains, isProd } from "@/lib/utils";
+import { isProd } from "@/lib/utils";
 
 const TOS_COOKIE = "tos-agreed";
 
@@ -86,21 +85,18 @@ export default function UserAuthModal({
   };
 
   const signInWithEmail = async () => {
-    const { chains } = configureChains(getAllowedChains(), [publicProvider()]);
-    const emailConnector = new GloSequenceConnector({
-      options: {
-        connect: {
-          app: "Glo wallet",
-          networkId: defaultChainId(),
-          askForEmail: true,
-          settings: {
-            theme: "light",
-            bannerUrl: "https://i.imgur.com/P8l8pFh.png",
-            signInWithEmail: sendForm.email,
-          },
+    const emailConnector = sequenceWallet({
+      connectOptions: {
+        app: "Glo wallet",
+        askForEmail: true,
+        settings: {
+          theme: "light",
+          bannerUrl: "https://i.imgur.com/P8l8pFh.png",
+          signInWithEmail: sendForm.email,
         },
+        projectAccessKey: "...", // TODO: add ?
       },
-      chains,
+      defaultNetwork: defaultChainId(),
     });
     connect({ connector: emailConnector });
     closeModal();
@@ -122,8 +118,7 @@ export default function UserAuthModal({
     const signClient = await SignClient.init({
       projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
     });
-
-    const stellarKit: StellarWalletsKit = new StellarWalletsKit({
+    const stellarKit = new StellarWalletsKit({
       network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
       selectedWalletId: XBULL_ID,
       modules: [
@@ -141,23 +136,22 @@ export default function UserAuthModal({
           name: "Glo Dollar",
           icons: ["public/glo-logo.svg"],
           network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
-          modal: new WalletConnectModal({
-            projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-          }),
+          //   modal: new WalletConnectModal({
+          //     projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+          //   }),
           client: signClient as any, // Hmmmm
         }),
       ],
     });
-
     await stellarKit.openModal({
       onWalletSelected: async (option: ISupportedWallet) => {
         stellarKit.setWallet(option.id);
-        const publicKey = await stellarKit.getPublicKey();
+        const address = await stellarKit.getPublicKey();
         localStorage.setItem("stellarConnected", "true");
-        localStorage.setItem("stellarAddress", publicKey);
+        localStorage.setItem("stellarAddress", address);
         localStorage.setItem("stellarWalletId", option.id);
         setStellarConnected(true);
-        setStellarAddress(publicKey);
+        setStellarAddress(address);
       },
     });
   }

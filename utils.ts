@@ -14,7 +14,8 @@ import {
   baseSepolia,
 } from "@wagmi/core/chains";
 import EthDater from "ethereum-block-by-date";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
+import localFont from "next/font/local";
 
 import {
   defaultChainId,
@@ -285,10 +286,8 @@ export const getBalance = async (
   address: string,
   chainId?: number,
   blockTag?: number
-): Promise<BigNumber> => {
-  const provider = new ethers.providers.JsonRpcProvider(
-    getChainRPCUrl(chainId)
-  );
+): Promise<bigint> => {
+  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
   const abi = ["function balanceOf(address account) view returns (uint256)"];
   const usdgloContract = new ethers.Contract(
     getSmartContractAddress(chainId),
@@ -377,13 +376,46 @@ export const getBlockNumber = async (
   date: Date,
   chainId: number
 ): Promise<number> => {
-  const provider = new ethers.providers.JsonRpcProvider(
-    getChainRPCUrl(chainId)
-  );
+  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
 
-  const dater = new EthDater(provider);
+  // ethereum-block-by-date -> ethers 5.7
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dater = new EthDater(provider as any);
 
   const blockObject = await dater.getDate(date.toString());
 
   return blockObject.block;
 };
+
+export const neueHaasGrotesk = localFont({
+  src: [
+    {
+      path: "./public/fonts/NeueHaasGroteskText65Medium.woff2",
+      weight: "400",
+    },
+    {
+      path: "./public/fonts/NeueHaasGroteskText75Bold.woff2",
+      weight: "600",
+    },
+  ],
+  variable: "--font-neuehaasgrotesk",
+  display: "swap",
+});
+
+export const polySans = localFont({
+  src: [
+    {
+      path: "./public/fonts/PolySans-Neutral.woff2",
+      weight: "400",
+    },
+    {
+      path: "./public/fonts/PolySans-Median.woff2",
+      weight: "600",
+    },
+  ],
+  variable: "--font-polysans",
+  display: "swap",
+});
+
+export const POPUP_PROPS =
+  "toolbar=1,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1,width=900, height=800,top=0";

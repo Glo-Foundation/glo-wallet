@@ -1,9 +1,9 @@
 import { polygon } from "@wagmi/core/chains";
-import { BigNumber, utils } from "ethers";
+import { parseUnits } from "ethers";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useBalance, useSwitchChain } from "wagmi";
 
 import PaymentOptionModal from "@/components/Modals/PaymentOptionModal";
 import StepCard from "@/components/Modals/StepCard";
@@ -17,17 +17,16 @@ interface Props {
 }
 
 export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
 
-  const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
-    watch: true,
-    cacheTime: 2_000,
+    // watch: true,
+    // cacheTime: 2_000,
   });
-  const { switchNetwork } = useSwitchNetwork();
+  const { switchChain } = useSwitchChain();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isCoinbaseStepDone, setIsCoinbaseStepDone] = useState(false);
   const [USDC, setUSDC] = useState("");
@@ -43,18 +42,16 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
   useEffect(() => {
     if (balance) {
       const formatted = Number(balance?.formatted);
-      const val = BigNumber.from(balance?.value);
-      const currBuyAmt = utils
-        .parseUnits(buyAmount.toString(), 6)
-        .mul(99)
-        .div(100);
+      const val = BigInt(balance?.value);
+      const currBuyAmt =
+        (parseUnits(buyAmount.toString(), 6) * BigInt(99)) / BigInt(100);
 
       const usdc = Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
       }).format(formatted || 0);
       setUSDC(usdc);
-      if (val.gte(currBuyAmt)) setIsCoinbaseStepDone(true);
+      if (val >= currBuyAmt) setIsCoinbaseStepDone(true);
     }
   }, [balance]);
 
@@ -103,7 +100,7 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
           title={"Switch to the Polygon network"}
           content="Please confirm the switch in your wallet"
           action={() => {
-            switchNetwork!(polygon.id);
+            switchChain!({ chainId: polygon.id });
           }}
           done={userIsOnPolygon}
         />

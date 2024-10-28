@@ -11,6 +11,7 @@ import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
 import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
 import PaymentOptionModal from "./Modals/PaymentOptionModal";
+import SwapModal from "./Modals/SwapModal";
 
 type Props = {
   polygonBalance: FetchBalanceResult | undefined;
@@ -52,6 +53,7 @@ export default function Balance({
   const stellarBalanceformatted = customFormatBalance(stellarBalance);
   const { connector } = useAccount();
   const isSequenceWallet = connector?.id === "sequence";
+  const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
 
   const formattedUSDC = Intl.NumberFormat("en-US", {
     style: "currency",
@@ -148,12 +150,19 @@ export default function Balance({
             )}
           </div>
         </div>
-        {usdcBalance && usdcBalance.value > 1000000 && (
-          <a
+        {
+          // TODO: Temporary block
+          /*usdcBalance && usdcBalance.value > 1000000 && */ <a
             className="text-pine-700 self-center"
             onClick={() => {
               openModal(
-                isSequenceWallet ? (
+                isCoinbaseWallet ? (
+                  <SwapModal
+                    buyAmount={
+                      Number(usdcBalanceFormatted.fmtBalanceDollarPart) || 100
+                    }
+                  />
+                ) : isSequenceWallet ? (
                   <BuyWithCoinbaseSequenceModal
                     buyAmount={Number(
                       usdcBalanceFormatted.fmtBalanceDollarPart
@@ -173,7 +182,7 @@ export default function Balance({
             <span className="black-link">{formattedUSDC} USDC</span>{" "}
             <span className="invisible-link">swappable for Glo Dollar</span>
           </a>
-        )}
+        }
       </div>
 
       <div className="flex flex-col">

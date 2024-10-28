@@ -1,5 +1,8 @@
 import { Charity } from "@prisma/client";
-import { Chain } from "@wagmi/core";
+// import { Chain } from "@wagmi/core";
+import axios, { AxiosInstance } from "axios";
+import { ethers } from "ethers";
+import { Chain } from "viem/chains";
 import {
   mainnet,
   polygon,
@@ -11,9 +14,7 @@ import {
   arbitrumSepolia,
   base,
   baseSepolia,
-} from "@wagmi/core/chains";
-import axios, { AxiosInstance } from "axios";
-import { BigNumber, ethers } from "ethers";
+} from "wagmi/chains";
 
 import UsdgloContract from "@/abi/usdglo.json";
 
@@ -54,9 +55,9 @@ export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
 export const isE2E = () => process.env.E2E === "true";
 
-export const getChains = (): Chain[] => {
+export const getChains = (): [Chain, ...Chain[]] => {
   if (isE2E()) {
-    return [polygon] as Chain[];
+    return [polygon];
   }
   return getAllowedChains();
 };
@@ -67,10 +68,8 @@ export const DEFAULT_CTAS: CTA[] = ["TWEEET_IMPACT", "JOIN_CONSORTIUM"].map(
   (cta) => ({ type: cta } as CTA)
 );
 
-export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
-  const provider = new ethers.providers.JsonRpcProvider(
-    getChainRPCUrl(chainId)
-  );
+export const getMarketCap = async (chainId?: number): Promise<bigint> => {
+  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
 
   const usdgloContract = new ethers.Contract(
     getSmartContractAddress(chainId),
@@ -80,7 +79,7 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
   return await usdgloContract.totalSupply();
 };
 
-export const getAllowedChains = (): Chain[] => {
+export const getAllowedChains = (): [Chain, ...Chain[]] => {
   return isProd()
     ? [optimism, polygon, mainnet, celo, arbitrum, base]
     : [optimismSepolia, arbitrumSepolia, celoAlfajores, baseSepolia];
@@ -110,7 +109,7 @@ export const getStellarMarketCap = async (): Promise<number> => {
 // USDT: 825
 // USDGLO: 23888
 
-export const getCMCMarketCap = async (): Promise<BigNumber> => {
+export const getCMCMarketCap = async (): Promise<bigint> => {
   const apiUrl =
     "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest";
   const res = await axios.get(apiUrl, {
@@ -126,7 +125,6 @@ export const formatBalance = (balance: {
   value: number;
 }) => {
   const formatted = Number(balance.formatted);
-  const val = BigNumber.from(balance.value);
 
   return Intl.NumberFormat("en-US", {
     style: "currency",
@@ -234,9 +232,8 @@ export const getChainsObjects = () => {
   const chainsObject: Record<string, Chain> = chains.reduce(
     (a, v) => ({
       ...a,
-      [["Ethereum", "Polygon"].includes(v.name)
-        ? v.name.toLowerCase()
-        : v.network]: v,
+      [["Ethereum", "Polygon"].includes(v.name) ? v.name.toLowerCase() : v.id]:
+        v, // TODO: ????????????
     }),
     {}
   );
