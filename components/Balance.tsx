@@ -156,7 +156,8 @@ export default function Balance({
             className="text-pine-700 self-center"
             onClick={() => {
               openModal(
-                isCoinbaseWallet ? (
+                // isCoinbaseWallet ? (
+                true ? (
                   <SwapModal
                     buyAmount={
                       Number(usdcBalanceFormatted.fmtBalanceDollarPart) || 100

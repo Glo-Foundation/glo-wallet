@@ -170,43 +170,45 @@ export default function UserAuthModal({
       <section className="sticky pt-8 px-4 py-4 flex flex-col items-center text-center bg-white rounded-t-3xl">
         <h2 className="">👋 Welcome to the Glo App</h2>
         <p className="copy text-lg -mt-5 mb-4">Jasper, Glo Foundation CEO</p>
-        <p className="copy text m-0 max-w-[21rem] text-center">
-          To see the impact of your Glo Dollars connect your wallet or submit
-          your email to create an Eth wallet{" "}
-          <a
-            className="underline"
-            target="_blank"
-            href="https://sequence.xyz/"
-            rel="noreferrer"
-          >
-            powered by Sequence
-          </a>
-          .
-        </p>
       </section>
       <section className="modal-body px-4 rounded-b-3xl bg-pine-100 after:bg-pine-100">
         <div className="pt-2">
-          <div className="p-0 form-group flex justify-center">
-            <div className="input-container relative inline w-full">
-              <input
-                id="sign-in-with-email"
-                className="rounded-full bg-white py-4 pl-6 pr-28 text-xl"
-                placeholder={"Email"}
-                value={sendForm.email}
-                data-testid="submit-email-input"
-                onChange={(e) =>
-                  setSendForm({ ...sendForm, email: e.target.value })
-                }
-              />
-              <button
-                className="absolute top-[10px] right-1 primary-button py-3 px-6 drop-shadow-none"
-                data-testid="submit-email-button"
-                onClick={() => requireUserAgreed(signInWithEmail)}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
+          <button
+            className="auth-button"
+            data-testid="coinbase-login-button"
+            onClick={() => connectWithConnector(3)}
+          >
+            <h4>Coinbase</h4>
+            <Image alt="coinbase" src="/coinbase.png" width={35} height={35} />
+          </button>
+          <button
+            className="auth-button"
+            data-testid="walletconnect-login-button"
+            onClick={() => connectWithConnector(2)}
+          >
+            <h4>WalletConnect (EVM)</h4>
+            <Image
+              alt="walletconnect"
+              src="/walletconnect.svg"
+              width={35}
+              height={35}
+            />
+          </button>
+
+          <button
+            className="auth-button"
+            data-testid="stellar-login-button"
+            onClick={() => connectWithConnector(99)}
+          >
+            <h4>Stellar wallets</h4>
+            <Image
+              alt="stellar"
+              src="/stellar-logo.svg"
+              width={35}
+              height={35}
+            />
+          </button>
+
           <button
             className="auth-button"
             data-testid="social-login-button"
@@ -223,14 +225,6 @@ export default function UserAuthModal({
               />
               <Image alt="google" src="/google.svg" width={35} height={35} />
             </div>
-          </button>
-          <button
-            className="auth-button"
-            data-testid="coinbase-login-button"
-            onClick={() => connectWithConnector(3)}
-          >
-            <h4>Coinbase</h4>
-            <Image alt="coinbase" src="/coinbase.png" width={35} height={35} />
           </button>
           {!isMobile && (
             <div>
@@ -249,33 +243,6 @@ export default function UserAuthModal({
               </button>
             </div>
           )}
-          <button
-            className="auth-button"
-            data-testid="stellar-login-button"
-            onClick={() => connectWithConnector(99)}
-          >
-            <h4>Stellar wallets</h4>
-            <Image
-              alt="stellar"
-              src="/stellar-logo.svg"
-              width={35}
-              height={35}
-            />
-          </button>
-
-          <button
-            className="auth-button"
-            data-testid="walletconnect-login-button"
-            onClick={() => connectWithConnector(2)}
-          >
-            <h4>WalletConnect (EVM)</h4>
-            <Image
-              alt="walletconnect"
-              src="/walletconnect.svg"
-              width={35}
-              height={35}
-            />
-          </button>
         </div>
 
         <div

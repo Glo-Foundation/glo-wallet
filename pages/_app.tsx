@@ -4,11 +4,13 @@ import "@coinbase/onchainkit/styles.css";
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import { sequenceWallet } from "@0xsequence/wagmi-connector";
+import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Head from "next/head";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { createClient, http } from "viem";
+import { base } from "viem/chains";
 import { createConfig, WagmiProvider } from "wagmi";
 import { metaMask, walletConnect, coinbaseWallet } from "wagmi/connectors";
 
@@ -105,6 +107,7 @@ export default function App({ Component, pageProps }: AppProps) {
     dialogRef.current?.showModal();
   };
 
+  // const { chain } = useAccount();
   const setModalClass = (className = "") => setModalClassName(className);
 
   const openGraphData = pageProps.openGraphData || [];
@@ -127,19 +130,30 @@ export default function App({ Component, pageProps }: AppProps) {
         {isMounted && (
           <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
-              <ModalContext.Provider
-                value={{ openModal, closeModal, setModalClass }}
+              <OnchainKitProvider
+                apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
+                chain={base as any}
+                config={{
+                  appearance: {
+                    mode: "light",
+                    theme: "default",
+                  },
+                }}
               >
-                <Component {...pageProps} />
-                <dialog
-                  ref={dialogRef}
-                  onClick={dialogClickHandler}
-                  className={`${modalClassName} outline-none bg-white`}
+                <ModalContext.Provider
+                  value={{ openModal, closeModal, setModalClass }}
                 >
-                  <div ref={contentRef}>{modalContent}</div>
-                </dialog>
-              </ModalContext.Provider>
-              <Toast />
+                  <Component {...pageProps} />
+                  <dialog
+                    ref={dialogRef}
+                    onClick={dialogClickHandler}
+                    className={`${modalClassName} outline-none bg-white`}
+                  >
+                    <div ref={contentRef}>{modalContent}</div>
+                  </dialog>
+                </ModalContext.Provider>
+                <Toast />
+              </OnchainKitProvider>
             </QueryClientProvider>
           </WagmiProvider>
         )}
