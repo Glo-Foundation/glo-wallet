@@ -43,7 +43,7 @@ export default function SwapModal({ buyAmount }: Props) {
 
   const gloToken: Token = {
     name: "USDGLO",
-    address: getUSDCContractAddress(chain || base),
+    address: getSmartContractAddress(chain?.id || base.id),
     symbol: "USDGLO",
     decimals: 18,
     image: "https://app.glodollar.org/glo-logo.png",
