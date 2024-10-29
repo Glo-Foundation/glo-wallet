@@ -50,7 +50,7 @@ export default function SwapModal({ buyAmount }: Props) {
 
   const usdcToken: Token = {
     name: "USDC",
-    address: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+    address: getUSDCContractAddress(chain || base),
     symbol: "USDC",
     decimals: 6,
     image:
