@@ -23,8 +23,9 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
   const { data: balance } = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
-    // watch: true,
-    // cacheTime: 2_000,
+    query: {
+      gcTime: 2_000,
+    },
   });
   const { switchChain } = useSwitchChain();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);

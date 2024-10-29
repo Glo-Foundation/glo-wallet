@@ -61,63 +61,54 @@ export default function Home() {
 
   const { data: ensName } = useEnsName({ address });
 
-  const usdcBalance = useBalance({
+  const sharedBalanceProps = {
     address,
+    query: {
+      gcTime: 5_000,
+    },
+  };
+  const usdcBalance = useBalance({
+    ...sharedBalanceProps,
     token: getUSDCContractAddress(chain!),
-    // watch: true,
-    // cacheTime: 2_000,
   });
   const polygonId = isProd() ? polygon.id : polygonMumbai.id;
   const { data: polygonBalance } = useBalance({
-    address,
+    ...sharedBalanceProps,
     token: getSmartContractAddress(polygonId),
-    // watch: true,
-    // cacheTime: 5_000,
     chainId: polygonId,
   });
 
   const ethereumId = isProd() ? mainnet.id : goerli.id;
   const { data: ethereumBalance } = useBalance({
-    address,
+    ...sharedBalanceProps,
     token: getSmartContractAddress(ethereumId),
-    // watch: true,
-    // cacheTime: 5_000,
     chainId: ethereumId,
   });
 
   const celoId = isProd() ? celo.id : celoAlfajores.id;
   const { data: celoBalance } = useBalance({
-    address,
+    ...sharedBalanceProps,
     token: getSmartContractAddress(celoId),
-    // watch: true,
-    // cacheTime: 5_000,
     chainId: celoId,
   });
 
   const optimismId = isProd() ? optimism.id : optimismSepolia.id;
   const { data: optimismBalance } = useBalance({
-    address,
+    ...sharedBalanceProps,
     token: getSmartContractAddress(optimismId),
-    // watch: true,
-    // cacheTime: 5_000,
     chainId: optimismId,
   });
 
   const arbitrumId = isProd() ? arbitrum.id : arbitrumSepolia.id;
   const { data: arbitrumBalance } = useBalance({
-    address,
+    ...sharedBalanceProps,
     token: getSmartContractAddress(arbitrumId),
-    // watch: true,
-    // cacheTime: 5_000,
     chainId: arbitrumId,
   });
 
   const baseId = isProd() ? base.id : baseSepolia.id;
   const { data: baseBalance } = useBalance({
-    address,
     token: getSmartContractAddress(baseId),
-    // watch: true,
-    // cacheTime: 5_000,
     chainId: optimismId,
   });
 

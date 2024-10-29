@@ -29,14 +29,16 @@ export default function SwapModal({ buyAmount }: Props) {
   const { data: gloBalance } = useBalance({
     address,
     token: getSmartContractAddress(chain?.id),
-    // watch: true,
-    // cacheTime: 5_000,
+    query: {
+      gcTime: 3_000,
+    },
   });
   const { data: usdcBalance } = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
-    // watch: true,
-    // cacheTime: 2_000,
+    query: {
+      gcTime: 3_000,
+    },
   });
 
   const gloToken: Token = {
@@ -65,9 +67,10 @@ export default function SwapModal({ buyAmount }: Props) {
   }, [isCopiedTooltipOpen]);
 
   const back = () => (isSwapForm ? setIsSwapForm(false) : closeModal());
+  const redirectUrl = `${window.location.origin}/purchased`;
   const onRampUrl = `https://pay.coinbase.com/buy/select-asset?appId=${
     process.env.NEXT_PUBLIC_CPD_PROJECT_ID
-  }&addresses={"${address}":["${chain?.name.toLowerCase()}"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]`;
+  }&addresses={"${address}":["${chain?.name.toLowerCase()}"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
   return (
     <div className="flex flex-col text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
