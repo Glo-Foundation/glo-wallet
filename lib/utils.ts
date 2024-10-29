@@ -215,6 +215,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
 
 export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
   const DEFAULTS: { [key: string]: Charity } = {
+    [optimism.id]: Charity.RETRO_PG_OP,
     [celo.id]: Charity.CELO_PG,
     "0": Charity.REFUGEE_CRISIS, // Stellar
   };
