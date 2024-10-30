@@ -2,13 +2,14 @@ import { BalanceCharity, Charity, CharityChoice } from "@prisma/client";
 import axios from "axios";
 import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Chain } from "viem";
 
+import { getAvgMarketCap } from "@/lib/blockscout-explorer";
 import {
   backendUrl,
   CHARITY_MAP,
   DEFAULT_CHARITY_PER_CHAIN,
   getChainsObjects,
-  getMarketCap,
   getStellarMarketCap,
 } from "@/lib/utils";
 import prisma from "lib/prisma";
@@ -214,19 +215,26 @@ const calculateBalances = async (
     [key: string]: number;
   }
 ) => {
-  const chainObjects = Object.entries(getChainsObjects()).map(
+  const date = new Date();
+  const startDate = new Date(
+    Date.UTC(date.getFullYear(), date.getMonth() - 1, 1)
+  );
+  const endDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
+
+  const chainObjects: ChainObject[] = Object.entries(getChainsObjects()).map(
     ([key, chain]) => ({
       id: chain.id,
       name: key,
+      chain,
     })
   );
   chainObjects.push({ id: 0, name: "stellar" });
 
-  for (const chain of chainObjects) {
-    const { id, name } = chain;
+  for (const c of chainObjects) {
+    const { id, name, chain } = c;
 
     const marketCap = await (id > 0
-      ? getMarketCap(id)
+      ? getAvgMarketCap(chain!, name, startDate, endDate)
       : getStellarMarketCap().then((x) =>
           BigNumber.from(x).mul(BigInt(10 ** 18))
         ));
@@ -238,4 +246,10 @@ const calculateBalances = async (
       .toNumber();
   }
   return choices;
+};
+
+type ChainObject = {
+  id: number;
+  name: string;
+  chain?: Chain;
 };
