@@ -126,7 +126,8 @@ export const getAvgMarketCap = async (
     );
     const data = res.data.result;
 
-    const operations: Operations[] = data.map((x) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const operations: Operations[] = data.map((x: any) => ({
       value: BigInt(x.data),
       ts: new Date(parseInt(x.timeStamp, 16) * 1000),
       blockNumber: parseInt(x.blockNumber, 16),
