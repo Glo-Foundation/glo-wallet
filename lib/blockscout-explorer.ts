@@ -67,7 +67,7 @@ export const fetchGloTransactions = async (
       accept: "application/json",
     },
   });
-  chainName;
+
   const startBlock = await getChainBlockNumber(fromDate, chain);
   const endBlock = await getChainBlockNumber(toDate, chain);
 
