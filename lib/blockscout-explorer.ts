@@ -1,12 +1,13 @@
+import { Operation } from "@stellar/stellar-sdk";
 import { Chain } from "@wagmi/core";
 import { celo, celoAlfajores } from "@wagmi/core/chains";
 import axios from "axios";
 import { BigNumber } from "ethers";
 
-import { getChainBlockNumber } from "@/lib/balance";
+import { getChainBlockNumber, getStellarTxs } from "@/lib/balance";
 
 import { getSmartContractAddress } from "./config";
-import { getMarketCap, isProd } from "./utils";
+import { getMarketCap, getStellarMarketCap, isProd } from "./utils";
 
 const chainId = isProd() ? celo.id : celoAlfajores.id;
 const GLO_ADDRESS = getSmartContractAddress(chainId);
@@ -158,6 +159,46 @@ export const getAvgMarketCap = async (
     console.log({ err });
     return BigNumber.from(0);
   }
+};
+
+export const getAvgStellarMarketCap = async (
+  startDate: Date,
+  endDate: Date = new Date()
+) => {
+  const issuer = "GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV";
+  const txs = await getStellarTxs(issuer, startDate);
+
+  const ops: Operations[] = txs
+    .reverse()
+    .filter((x) => x.operations[0].type === "payment")
+    .map((x) => ({
+      value: BigInt(
+        (x.operations[0] as Operation.Payment).amount.replace(".", "")
+      ),
+      ts: new Date(parseInt(x.timeBounds?.maxTime || "0") * 1000),
+      blockNumber: parseInt(x.sequence),
+      isMint: (x.operations[0] as Operation.Payment).destination !== issuer,
+    }));
+
+  const endDateIndex = ops.findIndex((x) => x.ts >= endDate);
+
+  const endToLatestOps = endDateIndex >= 0 ? ops.splice(endDateIndex) : [];
+
+  const currentMarketCap = await getStellarMarketCap();
+
+  const endOfMonthMarketCap = endToLatestOps.reduce(
+    (acc, cur) => (cur.isMint ? acc.sub(cur.value) : acc.add(cur.value)),
+    BigNumber.from(currentMarketCap).mul(BigInt(10 ** 7))
+  );
+
+  const avgBalance = await getAverage(
+    startDate,
+    endDate,
+    endOfMonthMarketCap,
+    ops.reverse()
+  );
+
+  return avgBalance;
 };
 
 const getAverage = async (

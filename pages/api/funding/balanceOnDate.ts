@@ -4,13 +4,15 @@ import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Chain } from "viem";
 
-import { getAvgMarketCap } from "@/lib/blockscout-explorer";
+import {
+  getAvgMarketCap,
+  getAvgStellarMarketCap,
+} from "@/lib/blockscout-explorer";
 import {
   backendUrl,
   CHARITY_MAP,
   DEFAULT_CHARITY_PER_CHAIN,
   getChainsObjects,
-  getStellarMarketCap,
 } from "@/lib/utils";
 import prisma from "lib/prisma";
 
@@ -235,8 +237,9 @@ const calculateBalances = async (
 
     const marketCap = await (id > 0
       ? getAvgMarketCap(chain!, name, startDate, endDate)
-      : getStellarMarketCap().then((x) =>
-          BigNumber.from(x).mul(BigInt(10 ** 18))
+      : getAvgStellarMarketCap(startDate, endDate).then(
+          (x) => BigNumber.from(x).mul(BigInt(10 ** 11))
+          // To flatten with Eth balances - 7 + 11 => 18
         ));
     const charity = DEFAULT_CHARITY_PER_CHAIN(id.toString());
 
