@@ -92,12 +92,15 @@ export const getStellarMarketCap = async (): Promise<number> => {
   const res = await axios.get(apiUrl, {
     headers: { Accept: "application/json" },
   });
-  const stellarBalancesString = await res.data._embedded.records[0].amount;
+  const stellarBalancesString = res.data._embedded.records[0].amount;
   const stellarBalances = parseFloat(stellarBalancesString);
-  const stellarLiquidityPoolsString = await res.data._embedded.records[0]
-    .liquidity_pools_amount;
+  const stellarLiquidityPoolsString =
+    res.data._embedded.records[0].liquidity_pools_amount;
   const stellarLiquidityPools = parseFloat(stellarLiquidityPoolsString);
-  const stellarMarketCap = stellarBalances + stellarLiquidityPools;
+  const stellarContractsString = res.data._embedded.records[0].contracts_amount;
+  const stellarContracts = parseFloat(stellarContractsString);
+  const stellarMarketCap =
+    stellarBalances + stellarLiquidityPools + stellarContracts;
   return stellarMarketCap;
 };
 
