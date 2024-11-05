@@ -218,6 +218,7 @@ export default function Home() {
       };
 
       sign().then(async (signature: string) => {
+        console.log("SIGIN");
         if (isConnected) {
           if (!chain) {
             // Chain not confirmed on the phone
