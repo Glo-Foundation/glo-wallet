@@ -11,7 +11,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import * as cache from "@/lib/cache";
 import { getMarketCap, getStellarMarketCap } from "@/lib/utils";
-import { getNiceNumber } from "@/utils";
 
 const CACHE_KEY = "total-supply";
 export default async function handler(
