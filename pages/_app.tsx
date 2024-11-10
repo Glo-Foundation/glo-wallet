@@ -10,7 +10,6 @@ import Head from "next/head";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { createClient, http } from "viem";
-import { base } from "viem/chains";
 import { createConfig, WagmiProvider } from "wagmi";
 import { metaMask, walletConnect, coinbaseWallet } from "wagmi/connectors";
 
@@ -27,8 +26,6 @@ import type { AppProps } from "next/app";
 const queryClient = new QueryClient();
 
 const config = createConfig({
-  // autoConnect: true,
-
   chains: getChains(),
   client({ chain }) {
     return createClient({ chain, transport: http(getChainRPCUrl(chain.id)) });
@@ -107,10 +104,10 @@ export default function App({ Component, pageProps }: AppProps) {
     dialogRef.current?.showModal();
   };
 
-  // const { chain } = useAccount();
   const setModalClass = (className = "") => setModalClassName(className);
 
   const openGraphData = pageProps.openGraphData || [];
+  const { chain } = config.getClient();
   return (
     <>
       <Head>
@@ -132,7 +129,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <QueryClientProvider client={queryClient}>
               <OnchainKitProvider
                 apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-                chain={base as any}
+                chain={chain as any}
                 config={{
                   appearance: {
                     mode: "light",

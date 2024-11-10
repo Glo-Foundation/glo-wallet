@@ -51,8 +51,8 @@
     "react-tooltip": "^5.13.1",
     "swr": "^2.2.5",
     "typescript": "5.0.4",
-    "viem": "^2.21.29",
-    "wagmi": "^2.12.19",
+    "viem": "^2.21.44",
+    "wagmi": "^2.12.29",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
