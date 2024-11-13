@@ -124,7 +124,7 @@ export default function Home() {
     token: getSmartContractAddress(baseId),
     watch: true,
     cacheTime: 5_000,
-    chainId: optimismId,
+    chainId: baseId,
   });
 
   const totalBalance = getTotalGloBalance([
@@ -136,7 +136,6 @@ export default function Home() {
     stellarBalance,
     baseBalance,
   ]);
-
   const { setCTAs, isRecipientsView } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
 

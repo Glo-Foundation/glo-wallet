@@ -33,6 +33,9 @@ export default function Impact({
   polygonBalanceFormatted,
   ethereumBalanceFormatted,
   celoBalanceFormatted,
+  optimismBalanceFormatted,
+  arbitrumBalanceFormatted,
+  baseBalanceFormatted,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
@@ -87,6 +90,21 @@ export default function Impact({
       name: "Celo",
       logo: "/celo-square-logo.svg",
       balance: celoBalanceFormatted,
+    },
+    {
+      name: "Optimism",
+      logo: "/optimism-logo.svg",
+      balance: optimismBalanceFormatted,
+    },
+    {
+      name: "Arbitrum",
+      logo: "/arbitrum-logo.svg",
+      balance: arbitrumBalanceFormatted,
+    },
+    {
+      name: "Base",
+      logo: "/base-logo.svg",
+      balance: baseBalanceFormatted,
     },
   ];
 
@@ -148,7 +166,7 @@ export default function Impact({
                 <span className="text-sm ml-1">Glo Dollar</span>
               </div>
               {showBalanceDropdown && (
-                <div className="absolute top-10 z-10 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
+                <div className="absolute top-10 z-10 mt-1 w-[280px] h-[auto] bg-white border-2 border-pine-400/90 rounded-lg">
                   <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
 
                   <div className="flex flex-col justify-center items-center">
@@ -318,6 +336,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     polygonBalance,
     ethereumBalance,
     celoBalance,
+    optimismBalance,
+    arbitrumBalance,
+    baseBalance,
   } = await getBalances(address);
 
   let yearlyYield = getTotalYield(balance);
@@ -348,7 +369,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ethereumBalanceFormatted: formatBalance(
         ethereumBalance || BigNumber.from(0)
       ),
+      optimismBalanceFormatted: formatBalance(
+        optimismBalance || BigNumber.from(0)
+      ),
+      arbitrumBalanceFormatted: formatBalance(
+        arbitrumBalance || BigNumber.from(0)
+      ),
+      baseBalanceFormatted: formatBalance(baseBalance || BigNumber.from(0)),
       celoBalanceFormatted: formatBalance(celoBalance || BigNumber.from(0)),
+
       openGraphData: [
         {
           property: "og:image",
