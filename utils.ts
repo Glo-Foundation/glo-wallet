@@ -176,7 +176,7 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
     }
     case polygon.id:
     default: {
-      return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+      return "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359";
     }
   }
 };
@@ -419,3 +419,13 @@ export const polySans = localFont({
 
 export const POPUP_PROPS =
   "toolbar=1,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1,width=900, height=800,top=0";
+
+export const getOnRampUrl = (
+  address: string,
+  buyAmount: number,
+  redirectUrl: string,
+  chain?: Chain
+) =>
+  `https://pay.coinbase.com/buy/select-asset?appId=${
+    process.env.NEXT_PUBLIC_CPD_PROJECT_ID
+  }&addresses={"${address}":["${chain?.name.toLowerCase()}"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;

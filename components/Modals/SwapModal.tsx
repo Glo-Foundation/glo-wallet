@@ -3,13 +3,13 @@ import { Token } from "@coinbase/onchainkit/token";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { base } from "viem/chains";
+import { base, baseSepolia, polygon } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { getUSDCContractAddress, POPUP_PROPS } from "@/utils";
+import { getOnRampUrl, getUSDCContractAddress, POPUP_PROPS } from "@/utils";
 
 import StepCard from "./StepCard";
 
@@ -18,13 +18,13 @@ interface Props {
 }
 
 export default function SwapModal({ buyAmount }: Props) {
-  const { address, chain, connector } = useAccount();
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { address, chain } = useAccount();
+  const { closeModal } = useContext(ModalContext);
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-  const [startedRegistration, setstartedRegistration] = useState(false);
-  const [requestedRegistration, setRequestedRegistration] = useState(false);
   const [isSwapForm, setIsSwapForm] = useState(false);
+
+  const isBase = base.id === chain?.id || baseSepolia.id === chain?.id;
 
   const { data: gloBalance } = useBalance({
     address,
@@ -67,10 +67,13 @@ export default function SwapModal({ buyAmount }: Props) {
   }, [isCopiedTooltipOpen]);
 
   const back = () => (isSwapForm ? setIsSwapForm(false) : closeModal());
-  const redirectUrl = `${window.location.origin}/purchased`;
-  const onRampUrl = `https://pay.coinbase.com/buy/select-asset?appId=${
-    process.env.NEXT_PUBLIC_CPD_PROJECT_ID
-  }&addresses={"${address}":["${chain?.name.toLowerCase()}"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
+
+  const jumperUrl =
+    `https://jumper.exchange/?fromChain=${
+      chain?.id
+    }&fromToken=${getUSDCContractAddress(chain || polygon)}` +
+    `&toChain=${chain?.id}&toToken=${getSmartContractAddress(chain?.id)}`;
+
   return (
     <div className="flex flex-col text-pine-900 p-2">
       <div className="flex flex-row justify-between p-3">
@@ -107,21 +110,42 @@ export default function SwapModal({ buyAmount }: Props) {
             iconPath="/coinbase-invert.svg"
             title={`Buy ${buyAmount} USDC on Coinbase`}
             content="Withdraw to the wallet address shown above"
-            action={() => {
-              window.open(onRampUrl, "_blank", POPUP_PROPS);
-            }}
+            action={() =>
+              window.open(
+                getOnRampUrl(
+                  address!,
+                  buyAmount,
+                  `${window.location.origin}/purchased`,
+                  chain
+                ),
+                "_blank",
+                POPUP_PROPS
+              )
+            }
             done={(usdcBalance?.value || 0) >= BigInt(buyAmount)}
             USDC={usdcBalance?.formatted}
           />
-          <StepCard
-            index={2}
-            iconPath="/uniswap.svg"
-            title="Swap USDGLO for USDC"
-            content={"Swap content"}
-            action={() => setIsSwapForm(true)}
-            done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
-            USDC={usdcBalance?.formatted}
-          />
+          {isBase ? (
+            <StepCard
+              index={2}
+              iconPath="/coinbase-invert.svg"
+              title="Swap USDGLO for USDC"
+              content={"Swap with Coinbase"}
+              action={() => setIsSwapForm(true)}
+              done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
+              USDC={usdcBalance?.formatted}
+            />
+          ) : (
+            <StepCard
+              index={2}
+              iconPath="/jumper.svg"
+              title="Swap USDGLO for USDC"
+              content={"Swap with Jumper.exchange"}
+              action={() => window.open(jumperUrl, "_blank", POPUP_PROPS)}
+              done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
+              USDC={usdcBalance?.formatted}
+            />
+          )}
         </section>
       )}
     </div>

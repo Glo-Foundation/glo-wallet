@@ -1,15 +1,13 @@
 import { useContext, useState } from "react";
 
-import DetailedEnoughToBuy from "@/components/DetailedEnoughToBuy";
 import Holdings from "@/components/Holdings";
 import { ModalContext } from "@/lib/context";
 import { getTotalYield, getUSFormattedNumber } from "@/utils";
 
-import PaymentOptionModal from "./PaymentOptionModal";
+import SwapGate from "./SwapGate";
 
 export default function BuyGloModal({
   totalBalance,
-  stellarConnected = false,
 }: {
   totalBalance: number;
   stellarConnected?: boolean;
@@ -33,23 +31,10 @@ export default function BuyGloModal({
       <button
         className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6 mt-6 mb-6"
         disabled={glo === 0}
-        onClick={() =>
-          openModal(
-            <PaymentOptionModal
-              buyAmount={Math.floor(glo)}
-              stellarConnected={stellarConnected}
-            />
-          )
-        }
+        onClick={() => openModal(<SwapGate buyAmount={Math.floor(glo)} />)}
       >
         Buy ${formattedGlo} Glo Dollar
       </button>
-      {/*<div className="mb-7">
-        <DetailedEnoughToBuy
-          yearlyYield={yearlyYield}
-          noImpactCopyText="Pick a value above $0 to see how much impact you could make."
-        />
-      </div>*/}
     </div>
   );
 }

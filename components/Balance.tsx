@@ -9,9 +9,7 @@ import { customFormatBalance } from "@/utils";
 import CharitySelector from "./CharitySelector";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
-import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
-import PaymentOptionModal from "./Modals/PaymentOptionModal";
-import SwapModal from "./Modals/SwapModal";
+import SwapGate from "./Modals/SwapGate";
 
 type Props = {
   polygonBalance: FetchBalanceResult | undefined;
@@ -156,27 +154,9 @@ export default function Balance({
             className="text-pine-700 self-center"
             onClick={() => {
               openModal(
-                // isCoinbaseWallet ? (
-                true ? (
-                  <SwapModal
-                    buyAmount={
-                      Number(usdcBalanceFormatted.fmtBalanceDollarPart) || 100
-                    }
-                  />
-                ) : isSequenceWallet ? (
-                  <BuyWithCoinbaseSequenceModal
-                    buyAmount={Number(
-                      usdcBalanceFormatted.fmtBalanceDollarPart
-                    )}
-                  />
-                ) : (
-                  <PaymentOptionModal
-                    buyAmount={Number(
-                      usdcBalanceFormatted.fmtBalanceDollarPart
-                    )}
-                    stellarConnected={stellarConnected}
-                  />
-                )
+                <SwapGate
+                  buyAmount={Number(usdcBalanceFormatted.fmtBalanceDollarPart)}
+                />
               );
             }}
           >
