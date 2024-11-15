@@ -1,5 +1,4 @@
 /* eslint-disable import/order */
-import { sequenceWallet } from "@0xsequence/wagmi-connector";
 import {
   StellarWalletsKit,
   WalletNetwork,
@@ -15,7 +14,6 @@ import {
   WalletConnectAllowedMethods,
 } from "@creit.tech/stellar-wallets-kit/build/index";
 
-import { SignClient } from "@walletconnect/sign-client";
 import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -23,9 +21,9 @@ import { useContext, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
 
-import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { isProd } from "@/lib/utils";
+import { walletConnect } from "wagmi/connectors";
 
 const TOS_COOKIE = "tos-agreed";
 
@@ -60,9 +58,6 @@ export default function UserAuthModal({
 }) {
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
-  const [sendForm, setSendForm] = useState({
-    email: "",
-  });
 
   const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
 
@@ -84,24 +79,6 @@ export default function UserAuthModal({
     callback();
   };
 
-  const signInWithEmail = async () => {
-    const emailConnector = sequenceWallet({
-      connectOptions: {
-        app: "Glo wallet",
-        askForEmail: true,
-        settings: {
-          theme: "light",
-          bannerUrl: "https://i.imgur.com/P8l8pFh.png",
-          signInWithEmail: sendForm.email,
-        },
-        projectAccessKey: "...", // TODO: add ?
-      },
-      defaultNetwork: defaultChainId(),
-    });
-    connect({ connector: emailConnector });
-    closeModal();
-  };
-
   const connectWithConnector = async (index: number) => {
     requireUserAgreed(async () => {
       if (index == 99) {
@@ -114,10 +91,23 @@ export default function UserAuthModal({
     });
   };
 
-  async function connectStellar() {
-    const signClient = await SignClient.init({
-      projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+  const connectWithWallectConnect = () => {
+    requireUserAgreed(async () => {
+      const wc = walletConnect({
+        projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+        showQrModal: true,
+        qrModalOptions: {
+          themeVariables: {
+            "--wcm-z-index": "11",
+          },
+        },
+      });
+      connect({ connector: wc });
+      closeModal();
     });
+  };
+
+  async function connectStellar() {
     const stellarKit = new StellarWalletsKit({
       network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
       selectedWalletId: XBULL_ID,
@@ -136,10 +126,6 @@ export default function UserAuthModal({
           name: "Glo Dollar",
           icons: ["public/glo-logo.svg"],
           network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
-          //   modal: new WalletConnectModal({
-          //     projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-          //   }),
-          client: signClient as any, // Hmmmm
         }),
       ],
     });
@@ -176,7 +162,7 @@ export default function UserAuthModal({
           <button
             className="auth-button"
             data-testid="coinbase-login-button"
-            onClick={() => connectWithConnector(3)}
+            onClick={() => connectWithConnector(2)}
           >
             <h4>Coinbase</h4>
             <Image alt="coinbase" src="/coinbase.png" width={35} height={35} />
@@ -184,7 +170,7 @@ export default function UserAuthModal({
           <button
             className="auth-button"
             data-testid="walletconnect-login-button"
-            onClick={() => connectWithConnector(2)}
+            onClick={() => connectWithWallectConnect()}
           >
             <h4>WalletConnect (EVM)</h4>
             <Image

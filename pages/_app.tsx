@@ -11,7 +11,7 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { createClient, http } from "viem";
 import { createConfig, WagmiProvider } from "wagmi";
-import { metaMask, walletConnect, coinbaseWallet } from "wagmi/connectors";
+import { metaMask, coinbaseWallet } from "wagmi/connectors";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
@@ -46,15 +46,6 @@ const config = createConfig({
     metaMask({
       dappMetadata: {
         url: "https://app.glodollar.org",
-      },
-    }),
-    walletConnect({
-      projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-      showQrModal: true,
-      qrModalOptions: {
-        themeVariables: {
-          "--wcm-z-index": "11",
-        },
       },
     }),
     coinbaseWallet({
