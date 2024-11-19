@@ -24,6 +24,8 @@ import { useConnect } from "wagmi";
 import { ModalContext } from "@/lib/context";
 import { isProd } from "@/lib/utils";
 import { walletConnect } from "wagmi/connectors";
+import { useUserStore } from "@/lib/store";
+import { useRouter } from "next/router";
 
 const TOS_COOKIE = "tos-agreed";
 
@@ -59,6 +61,9 @@ export default function UserAuthModal({
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
 
+  const { recentlyUsedWc, setRecentlyUsedWc } = useUserStore();
+  const { reload } = useRouter();
+
   const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
 
   const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(
@@ -93,6 +98,7 @@ export default function UserAuthModal({
 
   const connectWithWallectConnect = () => {
     requireUserAgreed(async () => {
+      setRecentlyUsedWc("wc");
       const wc = walletConnect({
         projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
         showQrModal: true,
@@ -108,6 +114,7 @@ export default function UserAuthModal({
   };
 
   async function connectStellar() {
+    setRecentlyUsedWc("stellar");
     const stellarKit = new StellarWalletsKit({
       network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
       selectedWalletId: XBULL_ID,
@@ -142,6 +149,16 @@ export default function UserAuthModal({
     });
   }
 
+  const ReloadWarn = () => (
+    <p className="text-sm text-red-400">
+      (
+      <span className="underline cursor-pointer z-50" onClick={() => reload()}>
+        Reload
+      </span>{" "}
+      this page to use <br /> WalletConnect on another chain)
+    </p>
+  );
+
   return (
     <>
       <section className="flex flex-col items-center">
@@ -171,8 +188,13 @@ export default function UserAuthModal({
             className="auth-button"
             data-testid="walletconnect-login-button"
             onClick={() => connectWithWallectConnect()}
+            disabled={recentlyUsedWc === "stellar"}
           >
-            <h4>WalletConnect (EVM)</h4>
+            <div>
+              <h4>WalletConnect (EVM)</h4>
+              {recentlyUsedWc === "stellar" && <ReloadWarn />}
+            </div>
+
             <Image
               alt="walletconnect"
               src="/walletconnect.svg"
@@ -185,8 +207,12 @@ export default function UserAuthModal({
             className="auth-button"
             data-testid="stellar-login-button"
             onClick={() => connectWithConnector(99)}
+            disabled={recentlyUsedWc === "wc"}
           >
-            <h4>Stellar wallets</h4>
+            <div>
+              <h4>Stellar wallets</h4>
+              {recentlyUsedWc === "wc" && <ReloadWarn />}
+            </div>
             <Image
               alt="stellar"
               src="/stellar-logo.svg"

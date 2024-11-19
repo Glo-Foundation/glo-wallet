@@ -26,7 +26,7 @@
     "@vercel/kv": "^0.2.2",
     "@vercel/og": "^0.5.13",
     "@wagmi/core": "^1.4.10",
-    "@walletconnect/modal": "^2.6.2",
+    "@walletconnect/modal": "^2.7.0",
     "@walletconnect/sign-client": "^2.13.3",
     "0xsequence": "^2.0.17",
     "axios": "^1.4.0",
