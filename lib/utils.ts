@@ -64,11 +64,9 @@ export const getChains = (): Chain[] => {
 
 export const signMsgContent = "glo-wallet";
 
-export const DEFAULT_CTAS: CTA[] = [
-  "TWEEET_IMPACT",
-  "JOIN_PROGRAM",
-  "BUY_GLO_MERCH",
-].map((cta) => ({ type: cta } as CTA));
+export const DEFAULT_CTAS: CTA[] = ["TWEEET_IMPACT", "JOIN_CONSORTIUM"].map(
+  (cta) => ({ type: cta } as CTA)
+);
 
 export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
   const provider = new ethers.providers.JsonRpcProvider(
@@ -95,12 +93,17 @@ export const getStellarMarketCap = async (): Promise<number> => {
   const res = await axios.get(apiUrl, {
     headers: { Accept: "application/json" },
   });
-  const stellarBalancesString = await res.data._embedded.records[0].amount;
+  const stellarBalancesString =
+    res.data._embedded.records[0].balances.authorized;
   const stellarBalances = parseFloat(stellarBalancesString);
-  const stellarLiquidityPoolsString = await res.data._embedded.records[0]
-    .liquidity_pools_amount;
+  const stellarLiquidityPoolsString =
+    res.data._embedded.records[0].liquidity_pools_amount;
   const stellarLiquidityPools = parseFloat(stellarLiquidityPoolsString);
-  const stellarMarketCap = stellarBalances + stellarLiquidityPools;
+  const stellarContractsString = res.data._embedded.records[0].contracts_amount;
+  const stellarContracts = parseFloat(stellarContractsString);
+  const stellarMarketCap =
+    stellarBalances + stellarLiquidityPools + stellarContracts;
+
   return stellarMarketCap;
 };
 
@@ -218,6 +221,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
 
 export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
   const DEFAULTS: { [key: string]: Charity } = {
+    [optimism.id]: Charity.RETRO_PG_OP,
     [celo.id]: Charity.CELO_PG,
     "0": Charity.REFUGEE_CRISIS, // Stellar
     // TODO:
@@ -229,3 +233,21 @@ export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
 export const horizonUrl = `https://horizon${
   isProd() ? "" : "-testnet"
 }.stellar.org`;
+
+export const backendUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+
+export const getChainsObjects = () => {
+  const chains = [...getChains(), vechain];
+  const chainsObject: Record<string, Chain> = chains.reduce(
+    (a, v) => ({
+      ...a,
+      [["Ethereum", "Polygon"].includes(v.name)
+        ? v.name.toLowerCase()
+        : v.network]: v,
+    }),
+    {}
+  );
+  return chainsObject;
+};

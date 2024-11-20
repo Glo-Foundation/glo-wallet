@@ -235,6 +235,19 @@ export default function UserAuthModal({
               <Image alt="google" src="/google.svg" width={35} height={35} />
             </div>
           </button>
+          <button
+            className="auth-button"
+            data-testid="stellar-login-button"
+            onClick={() => connectWithConnector(99)}
+          >
+            <h4>Stellar wallets</h4>
+            <Image
+              alt="stellar"
+              src="/stellar-logo.svg"
+              width={35}
+              height={35}
+            />
+          </button>
           {!isMobile && (
             <div>
               <button
@@ -246,20 +259,6 @@ export default function UserAuthModal({
                 <Image
                   alt="metamask"
                   src="/metamask.svg"
-                  width={35}
-                  height={35}
-                />
-              </button>
-
-              <button
-                className="auth-button"
-                data-testid="stellar-login-button"
-                onClick={() => connectWithConnector(99)}
-              >
-                <h4>Stellar wallets</h4>
-                <Image
-                  alt="stellar"
-                  src="/stellar-logo.svg"
                   width={35}
                   height={35}
                 />

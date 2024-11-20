@@ -1,10 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/eas?key=$VERCEL_WEBHOOK_KEY",
-      "schedule": "0 0 * * *"
-    }
-  ],
   "functions": {
     "pages/api/*.ts": {
       "maxDuration": 280

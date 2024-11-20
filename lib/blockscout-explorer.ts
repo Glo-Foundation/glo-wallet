@@ -1,20 +1,16 @@
+import { Operation } from "@stellar/stellar-sdk";
 import { Chain } from "@wagmi/core";
 import { celo, celoAlfajores, vechain } from "@wagmi/core/chains";
 import axios from "axios";
+import { BigNumber } from "ethers";
 
-import { getChainBlockNumber } from "@/lib/balance";
+import { getChainBlockNumber, getStellarTxs } from "@/lib/balance";
 
-import {
-  chainConfig,
-  getFirstGloBlock,
-  getSmartContractAddress,
-} from "./config";
-import { isProd } from "./utils";
+import { chainConfig, getSmartContractAddress } from "./config";
+import { getMarketCap, getStellarMarketCap, isProd } from "./utils";
 
-const chainAlias = isProd() ? "mainnet" : "alfajores";
 const chainId = isProd() ? celo.id : celoAlfajores.id;
 const GLO_ADDRESS = getSmartContractAddress(chainId);
-const FIRST_BLOCK = getFirstGloBlock(chainId);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const instances: any = {
@@ -170,4 +166,149 @@ const getVeTransactions = async (
   }
 
   return records;
+};
+
+type Operations = {
+  value: bigint;
+  ts: Date;
+  blockNumber: number;
+  isMint: boolean;
+};
+
+export const getAvgMarketCap = async (
+  chain: Chain,
+  chainName: string,
+  startDate: Date,
+  endDate: Date
+) => {
+  const startBlock = await getChainBlockNumber(startDate, chain);
+  const endBlock = await getChainBlockNumber(endDate, chain);
+  const latestBlock = await getChainBlockNumber(new Date(), chain);
+
+  const instance = axios.create({
+    baseURL: instances[chainName],
+    headers: {
+      accept: "application/json",
+    },
+  });
+
+  try {
+    const zero =
+      "0x0000000000000000000000000000000000000000000000000000000000000000";
+    const topic = // sha3('Transfer(address,address,uint256)') => topic
+      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+    const mintTopic = `&topic1=${zero}&topic0_1_opr=or`;
+    const burnTopic = `&topic2=${zero}&topic0_2_opr=or`;
+    const topics = `&topic0=${topic}${mintTopic}${burnTopic}&topic1_2_opr=or`;
+    const res = await instance.get(
+      `?module=logs&action=getLogs&fromBlock=${startBlock}&toBlock=${latestBlock}&address=${GLO_ADDRESS}${topics}`
+    );
+    const data = res.data.result;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const operations: Operations[] = data.map((x: any) => ({
+      value: BigInt(x.data),
+      ts: new Date(parseInt(x.timeStamp, 16) * 1000),
+      blockNumber: parseInt(x.blockNumber, 16),
+      isMint: x.topics[1] === zero,
+    }));
+
+    const endBlockIndex = operations.findIndex(
+      (x) => x.blockNumber >= endBlock
+    );
+
+    const endToLatestOps =
+      endBlockIndex >= 0 ? operations.splice(endBlockIndex) : [];
+
+    const currentMarketCap = await getMarketCap(chain.id);
+    const endOfMonthMarketCap = endToLatestOps.reduce(
+      (acc, cur) => (cur.isMint ? acc.sub(cur.value) : acc.add(cur.value)),
+      currentMarketCap
+    );
+    const avgBalance = await getAverage(
+      startDate,
+      endDate,
+      endOfMonthMarketCap,
+      operations.reverse()
+    );
+
+    return avgBalance;
+  } catch (err) {
+    console.log({ err });
+    return BigNumber.from(0);
+  }
+};
+
+export const getAvgStellarMarketCap = async (
+  startDate: Date,
+  endDate: Date = new Date()
+) => {
+  const issuer = "GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV";
+  const txs = await getStellarTxs(issuer, startDate);
+
+  const ops: Operations[] = txs
+    .reverse()
+    .filter((x) => x.operations[0].type === "payment")
+    .map((x) => ({
+      value: BigInt(
+        (x.operations[0] as Operation.Payment).amount.replace(".", "")
+      ),
+      ts: new Date(parseInt(x.timeBounds?.maxTime || "0") * 1000),
+      blockNumber: parseInt(x.sequence),
+      isMint: (x.operations[0] as Operation.Payment).destination !== issuer,
+    }));
+
+  const endDateIndex = ops.findIndex((x) => x.ts >= endDate);
+
+  const endToLatestOps = endDateIndex >= 0 ? ops.splice(endDateIndex) : [];
+
+  const currentMarketCap = await getStellarMarketCap();
+
+  const endOfMonthMarketCap = endToLatestOps.reduce(
+    (acc, cur) => (cur.isMint ? acc.sub(cur.value) : acc.add(cur.value)),
+    BigNumber.from(currentMarketCap).mul(BigInt(10 ** 7))
+  );
+
+  const avgBalance = await getAverage(
+    startDate,
+    endDate,
+    endOfMonthMarketCap,
+    ops.reverse()
+  );
+
+  return avgBalance;
+};
+
+const getAverage = async (
+  startDate: Date,
+  endDate: Date,
+  endBalance: BigNumber,
+  operations: Operations[]
+): Promise<BigNumber> => {
+  const milisecondsInMonthString = endDate.valueOf() - startDate.valueOf();
+  const milisecondsInMonth = BigNumber.from(
+    milisecondsInMonthString.toString()
+  );
+  let totalBalance = BigNumber.from("0");
+  let currentDate = endDate;
+  let currentBalance = endBalance;
+
+  operations.forEach((op) => {
+    const balanceTime = BigNumber.from(
+      (currentDate.valueOf() - op.ts.valueOf()).toString()
+    );
+    const weightedBalance = currentBalance.mul(balanceTime);
+    totalBalance = totalBalance.add(weightedBalance);
+    currentDate = op.ts;
+    currentBalance = op.isMint
+      ? currentBalance.sub(op.value)
+      : currentBalance.add(op.value);
+  });
+  const balanceTime = currentDate.valueOf() - startDate.valueOf();
+  const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
+  totalBalance = totalBalance.add(weightedBalance);
+
+  const averageBalance = totalBalance.div(milisecondsInMonth);
+
+  return averageBalance;
 };

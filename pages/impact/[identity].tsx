@@ -341,9 +341,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ensIdentity,
       balance,
       yearlyYield,
-      polygonBalanceFormatted: formatBalance(polygonBalance),
-      ethereumBalanceFormatted: formatBalance(ethereumBalance),
-      celoBalanceFormatted: formatBalance(celoBalance),
+      polygonBalanceFormatted: formatBalance(
+        polygonBalance || BigNumber.from(0)
+      ),
+      ethereumBalanceFormatted: formatBalance(
+        ethereumBalance || BigNumber.from(0)
+      ),
+      celoBalanceFormatted: formatBalance(celoBalance || BigNumber.from(0)),
       isVe,
       openGraphData: [
         {

@@ -72,7 +72,7 @@ const CharitySlider = ({
           <Image
             className="ml-auto cursor-pointer"
             alt="trash"
-            src="trash.svg"
+            src="/trash.svg"
             height={16}
             width={16}
             onClick={() => onDelete()}
@@ -107,7 +107,7 @@ const CharitySlider = ({
             <>
               <h5 className="text-sm mt-[2px]">{percent}%</h5>
               <p className="mt-[-10px]">
-                (~{((percent / 100) * yearlyYield).toFixed(2)}$)
+                ({((percent / 100) * yearlyYield).toFixed(2)}$)
               </p>
             </>
           ),
@@ -125,6 +125,10 @@ export default function CharityManageModal(props: Props) {
 
   const { chain } = useNetwork();
   const [percentMap, setPercentMap] = useState({ ...props.percentMap });
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+  const [lastTouchedKey, setLastTouchedKey] = useState<string | null>(null);
+  const [isAutoDistributed, setIsAutoDistributed] = useState(false);
+
   useEffect(() => {
     if (props.isAddNewMode) {
       const count = Object.keys(props.percentMap).length;
@@ -153,6 +157,73 @@ export default function CharityManageModal(props: Props) {
 
   const onClose = () => {
     if (props.onClose) props.onClose();
+  };
+
+  const autoDistribute = () => {
+    const allKeys = Object.keys(percentMap);
+    const totalTouchedPercentage = allKeys
+      .filter((key) => key !== lastTouchedKey) // Exclude the last touched key
+      .reduce((acc, key) => acc + percentMap[key], 0);
+
+    const remainingPercentage = 100 - (percentMap[lastTouchedKey!] || 0); // Remaining percentage excluding the last touched
+
+    if (allKeys.length === 1) {
+      // If there's only one recipient, set its percentage to 100%
+      percentMap[allKeys[0]] = 100;
+    } else if (totalTouchedPercentage > remainingPercentage) {
+      // Scale down the other recipients to fit within the remaining percentage
+      const scalingFactor = remainingPercentage / totalTouchedPercentage;
+      allKeys.forEach((key) => {
+        if (key !== lastTouchedKey) {
+          percentMap[key] = Math.floor(percentMap[key] * scalingFactor);
+        }
+      });
+
+      const scaledTotal = Object.values(percentMap).reduce(
+        (acc, cur) => acc + cur,
+        0
+      );
+      const leftover = 100 - scaledTotal;
+
+      if (leftover > 0 && lastTouchedKey) {
+        percentMap[lastTouchedKey] += leftover;
+      }
+    } else {
+      // Distribute the remaining percentage equally among untouched recipients
+      const untouchedKeys = allKeys.filter((key) => key !== lastTouchedKey);
+      const untouchedCount = untouchedKeys.length;
+
+      const equalDistribution = Math.floor(
+        remainingPercentage / untouchedCount
+      );
+      const distributedTotal = equalDistribution * untouchedCount;
+
+      untouchedKeys.forEach((key) => {
+        percentMap[key] = equalDistribution;
+      });
+
+      const leftover = remainingPercentage - distributedTotal;
+      if (leftover > 0 && lastTouchedKey) {
+        percentMap[lastTouchedKey] += leftover;
+      }
+    }
+
+    setPercentMap({ ...percentMap });
+    setIsAutoDistributed(true);
+  };
+
+  const validateAndSave = () => {
+    if (sumPercentages !== 100) {
+      autoDistribute();
+      setShowToast({
+        showToast: true,
+        message: `Auto-distributed. Please press confirm to proceed.`,
+      });
+    } else {
+      // Proceed with signing if total is already 100%
+      updateSelectedCharity(percentMap, chain as Chain);
+      onClose();
+    }
   };
 
   const signCharityUpdateMessage = async (
@@ -285,33 +356,31 @@ export default function CharityManageModal(props: Props) {
             yearlyYield={props.yearlyYield}
             setPercent={(value: number) => {
               percentMap[key] = value;
+              setTouched((prev) => ({ ...prev, [key]: true }));
+              setLastTouchedKey(key);
               setPercentMap({ ...percentMap });
             }}
             onDelete={
               charities.length > 1
                 ? () => {
                     delete percentMap[key];
+                    setTouched((prev) => ({ ...prev, [key]: false }));
                     setPercentMap({ ...percentMap });
+                    setIsAutoDistributed(false); // Reset auto-distribute state
+                    autoDistribute(); // Re-run auto-distribute
                   }
                 : undefined
             }
           />
         ))}
       </section>
-
       <button
         className={"primary-button m-2"}
         onClick={() => {
-          updateSelectedCharity(percentMap, chain as Chain);
-          onClose();
+          validateAndSave();
         }}
-        disabled={sumPercentages != 100}
       >
-        {sumPercentages != 100
-          ? `Please add ${100 - sumPercentages}%`
-          : props.isAddNewMode
-          ? "Confirm"
-          : "Save"}
+        {isAutoDistributed ? "Confirm" : "Save"}
       </button>
     </div>
   );
