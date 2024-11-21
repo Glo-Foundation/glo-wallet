@@ -9,6 +9,7 @@ import CharityManageModal from "@/components/Modals/CharityManageModal";
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
 import { CHARITY_MAP } from "@/lib/utils";
+import { getTotalYield } from "@/utils";
 
 interface Props {
   yearlyYield: number;
@@ -18,6 +19,22 @@ export default function Recipients({ yearlyYield }: Props) {
   const { openModal } = useContext(ModalContext);
   const [selected, setSelected] = useState({} as { [key: string]: boolean });
   const [search, setSearch] = useState("");
+  const [fundingChoices, setFundingChoices] = useState<{
+    [key: string]: number;
+  }>({});
+  const [totalYield, setTotalYield] = useState(0);
+
+  // Fetch and set funding choices on component mount
+  useEffect(() => {
+    fetch("/api/funding/getChoices")
+      .then((res) => res.json())
+      .then((data) => {
+        setFundingChoices(data.possibleFundingChoices);
+      })
+      .catch((error) => {
+        console.error("Error fetching funding choices:", error);
+      });
+  }, []);
 
   useEffect(() => {
     const x = document.getElementById("Smallchat");
@@ -55,6 +72,21 @@ export default function Recipients({ yearlyYield }: Props) {
       (acc, cur) => ({ ...acc, [cur.name]: cur.percent }),
       {}
     ) || {};
+  // Calculate total yield when funding choices or selected charities change
+  console.log(fundingChoices);
+  useEffect(() => {
+    if (Object.keys(fundingChoices).length && selectedCharities) {
+      let calculatedYield = 0;
+
+      Object.keys(fundingChoices).forEach((cause: any) => {
+        if (selectedCharitiesNames.includes(cause)) {
+          calculatedYield += getTotalYield(fundingChoices[cause]);
+        }
+      });
+
+      setTotalYield(calculatedYield);
+    }
+  }, [fundingChoices, selectedCharities]);
 
   return (
     <>
@@ -83,8 +115,9 @@ export default function Recipients({ yearlyYield }: Props) {
             </div>
           </div>
           <p className="text-sm py-4 copy text-left">
-            You&apos;re generating up to{" "}
-            <b>{yearlyYield.toFixed(2) || 0}$/year.</b>
+            You contribute up to <b>{yearlyYield.toFixed(2) || 0}$/year </b>
+            of the <b> {totalYield.toFixed(2) || 0}$/year </b>
+            we generate for these causes.
           </p>
         </section>
         <section>
