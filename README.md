@@ -9,16 +9,36 @@ Welcome! The Glo Wallet is a web3 dApp created by the Glo Foundation that seeks 
 The Glo Wallet leverages the [Sequence wallet](https://sequence.xyz/) for web2 friendly authentication, and is built upon [wagmi](https://github.com/wagmi-dev/wagmi).
 
 ## Setup Local Environment for Development
+Clone The Repository:
+```
+git clone https://github.com/Glo-Foundation/glo-wallet.git
+
+```
+
+change directory:
+```
+cd glo-wallet
+```
+Install dependencies:
+
+```
+ yarn install || npm install
+```
 
 ### Environment variables
+Create a `.env` file in the root directory with the following variables:
 
-`cp .env.example .env`
+```
+cp .env.example .env
+```
 
 Change the values for your local development (e.g. for running a local PostgreSQL database).
 
 ### Run
 
-`npm run dev`
+```
+npm run dev
+```
 
 ## Env variables
 
