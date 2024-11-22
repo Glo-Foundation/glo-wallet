@@ -1,5 +1,4 @@
 import { sequence } from "0xsequence";
-import { useWallet } from "@vechain/dapp-kit-react";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -10,7 +9,7 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { sliceAddress } from "@/lib/utils";
+import { apiInstance, sliceAddress } from "@/lib/utils";
 import { buyWithSwap, buyWithStellarX, buyWithVerocket } from "@/payments";
 
 import BuyWithCoinbaseSequenceModal from "./BuyWithCoinbaseSequenceModal";
@@ -26,15 +25,15 @@ export default function PaymentOptionModal({
   const { address, connector, isConnected } = useAccount();
   const { chain } = useNetwork();
 
-  const { account: veAddress } = useWallet();
-  const isVe = !!veAddress;
-
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
   const { openModal, closeModal } = useContext(ModalContext);
 
   const isSequenceWallet = connector?.id === "sequence";
   const isMetamaskWallet = connector?.id === "metaMask";
+  const isVe = apiInstance.defaults.headers["glo-pub-address"]
+    ?.toString()
+    .startsWith("ve");
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
