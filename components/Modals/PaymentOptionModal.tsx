@@ -249,8 +249,8 @@ export default function PaymentOptionModal({
         key="verocket"
         name="Verocket"
         icon="/verocket.png"
-        fees="0.1"
-        worksFor="🔐 Ve"
+        fees="0.3"
+        worksFor="🔐 Crypto"
         delay="⚡ Instant"
         onClick={() => buyWithVerocket()}
       />
