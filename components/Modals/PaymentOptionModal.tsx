@@ -1,4 +1,5 @@
 import { sequence } from "0xsequence";
+import { useWallet } from "@vechain/dapp-kit-react";
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -10,7 +11,7 @@ import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithSwap, buyWithStellarX } from "@/payments";
+import { buyWithSwap, buyWithStellarX, buyWithVerocket } from "@/payments";
 
 import BuyWithCoinbaseSequenceModal from "./BuyWithCoinbaseSequenceModal";
 import BuyWithZeroswapModal from "./BuyWithZeroswapModal";
@@ -24,6 +25,9 @@ export default function PaymentOptionModal({
 }) {
   const { address, connector, isConnected } = useAccount();
   const { chain } = useNetwork();
+
+  const { account: veAddress } = useWallet();
+  const isVe = !!veAddress;
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
@@ -234,14 +238,28 @@ export default function PaymentOptionModal({
         name="StellarX"
         icon="/stellarx.png"
         fees="0.1"
-        worksFor="🔐 XLM"
+        worksFor="🔐 Crypto"
         delay="⚡ Instant"
         onClick={() => buyWithStellarX()}
       />
     );
 
+    const verocket = (
+      <BuyBox
+        key="verocket"
+        name="Verocket"
+        icon="/verocket.png"
+        fees="0.1"
+        worksFor="🔐 Ve"
+        delay="⚡ Instant"
+        onClick={() => buyWithVerocket()}
+      />
+    );
+
     if (stellarConnected) {
       return [stellarx];
+    } else if (isVe) {
+      return [verocket];
     } else if (!isConnected) {
       return [uniswap, unlimitAndEmbr];
     } else if (isSequenceWallet) {

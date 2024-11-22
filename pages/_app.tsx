@@ -20,7 +20,7 @@ import { defaultChainId, getChainRPCUrl } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
-import { getChains } from "../lib/utils";
+import { getChains, isProd } from "../lib/utils";
 
 import type { AppProps } from "next/app";
 
@@ -37,14 +37,14 @@ const DAppKitProvider = dynamic(
 );
 
 const walletConnectOptions: WalletConnectOptions = {
-  projectId: "a0b855ceaf109dbc8426479a4c3d38d8",
+  projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
   metadata: {
-    name: "Sample VeChain dApp",
-    description: "A sample VeChain dApp",
+    name: "Glo wallet",
+    description: "Glo Dollar dApp",
     url: typeof window !== "undefined" ? window.location.origin : "",
     icons: [
       typeof window !== "undefined"
-        ? `${window.location.origin}/images/logo/my-dapp.png`
+        ? `${window.location.origin}/glo-logo.png`
         : "",
     ],
   },
@@ -193,9 +193,13 @@ export default function App({ Component, pageProps }: AppProps) {
         {isMounted && (
           <WagmiConfig config={config}>
             <DAppKitProvider
-              genesis="test"
+              genesis={isProd() ? "main" : "test"}
               logLevel="DEBUG"
-              nodeUrl="https://testnet.vechain.org/"
+              nodeUrl={
+                isProd()
+                  ? "https://mainnet.vecha.in"
+                  : "https://testnet.vechain.org/"
+              }
               usePersistence
               walletConnectOptions={walletConnectOptions}
             >
