@@ -115,9 +115,9 @@ export default function Recipients({ yearlyYield }: Props) {
             </div>
           </div>
           <p className="text-sm py-4 copy text-left">
-            You contribute up to <b>{yearlyYield.toFixed(2) || 0}$/year </b>
-            of the <b> {totalYield.toFixed(2) || 0}$/year </b>
-            we generate for these causes.
+            You fund up to <b>${yearlyYield.toFixed(2) || 0} </b>
+            of the <b> ${totalYield.toFixed(2) || 0}/year </b>
+            we donate to these causes.
           </p>
         </section>
         <section>
