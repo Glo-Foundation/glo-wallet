@@ -122,8 +122,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
     return averageBalance;
   };
 
-  const isStellar = !address.startsWith("0x");
-
+  const isStellar = !address.includes("0x");
   for (const [key] of Object.entries(balancesEndOfMonth)) {
     if (key == "totalBalance") {
       continue;
@@ -153,7 +152,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
         firstThisMonth
       );
       const averageBalance = await getAverageBalance(
-        address,
+        address.startsWith("ve") ? address.slice(2) : address,
         firstLastMonth,
         firstThisMonth,
         balancesEndOfMonth[key],

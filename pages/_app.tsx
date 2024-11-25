@@ -2,7 +2,9 @@
 /* eslint-disable react/jsx-key */
 import "@/styles/globals.css";
 import "react-tooltip/dist/react-tooltip.css";
+import { WalletConnectOptions } from "@vechain/dapp-kit";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
+import dynamic from "next/dynamic";
 import localFont from "next/font/local";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -18,9 +20,35 @@ import { defaultChainId, getChainRPCUrl } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { GloSequenceConnector } from "@/lib/sequence-connector";
 
-import { getChains } from "../lib/utils";
+import { getChains, isProd } from "../lib/utils";
 
 import type { AppProps } from "next/app";
+
+const DAppKitProvider = dynamic(
+  async () => {
+    const { DAppKitProvider: _DAppKitProvider } = await import(
+      "@vechain/dapp-kit-react"
+    );
+    return _DAppKitProvider;
+  },
+  {
+    ssr: false,
+  }
+);
+
+const walletConnectOptions: WalletConnectOptions = {
+  projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+  metadata: {
+    name: "Glo wallet",
+    description: "Glo Dollar dApp",
+    url: typeof window !== "undefined" ? window.location.origin : "",
+    icons: [
+      typeof window !== "undefined"
+        ? `${window.location.origin}/glo-logo.png`
+        : "",
+    ],
+  },
+};
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   getChains(),
@@ -164,19 +192,32 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         {isMounted && (
           <WagmiConfig config={config}>
-            <ModalContext.Provider
-              value={{ openModal, closeModal, setModalClass }}
+            <DAppKitProvider
+              genesis={isProd() ? "main" : "test"}
+              logLevel="DEBUG"
+              nodeUrl={
+                isProd()
+                  ? "https://mainnet.vecha.in"
+                  : "https://testnet.vechain.org/"
+              }
+              usePersistence
+              walletConnectOptions={walletConnectOptions}
             >
-              <Component {...pageProps} />
-              <dialog
-                ref={dialogRef}
-                onClick={dialogClickHandler}
-                className={`${modalClassName} outline-none bg-white`}
+              <ModalContext.Provider
+                value={{ openModal, closeModal, setModalClass }}
               >
-                <div ref={contentRef}>{modalContent}</div>
-              </dialog>
-            </ModalContext.Provider>
-            <Toast />
+                <Component {...pageProps} />
+
+                <dialog
+                  ref={dialogRef}
+                  onClick={dialogClickHandler}
+                  className={`${modalClassName} outline-none bg-white`}
+                >
+                  <div ref={contentRef}>{modalContent}</div>
+                </dialog>
+              </ModalContext.Provider>
+              <Toast />
+            </DAppKitProvider>
           </WagmiConfig>
         )}
       </main>

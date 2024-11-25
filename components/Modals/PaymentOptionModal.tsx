@@ -9,8 +9,8 @@ import BuyGloModal from "@/components/Modals/BuyGloModal";
 import BuyWithCoinbaseModal from "@/components/Modals/BuyWithCoinbaseModal";
 import { defaultChain } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { sliceAddress } from "@/lib/utils";
-import { buyWithSwap, buyWithStellarX } from "@/payments";
+import { apiInstance, sliceAddress } from "@/lib/utils";
+import { buyWithSwap, buyWithStellarX, buyWithVerocket } from "@/payments";
 
 import BuyWithCoinbaseSequenceModal from "./BuyWithCoinbaseSequenceModal";
 import BuyWithZeroswapModal from "./BuyWithZeroswapModal";
@@ -31,6 +31,9 @@ export default function PaymentOptionModal({
 
   const isSequenceWallet = connector?.id === "sequence";
   const isMetamaskWallet = connector?.id === "metaMask";
+  const isVe = apiInstance.defaults.headers["glo-pub-address"]
+    ?.toString()
+    .startsWith("ve");
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -234,14 +237,28 @@ export default function PaymentOptionModal({
         name="StellarX"
         icon="/stellarx.png"
         fees="0.1"
-        worksFor="🔐 XLM"
+        worksFor="🔐 Crypto"
         delay="⚡ Instant"
         onClick={() => buyWithStellarX()}
       />
     );
 
+    const verocket = (
+      <BuyBox
+        key="verocket"
+        name="Verocket"
+        icon="/verocket.png"
+        fees="0.3"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() => buyWithVerocket()}
+      />
+    );
+
     if (stellarConnected) {
       return [stellarx];
+    } else if (isVe) {
+      return [verocket];
     } else if (!isConnected) {
       return [uniswap, unlimitAndEmbr];
     } else if (isSequenceWallet) {
