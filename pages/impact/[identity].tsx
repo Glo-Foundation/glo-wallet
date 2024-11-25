@@ -33,6 +33,9 @@ export default function Impact({
   polygonBalanceFormatted,
   ethereumBalanceFormatted,
   celoBalanceFormatted,
+  optimismBalanceFormatted,
+  arbitrumBalanceFormatted,
+  baseBalanceFormatted,
   isVe,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -84,6 +87,21 @@ export default function Impact({
       name: "Celo",
       logo: "/celo-square-logo.svg",
       balance: celoBalanceFormatted,
+    },
+    {
+      name: "Optimism",
+      logo: "/optimism-logo.svg",
+      balance: optimismBalanceFormatted,
+    },
+    {
+      name: "Arbitrum",
+      logo: "/arbitrum-logo.svg",
+      balance: arbitrumBalanceFormatted,
+    },
+    {
+      name: "Base",
+      logo: "/base-logo.svg",
+      balance: baseBalanceFormatted,
     },
   ];
 
@@ -317,6 +335,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     polygonBalance,
     ethereumBalance,
     celoBalance,
+    optimismBalance,
+    arbitrumBalance,
+    baseBalance,
   } = await getBalances(isVe ? `ve${address}` : address);
 
   let yearlyYield = getTotalYield(balance);
@@ -347,6 +368,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ethereumBalanceFormatted: formatBalance(
         ethereumBalance || BigNumber.from(0)
       ),
+      optimismBalanceFormatted: formatBalance(
+        optimismBalance || BigNumber.from(0)
+      ),
+      arbitrumBalanceFormatted: formatBalance(
+        arbitrumBalance || BigNumber.from(0)
+      ),
+      baseBalanceFormatted: formatBalance(baseBalance || BigNumber.from(0)),
       celoBalanceFormatted: formatBalance(celoBalance || BigNumber.from(0)),
       isVe,
       openGraphData: [
