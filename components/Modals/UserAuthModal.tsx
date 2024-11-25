@@ -279,19 +279,22 @@ export default function UserAuthModal({
               height={35}
             />
           </button>
-          <button
-            className="auth-button"
-            data-testid="vechain-login-button"
-            onClick={() =>
-              requireUserAgreed(() => {
-                open();
-                closeModal();
-              })
-            }
-          >
-            <h4>VeChain</h4>
-            <Image alt="ve" src="/ve.png" width={35} height={35} />
-          </button>
+          {/* TODO: Temp disabled on prod*/}
+          {!isProd() && (
+            <button
+              className="auth-button"
+              data-testid="vechain-login-button"
+              onClick={() =>
+                requireUserAgreed(() => {
+                  open();
+                  closeModal();
+                })
+              }
+            >
+              <h4>VeChain</h4>
+              <Image alt="ve" src="/ve.png" width={35} height={35} />
+            </button>
+          )}
         </div>
 
         <div
