@@ -33,9 +33,9 @@ export default function Impact({
   polygonBalanceFormatted,
   ethereumBalanceFormatted,
   celoBalanceFormatted,
+  isVe,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-
   const { openModal } = useContext(ModalContext);
   const router = useRouter();
   const { push } = router;
@@ -46,17 +46,14 @@ export default function Impact({
   const formattedBalance = getUSFormattedNumber(balance);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
-  address;
-
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
-
   useEffect(() => {
     const seeWhenFirstGloTransaction = async () => {
-      if (!address || !address.includes("0x")) {
+      if (!address || !address.startsWith("0x") || isVe) {
         return;
       }
 
@@ -147,7 +144,7 @@ export default function Impact({
                 </span>
                 <span className="text-sm ml-1">Glo Dollar</span>
               </div>
-              {showBalanceDropdown && (
+              {showBalanceDropdown && !isVe && (
                 <div className="absolute top-10 z-10 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
                   <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
 
@@ -262,6 +259,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   );
 
   const pathname = context.req.url;
+  const isVe = pathname?.startsWith("/impact/ve/0x");
 
   // identity can be an address or an idriss identity
   let { identity } = context.query;
@@ -281,8 +279,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let address = identity;
   let idrissIdentity = "";
   let ensIdentity = "";
-
-  if (identity.startsWith("0x")) {
+  if (isVe) {
+    address = identity;
+  } else if (identity.startsWith("0x")) {
     address = identity;
     idrissIdentity = await idriss.reverseResolve(address);
   } else if (identity.includes("@")) {
@@ -318,7 +317,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     polygonBalance,
     ethereumBalance,
     celoBalance,
-  } = await getBalances(address);
+  } = await getBalances(isVe ? `ve${address}` : address);
 
   let yearlyYield = getTotalYield(balance);
 
@@ -349,6 +348,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         ethereumBalance || BigNumber.from(0)
       ),
       celoBalanceFormatted: formatBalance(celoBalance || BigNumber.from(0)),
+      isVe,
       openGraphData: [
         {
           property: "og:image",
