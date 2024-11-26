@@ -1,4 +1,3 @@
-import "react-tooltip/dist/react-tooltip.css";
 import { useConnex, useWallet } from "@vechain/dapp-kit-react";
 import {
   mainnet,

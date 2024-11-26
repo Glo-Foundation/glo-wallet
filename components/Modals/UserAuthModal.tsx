@@ -191,25 +191,6 @@ export default function UserAuthModal({
           </button>
           <button
             className="auth-button"
-            data-testid="walletconnect-login-button"
-            onClick={() => connectWithWallectConnect()}
-            disabled={recentlyUsedWc === "stellar"}
-          >
-            <div>
-              <h4>WalletConnect (EVM)</h4>
-              {recentlyUsedWc === "stellar" && <ReloadWarn />}
-            </div>
-
-            <Image
-              alt="walletconnect"
-              src="/walletconnect.svg"
-              width={35}
-              height={35}
-            />
-          </button>
-
-          <button
-            className="auth-button"
             data-testid="stellar-login-button"
             onClick={() => connectWithConnector(99)}
             disabled={recentlyUsedWc === "wc"}

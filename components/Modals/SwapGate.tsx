@@ -20,7 +20,7 @@ export default function SwapGate(props: Props) {
   const isSequenceWallet = connector?.id === "sequence";
   const isMetaMask = connector?.id === "metaMaskSDK";
   const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
-  const isVe = apiInstance.defaults.headers["glo-pub-address"]
+  const isVe = apiInstance?.defaults.headers["glo-pub-address"]
     ?.toString()
     .startsWith("ve");
 
