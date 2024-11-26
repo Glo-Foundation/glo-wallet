@@ -1,4 +1,5 @@
 import { useConnex, useWallet } from "@vechain/dapp-kit-react";
+import { erc20ABI } from "@wagmi/core";
 import {
   mainnet,
   polygon,
@@ -25,7 +26,11 @@ import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import Recipients from "@/components/Recipients";
-import { defaultChainId, getSmartContractAddress } from "@/lib/config";
+import {
+  chainConfig,
+  defaultChainId,
+  getSmartContractAddress,
+} from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
@@ -71,19 +76,19 @@ export default function Home() {
   useEffect(() => {
     if (veAddress) {
       // TODO: Could be replaced with Viem confifured for Ve and custom Ve testnet
-      // connex.thor
-      //   .account(chainConfig[isProd() ? vechain.id : -1]) // TODO:
-      //   .method(erc20ABI.find((x) => x.name === "balanceOf")!)
-      //   .call(veAddress)
-      //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      //   .then((result: any) => {
-      //     const value = BigInt(result.decoded[0]);
-      //     setVeBalance({
-      //       ...veBalance,
-      //       value,
-      //       formatted: (value / BigInt(10 ** 18)).toString(),
-      //     });
-      //   });
+      connex.thor
+        .account(chainConfig[isProd() ? vechain.id : -1]) // TODO:
+        .method(erc20ABI.find((x) => x.name === "balanceOf")!)
+        .call(veAddress)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((result: any) => {
+          const value = BigInt(result.decoded[0]);
+          setVeBalance({
+            ...veBalance,
+            value,
+            formatted: (value / BigInt(10 ** 18)).toString(),
+          });
+        });
     } else {
       setVeBalance(startBalance(18));
     }
