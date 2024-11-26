@@ -94,6 +94,8 @@ async function updateCharityChoicesForAddress(
     if (!valid) {
       throw new Error("Invalid signature");
     }
+  } else if (address.slice(0, 2) === "ve") {
+    // Ve
   } else {
     // isStellar
     const tx = StellarSdk.TransactionBuilder.fromXDR(
@@ -165,7 +167,6 @@ export default async function handler(
 ) {
   const address = req.headers["glo-pub-address"] as Address;
   const chainId = req.headers["glo-chain-id"] as string;
-
   if (req.method === "POST") {
     const newCharityChoices = await updateCharityChoicesForAddress(
       address,

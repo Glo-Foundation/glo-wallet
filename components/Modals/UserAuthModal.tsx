@@ -14,6 +14,7 @@ import {
   WalletConnectAllowedMethods,
 } from "@creit.tech/stellar-wallets-kit/build/index";
 
+import { useWalletModal } from "@vechain/dapp-kit-react";
 import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -51,18 +52,22 @@ const ToS = () => (
   </span>
 );
 
+type UserAuthModalProps = {
+  setStellarConnected: (bool: boolean) => void;
+  setStellarAddress: (str: string) => void;
+};
+
 export default function UserAuthModal({
   setStellarConnected,
   setStellarAddress,
-}: {
-  setStellarConnected: (bool: boolean) => void;
-  setStellarAddress: (str: string) => void;
-}) {
+}: UserAuthModalProps) {
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
 
   const { recentlyUsedWc, setRecentlyUsedWc } = useUserStore();
   const { reload } = useRouter();
+
+  const { open } = useWalletModal();
 
   const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
 
@@ -254,6 +259,36 @@ export default function UserAuthModal({
                 />
               </button>
             </div>
+          )}
+
+          <button
+            className="auth-button"
+            data-testid="walletconnect-login-button"
+            onClick={() => connectWithConnector(2)}
+          >
+            <h4>WalletConnect (EVM)</h4>
+            <Image
+              alt="walletconnect"
+              src="/walletconnect.svg"
+              width={35}
+              height={35}
+            />
+          </button>
+          {/* TODO: Temp disabled on prod*/}
+          {!isProd() && (
+            <button
+              className="auth-button"
+              data-testid="vechain-login-button"
+              onClick={() =>
+                requireUserAgreed(() => {
+                  open();
+                  closeModal();
+                })
+              }
+            >
+              <h4>VeChain</h4>
+              <Image alt="ve" src="/ve.png" width={35} height={35} />
+            </button>
           )}
         </div>
 

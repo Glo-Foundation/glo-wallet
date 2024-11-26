@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getBalances } from "@/lib/balance";
+import { DEFAULT_CHARITY_PER_CHAIN, getChainsObjects } from "@/lib/utils";
 import prisma from "lib/prisma";
 
 export default async function handler(
@@ -24,7 +25,7 @@ export default async function handler(
     },
   });
 
-  const possibleFundingChoices: any = {};
+  const possibleFundingChoices: { [key: string]: number } = {};
 
   possibleFundingChoicesData.forEach((fundingChoice) => {
     possibleFundingChoices[fundingChoice.name] = 0;
@@ -32,17 +33,33 @@ export default async function handler(
 
   let fundingChoicesSummed = 0;
 
-  allFundingChoices.forEach(async (fundingChoice) => {
+  for (const fundingChoice of allFundingChoices) {
     if (fundingChoice.name !== "OPEN_SOURCE") {
       const { totalBalance: balance } = await getBalances(
         fundingChoice.address
       );
-      possibleFundingChoices[fundingChoice.name] =
-        possibleFundingChoices[fundingChoice.name] + balance;
+      possibleFundingChoices[fundingChoice.name] += balance;
     }
     fundingChoicesSummed++;
-    if (fundingChoicesSummed === allFundingChoices.length) {
-      return res.status(200).json({ possibleFundingChoices });
+  }
+
+  //default funding choices per chain
+  const chainObjects = Object.entries(getChainsObjects()).map(
+    ([key, chain]) => ({
+      name: key,
+      chain,
+    })
+  );
+
+  for (const { name } of chainObjects) {
+    const defaultCharity = DEFAULT_CHARITY_PER_CHAIN(name);
+    if (
+      defaultCharity &&
+      possibleFundingChoices[defaultCharity] !== undefined
+    ) {
+      possibleFundingChoices[defaultCharity] += 0;
     }
-  });
+  }
+
+  return res.status(200).json({ possibleFundingChoices });
 }

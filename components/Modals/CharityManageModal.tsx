@@ -18,6 +18,7 @@ import {
   Operation,
   TransactionBuilder,
 } from "@stellar/stellar-sdk";
+import { useWallet } from "@vechain/dapp-kit-react";
 import { getWalletClient, SignMessageResult, Chain } from "@wagmi/core";
 import Image from "next/image";
 import Slider from "rc-slider";
@@ -126,6 +127,9 @@ export default function CharityManageModal(props: Props) {
   const { closeModal } = useContext(ModalContext);
 
   const { chain } = useAccount();
+  const { account: veAddress } = useWallet();
+  const isVe = !!veAddress;
+
   const [percentMap, setPercentMap] = useState({ ...props.percentMap });
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const [lastTouchedKey, setLastTouchedKey] = useState<string | null>(null);
@@ -300,7 +304,9 @@ export default function CharityManageModal(props: Props) {
     };
 
     const signingBodyString = JSON.stringify(signingBody);
-    const signature = await signCharityUpdateMessage(signingBodyString);
+    const signature = isVe
+      ? "ve"
+      : await signCharityUpdateMessage(signingBodyString);
 
     const apiBody: UpdateCharityChoiceBody = {
       sigFields: {

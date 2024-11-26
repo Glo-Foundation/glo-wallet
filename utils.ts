@@ -295,12 +295,17 @@ export const getBalance = async (
     provider
   );
 
-  if (blockTag !== null) {
-    return await usdgloContract.balanceOf.call(undefined, address, {
-      blockTag: blockTag,
-    });
-  } else {
-    return await usdgloContract.balanceOf(address);
+  try {
+    if (blockTag !== null) {
+      return await usdgloContract.balanceOf.call(undefined, address, {
+        blockTag: blockTag,
+      });
+    } else {
+      return await usdgloContract.balanceOf(address);
+    }
+  } catch (err) {
+    console.log(`Could not fetch balance for ${address} at ${chainId}`);
+    return BigInt(0);
   }
 };
 

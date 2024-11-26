@@ -14,6 +14,7 @@ import {
   arbitrumSepolia,
   base,
   baseSepolia,
+  vechain,
 } from "wagmi/chains";
 
 import UsdgloContract from "@/abi/usdglo.json";
@@ -221,6 +222,8 @@ export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
     [optimism.id]: Charity.RETRO_PG_OP,
     [celo.id]: Charity.CELO_PG,
     "0": Charity.REFUGEE_CRISIS, // Stellar
+    // TODO:
+    [vechain.id]: Charity.CLIMATE, // Ve
   };
   return DEFAULTS[chainId] || Charity.OPEN_SOURCE;
 };
@@ -234,7 +237,7 @@ export const backendUrl = process.env.VERCEL_URL
   : "http://localhost:3000";
 
 export const getChainsObjects = () => {
-  const chains = getChains();
+  const chains = [...getChains(), vechain];
   const chainsObject: Record<string, Chain> = chains.reduce(
     (a, v) => ({
       ...a,

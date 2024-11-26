@@ -6,11 +6,15 @@ import { useAccount } from "wagmi";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithStellarX } from "@/payments";
 
-import { BuyBox } from "../BuyBox";
+export default function BoxBuyModal({
+  buyAmount,
+  children,
+}: {
+  buyAmount: number;
 
-export default function StellarBuyModal({ buyAmount }: { buyAmount: number }) {
+  children: JSX.Element;
+}) {
   const { address, isConnected } = useAccount();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -53,16 +57,7 @@ export default function StellarBuyModal({ buyAmount }: { buyAmount: number }) {
         </button>
       </div>
       <h2 className="text-center pt-0">Buy Glo Dollars</h2>
-
-      <BuyBox
-        key="stellarx"
-        name="StellarX"
-        icon="/stellarx.png"
-        fees="0.1"
-        worksFor="🔐 XLM"
-        delay="⚡ Instant"
-        onClick={() => buyWithStellarX()}
-      />
+      {children}
     </div>
   );
 }

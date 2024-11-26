@@ -32,9 +32,12 @@ export default function Impact({
   polygonBalanceFormatted,
   ethereumBalanceFormatted,
   celoBalanceFormatted,
+  optimismBalanceFormatted,
+  arbitrumBalanceFormatted,
+  baseBalanceFormatted,
+  isVe,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
-
   const { openModal } = useContext(ModalContext);
   const router = useRouter();
   const { push } = router;
@@ -45,17 +48,14 @@ export default function Impact({
   const formattedBalance = getUSFormattedNumber(balance);
   const yearlyYieldFormatted =
     yearlyYield > 0 ? `$0 - $${yearlyYield.toFixed(0)}` : "$0";
-  address;
-
   useEffect(() => {
     if (isCopiedTooltipOpen) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
-
   useEffect(() => {
     const seeWhenFirstGloTransaction = async () => {
-      if (!address || !address.includes("0x")) {
+      if (!address || !address.startsWith("0x") || isVe) {
         return;
       }
 
@@ -86,6 +86,21 @@ export default function Impact({
       name: "Celo",
       logo: "/celo-square-logo.svg",
       balance: celoBalanceFormatted,
+    },
+    {
+      name: "Optimism",
+      logo: "/optimism-logo.svg",
+      balance: optimismBalanceFormatted,
+    },
+    {
+      name: "Arbitrum",
+      logo: "/arbitrum-logo.svg",
+      balance: arbitrumBalanceFormatted,
+    },
+    {
+      name: "Base",
+      logo: "/base-logo.svg",
+      balance: baseBalanceFormatted,
     },
   ];
 
@@ -146,7 +161,7 @@ export default function Impact({
                 </span>
                 <span className="text-sm ml-1">Glo Dollar</span>
               </div>
-              {showBalanceDropdown && (
+              {showBalanceDropdown && !isVe && (
                 <div className="absolute top-10 z-10 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
                   <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
 
@@ -261,6 +276,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   );
 
   const pathname = context.req.url;
+  const isVe = pathname?.startsWith("/impact/ve/0x");
 
   // identity can be an address or an idriss identity
   let { identity } = context.query;
@@ -280,17 +296,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let address = identity;
   let idrissIdentity = "";
   let ensIdentity = "";
-
-  if (identity.startsWith("0x")) {
+  if (isVe) {
     address = identity;
-    idrissIdentity = await idriss.reverseResolve(address);
+  } else if (identity.startsWith("0x")) {
+    address = identity;
+    const res = await idriss.reverseResolve(address);
+    idrissIdentity = typeof res === "string" ? res : "";
   } else if (identity.includes("@")) {
     idrissIdentity = identity;
-    // TODO: handle exception in resolving
-    const idrissResolvedAddresses = await idriss.resolve(idrissIdentity);
-    if (idrissResolvedAddresses) {
-      address = Object.values(idrissResolvedAddresses)[0];
-    }
+    try {
+      const idrissResolvedAddresses = await idriss.resolve(idrissIdentity);
+      if (idrissResolvedAddresses) {
+        address = Object.values(idrissResolvedAddresses)[0] as string;
+      }
+    } catch (err) {}
   } else if (identity.endsWith(".eth")) {
     const client = createPublicClient({
       chain: mainnet,
@@ -317,7 +336,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     polygonBalance,
     ethereumBalance,
     celoBalance,
-  } = await getBalances(address);
+    optimismBalance,
+    arbitrumBalance,
+    baseBalance,
+  } = await getBalances(isVe ? `ve${address}` : address);
 
   let yearlyYield = getTotalYield(balance);
 
@@ -343,7 +365,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       yearlyYield,
       polygonBalanceFormatted: formatBalance(polygonBalance || BigInt(0)),
       ethereumBalanceFormatted: formatBalance(ethereumBalance || BigInt(0)),
+      optimismBalanceFormatted: formatBalance(optimismBalance || BigInt(0)),
+      arbitrumBalanceFormatted: formatBalance(arbitrumBalance || BigInt(0)),
+      baseBalanceFormatted: formatBalance(baseBalance || BigInt(0)),
       celoBalanceFormatted: formatBalance(celoBalance || BigInt(0)),
+      isVe,
       openGraphData: [
         {
           property: "og:image",

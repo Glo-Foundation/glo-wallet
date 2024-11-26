@@ -1,3 +1,4 @@
+import { useWallet } from "@vechain/dapp-kit-react";
 import Head from "next/head";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -33,6 +34,9 @@ export default function Header({
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal } = useContext(ModalContext);
   const { setRecipientsView } = useUserStore();
+  const { account: veAccount } = useWallet();
+
+  const isVeConnected = !!veAccount;
 
   const isSequenceWallet = connector?.id === "sequence";
   const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
@@ -49,7 +53,8 @@ export default function Header({
         address={userAddress}
         idrissName={idrissName}
         ensName={ensName}
-        stellarConnected={stellarConnected}
+        isStellarConnected={stellarConnected}
+        isVeConnected={isVeConnected}
         setStellarConnected={setStellarConnected}
         setStellarAddress={setStellarAddress}
       />
@@ -79,10 +84,10 @@ export default function Header({
 
         {isPending ? (
           <button className="primary-button">Connecting... </button>
-        ) : isConnected ? (
+        ) : isConnected || isSequenceWallet || isVeConnected ? (
           <div className="flex z-10">
             {!isSequenceWallet && !isCoinbaseWallet && <AddToWallet />}
-            <NetworkSwitcher />
+            {isConnected && <NetworkSwitcher />}
             <Tooltip
               id="copy-wallet-tooltip"
               content="Copied!"
@@ -94,37 +99,29 @@ export default function Header({
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
                 navigator.clipboard.writeText(
-                  ensName || idrissName || address!
+                  ensName ||
+                    idrissName ||
+                    address! ||
+                    stellarAddress ||
+                    veAccount!
                 );
                 setIsCopiedTooltipOpen(true);
               }}
             >
-              {ensName || idrissName || sliceAddress(address!)}
+              {ensName ||
+                idrissName ||
+                sliceAddress(address! || stellarAddress || veAccount || "")}
             </button>
             <button
               className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal(address?.toString())}
-              data-testid="profile-button"
-            >
-              👤
-            </button>
-          </div>
-        ) : stellarConnected ? (
-          <div className="flex z-10">
-            <button
-              data-tooltip-id="copy-wallet-tooltip"
-              data-tooltip-content="Copied!"
-              className="text-sm text-pine-800 mr-3 font-normal"
-              onClick={() => {
-                navigator.clipboard.writeText(stellarAddress || "");
-                setIsCopiedTooltipOpen(true);
-              }}
-            >
-              {sliceAddress(stellarAddress || "")}
-            </button>
-            <button
-              className="primary-button w-9 h-9"
-              onClick={() => openUserInfoModal(stellarAddress || undefined)}
+              onClick={() =>
+                openUserInfoModal(
+                  address?.toString() ||
+                    stellarAddress ||
+                    veAccount ||
+                    undefined
+                )
+              }
               data-testid="profile-button"
             >
               👤
