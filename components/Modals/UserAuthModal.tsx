@@ -245,7 +245,7 @@ export default function UserAuthModal({
           <button
             className="auth-button"
             data-testid="walletconnect-login-button"
-            onClick={() => connectWithConnector(2)}
+            onClick={() => connectWithWallectConnect()}
           >
             <h4>WalletConnect (EVM)</h4>
             <Image

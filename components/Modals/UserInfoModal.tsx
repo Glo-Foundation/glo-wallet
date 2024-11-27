@@ -63,7 +63,7 @@ export default function UserInfoModal({
 
   async function disconnectStellar() {
     localStorage.setItem("stellarAddress", "");
-    localStorage.setItem("isStellarConnected", "false");
+    localStorage.setItem("stellarConnected", "false");
     localStorage.setItem("stellarWalletId", "");
     setStellarAddress("");
     setStellarConnected(false);

@@ -235,9 +235,7 @@ export default function CharityManageModal(props: Props) {
   const signCharityUpdateMessage = async (
     message: string
   ): Promise<SignMessageResult | string | undefined> => {
-    const walletClient = await getWalletClient();
-
-    const isStellar = !walletClient;
+    const isStellar = localStorage.getItem("stellarConnected") == "true";
 
     if (isStellar) {
       const stellarNetwork = isProd()
@@ -277,6 +275,7 @@ export default function CharityManageModal(props: Props) {
 
       //   // return sig;
     }
+    const walletClient = await getWalletClient();
 
     const sig = await walletClient?.signMessage({
       message: message,

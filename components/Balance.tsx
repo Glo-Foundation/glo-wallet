@@ -180,7 +180,9 @@ export default function Balance({
           yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldUSFormatted}
           totalBalance={totalBalance}
         />
-        {totalBalance && totalBalance.value > 0 && (
+        {/* {totalBalance && totalBalance.value > 0 && ( */}
+        {true && (
+          // TODO: Temporary block
           <>
             <div className="self-center text-sm text-pine-700/90 mb-1.5 mx-1">
               for

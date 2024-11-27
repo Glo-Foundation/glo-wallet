@@ -27,7 +27,13 @@ export const sliceAddress = (address: string, amt = 3) =>
 export const lastSliceAddress = (address: string | string[], amt = 4) =>
   `${address?.slice(amt * -1)}`;
 
-export let apiInstance: AxiosInstance;
+export let apiInstance: AxiosInstance = axios.create({
+  baseURL: "/api/",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 let apiInstanceWallet = "";
 
 export const initApi = async (
