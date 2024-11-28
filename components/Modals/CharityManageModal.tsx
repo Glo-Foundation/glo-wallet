@@ -25,7 +25,7 @@ import Slider from "rc-slider";
 import { useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import { Hex } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
@@ -125,6 +125,7 @@ const CharitySlider = ({
 
 export default function CharityManageModal(props: Props) {
   const { closeModal } = useContext(ModalContext);
+  const { data: walletClient } = useWalletClient();
 
   const { chain } = useAccount();
   const { account: veAddress } = useWallet();
@@ -275,7 +276,6 @@ export default function CharityManageModal(props: Props) {
 
       //   // return sig;
     }
-    const walletClient = await getWalletClient();
 
     const sig = await walletClient?.signMessage({
       message: message,
