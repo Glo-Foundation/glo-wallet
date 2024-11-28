@@ -1,5 +1,5 @@
-import "react-tooltip/dist/react-tooltip.css";
 import { useConnex, useWallet } from "@vechain/dapp-kit-react";
+import { erc20ABI } from "@wagmi/core";
 import {
   mainnet,
   polygon,
@@ -20,14 +20,7 @@ import Cookies from "js-cookie";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useContext, useState } from "react";
-import {
-  erc20ABI,
-  useAccount,
-  useBalance,
-  useEnsName,
-  useNetwork,
-  useSwitchNetwork,
-} from "wagmi";
+import { useAccount, useBalance, useEnsName, useSwitchChain } from "wagmi";
 
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
@@ -62,9 +55,8 @@ const startBalance = (decimals: number) => ({
 });
 
 export default function Home() {
-  const { address, isConnected, connector } = useAccount();
-  const { chain } = useNetwork();
-  const { switchNetwork } = useSwitchNetwork();
+  const { address, isConnected, connector, chain } = useAccount();
+  const { switchChain } = useSwitchChain();
   const { openModal, closeModal } = useContext(ModalContext);
   const [idrissName, setIdrissName] = useState("");
   const [stellarConnected, setStellarConnected] = useState(
@@ -107,15 +99,18 @@ export default function Home() {
   const usdcBalance = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
-    watch: true,
-    cacheTime: 2_000,
+
+    query: {
+      gcTime: 2_000,
+    },
   });
   const polygonId = isProd() ? polygon.id : polygonMumbai.id;
   const { data: polygonBalance } = useBalance({
     address,
     token: getSmartContractAddress(polygonId),
-    watch: true,
-    cacheTime: 5_000,
+    query: {
+      gcTime: 2_000,
+    },
     chainId: polygonId,
   });
 
@@ -123,8 +118,9 @@ export default function Home() {
   const { data: ethereumBalance } = useBalance({
     address,
     token: getSmartContractAddress(ethereumId),
-    watch: true,
-    cacheTime: 5_000,
+    query: {
+      gcTime: 2_000,
+    },
     chainId: ethereumId,
   });
 
@@ -132,8 +128,9 @@ export default function Home() {
   const { data: celoBalance } = useBalance({
     address,
     token: getSmartContractAddress(celoId),
-    watch: true,
-    cacheTime: 5_000,
+    query: {
+      gcTime: 2_000,
+    },
     chainId: celoId,
   });
 
@@ -141,8 +138,9 @@ export default function Home() {
   const { data: optimismBalance } = useBalance({
     address,
     token: getSmartContractAddress(optimismId),
-    watch: true,
-    cacheTime: 5_000,
+    query: {
+      gcTime: 2_000,
+    },
     chainId: optimismId,
   });
 
@@ -150,8 +148,9 @@ export default function Home() {
   const { data: arbitrumBalance } = useBalance({
     address,
     token: getSmartContractAddress(arbitrumId),
-    watch: true,
-    cacheTime: 5_000,
+    query: {
+      gcTime: 2_000,
+    },
     chainId: arbitrumId,
   });
 
@@ -159,8 +158,9 @@ export default function Home() {
   const { data: baseBalance } = useBalance({
     address,
     token: getSmartContractAddress(baseId),
-    watch: true,
-    cacheTime: 5_000,
+    query: {
+      gcTime: 2_000,
+    },
     chainId: optimismId,
   });
 
@@ -238,10 +238,10 @@ export default function Home() {
     if (isConnected && shouldSwitchToDefault) {
       // This timeout avoids some Sequence condition race
       setTimeout(() => {
-        switchNetwork?.(defaultChainId());
+        switchChain?.({ chainId: defaultChainId() });
       }, 0);
     }
-  }, [switchNetwork]);
+  }, [switchChain]);
 
   useEffect(() => {
     if (isConnected || stellarConnected || veConnected) {
@@ -281,7 +281,7 @@ export default function Home() {
           .then((res) => setCTAs(res.data));
 
         if (isConnected) {
-          const idrissName = await getIdrissName(address!);
+          const idrissName = (await getIdrissName(address!)) as string;
           setIdrissName(idrissName);
         }
         localStorage.setItem("loggedIn", "true");

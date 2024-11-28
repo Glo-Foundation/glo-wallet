@@ -4,7 +4,7 @@ import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useContext } from "react";
 import { Tooltip } from "react-tooltip";
-import { useDisconnect, useNetwork } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
@@ -30,7 +30,7 @@ export default function UserInfoModal({
   setStellarAddress,
 }: Props) {
   const { disconnect } = useDisconnect();
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs, setRecipientsView } = useUserStore();
@@ -63,7 +63,7 @@ export default function UserInfoModal({
 
   async function disconnectStellar() {
     localStorage.setItem("stellarAddress", "");
-    localStorage.setItem("isStellarConnected", "false");
+    localStorage.setItem("stellarConnected", "false");
     localStorage.setItem("stellarWalletId", "");
     setStellarAddress("");
     setStellarConnected(false);

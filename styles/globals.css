@@ -132,3 +132,16 @@ body {
     z-index: -10;
   }
 }
+
+/* Fixes Ock styles */
+.ock-bg-primary {
+  background-color: var(--ock-bg-primary);
+}
+
+.ock-bg-alternate {
+  background-color: var(--ock-bg-alternate);
+}
+
+.ock-bg-default {
+  background-color: var(--ock-bg-default);
+}

@@ -6,7 +6,7 @@ import {
   base,
   arbitrum,
 } from "@wagmi/core/chains";
-import { BigNumber, utils } from "ethers";
+import { formatEther } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import * as cache from "@/lib/cache";
@@ -33,12 +33,9 @@ export default async function handler(
     getMarketCap(arbitrum.id),
   ]);
 
-  const totalMarketCap = result.reduce(
-    (acc, cur) => acc.add(cur),
-    BigNumber.from(0)
-  );
+  const totalMarketCap = result.reduce((acc, cur) => acc + cur, BigInt(0));
 
-  const value = utils.formatEther(totalMarketCap).split(".")[0];
+  const value = formatEther(totalMarketCap).split(".")[0];
   const formatted = getNiceNumber(Number(value));
 
   cache.set(CACHE_KEY, formatted, 5 * 60);

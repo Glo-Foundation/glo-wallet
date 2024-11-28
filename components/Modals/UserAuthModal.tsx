@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import {
   StellarWalletsKit,
   WalletNetwork,
@@ -12,11 +13,8 @@ import {
   WalletConnectModule,
   WalletConnectAllowedMethods,
 } from "@creit.tech/stellar-wallets-kit/build/index";
+
 import { useWalletModal } from "@vechain/dapp-kit-react";
-import { configureChains } from "@wagmi/core";
-import { publicProvider } from "@wagmi/core/providers/public";
-import { WalletConnectModal } from "@walletconnect/modal";
-import { SignClient } from "@walletconnect/sign-client";
 import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -24,10 +22,11 @@ import { useContext, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
 
-import { defaultChainId } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { GloSequenceConnector } from "@/lib/sequence-connector";
-import { getAllowedChains, isProd } from "@/lib/utils";
+import { isProd } from "@/lib/utils";
+import { walletConnect } from "wagmi/connectors";
+import { useUserStore } from "@/lib/store";
+import { useRouter } from "next/router";
 
 const TOS_COOKIE = "tos-agreed";
 
@@ -65,11 +64,11 @@ export default function UserAuthModal({
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
 
+  const { recentlyUsedWc, setRecentlyUsedWc } = useUserStore();
+  const { reload } = useRouter();
+
   const { open } = useWalletModal();
 
-  const [sendForm, setSendForm] = useState({
-    email: "",
-  });
   const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
 
   const [hasUserAgreed, setHasUserAgreed] = useState<boolean | null>(
@@ -90,27 +89,6 @@ export default function UserAuthModal({
     callback();
   };
 
-  const signInWithEmail = async () => {
-    const { chains } = configureChains(getAllowedChains(), [publicProvider()]);
-    const emailConnector = new GloSequenceConnector({
-      options: {
-        connect: {
-          app: "Glo wallet",
-          networkId: defaultChainId(),
-          askForEmail: true,
-          settings: {
-            theme: "light",
-            bannerUrl: "https://i.imgur.com/P8l8pFh.png",
-            signInWithEmail: sendForm.email,
-          },
-        },
-      },
-      chains,
-    });
-    connect({ connector: emailConnector });
-    closeModal();
-  };
-
   const connectWithConnector = async (index: number) => {
     requireUserAgreed(async () => {
       if (index == 99) {
@@ -123,12 +101,26 @@ export default function UserAuthModal({
     });
   };
 
-  async function connectStellar() {
-    const signClient = await SignClient.init({
-      projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+  const connectWithWallectConnect = () => {
+    requireUserAgreed(async () => {
+      setRecentlyUsedWc("wc");
+      const wc = walletConnect({
+        projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+        showQrModal: true,
+        qrModalOptions: {
+          themeVariables: {
+            "--wcm-z-index": "11",
+          },
+        },
+      });
+      connect({ connector: wc });
+      closeModal();
     });
+  };
 
-    const stellarKit: StellarWalletsKit = new StellarWalletsKit({
+  async function connectStellar() {
+    setRecentlyUsedWc("stellar");
+    const stellarKit = new StellarWalletsKit({
       network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
       selectedWalletId: XBULL_ID,
       modules: [
@@ -146,78 +138,65 @@ export default function UserAuthModal({
           name: "Glo Dollar",
           icons: ["public/glo-logo.svg"],
           network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
-          modal: new WalletConnectModal({
-            projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-          }),
-          client: signClient as any, // Hmmmm
         }),
       ],
     });
-
     await stellarKit.openModal({
       onWalletSelected: async (option: ISupportedWallet) => {
         stellarKit.setWallet(option.id);
-        const publicKey = await stellarKit.getPublicKey();
+        const address = await stellarKit.getPublicKey();
         localStorage.setItem("stellarConnected", "true");
-        localStorage.setItem("stellarAddress", publicKey);
+        localStorage.setItem("stellarAddress", address);
         localStorage.setItem("stellarWalletId", option.id);
         setStellarConnected(true);
-        setStellarAddress(publicKey);
+        setStellarAddress(address);
       },
     });
   }
 
+  const ReloadWarn = () => (
+    <p className="text-sm text-red-400">
+      (
+      <span className="underline cursor-pointer z-50" onClick={() => reload()}>
+        Reload
+      </span>{" "}
+      this page to use <br /> WalletConnect on another chain)
+    </p>
+  );
+
   return (
     <>
-      <section className="flex flex-col items-center">
-        <Image
-          className="border-cyan-600 border-2 bg-white rounded-full mb-[-50px] z-50"
-          src="/jasper.png"
-          alt="glo logo"
-          width={100}
-          height={100}
-        />
-      </section>
-      <section className="sticky pt-8 px-4 py-4 flex flex-col items-center text-center bg-white rounded-t-3xl">
-        <h2 className="">👋 Welcome to the Glo App</h2>
-        <p className="copy text-lg -mt-5 mb-4">Jasper, Glo Foundation CEO</p>
-        <p className="copy text m-0 max-w-[21rem] text-center">
-          To see the impact of your Glo Dollars connect your wallet or submit
-          your email to create an Eth wallet{" "}
-          <a
-            className="underline"
-            target="_blank"
-            href="https://sequence.xyz/"
-            rel="noreferrer"
-          >
-            powered by Sequence
-          </a>
-          .
-        </p>
+      <section className="sticky p-2 flex flex-col items-center text-center bg-white rounded-t-3xl">
+        <h2 className="">Sign in to Glo Dollar</h2>
       </section>
       <section className="modal-body px-4 rounded-b-3xl bg-pine-100 after:bg-pine-100">
         <div className="pt-2">
-          <div className="p-0 form-group flex justify-center">
-            <div className="input-container relative inline w-full">
-              <input
-                id="sign-in-with-email"
-                className="rounded-full bg-white py-4 pl-6 pr-28 text-xl"
-                placeholder={"Email"}
-                value={sendForm.email}
-                data-testid="submit-email-input"
-                onChange={(e) =>
-                  setSendForm({ ...sendForm, email: e.target.value })
-                }
-              />
-              <button
-                className="absolute top-[10px] right-1 primary-button py-3 px-6 drop-shadow-none"
-                data-testid="submit-email-button"
-                onClick={() => requireUserAgreed(signInWithEmail)}
-              >
-                Submit
-              </button>
+          <button
+            className="auth-button"
+            data-testid="coinbase-login-button"
+            onClick={() => connectWithConnector(2)}
+          >
+            <h4>Coinbase</h4>
+            <Image alt="coinbase" src="/coinbase.png" width={35} height={35} />
+          </button>
+          <button
+            className="auth-button"
+            data-testid="stellar-login-button"
+            onClick={() => connectWithConnector(99)}
+            disabled={recentlyUsedWc === "wc"}
+          >
+            <div>
+              <h4>Stellar wallets</h4>
+              {recentlyUsedWc === "wc" && <ReloadWarn />}
             </div>
-          </div>
+            <Image
+              alt="stellar"
+              src="/stellar-logo.svg"
+              width={35}
+              height={35}
+            />
+          </button>
+
           <button
             className="auth-button"
             data-testid="social-login-button"
@@ -234,19 +213,6 @@ export default function UserAuthModal({
               />
               <Image alt="google" src="/google.svg" width={35} height={35} />
             </div>
-          </button>
-          <button
-            className="auth-button"
-            data-testid="stellar-login-button"
-            onClick={() => connectWithConnector(99)}
-          >
-            <h4>Stellar wallets</h4>
-            <Image
-              alt="stellar"
-              src="/stellar-logo.svg"
-              width={35}
-              height={35}
-            />
           </button>
           {!isMobile && (
             <div>
@@ -269,7 +235,7 @@ export default function UserAuthModal({
           <button
             className="auth-button"
             data-testid="walletconnect-login-button"
-            onClick={() => connectWithConnector(2)}
+            onClick={() => connectWithWallectConnect()}
           >
             <h4>WalletConnect (EVM)</h4>
             <Image

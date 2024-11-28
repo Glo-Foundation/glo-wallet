@@ -2,12 +2,12 @@ import { Chain } from "@wagmi/core";
 import Image from "next/image";
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
-import { useNetwork, useWalletClient } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 
 import { chainConfig } from "@/lib/config";
 
 export default function AddToWallet() {
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
   const [isAddToWalletTooltipOpen, setIsAddToWalletTooltipOpen] =
     useState(false);

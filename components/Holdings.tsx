@@ -1,12 +1,9 @@
-import { utils } from "ethers";
 import Image from "next/image";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { isFirefox } from "react-device-detect";
-import { useAccount, useBalance, useNetwork } from "wagmi";
 
-import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { getUSFormattedNumber } from "@/utils";
 

@@ -2,7 +2,6 @@ import { Operation } from "@stellar/stellar-sdk";
 import { Chain } from "@wagmi/core";
 import { celo, celoAlfajores, vechain } from "@wagmi/core/chains";
 import axios from "axios";
-import { BigNumber } from "ethers";
 
 import { getChainBlockNumber, getStellarTxs } from "@/lib/balance";
 
@@ -222,7 +221,7 @@ export const getAvgMarketCap = async (
 
     const currentMarketCap = await getMarketCap(chain.id);
     const endOfMonthMarketCap = endToLatestOps.reduce(
-      (acc, cur) => (cur.isMint ? acc.sub(cur.value) : acc.add(cur.value)),
+      (acc, cur) => (cur.isMint ? acc - cur.value : acc + cur.value),
       currentMarketCap
     );
     const avgBalance = await getAverage(
@@ -235,7 +234,7 @@ export const getAvgMarketCap = async (
     return avgBalance;
   } catch (err) {
     console.log({ err });
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 };
 
@@ -265,8 +264,8 @@ export const getAvgStellarMarketCap = async (
   const currentMarketCap = await getStellarMarketCap();
 
   const endOfMonthMarketCap = endToLatestOps.reduce(
-    (acc, cur) => (cur.isMint ? acc.sub(cur.value) : acc.add(cur.value)),
-    BigNumber.from(currentMarketCap).mul(BigInt(10 ** 7))
+    (acc, cur) => (cur.isMint ? acc - cur.value : acc + cur.value),
+    BigInt(currentMarketCap) * BigInt(10 ** 7)
   );
 
   const avgBalance = await getAverage(
@@ -282,33 +281,31 @@ export const getAvgStellarMarketCap = async (
 const getAverage = async (
   startDate: Date,
   endDate: Date,
-  endBalance: BigNumber,
+  endBalance: bigint,
   operations: Operations[]
-): Promise<BigNumber> => {
+): Promise<bigint> => {
   const milisecondsInMonthString = endDate.valueOf() - startDate.valueOf();
-  const milisecondsInMonth = BigNumber.from(
-    milisecondsInMonthString.toString()
-  );
-  let totalBalance = BigNumber.from("0");
+  const milisecondsInMonth = BigInt(milisecondsInMonthString.toString());
+  let totalBalance = BigInt("0");
   let currentDate = endDate;
   let currentBalance = endBalance;
 
   operations.forEach((op) => {
-    const balanceTime = BigNumber.from(
+    const balanceTime = BigInt(
       (currentDate.valueOf() - op.ts.valueOf()).toString()
     );
-    const weightedBalance = currentBalance.mul(balanceTime);
-    totalBalance = totalBalance.add(weightedBalance);
+    const weightedBalance = currentBalance * balanceTime;
+    totalBalance = totalBalance + weightedBalance;
     currentDate = op.ts;
     currentBalance = op.isMint
-      ? currentBalance.sub(op.value)
-      : currentBalance.add(op.value);
+      ? currentBalance - op.value
+      : currentBalance + op.value;
   });
   const balanceTime = currentDate.valueOf() - startDate.valueOf();
-  const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
-  totalBalance = totalBalance.add(weightedBalance);
+  const weightedBalance = currentBalance * BigInt(balanceTime);
+  totalBalance = totalBalance + weightedBalance;
 
-  const averageBalance = totalBalance.div(milisecondsInMonth);
+  const averageBalance = totalBalance / milisecondsInMonth;
 
   return averageBalance;
 };

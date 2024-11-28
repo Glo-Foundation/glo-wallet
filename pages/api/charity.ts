@@ -2,13 +2,12 @@ import { Charity } from "@prisma/client";
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
-import { Address, Chain } from "wagmi";
 
 import { DEFAULT_CHARITY_PER_CHAIN, isProd } from "@/lib/utils";
 
 import prisma from "../../lib/prisma";
 
-import type { Hex } from "viem/types/misc";
+import type { Address, Chain, Hex } from "viem";
 
 async function getLatestCharityChoiceNumForAddress(
   address: string

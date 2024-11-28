@@ -14,7 +14,8 @@ import {
   baseSepolia,
 } from "@wagmi/core/chains";
 import EthDater from "ethereum-block-by-date";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
+import localFont from "next/font/local";
 
 import {
   defaultChainId,
@@ -175,7 +176,7 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
     }
     case polygon.id:
     default: {
-      return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+      return "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359";
     }
   }
 };
@@ -285,10 +286,8 @@ export const getBalance = async (
   address: string,
   chainId?: number,
   blockTag?: number
-): Promise<BigNumber> => {
-  const provider = new ethers.providers.JsonRpcProvider(
-    getChainRPCUrl(chainId)
-  );
+): Promise<bigint> => {
+  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
   const abi = ["function balanceOf(address account) view returns (uint256)"];
   const usdgloContract = new ethers.Contract(
     getSmartContractAddress(chainId),
@@ -306,7 +305,7 @@ export const getBalance = async (
     }
   } catch (err) {
     console.log(`Could not fetch balance for ${address} at ${chainId}`);
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 };
 
@@ -382,13 +381,56 @@ export const getBlockNumber = async (
   date: Date,
   chainId: number
 ): Promise<number> => {
-  const provider = new ethers.providers.JsonRpcProvider(
-    getChainRPCUrl(chainId)
-  );
+  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
 
-  const dater = new EthDater(provider);
+  // ethereum-block-by-date -> ethers 5.7
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dater = new EthDater(provider as any);
 
   const blockObject = await dater.getDate(date.toString());
 
   return blockObject.block;
 };
+
+export const neueHaasGrotesk = localFont({
+  src: [
+    {
+      path: "./public/fonts/NeueHaasGroteskText65Medium.woff2",
+      weight: "400",
+    },
+    {
+      path: "./public/fonts/NeueHaasGroteskText75Bold.woff2",
+      weight: "600",
+    },
+  ],
+  variable: "--font-neuehaasgrotesk",
+  display: "swap",
+});
+
+export const polySans = localFont({
+  src: [
+    {
+      path: "./public/fonts/PolySans-Neutral.woff2",
+      weight: "400",
+    },
+    {
+      path: "./public/fonts/PolySans-Median.woff2",
+      weight: "600",
+    },
+  ],
+  variable: "--font-polysans",
+  display: "swap",
+});
+
+export const POPUP_PROPS =
+  "toolbar=1,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1,width=900, height=800,top=0";
+
+export const getOnRampUrl = (
+  address: string,
+  buyAmount: number,
+  redirectUrl: string,
+  chain?: Chain
+) =>
+  `https://pay.coinbase.com/buy/select-asset?appId=${
+    process.env.NEXT_PUBLIC_CPD_PROJECT_ID
+  }&addresses={"${address}":["${chain?.name.toLowerCase()}"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;

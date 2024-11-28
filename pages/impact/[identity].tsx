@@ -1,5 +1,4 @@
 import axios from "axios";
-import { BigNumber } from "ethers";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -7,8 +6,8 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { createPublicClient, http } from "viem";
+import { mainnet } from "viem/chains";
 import { getEnsAddress, normalize } from "viem/ens";
-import { mainnet } from "wagmi";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import Navbar from "@/components/Navbar";
@@ -258,7 +257,7 @@ const beautifyDate = (date?: Date) => {
   return ` 🔆 ${month.toString().toLowerCase()} ‘${year}`;
 };
 
-function formatBalance(balance: BigNumber) {
+function formatBalance(balance: bigint) {
   const balanceValue = BigInt(balance.toString()) / BigInt(10 ** 18);
   return customFormatBalance({
     decimals: 18,
@@ -301,14 +300,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     address = identity;
   } else if (identity.startsWith("0x")) {
     address = identity;
-    idrissIdentity = await idriss.reverseResolve(address);
+    const res = await idriss.reverseResolve(address);
+    idrissIdentity = typeof res === "string" ? res : "";
   } else if (identity.includes("@")) {
     idrissIdentity = identity;
-    // TODO: handle exception in resolving
-    const idrissResolvedAddresses = await idriss.resolve(idrissIdentity);
-    if (idrissResolvedAddresses) {
-      address = Object.values(idrissResolvedAddresses)[0];
-    }
+    try {
+      const idrissResolvedAddresses = await idriss.resolve(idrissIdentity);
+      if (idrissResolvedAddresses) {
+        address = Object.values(idrissResolvedAddresses)[0] as string;
+      }
+    } catch (err) {}
   } else if (identity.endsWith(".eth")) {
     const client = createPublicClient({
       chain: mainnet,
@@ -362,20 +363,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ensIdentity,
       balance,
       yearlyYield,
-      polygonBalanceFormatted: formatBalance(
-        polygonBalance || BigNumber.from(0)
-      ),
-      ethereumBalanceFormatted: formatBalance(
-        ethereumBalance || BigNumber.from(0)
-      ),
-      optimismBalanceFormatted: formatBalance(
-        optimismBalance || BigNumber.from(0)
-      ),
-      arbitrumBalanceFormatted: formatBalance(
-        arbitrumBalance || BigNumber.from(0)
-      ),
-      baseBalanceFormatted: formatBalance(baseBalance || BigNumber.from(0)),
-      celoBalanceFormatted: formatBalance(celoBalance || BigNumber.from(0)),
+      polygonBalanceFormatted: formatBalance(polygonBalance || BigInt(0)),
+      ethereumBalanceFormatted: formatBalance(ethereumBalance || BigInt(0)),
+      optimismBalanceFormatted: formatBalance(optimismBalance || BigInt(0)),
+      arbitrumBalanceFormatted: formatBalance(arbitrumBalance || BigInt(0)),
+      baseBalanceFormatted: formatBalance(baseBalance || BigInt(0)),
+      celoBalanceFormatted: formatBalance(celoBalance || BigInt(0)),
       isVe,
       openGraphData: [
         {
