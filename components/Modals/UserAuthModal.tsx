@@ -166,18 +166,8 @@ export default function UserAuthModal({
 
   return (
     <>
-      <section className="flex flex-col items-center">
-        <Image
-          className="border-cyan-600 border-2 bg-white rounded-full mb-[-50px] z-50"
-          src="/jasper.png"
-          alt="glo logo"
-          width={100}
-          height={100}
-        />
-      </section>
-      <section className="sticky pt-8 px-4 py-4 flex flex-col items-center text-center bg-white rounded-t-3xl">
-        <h2 className="">👋 Welcome to the Glo App</h2>
-        <p className="copy text-lg -mt-5 mb-4">Jasper, Glo Foundation CEO</p>
+      <section className="sticky p-2 flex flex-col items-center text-center bg-white rounded-t-3xl">
+        <h2 className="">Sign in to Glo Dollar</h2>
       </section>
       <section className="modal-body px-4 rounded-b-3xl bg-pine-100 after:bg-pine-100">
         <div className="pt-2">
