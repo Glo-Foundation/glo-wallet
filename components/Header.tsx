@@ -86,7 +86,9 @@ export default function Header({
           <button className="primary-button">Connecting... </button>
         ) : isConnected || isSequenceWallet || isVeConnected ? (
           <div className="flex z-10">
-            {!isSequenceWallet && !isCoinbaseWallet && <AddToWallet />}
+            {!isSequenceWallet && !isCoinbaseWallet && !isVeConnected && (
+              <AddToWallet />
+            )}
             {isConnected && <NetworkSwitcher />}
             <Tooltip
               id="copy-wallet-tooltip"

@@ -32,6 +32,22 @@ export default function SwapGate(props: Props) {
     return <SwapModal buyAmount={buyAmount} />;
   }
 
+  if (isVe) {
+    return (
+      <BoxBuyModal buyAmount={buyAmount}>
+        <BuyBox
+          key="verocket"
+          name="Verocket"
+          icon="/verocket.png"
+          fees="0.3"
+          worksFor="🔐 Crypto"
+          delay="⚡ Instant"
+          onClick={() => buyWithVerocket()}
+        />
+      </BoxBuyModal>
+    );
+  }
+
   const isStellar = !address?.startsWith("0x");
   if (isStellar) {
     return (
@@ -44,22 +60,6 @@ export default function SwapGate(props: Props) {
           worksFor="🔐 XLM"
           delay="⚡ Instant"
           onClick={() => buyWithStellarX()}
-        />
-      </BoxBuyModal>
-    );
-  }
-
-  if (isVe) {
-    return (
-      <BoxBuyModal buyAmount={buyAmount}>
-        <BuyBox
-          key="verocket"
-          name="Verocket"
-          icon="/verocket.png"
-          fees="0.3"
-          worksFor="🔐 Crypto"
-          delay="⚡ Instant"
-          onClick={() => buyWithVerocket()}
         />
       </BoxBuyModal>
     );
