@@ -149,9 +149,8 @@ export default function Balance({
             )}
           </div>
         </div>
-        {
-          // TODO: Temporary block
-          /*usdcBalance && usdcBalance.value > 1000000 && */ <a
+        {usdcBalance && usdcBalance.value > 1000000 && (
+          <a
             className="text-pine-700 self-center"
             onClick={() => {
               openModal(
@@ -164,7 +163,7 @@ export default function Balance({
             <span className="black-link">{formattedUSDC} USDC</span>{" "}
             <span className="invisible-link">swappable for Glo Dollar</span>
           </a>
-        }
+        )}
       </div>
 
       <div className="flex flex-col">
@@ -180,9 +179,7 @@ export default function Balance({
           yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldUSFormatted}
           totalBalance={totalBalance}
         />
-        {/* {totalBalance && totalBalance.value > 0 && ( */}
-        {true && (
-          // TODO: Temporary block
+        {totalBalance && totalBalance.value > 0 && (
           <>
             <div className="self-center text-sm text-pine-700/90 mb-1.5 mx-1">
               for
