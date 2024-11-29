@@ -65,5 +65,6 @@ export default function SwapGate(props: Props) {
     );
   }
 
-  return <>Not supported wallet</>;
+  // Default option
+  return <SwapModal buyAmount={buyAmount} />;
 }

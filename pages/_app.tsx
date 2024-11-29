@@ -134,11 +134,6 @@ export default function App({ Component, pageProps }: AppProps) {
         ))}
       </Head>
       <Analytics />
-      <Script
-        type="module"
-        async={true}
-        src="https://scripts.embr.org/checkout/checkout.js"
-      />
       <main
         className={`${polySans.variable} ${neueHaasGrotesk.variable} font-polysans`}
       >

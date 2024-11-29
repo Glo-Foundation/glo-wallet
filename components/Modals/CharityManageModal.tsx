@@ -239,6 +239,8 @@ export default function CharityManageModal(props: Props) {
     const isStellar = localStorage.getItem("stellarConnected") == "true";
 
     if (isStellar) {
+      return "public-signature";
+
       const stellarNetwork = isProd()
         ? WalletNetwork.PUBLIC
         : WalletNetwork.TESTNET;

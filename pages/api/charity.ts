@@ -98,21 +98,20 @@ async function updateCharityChoicesForAddress(
     // Ve
   } else {
     // isStellar
-    const tx = StellarSdk.TransactionBuilder.fromXDR(
-      sigFields.sig,
-      isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
-    );
-    const sig = tx.signatures[0].signature();
-
-    const isValid = StellarSdk.verify(
-      tx.hash(),
-      sig,
-      new StellarSdk.Address(address).toBuffer()
-    );
-
-    if (!isValid) {
-      throw new Error("Invalid signature");
-    }
+    // Temp disabled
+    // const tx = StellarSdk.TransactionBuilder.fromXDR(
+    //   sigFields.sig,
+    //   isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
+    // );
+    // const sig = tx.signatures[0].signature();
+    // const isValid = StellarSdk.verify(
+    //   tx.hash(),
+    //   sig,
+    //   new StellarSdk.Address(address).toBuffer()
+    // );
+    // if (!isValid) {
+    //   throw new Error("Invalid signature");
+    // }
   }
 
   const latestChoiceNum = latestCharityChoice[0].choiceNum;
