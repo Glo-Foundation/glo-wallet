@@ -1,7 +1,7 @@
 import { useAccount } from "wagmi";
 
 import { apiInstance } from "@/lib/utils";
-import { buyWithStellarX, buyWithVerocket } from "@/payments";
+import { buyWithJumper, buyWithStellarX, buyWithVerocket } from "@/payments";
 
 import { BuyBox } from "../BuyBox";
 
@@ -85,7 +85,7 @@ export default function SwapGate(props: Props) {
         fees="0.3"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
-        onClick={() => buyWithVerocket()}
+        onClick={() => buyWithJumper()}
       />
     </BoxBuyModal>
   );
