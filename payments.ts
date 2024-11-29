@@ -1,6 +1,12 @@
 import { Chain } from "@wagmi/core";
+import { polygon } from "viem/chains";
 
-import { getUSDCToUSDGLOSwapDeeplink } from "./utils";
+import { getSmartContractAddress } from "./lib/config";
+import {
+  getUSDCContractAddress,
+  getUSDCToUSDGLOSwapDeeplink,
+  POPUP_PROPS,
+} from "./utils";
 
 export const buyWithTransak = (amount: number, address: string) => {
   const redirectUrl = `${window.location.origin}/purchased`;
@@ -21,3 +27,15 @@ export const buyWithStellarX = () =>
 
 export const buyWithVerocket = () =>
   window.open("https://app.verocket.com/", "_blank");
+
+export const buyWithJumper = (chain: Chain) =>
+  window.open(
+    `https://jumper.exchange/?fromChain=${
+      chain?.id
+    }&fromToken=${getUSDCContractAddress(chain || polygon)}` +
+      `&toChain=${chain?.id}&toToken=${getSmartContractAddress(
+        chain?.id || polygon.id
+      )}`,
+    "_blank",
+    POPUP_PROPS
+  );

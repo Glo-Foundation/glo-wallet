@@ -9,6 +9,7 @@ import { useAccount, useBalance } from "wagmi";
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
+import { buyWithJumper } from "@/payments";
 import { getOnRampUrl, getUSDCContractAddress, POPUP_PROPS } from "@/utils";
 
 import StepCard from "./StepCard";
@@ -67,12 +68,6 @@ export default function SwapModal({ buyAmount }: Props) {
   }, [isCopiedTooltipOpen]);
 
   const back = () => (isSwapForm ? setIsSwapForm(false) : closeModal());
-
-  const jumperUrl =
-    `https://jumper.exchange/?fromChain=${
-      chain?.id
-    }&fromToken=${getUSDCContractAddress(chain || polygon)}` +
-    `&toChain=${chain?.id}&toToken=${getSmartContractAddress(chain?.id)}`;
 
   return (
     <div className="flex flex-col text-pine-900 p-2">
@@ -141,7 +136,7 @@ export default function SwapModal({ buyAmount }: Props) {
               iconPath="/jumper.svg"
               title="Swap USDGLO for USDC"
               content={"Swap with Jumper.exchange"}
-              action={() => window.open(jumperUrl, "_blank", POPUP_PROPS)}
+              action={() => buyWithJumper(chain || polygon)}
               done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
               USDC={usdcBalance?.formatted}
             />
