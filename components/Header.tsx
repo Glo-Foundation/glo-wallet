@@ -84,11 +84,15 @@ export default function Header({
 
         {isPending ? (
           <button className="primary-button">Connecting... </button>
-        ) : isConnected || isSequenceWallet || isVeConnected ? (
+        ) : isConnected ||
+          isSequenceWallet ||
+          isVeConnected ||
+          stellarConnected ? (
           <div className="flex z-10">
-            {!isSequenceWallet && !isCoinbaseWallet && !isVeConnected && (
-              <AddToWallet />
-            )}
+            {!isSequenceWallet &&
+              !isCoinbaseWallet &&
+              !isVeConnected &&
+              !stellarConnected && <AddToWallet />}
             {isConnected && <NetworkSwitcher />}
             <Tooltip
               id="copy-wallet-tooltip"
