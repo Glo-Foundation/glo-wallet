@@ -9,7 +9,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WalletConnectOptions } from "@vechain/dapp-kit";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { createClient, http } from "viem";
 import { createConfig, WagmiProvider } from "wagmi";

@@ -1,7 +1,7 @@
 import { useAccount } from "wagmi";
 
 import { apiInstance } from "@/lib/utils";
-import { buyWithStellarX, buyWithVerocket } from "@/payments";
+import { buyWithJumper, buyWithStellarX, buyWithVerocket } from "@/payments";
 
 import { BuyBox } from "../BuyBox";
 
@@ -48,7 +48,8 @@ export default function SwapGate(props: Props) {
     );
   }
 
-  const isStellar = !address?.startsWith("0x");
+  const isStellar = localStorage.getItem("stellarConnected") == "true";
+
   if (isStellar) {
     return (
       <BoxBuyModal buyAmount={buyAmount}>
@@ -66,5 +67,26 @@ export default function SwapGate(props: Props) {
   }
 
   // Default option
-  return <SwapModal buyAmount={buyAmount} />;
+  return (
+    <BoxBuyModal buyAmount={buyAmount}>
+      <BuyBox
+        key="verocket"
+        name="Verocket"
+        icon="/verocket.png"
+        fees="0.3"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() => buyWithVerocket()}
+      />
+      <BuyBox
+        key="jumper"
+        name="Jumper.exchange"
+        icon="/jumper.svg"
+        fees="0.3"
+        worksFor="🔐 Crypto"
+        delay="⚡ Instant"
+        onClick={() => buyWithJumper()}
+      />
+    </BoxBuyModal>
+  );
 }

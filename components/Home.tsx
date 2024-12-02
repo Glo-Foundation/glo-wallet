@@ -161,7 +161,7 @@ export default function Home() {
     query: {
       gcTime: 2_000,
     },
-    chainId: optimismId,
+    chainId: baseId,
   });
 
   const totalBalance = getTotalGloBalance([

@@ -13,7 +13,7 @@ export default function BoxBuyModal({
 }: {
   buyAmount: number;
 
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
 }) {
   const { address, isConnected } = useAccount();
 
