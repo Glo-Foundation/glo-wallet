@@ -3,5 +3,11 @@
     "pages/api/*.ts": {
       "maxDuration": 280
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
