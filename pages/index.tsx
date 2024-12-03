@@ -29,6 +29,7 @@ import {
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import Header from "@/components/Header";
+import { LinkToInfoPage } from "@/components/Info";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
 import UserAuthModal from "@/components/Modals/UserAuthModal";
 import Recipients from "@/components/Recipients";
@@ -341,6 +342,7 @@ export default function Home() {
               />
             </>
           )}
+          <LinkToInfoPage />
         </div>
       </div>
     </>
