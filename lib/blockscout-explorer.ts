@@ -1,12 +1,11 @@
 import { Operation } from "@stellar/stellar-sdk";
 import { Chain } from "@wagmi/core";
-import { celo, celoAlfajores } from "@wagmi/core/chains";
+import { celo, celoAlfajores, vechain } from "@wagmi/core/chains";
 import axios from "axios";
-import { BigNumber } from "ethers";
 
 import { getChainBlockNumber, getStellarTxs } from "@/lib/balance";
 
-import { getSmartContractAddress } from "./config";
+import { chainConfig, getSmartContractAddress } from "./config";
 import { getMarketCap, getStellarMarketCap, isProd } from "./utils";
 
 const chainId = isProd() ? celo.id : celoAlfajores.id;
@@ -72,6 +71,10 @@ export const fetchGloTransactions = async (
   const startBlock = await getChainBlockNumber(fromDate, chain);
   const endBlock = await getChainBlockNumber(toDate, chain);
 
+  if (chain.name.toLowerCase() === "vechain") {
+    return await getVeTransactions(address, startBlock, endBlock);
+  }
+
   let queryString =
     `?module=account&action=tokentx&address=${address}&contractaddress=${GLO_ADDRESS}&startblock=${startBlock}&endblock=${endBlock}` +
     (page ? `&page=${page}` : "") +
@@ -87,7 +90,81 @@ export const fetchGloTransactions = async (
   const transfers = await instance.get(queryString);
 
   const { status, result } = transfers.data;
+
   return status === "1" ? result : [];
+};
+
+type RawEvent = {
+  _value: string;
+  _to: string;
+  _from: string;
+  _meta: {
+    blockNumber: number;
+    blockTimestamp: number;
+  };
+};
+const getVeTransactions = async (
+  rawAddress: string,
+  startBlock: number,
+  endBlock: number
+) => {
+  const address = rawAddress.slice(2);
+  const base = {
+    address: chainConfig[vechain.id],
+    signature:
+      "Transfer (address indexed _from, address indexed _to, uint256 _value)",
+  };
+  const records: TokenTransfer[] = [];
+  let offset = 0;
+
+  while (true) {
+    try {
+      const res = await axios.post("https://event.api.vechain.energy/main", {
+        events: [
+          {
+            ...base,
+            _from: address,
+          },
+          {
+            ...base,
+            _to: address,
+          },
+        ],
+        unit: "block",
+        from: startBlock,
+        to: endBlock,
+        limit: 500,
+        offset,
+        order: "desc",
+      });
+
+      records.push(
+        ...res.data
+          .filter((x: RawEvent) => x._value != "0")
+          .map(
+            (x: RawEvent) =>
+              ({
+                value: x._value,
+                to: x._to,
+                from: x._from,
+                blockNumber: x._meta.blockNumber.toString(),
+                timeStamp: x._meta.blockTimestamp.toString(),
+              } as TokenTransfer)
+          )
+      );
+
+      if (res.data.length < 500) {
+        break;
+      }
+
+      offset += 500;
+    } catch (err) {
+      console.log({ err });
+      return [];
+    }
+  }
+
+  return records;
 };
 
 type Operations = {
@@ -144,7 +221,7 @@ export const getAvgMarketCap = async (
 
     const currentMarketCap = await getMarketCap(chain.id);
     const endOfMonthMarketCap = endToLatestOps.reduce(
-      (acc, cur) => (cur.isMint ? acc.sub(cur.value) : acc.add(cur.value)),
+      (acc, cur) => (cur.isMint ? acc - cur.value : acc + cur.value),
       currentMarketCap
     );
     const avgBalance = await getAverage(
@@ -157,7 +234,7 @@ export const getAvgMarketCap = async (
     return avgBalance;
   } catch (err) {
     console.log({ err });
-    return BigNumber.from(0);
+    return BigInt(0);
   }
 };
 
@@ -187,8 +264,8 @@ export const getAvgStellarMarketCap = async (
   const currentMarketCap = await getStellarMarketCap();
 
   const endOfMonthMarketCap = endToLatestOps.reduce(
-    (acc, cur) => (cur.isMint ? acc.sub(cur.value) : acc.add(cur.value)),
-    BigNumber.from(currentMarketCap).mul(BigInt(10 ** 7))
+    (acc, cur) => (cur.isMint ? acc - cur.value : acc + cur.value),
+    BigInt(currentMarketCap) * BigInt(10 ** 7)
   );
 
   const avgBalance = await getAverage(
@@ -204,33 +281,31 @@ export const getAvgStellarMarketCap = async (
 const getAverage = async (
   startDate: Date,
   endDate: Date,
-  endBalance: BigNumber,
+  endBalance: bigint,
   operations: Operations[]
-): Promise<BigNumber> => {
+): Promise<bigint> => {
   const milisecondsInMonthString = endDate.valueOf() - startDate.valueOf();
-  const milisecondsInMonth = BigNumber.from(
-    milisecondsInMonthString.toString()
-  );
-  let totalBalance = BigNumber.from("0");
+  const milisecondsInMonth = BigInt(milisecondsInMonthString.toString());
+  let totalBalance = BigInt("0");
   let currentDate = endDate;
   let currentBalance = endBalance;
 
   operations.forEach((op) => {
-    const balanceTime = BigNumber.from(
+    const balanceTime = BigInt(
       (currentDate.valueOf() - op.ts.valueOf()).toString()
     );
-    const weightedBalance = currentBalance.mul(balanceTime);
-    totalBalance = totalBalance.add(weightedBalance);
+    const weightedBalance = currentBalance * balanceTime;
+    totalBalance = totalBalance + weightedBalance;
     currentDate = op.ts;
     currentBalance = op.isMint
-      ? currentBalance.sub(op.value)
-      : currentBalance.add(op.value);
+      ? currentBalance - op.value
+      : currentBalance + op.value;
   });
   const balanceTime = currentDate.valueOf() - startDate.valueOf();
-  const weightedBalance = currentBalance.mul(BigNumber.from(balanceTime));
-  totalBalance = totalBalance.add(weightedBalance);
+  const weightedBalance = currentBalance * BigInt(balanceTime);
+  totalBalance = totalBalance + weightedBalance;
 
-  const averageBalance = totalBalance.div(milisecondsInMonth);
+  const averageBalance = totalBalance / milisecondsInMonth;
 
   return averageBalance;
 };

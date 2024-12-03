@@ -1,38 +1,37 @@
-import { polygon } from "@wagmi/core/chains";
-import { BigNumber, utils } from "ethers";
+import { optimism } from "@wagmi/core/chains";
+import { parseUnits } from "ethers";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { useAccount, useBalance, useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useBalance, useSwitchChain } from "wagmi";
 
-import PaymentOptionModal from "@/components/Modals/PaymentOptionModal";
 import StepCard from "@/components/Modals/StepCard";
 import { chainConfig } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { getUSDCContractAddress } from "@/utils";
+import { getOnRampUrl, getUSDCContractAddress, POPUP_PROPS } from "@/utils";
 
 interface Props {
   buyAmount: number;
 }
 
 export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
-  const { address } = useAccount();
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { address, chain } = useAccount();
+  const { closeModal } = useContext(ModalContext);
 
-  const { chain } = useNetwork();
   const { data: balance } = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
-    watch: true,
-    cacheTime: 2_000,
+    query: {
+      gcTime: 2_000,
+    },
   });
-  const { switchNetwork } = useSwitchNetwork();
+  const { switchChain } = useSwitchChain();
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isCoinbaseStepDone, setIsCoinbaseStepDone] = useState(false);
   const [USDC, setUSDC] = useState("");
 
-  const userIsOnPolygon = chain?.id === polygon.id;
+  const userIsOnOptimism = chain?.id === optimism.id;
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -43,18 +42,16 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
   useEffect(() => {
     if (balance) {
       const formatted = Number(balance?.formatted);
-      const val = BigNumber.from(balance?.value);
-      const currBuyAmt = utils
-        .parseUnits(buyAmount.toString(), 6)
-        .mul(99)
-        .div(100);
+      const val = BigInt(balance?.value);
+      const currBuyAmt =
+        (parseUnits(buyAmount.toString(), 6) * BigInt(99)) / BigInt(100);
 
       const usdc = Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
       }).format(formatted || 0);
       setUSDC(usdc);
-      if (val.gte(currBuyAmt)) setIsCoinbaseStepDone(true);
+      if (val >= currBuyAmt) setIsCoinbaseStepDone(true);
     }
   }, [balance]);
 
@@ -67,9 +64,7 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
           height={25}
           alt="arrow-right"
           className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
-          onClick={() =>
-            openModal(<PaymentOptionModal buyAmount={buyAmount} />)
-          }
+          onClick={() => closeModal()}
         />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         <button
@@ -99,13 +94,13 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
       <section>
         <StepCard
           index={1}
-          iconPath="/polygon.svg"
-          title={"Switch to the Polygon network"}
+          iconPath="/optimism-logo.svg"
+          title={"Switch to Optimism network"}
           content="Please confirm the switch in your wallet"
           action={() => {
-            switchNetwork!(polygon.id);
+            switchChain!({ chainId: optimism.id });
           }}
-          done={userIsOnPolygon}
+          done={userIsOnOptimism}
         />
         <StepCard
           index={2}
@@ -113,7 +108,16 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
           title={`Buy ${buyAmount} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
           action={() => {
-            window.open("https://www.coinbase.com/how-to-buy/usdc", "_blank");
+            window.open(
+              getOnRampUrl(
+                address!,
+                buyAmount,
+                `${window.location.origin}/purchased`,
+                chain
+              ),
+              "_blank",
+              POPUP_PROPS
+            );
           }}
           done={isCoinbaseStepDone}
           USDC={USDC}
@@ -134,19 +138,6 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
             }
           }}
         />
-      </section>
-      <section className="flex flex-col justify-center m-3">
-        <button
-          className="secondary-button mt-3"
-          onClick={() =>
-            window.open(
-              "https://serious-jaborosa-7f8.notion.site/Guide-Purchasing-Glo-Dollar-by-swapping-USDC-for-Glo-Dollar-USDGLO-in-a-Sequence-wallet-54f9e0cd1e6d4b52a6cd6c5da697e917",
-              "_blank"
-            )
-          }
-        >
-          Step by step guide
-        </button>
       </section>
     </div>
   );

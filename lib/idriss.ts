@@ -1,4 +1,4 @@
-import { IdrissCrypto } from "idriss-crypto";
+import { IdrissCrypto } from "idriss-crypto/browser";
 
 export const idriss = new IdrissCrypto(process.env.NEXT_PUBLIC_POLYGON_RPC_URL);
 

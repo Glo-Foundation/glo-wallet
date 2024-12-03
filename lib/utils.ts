@@ -1,5 +1,8 @@
 import { Charity } from "@prisma/client";
-import { Chain } from "@wagmi/core";
+// import { Chain } from "@wagmi/core";
+import axios, { AxiosInstance } from "axios";
+import { ethers } from "ethers";
+import { Chain } from "viem/chains";
 import {
   mainnet,
   polygon,
@@ -11,9 +14,8 @@ import {
   arbitrumSepolia,
   base,
   baseSepolia,
-} from "@wagmi/core/chains";
-import axios, { AxiosInstance } from "axios";
-import { BigNumber, ethers } from "ethers";
+  vechain,
+} from "wagmi/chains";
 
 import UsdgloContract from "@/abi/usdglo.json";
 
@@ -25,7 +27,13 @@ export const sliceAddress = (address: string, amt = 3) =>
 export const lastSliceAddress = (address: string | string[], amt = 4) =>
   `${address?.slice(amt * -1)}`;
 
-export let apiInstance: AxiosInstance;
+export let apiInstance: AxiosInstance = axios.create({
+  baseURL: "/api/",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 let apiInstanceWallet = "";
 
 export const initApi = async (
@@ -54,9 +62,9 @@ export const isProd = () => process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
 export const isE2E = () => process.env.E2E === "true";
 
-export const getChains = (): Chain[] => {
+export const getChains = (): [Chain, ...Chain[]] => {
   if (isE2E()) {
-    return [polygon] as Chain[];
+    return [polygon];
   }
   return getAllowedChains();
 };
@@ -67,10 +75,8 @@ export const DEFAULT_CTAS: CTA[] = ["TWEEET_IMPACT", "JOIN_CONSORTIUM"].map(
   (cta) => ({ type: cta } as CTA)
 );
 
-export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
-  const provider = new ethers.providers.JsonRpcProvider(
-    getChainRPCUrl(chainId)
-  );
+export const getMarketCap = async (chainId?: number): Promise<bigint> => {
+  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
 
   const usdgloContract = new ethers.Contract(
     getSmartContractAddress(chainId),
@@ -80,7 +86,7 @@ export const getMarketCap = async (chainId?: number): Promise<BigNumber> => {
   return await usdgloContract.totalSupply();
 };
 
-export const getAllowedChains = (): Chain[] => {
+export const getAllowedChains = (): [Chain, ...Chain[]] => {
   return isProd()
     ? [optimism, polygon, mainnet, celo, arbitrum, base]
     : [optimismSepolia, arbitrumSepolia, celoAlfajores, baseSepolia];
@@ -115,7 +121,7 @@ export const getStellarMarketCap = async (): Promise<number> => {
 // USDT: 825
 // USDGLO: 23888
 
-export const getCMCMarketCap = async (): Promise<BigNumber> => {
+export const getCMCMarketCap = async (): Promise<bigint> => {
   const apiUrl =
     "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest";
   const res = await axios.get(apiUrl, {
@@ -131,7 +137,6 @@ export const formatBalance = (balance: {
   value: number;
 }) => {
   const formatted = Number(balance.formatted);
-  const val = BigNumber.from(balance.value);
 
   return Intl.NumberFormat("en-US", {
     style: "currency",
@@ -223,6 +228,8 @@ export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
     [optimism.id]: Charity.RETRO_PG_OP,
     [celo.id]: Charity.CELO_PG,
     "0": Charity.REFUGEE_CRISIS, // Stellar
+    // TODO:
+    [vechain.id]: Charity.CLIMATE, // Ve
   };
   return DEFAULTS[chainId] || Charity.OPEN_SOURCE;
 };
@@ -236,13 +243,12 @@ export const backendUrl = process.env.VERCEL_URL
   : "http://localhost:3000";
 
 export const getChainsObjects = () => {
-  const chains = getChains();
+  const chains = [...getChains(), vechain];
   const chainsObject: Record<string, Chain> = chains.reduce(
     (a, v) => ({
       ...a,
-      [["Ethereum", "Polygon"].includes(v.name)
-        ? v.name.toLowerCase()
-        : v.network]: v,
+      [["Ethereum", "Polygon"].includes(v.name) ? v.name.toLowerCase() : v.id]:
+        v, // TODO: ????????????
     }),
     {}
   );

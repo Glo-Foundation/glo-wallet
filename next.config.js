@@ -20,6 +20,10 @@ const nextConfig = {
         source: "/sign-in",
         destination: "/",
       },
+      {
+        source: "/impact/ve/:id",
+        destination: "/impact/:id",
+      },
     ];
   },
   async headers() {

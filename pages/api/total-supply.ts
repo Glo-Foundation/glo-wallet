@@ -6,7 +6,7 @@ import {
   base,
   arbitrum,
 } from "@wagmi/core/chains";
-import { BigNumber, utils } from "ethers";
+import { formatEther } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import * as cache from "@/lib/cache";
@@ -34,14 +34,9 @@ export default async function handler(
 
   const stellarMarketCap = await getStellarMarketCap();
 
-  const totalEVMMarketCap = result.reduce(
-    (acc, cur) => acc.add(cur),
-    BigNumber.from(0)
-  );
+  const totalEVMMarketCap = result.reduce((acc, cur) => acc + cur, BigInt(0));
 
-  const EVMMarketCap = parseInt(
-    utils.formatEther(totalEVMMarketCap).split(".")[0]
-  );
+  const EVMMarketCap = parseInt(formatEther(totalEVMMarketCap).split(".")[0]);
 
   const value = (EVMMarketCap + stellarMarketCap).toString();
 

@@ -1,6 +1,5 @@
 import { BalanceCharity, Charity, CharityChoice } from "@prisma/client";
 import axios from "axios";
-import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Chain } from "viem";
 
@@ -188,8 +187,8 @@ const flattenRecords = (records: BalanceCharity[]) => {
     {} as { [key: string]: number }
   );
   const allocated = Object.keys(getChainsObjects()).reduce(
-    (acc, cur) => ({ ...acc, [cur]: BigNumber.from(0) }),
-    { stellar: BigNumber.from(0) } as { [key: string]: BigNumber }
+    (acc, cur) => ({ ...acc, [cur]: BigInt(0) }),
+    { stellar: BigInt(0) } as { [key: string]: bigint }
   );
   for (const r of records) {
     const balances = r.balancesData as {
@@ -202,7 +201,7 @@ const flattenRecords = (records: BalanceCharity[]) => {
       choices[choice] += value;
     }
     for (const [chain, value] of Object.entries(balances)) {
-      allocated[chain] = allocated[chain].add(BigNumber.from(value));
+      allocated[chain] = allocated[chain] + BigInt(value);
     }
   }
 
@@ -211,7 +210,7 @@ const flattenRecords = (records: BalanceCharity[]) => {
 
 const calculateBalances = async (
   allocated: {
-    [key: string]: BigNumber;
+    [key: string]: bigint;
   },
   choices: {
     [key: string]: number;
@@ -238,15 +237,14 @@ const calculateBalances = async (
     const marketCap = await (id > 0
       ? getAvgMarketCap(chain!, name, startDate, endDate)
       : getAvgStellarMarketCap(startDate, endDate).then(
-          (x) => BigNumber.from(x).mul(BigInt(10 ** 11))
+          (x) => BigInt(x) * BigInt(10 ** 11)
           // To flatten with Eth balances - 7 + 11 => 18
         ));
     const charity = DEFAULT_CHARITY_PER_CHAIN(id.toString());
 
-    choices[charity] += marketCap
-      .sub(allocated[name])
-      .div(BigInt(10 ** 18))
-      .toNumber();
+    choices[charity] += Number(
+      (marketCap - allocated[name]) / BigInt(10 ** 18)
+    );
   }
   return choices;
 };

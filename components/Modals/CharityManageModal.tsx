@@ -1,3 +1,9 @@
+// import {
+//   allowAllModules,
+//   StellarWalletsKit,
+//   WalletNetwork,
+//   XBULL_ID,
+// } from "@creit.tech/stellar-wallets-kit";
 import {
   allowAllModules,
   StellarWalletsKit,
@@ -12,13 +18,14 @@ import {
   Operation,
   TransactionBuilder,
 } from "@stellar/stellar-sdk";
+import { useWallet } from "@vechain/dapp-kit-react";
 import { getWalletClient, SignMessageResult, Chain } from "@wagmi/core";
 import Image from "next/image";
 import Slider from "rc-slider";
 import { useContext, useEffect, useState } from "react";
 import useSWR from "swr";
-import { Hex } from "viem/types/misc";
-import { useNetwork } from "wagmi";
+import { Hex } from "viem";
+import { useAccount, useWalletClient } from "wagmi";
 
 import { getCurrentSelectedCharity } from "@/fetchers";
 import { ModalContext } from "@/lib/context";
@@ -118,12 +125,17 @@ const CharitySlider = ({
 
 export default function CharityManageModal(props: Props) {
   const { closeModal } = useContext(ModalContext);
-  const { chain } = useNetwork();
+  const { data: walletClient } = useWalletClient();
+
+  const { chain } = useAccount();
+  const { account: veAddress } = useWallet();
+  const isVe = !!veAddress;
+
   const [percentMap, setPercentMap] = useState({ ...props.percentMap });
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const [lastTouchedKey, setLastTouchedKey] = useState<string | null>(null);
   const [isAutoDistributed, setIsAutoDistributed] = useState(false);
-  
+
   useEffect(() => {
     if (props.isAddNewMode) {
       const count = Object.keys(props.percentMap).length;
@@ -159,9 +171,9 @@ export default function CharityManageModal(props: Props) {
     const totalTouchedPercentage = allKeys
       .filter((key) => key !== lastTouchedKey) // Exclude the last touched key
       .reduce((acc, key) => acc + percentMap[key], 0);
-  
+
     const remainingPercentage = 100 - (percentMap[lastTouchedKey!] || 0); // Remaining percentage excluding the last touched
-  
+
     if (allKeys.length === 1) {
       // If there's only one recipient, set its percentage to 100%
       percentMap[allKeys[0]] = 100;
@@ -173,10 +185,13 @@ export default function CharityManageModal(props: Props) {
           percentMap[key] = Math.floor(percentMap[key] * scalingFactor);
         }
       });
-  
-      const scaledTotal = Object.values(percentMap).reduce((acc, cur) => acc + cur, 0);
+
+      const scaledTotal = Object.values(percentMap).reduce(
+        (acc, cur) => acc + cur,
+        0
+      );
       const leftover = 100 - scaledTotal;
-  
+
       if (leftover > 0 && lastTouchedKey) {
         percentMap[lastTouchedKey] += leftover;
       }
@@ -184,50 +199,48 @@ export default function CharityManageModal(props: Props) {
       // Distribute the remaining percentage equally among untouched recipients
       const untouchedKeys = allKeys.filter((key) => key !== lastTouchedKey);
       const untouchedCount = untouchedKeys.length;
-  
-      const equalDistribution = Math.floor(remainingPercentage / untouchedCount);
+
+      const equalDistribution = Math.floor(
+        remainingPercentage / untouchedCount
+      );
       const distributedTotal = equalDistribution * untouchedCount;
-  
+
       untouchedKeys.forEach((key) => {
         percentMap[key] = equalDistribution;
       });
-  
+
       const leftover = remainingPercentage - distributedTotal;
       if (leftover > 0 && lastTouchedKey) {
         percentMap[lastTouchedKey] += leftover;
       }
     }
-  
+
     setPercentMap({ ...percentMap });
     setIsAutoDistributed(true);
   };
-  
+
   const validateAndSave = () => {
-    if (sumPercentages!== 100) {
+    if (sumPercentages !== 100) {
       autoDistribute();
       setShowToast({
         showToast: true,
         message: `Auto-distributed. Please press confirm to proceed.`,
       });
-    
-    } 
-     else {
+    } else {
       // Proceed with signing if total is already 100%
       updateSelectedCharity(percentMap, chain as Chain);
       onClose();
     }
   };
 
-  
-
   const signCharityUpdateMessage = async (
     message: string
   ): Promise<SignMessageResult | string | undefined> => {
-    const walletClient = await getWalletClient();
-
-    const isStellar = !walletClient;
+    const isStellar = localStorage.getItem("stellarConnected") == "true";
 
     if (isStellar) {
+      return "public-signature";
+
       const stellarNetwork = isProd()
         ? WalletNetwork.PUBLIC
         : WalletNetwork.TESTNET;
@@ -240,29 +253,30 @@ export default function CharityManageModal(props: Props) {
         modules: allowAllModules(),
       });
 
-      const publicKey = await kit.getPublicKey();
+      // const { address } = await kit.getAddress();
 
-      const tx = new TransactionBuilder(new Account(publicKey, "0"), {
-        fee: "1",
-        networkPassphrase: isProd() ? Networks.PUBLIC : Networks.TESTNET,
-      })
-        .addOperation(
-          Operation.payment({
-            destination: publicKey,
-            amount: "1",
-            asset: Asset.native(),
-          })
-        )
-        .setTimeout(30)
-        .build();
+      //   const tx = new TransactionBuilder(new Account(address, "0"), {
+      //     fee: "1",
+      //     networkPassphrase: isProd() ? Networks.PUBLIC : Networks.TESTNET,
+      //   })
+      //     .addOperation(
+      //       Operation.payment({
+      //         destination: address,
+      //         amount: "1",
+      //         asset: Asset.native(),
+      //       })
+      //     )
+      //     .setTimeout(30)
+      //     .build();
 
-      const { result: sig } = await kit.signTx({
-        xdr: tx.toXDR(),
-        publicKeys: [publicKey],
-        network: stellarNetwork,
-      });
+      //   // TODO: cry
+      //   // const { result: sig } = await kit.signTx({
+      //   //   xdr: tx.toXDR(),
+      //   //   publicKeys: [address],
+      //   //   network: stellarNetwork,
+      //   // });
 
-      return sig;
+      //   // return sig;
     }
 
     const sig = await walletClient?.signMessage({
@@ -291,7 +305,9 @@ export default function CharityManageModal(props: Props) {
     };
 
     const signingBodyString = JSON.stringify(signingBody);
-    const signature = await signCharityUpdateMessage(signingBodyString);
+    const signature = isVe
+      ? "ve"
+      : await signCharityUpdateMessage(signingBodyString);
 
     const apiBody: UpdateCharityChoiceBody = {
       sigFields: {
@@ -369,7 +385,7 @@ export default function CharityManageModal(props: Props) {
       <button
         className={"primary-button m-2"}
         onClick={() => {
-          validateAndSave()
+          validateAndSave();
         }}
       >
         {isAutoDistributed ? "Confirm" : "Save"}
