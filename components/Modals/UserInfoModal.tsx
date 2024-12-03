@@ -1,9 +1,10 @@
+import { useWallet } from "@vechain/dapp-kit-react";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useEffect, useContext } from "react";
 import { Tooltip } from "react-tooltip";
-import { useDisconnect, useNetwork } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { useUserStore } from "@/lib/store";
@@ -13,7 +14,8 @@ type Props = {
   address?: string;
   idrissName?: string;
   ensName?: string;
-  stellarConnected: boolean;
+  isStellarConnected: boolean;
+  isVeConnected: boolean;
   setStellarConnected: (bool: boolean) => void;
   setStellarAddress: (str: string) => void;
 };
@@ -22,15 +24,17 @@ export default function UserInfoModal({
   address,
   idrissName,
   ensName,
-  stellarConnected,
+  isStellarConnected,
+  isVeConnected,
   setStellarConnected,
   setStellarAddress,
 }: Props) {
   const { disconnect } = useDisconnect();
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs, setRecipientsView } = useUserStore();
+  const { disconnect: veDisconnect } = useWallet();
 
   const email = Cookies.get("glo-email");
 
@@ -41,8 +45,11 @@ export default function UserInfoModal({
   }, [isCopiedTooltipOpen]);
 
   const handleLogout = () => {
-    if (stellarConnected) {
+    if (isStellarConnected) {
       disconnectStellar();
+    }
+    if (isVeConnected) {
+      veDisconnect();
     } else {
       disconnect();
     }
@@ -78,8 +85,9 @@ export default function UserInfoModal({
           <h5>Network:</h5>
           <div className="copy pseudo-input-text text-sm">
             <span data-testid="profile-network">
-              {stellarConnected && <div>Stellar</div>}
-              {!stellarConnected && (
+              {isStellarConnected && <div>Stellar</div>}
+              {isVeConnected && <div>VeChain</div>}
+              {!isStellarConnected && !isVeConnected && (
                 <div>
                   {chain?.name} ({chain?.id})
                 </div>

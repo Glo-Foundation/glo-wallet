@@ -1,4 +1,3 @@
-import "react-tooltip/dist/react-tooltip.css";
 import { Charity, CharityChoice } from "@prisma/client";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";

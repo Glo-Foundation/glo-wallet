@@ -9,8 +9,7 @@ import { customFormatBalance } from "@/utils";
 import CharitySelector from "./CharitySelector";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
-import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
-import PaymentOptionModal from "./Modals/PaymentOptionModal";
+import SwapGate from "./Modals/SwapGate";
 
 type Props = {
   polygonBalance: FetchBalanceResult | undefined;
@@ -22,7 +21,9 @@ type Props = {
   usdcBalance: FetchBalanceResult | undefined;
   stellarBalance: FetchBalanceResult | undefined;
   baseBalance: FetchBalanceResult | undefined;
+  veBalance: FetchBalanceResult | undefined;
   stellarConnected: boolean;
+  veConnected: boolean;
 };
 
 export default function Balance({
@@ -33,9 +34,9 @@ export default function Balance({
   arbitrumBalance,
   totalBalance,
   usdcBalance,
-  stellarBalance,
   baseBalance,
   stellarConnected,
+  veConnected,
 }: Props) {
   const { openModal } = useContext(ModalContext);
 
@@ -49,9 +50,9 @@ export default function Balance({
   const totalBalanceFormatted = customFormatBalance(totalBalance);
   const usdcBalanceFormatted = customFormatBalance(usdcBalance);
   const baseBalanceformatted = customFormatBalance(baseBalance);
-  const stellarBalanceformatted = customFormatBalance(stellarBalance);
   const { connector } = useAccount();
   const isSequenceWallet = connector?.id === "sequence";
+  const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
 
   const formattedUSDC = Intl.NumberFormat("en-US", {
     style: "currency",
@@ -100,10 +101,10 @@ export default function Balance({
         </div>
         <div
           className={`flex flex-row font-semibold justify-center ${
-            stellarConnected ? "" : "cursor-pointer"
+            veConnected || stellarConnected ? "" : "cursor-pointer"
           }`}
           onClick={() => {
-            stellarConnected
+            veConnected || stellarConnected
               ? null
               : setShowBalanceDropdown(!showBalanceDropdown);
           }}
@@ -153,20 +154,9 @@ export default function Balance({
             className="text-pine-700 self-center"
             onClick={() => {
               openModal(
-                isSequenceWallet ? (
-                  <BuyWithCoinbaseSequenceModal
-                    buyAmount={Number(
-                      usdcBalanceFormatted.fmtBalanceDollarPart
-                    )}
-                  />
-                ) : (
-                  <PaymentOptionModal
-                    buyAmount={Number(
-                      usdcBalanceFormatted.fmtBalanceDollarPart
-                    )}
-                    stellarConnected={stellarConnected}
-                  />
-                )
+                <SwapGate
+                  buyAmount={Number(usdcBalanceFormatted.fmtBalanceDollarPart)}
+                />
               );
             }}
           >

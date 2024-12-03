@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { getBalances } from "@/lib/balance";

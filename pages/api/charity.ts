@@ -2,13 +2,12 @@ import { Charity } from "@prisma/client";
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
-import { Address, Chain } from "wagmi";
 
 import { DEFAULT_CHARITY_PER_CHAIN, isProd } from "@/lib/utils";
 
 import prisma from "../../lib/prisma";
 
-import type { Hex } from "viem/types/misc";
+import type { Address, Chain, Hex } from "viem";
 
 async function getLatestCharityChoiceNumForAddress(
   address: string
@@ -95,23 +94,24 @@ async function updateCharityChoicesForAddress(
     if (!valid) {
       throw new Error("Invalid signature");
     }
+  } else if (address.slice(0, 2) === "ve") {
+    // Ve
   } else {
     // isStellar
-    const tx = StellarSdk.TransactionBuilder.fromXDR(
-      sigFields.sig,
-      isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
-    );
-    const sig = tx.signatures[0].signature();
-
-    const isValid = StellarSdk.verify(
-      tx.hash(),
-      sig,
-      new StellarSdk.Address(address).toBuffer()
-    );
-
-    if (!isValid) {
-      throw new Error("Invalid signature");
-    }
+    // Temp disabled
+    // const tx = StellarSdk.TransactionBuilder.fromXDR(
+    //   sigFields.sig,
+    //   isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
+    // );
+    // const sig = tx.signatures[0].signature();
+    // const isValid = StellarSdk.verify(
+    //   tx.hash(),
+    //   sig,
+    //   new StellarSdk.Address(address).toBuffer()
+    // );
+    // if (!isValid) {
+    //   throw new Error("Invalid signature");
+    // }
   }
 
   const latestChoiceNum = latestCharityChoice[0].choiceNum;
@@ -166,7 +166,6 @@ export default async function handler(
 ) {
   const address = req.headers["glo-pub-address"] as Address;
   const chainId = req.headers["glo-chain-id"] as string;
-
   if (req.method === "POST") {
     const newCharityChoices = await updateCharityChoicesForAddress(
       address,

@@ -1,5 +1,3 @@
-import { mainnet, polygon, celo } from "@wagmi/core/chains";
-import { BigNumber, utils } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import * as cache from "@/lib/cache";
