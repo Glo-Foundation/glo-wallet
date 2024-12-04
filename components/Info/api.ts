@@ -1,6 +1,7 @@
 const getDollarHolders = "https://app.glodollar.org/api/total-holders"; // number
 const totalTransactions = "https://app.glodollar.org/api/total-transactions"; // number
 const totalSupply = "https://app.glodollar.org/api/total-supply"; // number
+const causeDelegatedTo = "https://app.glodollar.org/api/funding/current";
 
 // Todo
 //* Total Glo Dollar transactions - total transactions
