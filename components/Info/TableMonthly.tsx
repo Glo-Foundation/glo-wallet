@@ -5,6 +5,8 @@ import { backendUrl } from "@/lib/utils";
 
 import { Table, TRow, splitAndAddEllipses } from "./Table";
 
+type KeysType = "date" | "amount" | "blockchain" | "tx_from";
+
 const formatLeaderboard = (payload: any) => {
   const rows: string[][] = [];
   const typedArr = payload as {
@@ -28,8 +30,9 @@ const formatLeaderboard = (payload: any) => {
   for (const row of result) {
     const dataCells = [];
     for (const key in row) {
+      const typedKey = key as KeysType;
       if (Object.prototype.hasOwnProperty.call(row, key)) {
-        const element = row[key].toString();
+        const element = row[typedKey].toString();
         dataCells.push(splitAndAddEllipses(element));
       }
     }
