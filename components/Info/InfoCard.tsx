@@ -11,7 +11,6 @@ export function InfoCard(props: { data: ICard }) {
 
   const fetcher = (url: string) =>
     axios.get(`https://app.glodollar.org${url}`).then((res) => res.data);
-
   // axios.get(`${backendUrl}${url}`).then((res) => res.data);
 
   const { data: result, isLoading } = useSWR(data.url, fetcher);
