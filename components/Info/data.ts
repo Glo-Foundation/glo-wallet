@@ -14,7 +14,7 @@ const formatNumber = (payload: string) => {
     })
     .toString();
 };
-export const firstCount: ICard[] = [
+export const infoCards: ICard[] = [
   {
     title: "Glo Dollars in circulation today",
     image: "/info/world.png",

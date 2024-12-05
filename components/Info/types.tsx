@@ -1,4 +1,6 @@
-type IName =
+import { ReactNode } from "react";
+
+type ICardName =
   | "TOTAL_TRANSACTIONS"
   | "DOLLAR_HOLDERS"
   | "TOTAL_SUPPLY"
@@ -8,8 +10,15 @@ type IName =
 export type ICard = {
   title: string;
   image: string;
-  name: IName;
+  name: ICardName;
   url: string;
   count?: string;
   formatResult?: (payload: string) => string;
+};
+
+export type ITable = {
+  title: string;
+  headers: string[];
+  rowData?: string[][];
+  children: ReactNode;
 };

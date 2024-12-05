@@ -10,10 +10,16 @@ export function InfoCard(props: { data: ICard }) {
   const { data } = props;
 
   const fetcher = (url: string) =>
-    axios.get(`https://app.glodollar.org${url}`).then((res) => res.data);
-  // axios.get(`${backendUrl}${url}`).then((res) => res.data);
+    axios.get(`${backendUrl}${url}`).then((res) => {
+      if (data.formatResult) {
+        return data.formatResult(res.data);
+      }
 
-  const { data: result, isLoading } = useSWR(data.url, fetcher);
+      return res.data;
+    });
+  // axios.get(`https://app.glodollar.org${url}`).then((res) => res.data);
+
+  const { data: result, isLoading, error } = useSWR(data.url, fetcher);
 
   return (
     <div
@@ -35,11 +41,7 @@ export function InfoCard(props: { data: ICard }) {
         <h2 className="my-0 pb-2 pt-3">{data.count}</h2>
       ) : (
         <h2 className="my-0 pb-2 pt-3">
-          {isLoading
-            ? "..."
-            : data.formatResult
-            ? data.formatResult(result)
-            : result}
+          {isLoading || error ? "..." : result}
         </h2>
       )}
 
