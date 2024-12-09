@@ -105,6 +105,10 @@ npx prisma migrate deploy
 npm run dev
 ```
 
+### 7\. Access the UI
+
+Open your web browser and navigate to `http://localhost:3000` to access the Glo Wallet UI.
+
 ## Environment Variables
 
 Environment variables are stored in [Vercel](https://vercel.com/glodollar/glo-wallet/settings/environment-variables). The easiest way to retrieve them is to use the [Vercel CLI](https://vercel.com/docs/cli) and run `vercel env pull`. Make sure you link your repo first with `vercel link`.
