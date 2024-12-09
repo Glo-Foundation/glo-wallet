@@ -1,65 +1,27 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getBalances } from "@/lib/balance";
-import { DEFAULT_CHARITY_PER_CHAIN, getChainsObjects } from "@/lib/utils";
-import prisma from "lib/prisma";
+import prisma from "@/lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const allFundingChoices = await prisma.charityChoice.findMany({
-    distinct: ["address"],
-    orderBy: {
-      choiceNum: "desc",
-    },
-  });
-
-  const possibleFundingChoicesData = await prisma.charityChoice.findMany({
-    where: {
-      name: { not: "OPEN_SOURCE" },
-    },
-    distinct: ["name"],
-    select: {
-      name: true,
-    },
-  });
-
-  const possibleFundingChoices: { [key: string]: number } = {};
-
-  possibleFundingChoicesData.forEach((fundingChoice) => {
-    possibleFundingChoices[fundingChoice.name] = 0;
-  });
-
-  let fundingChoicesSummed = 0;
-
-  for (const fundingChoice of allFundingChoices) {
-    if (fundingChoice.name !== "OPEN_SOURCE") {
-      const { totalBalance: balance } = await getBalances(
-        fundingChoice.address
-      );
-      possibleFundingChoices[fundingChoice.name] += balance;
-    }
-    fundingChoicesSummed++;
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method not allowed" });
   }
+  try {
+    // Fetch the most recent cached funding choices
+    const latestChoices = await prisma.fundingChoicesCache.findFirst({
+      orderBy: { createdAt: "desc" },
+    });
 
-  //default funding choices per chain
-  const chainObjects = Object.entries(getChainsObjects()).map(
-    ([key, chain]) => ({
-      name: key,
-      chain,
-    })
-  );
-
-  for (const { name } of chainObjects) {
-    const defaultCharity = DEFAULT_CHARITY_PER_CHAIN(name);
-    if (
-      defaultCharity &&
-      possibleFundingChoices[defaultCharity] !== undefined
-    ) {
-      possibleFundingChoices[defaultCharity] += 0;
+    if (!latestChoices) {
+      return res.status(404).json({ message: "No funding choices found" });
     }
-  }
 
-  return res.status(200).json({ possibleFundingChoices });
+    res.status(200).json({ possibleFundingChoices: latestChoices.choices });
+  } catch (error) {
+    console.error("Error fetching funding choices from DB:", error);
+    res.status(500).json({ message: "Failed to fetch funding choices." });
+  }
 }
