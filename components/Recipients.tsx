@@ -14,27 +14,31 @@ interface Props {
   yearlyYield: number;
 }
 
+const fetchFundingChoices = async () => {
+  const res = await fetch("/api/funding/current");
+  if (!res.ok) {
+    throw new Error("Failed to fetch funding choices");
+  }
+  return res.json();
+};
+
 export default function Recipients({ yearlyYield }: Props) {
   const { openModal } = useContext(ModalContext);
   const [selected, setSelected] = useState({} as { [key: string]: boolean });
   const [search, setSearch] = useState("");
-  const [fundingChoices, setFundingChoices] = useState<{
-    [key: string]: number;
-  }>({});
+
+  const { data: fundingData, error: fundingError } = useSWR(
+    "/api/funding/current",
+    fetchFundingChoices
+  );
+
+  const { possibleFundingChoices = {} } = fundingData || {};
   const [totalYield, setTotalYield] = useState(0);
 
-  // Fetch and set funding choices on component mount
-  useEffect(() => {
-    fetch("/api/funding/getChoices")
-      .then((res) => res.json())
-      .then((data) => {
-        setFundingChoices(data.possibleFundingChoices);
-      })
-      .catch((error) => {
-        console.error("Error fetching funding choices:", error);
-      });
-  }, []);
-
+  const { data: selectedCharities } = useSWR<CharityChoice[]>(
+    "/charity",
+    getCurrentSelectedCharity
+  );
   useEffect(() => {
     const x = document.getElementById("Smallchat");
     x?.classList.add("invisible");
@@ -46,11 +50,6 @@ export default function Recipients({ yearlyYield }: Props) {
   const selectedKeys = Object.entries(selected)
     .filter((x) => x[1])
     .map((x) => x[0]);
-  const { data: selectedCharities } = useSWR<CharityChoice[]>(
-    "/charity",
-    getCurrentSelectedCharity
-  );
-
   const selectedCharitiesNames = selectedCharities
     ? selectedCharities.map((x) => x.name)
     : [];
@@ -66,26 +65,34 @@ export default function Recipients({ yearlyYield }: Props) {
         x[1].description.toLowerCase().includes(searchPhrase) ||
         x[1].name.toLowerCase().includes(searchPhrase))
   );
+
   const percentMap: { [id: string]: number } =
     selectedCharities?.reduce(
       (acc, cur) => ({ ...acc, [cur.name]: cur.percent }),
       {}
     ) || {};
-  // Calculate total yield when funding choices or selected charities change
-  console.log(fundingChoices);
+
+  // Calculate total yield whenever funding choices or selected charities change
   useEffect(() => {
-    if (Object.keys(fundingChoices).length && selectedCharities) {
+    if (
+      Object.keys(possibleFundingChoices).length &&
+      selectedCharitiesNames.length
+    ) {
       let calculatedYield = 0;
 
-      Object.keys(fundingChoices).forEach((cause: any) => {
+      Object.keys(possibleFundingChoices).forEach((cause: any) => {
         if (selectedCharitiesNames.includes(cause)) {
-          calculatedYield += getTotalYield(fundingChoices[cause]);
+          calculatedYield += getTotalYield(possibleFundingChoices[cause]);
         }
       });
 
       setTotalYield(calculatedYield);
     }
-  }, [fundingChoices, selectedCharities]);
+  }, [possibleFundingChoices, selectedCharitiesNames]);
+
+  if (fundingError) {
+    console.error("Error fetching funding choices:", fundingError);
+  }
 
   return (
     <>
@@ -114,9 +121,17 @@ export default function Recipients({ yearlyYield }: Props) {
             </div>
           </div>
           <p className="text-sm py-4 copy text-left">
-            You fund up to <b>${yearlyYield.toFixed(2) || 0} </b>
-            of the <b> ${totalYield.toFixed(2) || 0}/year </b>
-            we donate to these causes.
+            {totalYield ? (
+              <>
+                You fund up to <b>${yearlyYield.toFixed(2) || 0}</b> of the{" "}
+                <b>${totalYield.toFixed(2) || 0}/year</b> we donate to these
+                causes.
+              </>
+            ) : (
+              <>
+                You fund up to <b>${yearlyYield.toFixed(2) || 0}</b> per year.
+              </>
+            )}
           </p>
         </section>
         <section>

@@ -73,7 +73,7 @@ model BalanceCharity {
 }
 
 model FundingChoicesCache {
-  id        Int       @id @default(autoincrement())
-  choices   Json      // Store the entire object as JSON
-  updatedAt DateTime  @default(now()) @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  choices   Json     // Stores funding choices as JSON
 }
