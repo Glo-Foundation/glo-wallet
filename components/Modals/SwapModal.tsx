@@ -97,7 +97,9 @@ export default function SwapModal({ buyAmount }: Props) {
         </button>
       </div>
       {isSwapForm ? (
-        <SwapDefault from={[usdcToken]} to={[gloToken]} />
+        <section className="flex">
+          <SwapDefault from={[usdcToken]} to={[gloToken]} />
+        </section>
       ) : (
         <section>
           <StepCard

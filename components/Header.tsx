@@ -40,6 +40,7 @@ export default function Header({
 
   const isSequenceWallet = connector?.id === "sequence";
   const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
+  const isWc = connector?.id === "walletConnect";
 
   useEffect(() => {
     if (isCopiedTooltipOpen) {
@@ -92,7 +93,8 @@ export default function Header({
             {!isSequenceWallet &&
               !isCoinbaseWallet &&
               !isVeConnected &&
-              !stellarConnected && <AddToWallet />}
+              !stellarConnected &&
+              !isWc && <AddToWallet />}
             {isConnected && <NetworkSwitcher />}
             <Tooltip
               id="copy-wallet-tooltip"
