@@ -1,13 +1,24 @@
 import axios from "axios";
 
-export const fetchTotalHolders = async () => {
-  const queryId = 3299607;
-  const apiUrl = `https://api.dune.com/api/v1/query/${queryId}/results`;
+const _getDuneQuery = async (props: {
+  queryId: number;
+  params?: Record<string, unknown>;
+}) => {
+  const apiUrl = `https://api.dune.com/api/v1/query/${props.queryId}/results`;
   const res = await axios.get(apiUrl, {
     headers: { "X-Dune-API-Key": process.env.DUNE_API_KEY },
+    params: props.params,
   });
 
   const { rows } = res.data.result;
+
+  return rows.length ? rows : [];
+};
+
+export const fetchTotalHolders = async () => {
+  const queryId = 3299607;
+
+  const rows = await _getDuneQuery({ queryId });
 
   const row = rows.length ? rows[0] : { distinct_holders: "-" };
 
@@ -16,12 +27,8 @@ export const fetchTotalHolders = async () => {
 
 export const fetchTotalTransactions = async () => {
   const queryId = 3993980;
-  const apiUrl = `https://api.dune.com/api/v1/query/${queryId}/results`;
-  const res = await axios.get(apiUrl, {
-    headers: { "X-Dune-API-Key": process.env.DUNE_API_KEY },
-  });
 
-  const { rows } = res.data.result;
+  const rows = await _getDuneQuery({ queryId });
 
   const row = rows.length ? rows[0] : { total_usdglo_transactions: "-" };
 
@@ -30,16 +37,9 @@ export const fetchTotalTransactions = async () => {
 
 export const fetchLeaderboard = async () => {
   const queryId = 4322866;
-  const apiUrl = `https://api.dune.com/api/v1/query/${queryId}/results`;
-  const res = await axios.get(apiUrl, {
-    headers: { "X-Dune-API-Key": process.env.DUNE_API_KEY },
-  });
 
-  const { rows } = res.data.result;
+  const row = await _getDuneQuery({ queryId });
 
-  const row = rows.length ? rows : [];
-
-  // return row;
   return row as {
     amount: number;
     blockchain: string;
@@ -51,18 +51,13 @@ export const fetchLeaderboard = async () => {
 export const fetchLeaderboardForMonth = async () => {
   const queryId = 4375381;
 
-  const apiUrl = `https://api.dune.com/api/v1/query/${queryId}/results`;
-  const res = await axios.get(apiUrl, {
-    headers: { "X-Dune-API-Key": process.env.DUNE_API_KEY },
+  const row = await _getDuneQuery({
+    queryId,
     params: {
       limit: 10,
       filters: "block_month > '2024-02-01'",
     },
   });
-
-  const { rows } = res.data.result;
-
-  const row = rows.length ? rows : [];
 
   return row as {
     amount: number;

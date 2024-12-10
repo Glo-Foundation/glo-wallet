@@ -17,7 +17,6 @@ export function InfoCard(props: { data: ICard }) {
 
       return res.data;
     });
-  // axios.get(`https://app.glodollar.org${url}`).then((res) => res.data);
 
   const { data: result, isLoading, error } = useSWR(data.url, fetcher);
 

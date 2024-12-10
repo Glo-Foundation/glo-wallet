@@ -8,17 +8,7 @@ export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const cached = cache.get(CACHE_KEY);
-
-  if (cached) {
-    const json = JSON.parse(cached);
-    return res.status(200).json(json);
-  }
-
-  const rows = await fetchLeaderboard();
-
-  // The dune query is executed on the daily basis
-  cache.set(CACHE_KEY, JSON.stringify(rows), 60 * 60);
+  const rows = await cache.cachedOrFetch(CACHE_KEY, fetchLeaderboard);
 
   return res.status(200).json(rows);
 }
