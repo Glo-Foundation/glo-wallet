@@ -153,11 +153,7 @@ export default function Balance({
           <a
             className="text-pine-700 self-center"
             onClick={() => {
-              openModal(
-                <SwapGate
-                  buyAmount={Number(usdcBalanceFormatted.fmtBalanceDollarPart)}
-                />
-              );
+              openModal(<SwapGate buyAmount={1000} />);
             }}
           >
             <span className="black-link">{formattedUSDC} USDC</span>{" "}
@@ -202,7 +198,7 @@ export default function Balance({
         onClick={() =>
           openModal(
             <BuyGloModal
-              totalBalance={Number(totalBalanceFormatted.fmtBalanceDollarPart)}
+              totalBalance={1000}
               stellarConnected={stellarConnected}
             />
           )

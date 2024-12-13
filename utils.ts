@@ -430,7 +430,15 @@ export const getOnRampUrl = (
   buyAmount: number,
   redirectUrl: string,
   chain?: Chain
-) =>
-  `https://pay.coinbase.com/buy/select-asset?appId=${
+) => {
+  const chainMap: { [key: string]: string } = {
+    "op mainnet": "optimism",
+    "arbitrum one": "celo",
+  };
+  const name = chain?.name.toLowerCase() || "";
+  return `https://pay.coinbase.com/buy/select-asset?appId=${
     process.env.NEXT_PUBLIC_CPD_PROJECT_ID
-  }&addresses={"${address}":["${chain?.name.toLowerCase()}"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
+  }&addresses={"${address}":["${
+    chainMap[name] || name
+  }"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
+};

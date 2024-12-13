@@ -8,7 +8,6 @@ import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
 
 export default function BoxBuyModal({
-  buyAmount,
   children,
 }: {
   buyAmount: number;
@@ -36,7 +35,7 @@ export default function BoxBuyModal({
           height={25}
           alt="arrow-right"
           className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
-          onClick={() => openModal(<BuyGloModal totalBalance={buyAmount} />)}
+          onClick={() => openModal(<BuyGloModal totalBalance={1000} />)}
         />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         {isConnected && (

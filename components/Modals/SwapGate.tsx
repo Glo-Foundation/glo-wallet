@@ -14,8 +14,8 @@ interface Props {
 }
 
 export default function SwapGate(props: Props) {
-  const { address, connector } = useAccount();
-  const buyAmount = props.buyAmount || 100;
+  const { connector } = useAccount();
+  const buyAmount = props.buyAmount || 1000;
 
   const isSequenceWallet = connector?.id === "sequence";
   const isMetaMask = connector?.id === "metaMaskSDK";
