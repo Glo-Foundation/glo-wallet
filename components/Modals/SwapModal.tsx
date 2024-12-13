@@ -3,7 +3,7 @@ import { Token } from "@coinbase/onchainkit/token";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { base, baseSepolia, polygon } from "viem/chains";
+import { base, baseSepolia, celo, celoAlfajores, polygon } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
@@ -26,6 +26,7 @@ export default function SwapModal({ buyAmount }: Props) {
   const [isSwapForm, setIsSwapForm] = useState(false);
 
   const isBase = base.id === chain?.id || baseSepolia.id === chain?.id;
+  const isCelo = celo.id === chain?.id || celoAlfajores.id === chain?.id;
 
   const { data: gloBalance } = useBalance({
     address,
@@ -105,9 +106,14 @@ export default function SwapModal({ buyAmount }: Props) {
           <StepCard
             index={1}
             iconPath="/coinbase-invert.svg"
-            title={`Buy ${buyAmount} USDC on Coinbase`}
+            title={
+              isCelo
+                ? "Celo not supported."
+                : `Buy ${buyAmount} USDC on Coinbase`
+            }
             content="Withdraw to the wallet address shown above"
             action={() =>
+              !isCelo &&
               window.open(
                 getOnRampUrl(
                   address!,
