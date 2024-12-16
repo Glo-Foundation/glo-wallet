@@ -112,7 +112,7 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
               getOnRampUrl(
                 address!,
                 buyAmount,
-                `${window.location.origin}/purchased`,
+                `${window.location.origin}/purchased-sequence`,
                 chain
               ),
               "_blank",

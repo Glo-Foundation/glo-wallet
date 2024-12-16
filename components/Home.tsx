@@ -45,6 +45,8 @@ import { customFormatBalance, getTotalGloBalance } from "@/utils";
 import { getUSDCContractAddress } from "@/utils";
 
 import Header from "./Header";
+import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
+import SwapGate from "./Modals/SwapGate";
 import UserAuthModal from "./Modals/UserAuthModal";
 
 const startBalance = (decimals: number) => ({
@@ -306,8 +308,17 @@ export default function Home() {
   }, [isConnected, stellarConnected, veConnected]);
 
   useEffect(() => {
-    if (isConnected && asPath === "/buy") {
+    if (!isConnected) {
+      return;
+    }
+    if (asPath === "/buy") {
       openModal(<BuyGloModal totalBalance={1000} />);
+      push("/");
+    } else if (asPath === "/purchased-coinbase") {
+      openModal(<SwapGate buyAmount={1000} />);
+      push("/");
+    } else if (asPath === "/purchased-sequence") {
+      openModal(<BuyWithCoinbaseSequenceModal buyAmount={1000} />);
       push("/");
     }
   }, []);
