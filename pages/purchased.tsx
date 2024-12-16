@@ -1,15 +1,12 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-// Generic callback URL to reload the balance and ctas
 export default function PurchasedCallback() {
   useEffect(() => {
-    const bc = new BroadcastChannel("glo-channel-purchased");
-    bc.postMessage({ success: true });
     window.close();
     const closed = window.closed;
     if (!closed) {
-      push("/");
+      push("/buy");
     }
   }, []);
 
@@ -18,10 +15,12 @@ export default function PurchasedCallback() {
   // Fallback in case window is not closed automagically
   return (
     <>
-      <div>Payment completed</div>
-      <div className="cursor-pointer" onClick={() => push("/")}>
-        Click close to continue
+      <div>Click close to continue Successfully bought USDC.</div>
+      <div>Return to the app to exchange your USDC for Glo Dollars.</div>
+      <div className="cursor-pointer" onClick={() => push("/buy")}>
+        [Return to app]
       </div>
+      This page will auto-redirect in 3 seconds.
     </>
   );
 }

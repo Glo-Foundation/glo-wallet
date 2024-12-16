@@ -21,6 +21,14 @@ const nextConfig = {
         destination: "/",
       },
       {
+        source: "/purchased-sequence",
+        destination: "/",
+      },
+      {
+        source: "/purchased-coinbase",
+        destination: "/",
+      },
+      {
         source: "/impact/ve/:id",
         destination: "/impact/:id",
       },

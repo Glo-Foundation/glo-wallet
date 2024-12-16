@@ -111,14 +111,18 @@ export default function SwapModal({ buyAmount }: Props) {
                 ? "Celo not supported."
                 : `Buy ${buyAmount} USDC on Coinbase`
             }
-            content="Withdraw to the wallet address shown above"
+            content={
+              isCelo
+                ? "Switch to a different chain like Optimism"
+                : "Withdraw to the wallet address shown above"
+            }
             action={() =>
               !isCelo &&
               window.open(
                 getOnRampUrl(
                   address!,
                   buyAmount,
-                  `${window.location.origin}/purchased`,
+                  `${window.location.origin}/purchased-coinbase`,
                   chain
                 ),
                 "_blank",
