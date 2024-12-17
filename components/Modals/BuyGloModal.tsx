@@ -31,7 +31,7 @@ export default function BuyGloModal({
       <button
         className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6 mt-6 mb-6"
         disabled={glo === 0}
-        onClick={() => openModal(<SwapGate buyAmount={1000} />)}
+        onClick={() => openModal(<SwapGate buyAmount={Math.floor(glo)} />)}
       >
         Buy ${formattedGlo} Glo Dollar
       </button>
