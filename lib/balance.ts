@@ -38,7 +38,6 @@ export const getBalances = async (address: string, onDate?: Date) => {
     arbitrumBalance,
     stellarBalance,
     baseBalance,
-    vechainBalance,
   ] = [
     BigInt(0),
     BigInt(0),
@@ -75,17 +74,6 @@ export const getBalances = async (address: string, onDate?: Date) => {
       optimismBalance +
       baseBalance;
     balance /= decimals;
-  } else if (address.slice(0, 2) === "ve") {
-    vechainBalance = await getChainBalance(
-      address.slice(2),
-      vechain,
-      // TODO: Does not really work with testnet
-      // isProd() ? vechain : VECHAIN_TESTNET,
-      onDate
-    );
-
-    const decimals = BigInt(10 ** 18);
-    balance = vechainBalance / decimals;
   } else {
     stellarBalance = await getStellarBalance(address, onDate);
     const decimals = BigInt(10 ** 7);
@@ -101,7 +89,6 @@ export const getBalances = async (address: string, onDate?: Date) => {
     arbitrumBalance,
     baseBalance,
     stellarBalance,
-    vechainBalance,
   };
 };
 
