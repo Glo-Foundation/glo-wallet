@@ -114,7 +114,7 @@ export default function SwapModal({ buyAmount }: Props) {
             content={
               isCelo
                 ? "Switch to a different chain like Optimism"
-                : "Withdraw to the wallet address shown above"
+                : "Withdraws to the connected wallet address"
             }
             action={() =>
               !isCelo &&
@@ -136,7 +136,7 @@ export default function SwapModal({ buyAmount }: Props) {
             <StepCard
               index={2}
               iconPath="/coinbase-invert.svg"
-              title="Swap USDGLO for USDC"
+              title="Swap from USDC to USDGLO"
               content={"Swap with Coinbase"}
               action={() => setIsSwapForm(true)}
               done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
@@ -146,7 +146,7 @@ export default function SwapModal({ buyAmount }: Props) {
             <StepCard
               index={2}
               iconPath="/jumper.svg"
-              title="Swap USDGLO for USDC"
+              title="Swap from USDC to USDGLO"
               content={"Swap with Jumper.exchange"}
               action={() => buyWithJumper(chain || polygon)}
               done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
