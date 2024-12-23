@@ -122,7 +122,8 @@ const processAccount = async (address: string, choices: Choice[]) => {
 
   const isStellar = !address.includes("0x");
   for (const [key] of Object.entries(balancesEndOfMonth)) {
-    if (key == "totalBalance") {
+    // TODO: Temp skip Ve chain
+    if (key == "totalBalance" || key == "vechainBalance") {
       continue;
     }
     if (key == "stellarBalance") {

@@ -109,7 +109,7 @@ export const getStellarMarketCap = async (): Promise<number> => {
   const stellarMarketCap =
     stellarBalances + stellarLiquidityPools + stellarContracts;
 
-  return stellarMarketCap;
+  return Math.round(stellarMarketCap);
 };
 
 // GUSD: 3306
@@ -244,11 +244,15 @@ export const backendUrl = process.env.VERCEL_URL
 
 export const getChainsObjects = () => {
   const chains = [...getChains(), vechain];
+  const chainMap: { [key: string]: string } = {
+    "op mainnet": "optimism",
+    "arbitrum one": "arbitrum",
+  };
+  const getMapped = (key: string) => chainMap[key] || key;
   const chainsObject: Record<string, Chain> = chains.reduce(
     (a, v) => ({
       ...a,
-      [["Ethereum", "Polygon"].includes(v.name) ? v.name.toLowerCase() : v.id]:
-        v, // TODO: ????????????
+      [getMapped(v.name.toLowerCase())]: v,
     }),
     {}
   );
