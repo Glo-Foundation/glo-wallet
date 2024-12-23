@@ -387,9 +387,14 @@ export const getBlockNumber = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dater = new EthDater(provider as any);
 
-  const blockObject = await dater.getDate(date.toString());
+  try {
+    const blockObject = await dater.getDate(date.toString());
 
-  return blockObject.block;
+    return blockObject.block;
+  } catch (err) {
+    console.log(`Can't get block number for chain ${chainId}`);
+    return 0;
+  }
 };
 
 export const neueHaasGrotesk = localFont({
@@ -433,7 +438,7 @@ export const getOnRampUrl = (
 ) => {
   const chainMap: { [key: string]: string } = {
     "op mainnet": "optimism",
-    "arbitrum one": "celo",
+    "arbitrum one": "arbitrum",
   };
   const name = chain?.name.toLowerCase() || "";
   return `https://pay.coinbase.com/buy/select-asset?appId=${
