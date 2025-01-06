@@ -339,7 +339,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     optimismBalance,
     arbitrumBalance,
     baseBalance,
-  } = await getBalances(isVe ? `ve${address}` : address);
+ } = await getBalances(isVe ? `ve${address}` : address);
 
   let yearlyYield = getTotalYield(balance);
 

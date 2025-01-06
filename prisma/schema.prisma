@@ -71,3 +71,9 @@ model BalanceCharity {
   balancesData  Json?
   charityData    Json?
 }
+
+model FundingChoicesCache {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  choices   Json     // Stores funding choices as JSON
+}
