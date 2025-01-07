@@ -3,15 +3,15 @@ import { Token } from "@coinbase/onchainkit/token";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { base, baseSepolia, celo, celoAlfajores, polygon } from "viem/chains";
+import { base, baseSepolia, celo, celoAlfajores } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithJumper } from "@/payments";
 import { getOnRampUrl, getUSDCContractAddress, POPUP_PROPS } from "@/utils";
 
+import SquidModal from "./SquidModal";
 import StepCard from "./StepCard";
 
 interface Props {
@@ -20,7 +20,7 @@ interface Props {
 
 export default function SwapModal({ buyAmount }: Props) {
   const { address, chain } = useAccount();
-  const { closeModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isSwapForm, setIsSwapForm] = useState(false);
@@ -99,7 +99,11 @@ export default function SwapModal({ buyAmount }: Props) {
       </div>
       {isSwapForm ? (
         <section className="flex">
-          <SwapDefault from={[usdcToken]} to={[gloToken]} />
+          <SwapDefault
+            from={[usdcToken]}
+            to={[gloToken]}
+            onSuccess={() => closeModal()}
+          />
         </section>
       ) : (
         <section>
@@ -145,10 +149,10 @@ export default function SwapModal({ buyAmount }: Props) {
           ) : (
             <StepCard
               index={2}
-              iconPath="/jumper.svg"
+              iconPath="/squidrouter.svg"
               title="Swap from USDC to USDGLO"
-              content={"Swap with Jumper.exchange"}
-              action={() => buyWithJumper(chain || polygon)}
+              content={"Swap with Squid Router"}
+              action={() => openModal(<SquidModal buyAmount={buyAmount} />)}
               done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
               USDC={usdcBalance?.formatted}
             />
