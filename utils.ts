@@ -148,7 +148,7 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
       return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     }
     case celo.id: {
-      return "0xef4229c8c3250C675F21BCefa42f58EfbfF6002a";
+      return "0xcebA9300f2b948710d2653dD7B07f33A8B32118C";
     }
     case celoAlfajores.id: {
       return "0x5263F75FFB7384690818BeAEa62D7313B69f2A9c";

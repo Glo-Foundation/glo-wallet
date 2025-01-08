@@ -20,13 +20,3 @@ export const buyWithStellarX = () =>
 
 export const buyWithVerocket = () =>
   window.open("https://app.verocket.com/", "_blank");
-
-export const buyWithJumper = (chain: Chain = polygon) =>
-  window.open(
-    `https://jumper.exchange/?fromChain=${
-      chain?.id
-    }&fromToken=${getUSDCContractAddress(chain)}` +
-      `&toChain=${chain?.id}&toToken=${getSmartContractAddress(chain.id)}`,
-    "_blank",
-    POPUP_PROPS
-  );
