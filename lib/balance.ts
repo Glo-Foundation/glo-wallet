@@ -1,19 +1,19 @@
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { kv } from "@vercel/kv";
-import { Chain } from "@wagmi/core";
 import {
-  celo,
-  celoAlfajores,
-  goerli,
-  mainnet,
-  polygon,
-  polygonMumbai,
-  optimism,
-  optimismSepolia,
   arbitrum,
   arbitrumSepolia,
   base,
   baseSepolia,
+  celo,
+  celoAlfajores,
+  Chain,
+  goerli,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  polygon,
+  polygonMumbai,
   vechain,
 } from "@wagmi/core/chains";
 import axios from "axios";

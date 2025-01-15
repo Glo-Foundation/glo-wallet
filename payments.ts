@@ -1,12 +1,6 @@
-import { Chain } from "@wagmi/core";
-import { polygon } from "viem/chains";
+import { Chain } from "@wagmi/core/chains";
 
-import { getSmartContractAddress } from "./lib/config";
-import {
-  getUSDCContractAddress,
-  getUSDCToUSDGLOSwapDeeplink,
-  POPUP_PROPS,
-} from "./utils";
+import { getUSDCToUSDGLOSwapDeeplink } from "./utils";
 
 export const buyWithSwap = (amount: number, chain: Chain, dex: string) => {
   window.open(getUSDCToUSDGLOSwapDeeplink(amount, chain, dex), "_blank");

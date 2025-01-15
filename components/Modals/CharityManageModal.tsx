@@ -1,9 +1,3 @@
-// import {
-//   allowAllModules,
-//   StellarWalletsKit,
-//   WalletNetwork,
-//   XBULL_ID,
-// } from "@creit.tech/stellar-wallets-kit";
 import {
   allowAllModules,
   StellarWalletsKit,
@@ -11,15 +5,8 @@ import {
   XBULL_ID,
 } from "@creit.tech/stellar-wallets-kit/build/index";
 import { Charity } from "@prisma/client";
-import {
-  Account,
-  Asset,
-  Networks,
-  Operation,
-  TransactionBuilder,
-} from "@stellar/stellar-sdk";
 import { useWallet } from "@vechain/dapp-kit-react";
-import { getWalletClient, SignMessageResult, Chain } from "@wagmi/core";
+import { Chain } from "@wagmi/core/chains";
 import Image from "next/image";
 import Slider from "rc-slider";
 import { useContext, useEffect, useState } from "react";
@@ -235,7 +222,7 @@ export default function CharityManageModal(props: Props) {
 
   const signCharityUpdateMessage = async (
     message: string
-  ): Promise<SignMessageResult | string | undefined> => {
+  ): Promise<string | undefined> => {
     const isStellar = localStorage.getItem("stellarConnected") == "true";
 
     if (isStellar) {

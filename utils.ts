@@ -1,17 +1,18 @@
-import { Chain, FetchBalanceResult } from "@wagmi/core";
+import { GetBalanceReturnType } from "@wagmi/core";
 import {
+  arbitrum,
+  arbitrumSepolia,
+  base,
+  baseSepolia,
   celo,
   celoAlfajores,
+  Chain,
   goerli,
   mainnet,
   optimism,
   optimismSepolia,
   polygon,
   polygonMumbai,
-  arbitrum,
-  arbitrumSepolia,
-  base,
-  baseSepolia,
 } from "@wagmi/core/chains";
 import EthDater from "ethereum-block-by-date";
 import { ethers } from "ethers";
@@ -318,8 +319,8 @@ export const hexToNumber = (hex: string): number => {
 };
 
 export const getTotalGloBalance = (
-  balances: (FetchBalanceResult | undefined)[]
-): FetchBalanceResult => {
+  balances: (GetBalanceReturnType | undefined)[]
+): GetBalanceReturnType => {
   let totalBalanceValue = 0;
   for (const balance of balances) {
     if (balance) {
@@ -336,7 +337,7 @@ export const getTotalGloBalance = (
 };
 
 export const customFormatBalance = (
-  balance: FetchBalanceResult | undefined
+  balance: GetBalanceReturnType | undefined
 ): {
   yearlyYield: number;
   yearlyYieldFormatted: string;

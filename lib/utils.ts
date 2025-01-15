@@ -1,19 +1,18 @@
 import { Charity } from "@prisma/client";
-// import { Chain } from "@wagmi/core";
 import axios, { AxiosInstance } from "axios";
 import { ethers } from "ethers";
-import { Chain } from "viem/chains";
 import {
-  mainnet,
-  polygon,
-  celo,
-  celoAlfajores,
-  optimism,
-  optimismSepolia,
   arbitrum,
   arbitrumSepolia,
   base,
   baseSepolia,
+  celo,
+  celoAlfajores,
+  Chain,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  polygon,
   vechain,
 } from "wagmi/chains";
 

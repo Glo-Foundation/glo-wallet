@@ -29,7 +29,7 @@
     "@vechain/dapp-kit-ui": "^1.0.13",
     "@vercel/kv": "^0.2.2",
     "@vercel/og": "^0.5.13",
-    "@wagmi/core": "^1.4.10",
+    "@wagmi/core": "^2.6.13",
     "@walletconnect/modal": "^2.7.0",
     "@walletconnect/sign-client": "^2.13.3",
     "0xsequence": "^2.0.17",
