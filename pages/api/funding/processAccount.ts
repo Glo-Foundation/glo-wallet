@@ -88,21 +88,17 @@ const processAccount = async (address: string, choices: Choice[]) => {
     let currentBalance = balance;
 
     const txs = await getStellarTxs(address, firstLastMonth, firstThisMonth);
-    for (const tx of txs) {
-      const txDate = new Date(1000 * parseInt(tx.timeBounds?.maxTime || "0"));
-
+    for (const [txDate, ops] of txs) {
       const balanceTime = BigInt(
         (currentDate.valueOf() - txDate.valueOf()).toString()
       );
       let transactionDelta = BigInt(0);
-      for (const op of tx.operations) {
-        if (op.type === "payment" && op.asset.code === "USDGLO") {
-          const incoming = op.destination === address;
-          const x = BigInt(op.amount.replace(".", ""));
-          transactionDelta = incoming
-            ? transactionDelta + x
-            : transactionDelta - x;
-        }
+      for (const op of ops) {
+        const incoming = op.destination === address;
+        const x = BigInt(op.amount.replace(".", ""));
+        transactionDelta = incoming
+          ? transactionDelta - x
+          : transactionDelta + x;
       }
 
       const weightedBalance = currentBalance * balanceTime;
