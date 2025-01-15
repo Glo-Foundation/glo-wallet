@@ -1,6 +1,5 @@
 import { Operation } from "@stellar/stellar-sdk";
-import { Chain } from "@wagmi/core";
-import { celo, celoAlfajores, vechain } from "@wagmi/core/chains";
+import { celo, celoAlfajores, Chain, vechain } from "@wagmi/core/chains";
 import axios from "axios";
 
 import { getChainBlockNumber, getStellarTxs } from "@/lib/balance";

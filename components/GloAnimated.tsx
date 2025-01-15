@@ -1,4 +1,4 @@
-import { FetchBalanceResult } from "@wagmi/core";
+import { GetBalanceReturnType } from "@wagmi/core";
 import { useLottie } from "lottie-react";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
@@ -17,7 +17,7 @@ const commonOptions = {
 };
 
 type Props = {
-  totalBalance: FetchBalanceResult | undefined;
+  totalBalance: GetBalanceReturnType | undefined;
 };
 
 const GloAnimated = ({ totalBalance }: Props) => {
