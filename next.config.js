@@ -78,6 +78,7 @@ const nextConfig = {
     ];
   },
   transpilePackages: ["@0xsquid/widget", "@0xsquid/react-hooks"],
+  swcMinify: false,
 };
 
 // Injected content via Sentry wizard below
