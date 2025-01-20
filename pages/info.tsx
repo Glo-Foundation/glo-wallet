@@ -1,5 +1,3 @@
-import React from "react";
-
 import { infoCards } from "@/components/Info/data";
 import { InfoCard } from "@/components/Info/InfoCard";
 import { LargestCurrentHolderTable } from "@/components/Info/TableCurrentholders";

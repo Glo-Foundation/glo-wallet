@@ -1,62 +1,52 @@
 import axios from "axios";
+import { useState } from "react";
 import useSWR from "swr";
 
+import { IBalance, INetworks } from "@/lib/bitQuery";
 import { backendUrl } from "@/lib/utils";
 
 import { Table, TRow, splitAndAddEllipses } from "./Table";
 
-type KeysType = "tx_from" | "amount" | "blockchain";
-
-const formatLeaderboardData = (payload: any) => {
-  const typedArr = payload as {
-    amount: number;
-    blockchain: string;
-    tx_from: string;
-    tx_to: string;
-  }[];
-
-  const result = typedArr.map((val) => {
-    return {
-      tx_from: val.tx_from,
-      amount: val.amount,
-      blockchain: val.blockchain,
-    };
-  });
-
-  const rows: string[][] = [];
-  for (const row of result) {
-    const dataCells = [];
-    for (const key in row) {
-      const typedKey = key as KeysType;
-      if (Object.prototype.hasOwnProperty.call(row, key)) {
-        const element = row[typedKey].toString();
-        dataCells.push(splitAndAddEllipses(element));
-      }
-    }
-    rows.push(dataCells);
-  }
-
-  return rows;
-};
-
 export function LargestCurrentHolderTable() {
+  const [selectNetwork, setNetwork] = useState<INetworks>("eth");
+
   const fetcher = (url: string) =>
     axios.get(url).then((res) => {
-      return formatLeaderboardData(res.data);
+      return res.data as IBalance[];
     });
 
   const { data } = useSWR(`${backendUrl}/api/largest-current-holders`, fetcher);
 
-  if (!data) return <p>...</p>;
   return (
     <div className="my-5">
-      <Table
-        title={"Largest current holders"}
-        headers={["tx_from", "amount", "blockchain"]}
+      <select
+        onChange={(e) => {
+          setNetwork(e.target.value as INetworks);
+        }}
+        className="w-full p-2"
       >
-        {data.map((val: string[], i) => {
-          return <TRow key={i} td={val} />;
-        })}
+        <option value={"eth"}>Ethereum</option>
+        <option value={"eth"}>Celo</option>
+        <option value={"base"}>Base</option>
+        <option value={"arbitrum"}>Arbitrum</option>
+        <option value={"bsc"}>Bsc</option>
+      </select>
+      <Table title={"Largest current holders"} headers={["Holder", "Amount"]}>
+        {data === undefined ? (
+          <p>...</p>
+        ) : (
+          data.map((val, i) => {
+            return (
+              <TRow
+                key={i}
+                td={[
+                  splitAndAddEllipses(val.BalanceUpdate.Address),
+                  val.Balance.slice(0, 8),
+                ]}
+              />
+            );
+          })
+        )}
       </Table>
     </div>
   );
