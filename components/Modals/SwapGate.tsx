@@ -1,12 +1,15 @@
+import { useContext } from "react";
 import { useAccount } from "wagmi";
 
+import { ModalContext } from "@/lib/context";
 import { apiInstance } from "@/lib/utils";
-import { buyWithJumper, buyWithStellarX, buyWithVerocket } from "@/payments";
+import { buyWithStellarX, buyWithVerocket } from "@/payments";
 
 import { BuyBox } from "../BuyBox";
 
 import BoxBuyModal from "./BoxBuyModal";
 import BuyWithCoinbaseSequenceModal from "./BuyWithCoinbaseSequenceModal";
+import SquidModal from "./SquidModal";
 import SwapModal from "./SwapModal";
 
 interface Props {
@@ -14,8 +17,10 @@ interface Props {
 }
 
 export default function SwapGate(props: Props) {
-  const { address, connector } = useAccount();
-  const buyAmount = props.buyAmount || 100;
+  const { connector } = useAccount();
+  const { openModal } = useContext(ModalContext);
+
+  const buyAmount = props.buyAmount || 1000;
 
   const isSequenceWallet = connector?.id === "sequence";
   const isMetaMask = connector?.id === "metaMaskSDK";
@@ -79,13 +84,13 @@ export default function SwapGate(props: Props) {
         onClick={() => buyWithVerocket()}
       />
       <BuyBox
-        key="jumper"
-        name="Jumper.exchange"
-        icon="/jumper.svg"
+        key="squidrouter"
+        name="squidrouter"
+        icon="/squidrouter.svg"
         fees="0.3"
         worksFor="🔐 Crypto"
         delay="⚡ Instant"
-        onClick={() => buyWithJumper()}
+        onClick={() => openModal(<SquidModal buyAmount={buyAmount} />)}
       />
     </BoxBuyModal>
   );

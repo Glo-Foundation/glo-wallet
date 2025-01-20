@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  margin: 0 auto 40px;
+  margin: 0 auto 40px !important; /* Overwrites Squid body css */
   max-width: 375px;
   line-height: 1.5rem;
   background-color: #eaf2f1;

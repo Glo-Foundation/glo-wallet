@@ -1,19 +1,6 @@
-import { Chain } from "@wagmi/core";
-import { polygon } from "viem/chains";
+import { Chain } from "@wagmi/core/chains";
 
-import { getSmartContractAddress } from "./lib/config";
-import {
-  getUSDCContractAddress,
-  getUSDCToUSDGLOSwapDeeplink,
-  POPUP_PROPS,
-} from "./utils";
-
-export const buyWithTransak = (amount: number, address: string) => {
-  const redirectUrl = `${window.location.origin}/purchased`;
-  const params = `cryptoCurrencyCode=USDC&networks=polygon&defaultCryptoAmount=${amount}&walletAddress=${address}&hideMenu=true&redirectURL=${redirectUrl}`;
-
-  window.open(`${process.env.NEXT_PUBLIC_TRANSAK_URL}&${params}`, "_blank");
-};
+import { getUSDCToUSDGLOSwapDeeplink } from "./utils";
 
 export const buyWithSwap = (amount: number, chain: Chain, dex: string) => {
   window.open(getUSDCToUSDGLOSwapDeeplink(amount, chain, dex), "_blank");
@@ -27,13 +14,3 @@ export const buyWithStellarX = () =>
 
 export const buyWithVerocket = () =>
   window.open("https://app.verocket.com/", "_blank");
-
-export const buyWithJumper = (chain: Chain = polygon) =>
-  window.open(
-    `https://jumper.exchange/?fromChain=${
-      chain?.id
-    }&fromToken=${getUSDCContractAddress(chain)}` +
-      `&toChain=${chain?.id}&toToken=${getSmartContractAddress(chain.id)}`,
-    "_blank",
-    POPUP_PROPS
-  );

@@ -1,15 +1,15 @@
-import { Chain } from "@wagmi/core";
 import {
-  polygon,
-  mainnet,
-  celoAlfajores,
-  celo,
-  optimism,
-  optimismSepolia,
   arbitrum,
   arbitrumSepolia,
   base,
   baseSepolia,
+  celo,
+  celoAlfajores,
+  Chain,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  polygon,
 } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useRef, useState } from "react";

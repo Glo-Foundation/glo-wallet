@@ -1,4 +1,4 @@
-import { Chain } from "@wagmi/core";
+import { Chain } from "@wagmi/core/chains";
 import Image from "next/image";
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";

@@ -3,15 +3,15 @@ import { Token } from "@coinbase/onchainkit/token";
 import Image from "next/image";
 import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
-import { base, baseSepolia, polygon } from "viem/chains";
+import { base, baseSepolia, celo, celoAlfajores } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { buyWithJumper } from "@/payments";
 import { getOnRampUrl, getUSDCContractAddress, POPUP_PROPS } from "@/utils";
 
+import SquidModal from "./SquidModal";
 import StepCard from "./StepCard";
 
 interface Props {
@@ -20,12 +20,13 @@ interface Props {
 
 export default function SwapModal({ buyAmount }: Props) {
   const { address, chain } = useAccount();
-  const { closeModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const [isSwapForm, setIsSwapForm] = useState(false);
 
   const isBase = base.id === chain?.id || baseSepolia.id === chain?.id;
+  const isCelo = celo.id === chain?.id || celoAlfajores.id === chain?.id;
 
   const { data: gloBalance } = useBalance({
     address,
@@ -97,20 +98,35 @@ export default function SwapModal({ buyAmount }: Props) {
         </button>
       </div>
       {isSwapForm ? (
-        <SwapDefault from={[usdcToken]} to={[gloToken]} />
+        <section className="flex">
+          <SwapDefault
+            from={[usdcToken]}
+            to={[gloToken]}
+            onSuccess={() => closeModal()}
+          />
+        </section>
       ) : (
         <section>
           <StepCard
             index={1}
             iconPath="/coinbase-invert.svg"
-            title={`Buy ${buyAmount} USDC on Coinbase`}
-            content="Withdraw to the wallet address shown above"
+            title={
+              isCelo
+                ? "Celo not supported."
+                : `Buy ${buyAmount} USDC on Coinbase`
+            }
+            content={
+              isCelo
+                ? "Switch to a different chain like Optimism"
+                : "Withdraws to the connected wallet address"
+            }
             action={() =>
+              !isCelo &&
               window.open(
                 getOnRampUrl(
                   address!,
                   buyAmount,
-                  `${window.location.origin}/purchased`,
+                  `${window.location.origin}/purchased-coinbase`,
                   chain
                 ),
                 "_blank",
@@ -124,7 +140,7 @@ export default function SwapModal({ buyAmount }: Props) {
             <StepCard
               index={2}
               iconPath="/coinbase-invert.svg"
-              title="Swap USDGLO for USDC"
+              title="Swap from USDC to USDGLO"
               content={"Swap with Coinbase"}
               action={() => setIsSwapForm(true)}
               done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
@@ -133,10 +149,10 @@ export default function SwapModal({ buyAmount }: Props) {
           ) : (
             <StepCard
               index={2}
-              iconPath="/jumper.svg"
-              title="Swap USDGLO for USDC"
-              content={"Swap with Jumper.exchange"}
-              action={() => buyWithJumper(chain || polygon)}
+              iconPath="/squidrouter.svg"
+              title="Swap from USDC to USDGLO"
+              content={"Swap with Squid Router"}
+              action={() => openModal(<SquidModal buyAmount={buyAmount} />)}
               done={(gloBalance?.value || 0) >= BigInt(buyAmount)}
               USDC={usdcBalance?.formatted}
             />
