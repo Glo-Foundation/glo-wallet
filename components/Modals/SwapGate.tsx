@@ -11,6 +11,7 @@ import BoxBuyModal from "./BoxBuyModal";
 import BuyWithCoinbaseSequenceModal from "./BuyWithCoinbaseSequenceModal";
 import SquidModal from "./SquidModal";
 import SwapModal from "./SwapModal";
+import SellGloModal from "./SellGloModal";
 
 interface Props {
   buyAmount: number;
@@ -109,6 +110,15 @@ export default function SwapGate(props: Props) {
         worksFor="💳 Card"
         delay="⚡ Instant"
         onClick={() => window.open("https://www.offramp.xyz/", "_blank")}
+      />
+      <BuyBox
+        key="sell"
+        name="Sell Glo"
+        icon="/sell.svg"
+        fees="0.5"
+        worksFor="💳 Card"
+        delay="⚡ Instant"
+        onClick={() => openModal(<SellGloModal />)}
       />
     </BoxBuyModal>
   );
