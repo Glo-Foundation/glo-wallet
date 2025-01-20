@@ -145,3 +145,7 @@ body {
 .ock-bg-default {
   background-color: var(--ock-bg-default);
 }
+
+.tw-grid {
+  width: auto !important;
+}
