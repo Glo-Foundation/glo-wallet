@@ -57,6 +57,20 @@ export default function BoxBuyModal({
       </div>
       <h2 className="text-center pt-0">Buy Glo Dollars</h2>
       {children}
+      <div className="flex flex-col space-y-2 mt-4">
+        <button
+          className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6"
+          onClick={() => window.open("https://peanut.to/cashout", "_blank")}
+        >
+          Sell for wire to US/CAD/EU bank accounts
+        </button>
+        <button
+          className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6"
+          onClick={() => window.open("https://www.offramp.xyz/", "_blank")}
+        >
+          Sell for card in 160+ countries
+        </button>
+      </div>
     </div>
   );
 }

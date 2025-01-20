@@ -92,6 +92,24 @@ export default function SwapGate(props: Props) {
         delay="⚡ Instant"
         onClick={() => openModal(<SquidModal buyAmount={buyAmount} />)}
       />
+      <BuyBox
+        key="peanut"
+        name="Peanut"
+        icon="/peanut.png"
+        fees="0.5"
+        worksFor="💳 Card"
+        delay="⚡ Instant"
+        onClick={() => window.open("https://peanut.to/cashout", "_blank")}
+      />
+      <BuyBox
+        key="offramp"
+        name="Offramp"
+        icon="/offramp.png"
+        fees="0.5"
+        worksFor="💳 Card"
+        delay="⚡ Instant"
+        onClick={() => window.open("https://www.offramp.xyz/", "_blank")}
+      />
     </BoxBuyModal>
   );
 }
