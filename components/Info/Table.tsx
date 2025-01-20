@@ -4,6 +4,7 @@ export function Table(props: ITable) {
   return (
     <div className="my-5 ">
       <h5 className=" font-semibold mb-2">{props.title}</h5>
+      {props.others}
       <div className="relative max-h-[400px] overflow-y-scroll overflow-x-auto sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <THead data={props.headers} />
@@ -18,7 +19,7 @@ export function TRow(props: { td: string[] }) {
   return (
     <tr className="odd:bg-white even:bg-gray-50 border-b dark:border-gray-300">
       {props.td.map((val, i) => (
-        <td key={i} className="px-6 py-4">
+        <td key={i} className="px-6 py-4 text-gray-600">
           {val}
         </td>
       ))}
@@ -40,5 +41,9 @@ function THead(props: { data: string[] }) {
   );
 }
 
-export const splitAndAddEllipses = (input: string) =>
-  input.length <= 7 ? input : input.slice(0, 7) + "...";
+export const splitAndAddEllipses = (input: string) => {
+  if (input.length <= 7) return input;
+  return (
+    input.slice(0, 5) + "..." + input.slice(input.length - 3, input.length)
+  );
+};

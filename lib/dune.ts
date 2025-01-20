@@ -35,36 +35,47 @@ export const fetchTotalTransactions = async () => {
   return row.total_usdglo_transactions.toString();
 };
 
-export const fetchLeaderboard = async () => {
-  const queryId = 4322866;
-
-  const row = await _getDuneQuery({ queryId });
-
-  return row as {
-    amount: number;
-    blockchain: string;
-    tx_from: string;
-    tx_to: string;
-  }[];
+export type ILargestHolder = {
+  token_a_held: number;
+  token_a_symbol: string;
+  token_a_value_held: number;
+  tx_from: string;
 };
-
-export const fetchLeaderboardForMonth = async () => {
-  const queryId = 4375381;
+export const fetchLargestHolder = async () => {
+  const queryId = 4593240;
 
   const row = await _getDuneQuery({
     queryId,
     params: {
-      limit: 10,
-      filters: "block_month > '2024-02-01'",
+      "Chain For Token A No1": "base",
+      "Token A No1 Address": "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3",
+      "Token A No1 Held More Than": 2,
     },
   });
 
-  return row as {
-    amount: number;
-    block_date: string;
-    block_month: string;
-    blockchain: string;
-    tx_from: string;
-    tx_to: string;
-  }[];
+  // console.log("fetchLargestHolder Rows: ", row);
+  return row as ILargestHolder[];
+};
+
+export type ILargestMonthlyHolder = {
+  tx_from: string;
+  token_a_symbol: string;
+  avg_monthly_balance: number;
+  token_a_value_avg: number;
+};
+export const fetchLargestHoldersForPastMonth = async () => {
+  const queryId = 4594378;
+
+  const row = await _getDuneQuery({
+    queryId,
+    params: {
+      "Chain For Token A No1": "celo",
+      "Token A No1 Address": "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3",
+      "Token A No1 Held More Than": 2,
+    },
+  });
+
+  console.log("fetchLargestHoldersForPastMonth Rows: ", row);
+
+  return row as ILargestMonthlyHolder[];
 };

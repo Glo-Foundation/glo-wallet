@@ -21,4 +21,6 @@ export type ITable = {
   headers: string[];
   rowData?: string[][];
   children: ReactNode;
+  others?: ReactNode;
 };
+export type INetworks = "celo" | "eth" | "base" | "bsc" | "arbitrum";

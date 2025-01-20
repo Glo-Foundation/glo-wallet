@@ -1,5 +1,15 @@
 import { ICard } from "./types";
 
+export function formatToCurrency(num: number) {
+  if (isNaN(num)) {
+    return "...";
+  }
+  return num.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
 const totalSupplyFormatter = (res: string) => {
   const dividedByAMillion = (parseInt(res) / 1_000_000).toFixed(2).toString();
   const withDollarSign = "$".concat(dividedByAMillion.toString()).concat("M");
