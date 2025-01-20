@@ -10,6 +10,7 @@ import CharitySelector from "./CharitySelector";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
 import SwapGate from "./Modals/SwapGate";
+import SellGloModal from "./Modals/SellGloModal";
 
 type Props = {
   polygonBalance: GetBalanceReturnType | undefined;
@@ -195,23 +196,40 @@ export default function Balance({
         className={`${
           totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
         } rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer`}
-        onClick={() =>
-          openModal(
-            <BuyGloModal
-              totalBalance={1000}
-              stellarConnected={stellarConnected}
-            />
-          )
-        }
       >
-        <span className="font-bolder">Buy Glo Dollar</span>
-        <Image
-          className="ml-2"
-          alt="Buy Glo"
-          src="/arrow-right.svg"
-          width={16}
-          height={16}
-        />
+        <button
+          className="flex items-center justify-center w-full h-full"
+          onClick={() =>
+            openModal(
+              <BuyGloModal
+                totalBalance={1000}
+                stellarConnected={stellarConnected}
+              />
+            )
+          }
+        >
+          <span className="font-bolder">Buy</span>
+          <Image
+            className="ml-2"
+            alt="Buy Glo"
+            src="/arrow-right.svg"
+            width={16}
+            height={16}
+          />
+        </button>
+        <button
+          className="flex items-center justify-center w-full h-full"
+          onClick={() => openModal(<SellGloModal />)}
+        >
+          <span className="font-bolder">Sell</span>
+          <Image
+            className="ml-2"
+            alt="Sell Glo"
+            src="/arrow-right.svg"
+            width={16}
+            height={16}
+          />
+        </button>
       </div>
     </div>
   );
