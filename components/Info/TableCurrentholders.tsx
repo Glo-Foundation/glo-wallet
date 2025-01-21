@@ -7,15 +7,21 @@ import { backendUrl } from "@/lib/utils";
 
 import { formatToCurrency } from "./data";
 import { Table, TRow, splitAndAddEllipses } from "./Table";
-import { INetworks } from "./types";
+import { INetworks, Networks } from "./types";
 
 export function LargestCurrentHolderTable() {
-  const [selectNetwork, setNetwork] = useState<INetworks>("eth");
+  const [selectNetwork, setNetwork] = useState<INetworks>("celo");
 
   const fetcher = (url: string) =>
-    axios.get(url).then((res) => {
-      return res.data as ILargestHolder[];
-    });
+    axios
+      .get(url, {
+        params: {
+          network: selectNetwork,
+        },
+      })
+      .then((res) => {
+        return res.data as ILargestHolder[];
+      });
 
   const { data } = useSWR(`${backendUrl}/api/largest-current-holders`, fetcher);
 
@@ -26,16 +32,17 @@ export function LargestCurrentHolderTable() {
         headers={["Holder", "Amount"]}
         others={
           <select
+            className="w-full p-2 mb-1 outline-none border-none"
+            value={Networks[selectNetwork]}
             onChange={(e) => {
               setNetwork(e.target.value as INetworks);
             }}
-            className="w-full p-2 mb-3"
           >
-            <option value={"eth"}>Ethereum</option>
-            <option value={"eth"}>Celo</option>
-            <option value={"base"}>Base</option>
-            <option value={"arbitrum"}>Arbitrum</option>
-            <option value={"bsc"}>Bsc</option>
+            {Object.keys(Networks).map((val, i) => (
+              <option key={i} value={val}>
+                {Networks[val as INetworks]}
+              </option>
+            ))}
           </select>
         }
       >

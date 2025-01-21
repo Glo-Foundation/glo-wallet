@@ -41,13 +41,13 @@ export type ILargestHolder = {
   token_a_value_held: number;
   tx_from: string;
 };
-export const fetchLargestHolder = async () => {
+export const fetchLargestHolder = async (network?: string) => {
   const queryId = 4593240;
 
   const row = await _getDuneQuery({
     queryId,
     params: {
-      "Chain For Token A No1": "base",
+      "Chain For Token A No1": network || "celo",
       "Token A No1 Address": "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3",
       "Token A No1 Held More Than": 2,
     },
@@ -63,13 +63,13 @@ export type ILargestMonthlyHolder = {
   avg_monthly_balance: number;
   token_a_value_avg: number;
 };
-export const fetchLargestHoldersForPastMonth = async () => {
+export const fetchLargestHoldersForPastMonth = async (network?: string) => {
   const queryId = 4594378;
 
   const row = await _getDuneQuery({
     queryId,
     params: {
-      "Chain For Token A No1": "celo",
+      "Chain For Token A No1": network || "celo",
       "Token A No1 Address": "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3",
       "Token A No1 Held More Than": 2,
     },

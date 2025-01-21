@@ -23,4 +23,11 @@ export type ITable = {
   children: ReactNode;
   others?: ReactNode;
 };
-export type INetworks = "celo" | "eth" | "base" | "bsc" | "arbitrum";
+export type INetworks = "celo" | "ethereum" | "base" | "arbitrum";
+
+export const Networks: Record<INetworks, string> = {
+  celo: "Celo",
+  ethereum: "Ethereum",
+  base: "Base",
+  arbitrum: "Arbitrum",
+};
