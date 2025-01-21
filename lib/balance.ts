@@ -233,7 +233,8 @@ export const getStellarTxs = async (
           ),
           record["source_account_sequence"],
         ] as [Date, StellarSdk.Operation.Payment[], string]
-    );
+    )
+    .filter((record) => record[1].length); // Filter out empty ops lists
 };
 
 const calculateStellarBalance = async (address: string, onDate: Date) => {
