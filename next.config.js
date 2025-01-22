@@ -21,6 +21,10 @@ const nextConfig = {
         destination: "/",
       },
       {
+        source: "/sign-in/:id",
+        destination: "/",
+      },
+      {
         source: "/purchased-sequence",
         destination: "/",
       },
