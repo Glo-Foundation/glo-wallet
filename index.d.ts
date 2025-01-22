@@ -30,9 +30,4 @@ type CTA = {
   isCompleted: boolean;
 };
 
-type WC_STATE =
-  | "NOT_READY"
-  | "WC_PREP"
-  | "WC_READY"
-  | "STELLAR_PREP"
-  | "STELLAR_READY";
+type WC_STATE = "WC_PREP" | "WC_READY" | "STELLAR_PREP" | "STELLAR_READY";

@@ -63,7 +63,7 @@ export default function UserAuthModal({
   const { closeModal } = useContext(ModalContext);
 
   const [wcState, setRawWcState] = useState<WC_STATE>(
-    (Cookies.get(WC_COOKIE) as WC_STATE) || "NOT_READY"
+    (Cookies.get(WC_COOKIE) as WC_STATE) || "STELLAR_PREP"
   );
   const setWcState = (state: WC_STATE) => {
     Cookies.set(WC_COOKIE, state);
