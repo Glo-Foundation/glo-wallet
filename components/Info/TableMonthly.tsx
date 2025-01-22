@@ -36,7 +36,6 @@ export function LargestMonthlyHolderTable() {
         others={
           <select
             className="w-full p-2 mb-1 outline-none border-none"
-            value={Networks[selectNetwork]}
             onChange={(e) => {
               setNetwork(e.target.value as INetworks);
             }}
