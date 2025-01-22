@@ -18,7 +18,7 @@ import { useWalletModal } from "@vechain/dapp-kit-react";
 import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { useConnect } from "wagmi";
 
@@ -53,11 +53,13 @@ const ToS = () => (
 type UserAuthModalProps = {
   setStellarConnected: (bool: boolean) => void;
   setStellarAddress: (str: string) => void;
+  connector?: string;
 };
 
 export default function UserAuthModal({
   setStellarConnected,
   setStellarAddress,
+  connector,
 }: UserAuthModalProps) {
   const { connect, connectors } = useConnect();
   const { closeModal } = useContext(ModalContext);
@@ -103,9 +105,8 @@ export default function UserAuthModal({
         if (["STELLAR_PREP", "STELLAR_READY"].includes(wcState)) {
           setWcState("STELLAR_READY");
         } else {
-          console.log("loool");
-          setWcReloadReq(true);
           setWcState("STELLAR_PREP");
+          window.open("/sign-in/stellar", "_self");
           return;
         }
 
@@ -129,15 +130,12 @@ export default function UserAuthModal({
         closeModal();
       } else {
         setWcState("WC_PREP");
-        setWcReloadReq(true);
-        return;
+        window.open("/sign-in/wc", "_self");
       }
     });
   };
 
   async function connectStellar() {
-    // setRecentlyUsedWc("stellar");
-    // Cookies.set(WC_COOKIE, "stellar");
     const stellarKit = new StellarWalletsKit({
       network: isProd() ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET,
       selectedWalletId: XBULL_ID,
@@ -170,20 +168,22 @@ export default function UserAuthModal({
         setStellarAddress(address);
       },
     });
+
+    closeModal();
   }
 
-  const ReloadWarn = () => (
-    <p className="text-sm text-red-400">
-      (
-      <span
-        className="underline cursor-pointer z-50"
-        onClick={() => window.open("/sign-in", "_self")}
-      >
-        Reload
-      </span>{" "}
-      this page to use <br /> WalletConnect on another chain)
-    </p>
-  );
+  useEffect(() => {
+    if (connector) {
+      const connectorMap: { [con: string]: () => void } = {
+        wc: connectWithWallectConnect,
+        stellar: connectStellar,
+      };
+      const fun = connectorMap[connector];
+      if (fun) {
+        fun();
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -205,10 +205,7 @@ export default function UserAuthModal({
             data-testid="stellar-login-button"
             onClick={() => connectWithConnector(99)}
           >
-            <div>
-              <h4>Stellar wallets</h4>
-              {wcReloadReq && !wcState.startsWith("STELLAR_") && <ReloadWarn />}
-            </div>
+            <h4>Stellar wallets</h4>
             <Image
               alt="stellar"
               src="/stellar-logo.svg"
@@ -257,10 +254,7 @@ export default function UserAuthModal({
             data-testid="walletconnect-login-button"
             onClick={() => connectWithWallectConnect()}
           >
-            <div>
-              <h4>WalletConnect (EVM)</h4>
-              {wcReloadReq && !wcState.startsWith("WC_") && <ReloadWarn />}
-            </div>
+            <h4>WalletConnect (EVM)</h4>
 
             <Image
               alt="walletconnect"
