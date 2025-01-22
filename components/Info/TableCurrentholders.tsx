@@ -33,7 +33,6 @@ export function LargestCurrentHolderTable() {
         others={
           <select
             className="w-full p-2 mb-1 outline-none border-none"
-            value={Networks[selectNetwork]}
             onChange={(e) => {
               setNetwork(e.target.value as INetworks);
             }}
@@ -55,7 +54,7 @@ export function LargestCurrentHolderTable() {
                 key={i}
                 td={[
                   splitAndAddEllipses(val.tx_from),
-                  formatToCurrency(val.token_a_value_held).slice(0, 9),
+                  formatToCurrency(val.token_a_value_held).slice(0, 12),
                 ]}
               />
             );

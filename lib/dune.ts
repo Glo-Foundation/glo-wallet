@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { INetworks } from "@/components/Info/types";
+
 const _getDuneQuery = async (props: {
   queryId: number;
   params?: Record<string, unknown>;
@@ -41,19 +43,23 @@ export type ILargestHolder = {
   token_a_value_held: number;
   tx_from: string;
 };
-export const fetchLargestHolder = async (network?: string) => {
-  const queryId = 4593240;
+
+export const fetchLargestHolder = async (network?: INetworks) => {
+  const networkQueries: Record<INetworks, number> = {
+    celo: 4603891,
+    ethereum: 4603896,
+    base: 4603900,
+    optimism: 4603907,
+    arbitrum: 4603904,
+  };
 
   const row = await _getDuneQuery({
-    queryId,
+    queryId: !!network ? networkQueries[network] : 4603891,
     params: {
-      "Chain For Token A No1": network || "celo",
-      "Token A No1 Address": "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3",
-      "Token A No1 Held More Than": 2,
+      limit: 10,
     },
   });
 
-  // console.log("fetchLargestHolder Rows: ", row);
   return row as ILargestHolder[];
 };
 
@@ -63,19 +69,22 @@ export type ILargestMonthlyHolder = {
   avg_monthly_balance: number;
   token_a_value_avg: number;
 };
-export const fetchLargestHoldersForPastMonth = async (network?: string) => {
-  const queryId = 4594378;
+
+export const fetchLargestHoldersForPastMonth = async (network?: INetworks) => {
+  const networkQueries: Record<INetworks, number> = {
+    ethereum: 4600571,
+    celo: 4604034,
+    base: 4604058,
+    optimism: 4604051,
+    arbitrum: 4604061,
+  };
 
   const row = await _getDuneQuery({
-    queryId,
+    queryId: !!network ? networkQueries[network] : 4600571,
     params: {
-      "Chain For Token A No1": network || "celo",
-      "Token A No1 Address": "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3",
-      "Token A No1 Held More Than": 2,
+      limit: 10,
     },
   });
-
-  console.log("fetchLargestHoldersForPastMonth Rows: ", row);
 
   return row as ILargestMonthlyHolder[];
 };
