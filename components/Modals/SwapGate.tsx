@@ -29,12 +29,13 @@ export default function SwapGate(props: Props) {
     ?.toString()
     .startsWith("ve");
   const isWc = connector?.id === "walletConnect";
+  const isSafe = connector?.id === "safe";
 
   if (isSequenceWallet) {
     return <BuyWithCoinbaseSequenceModal buyAmount={buyAmount} />;
   }
 
-  if (isMetaMask || isCoinbaseWallet || isWc) {
+  if (isMetaMask || isCoinbaseWallet || isWc || isSafe) {
     return <SwapModal buyAmount={buyAmount} />;
   }
 

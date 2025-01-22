@@ -34,6 +34,7 @@ import {
 import { ModalContext } from "@/lib/context";
 import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
+import { useAutoConnect } from "@/lib/useAutoConnect";
 import {
   api,
   getAllowedChains,
@@ -184,6 +185,12 @@ export default function Home() {
   const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();
+
+  const isSafe =
+    window.location.ancestorOrigins.length > 0 &&
+    window.location.ancestorOrigins[0] === "https://app.safe.global";
+  useAutoConnect(isSafe);
+
   useEffect(() => {
     if ((!isConnected && !showedLogin) || asPath.startsWith("/sign-in")) {
       const connector = asPath.replace("/sign-in/", "");

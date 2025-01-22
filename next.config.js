@@ -79,6 +79,10 @@ const nextConfig = {
         source: "/.well-known/stellar.toml",
         headers: [{ key: "Content-Type", value: "text/plain" }],
       },
+      {
+        source: "/manifest.json",
+        headers: [{ key: "Access-Control-Allow-Origin", value: "*" }],
+      },
     ];
   },
   transpilePackages: ["@0xsquid/widget", "@0xsquid/react-hooks"],
