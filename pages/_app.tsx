@@ -13,7 +13,12 @@ import { useEffect, useRef, useState } from "react";
 import "react-tooltip/dist/react-tooltip.css";
 import { createClient, http } from "viem";
 import { createConfig, WagmiProvider } from "wagmi";
-import { coinbaseWallet, metaMask, walletConnect } from "wagmi/connectors";
+import {
+  coinbaseWallet,
+  metaMask,
+  safe,
+  walletConnect,
+} from "wagmi/connectors";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
@@ -89,6 +94,7 @@ const config = createConfig({
           },
         })
       : metaMask(),
+    safe(),
   ],
 });
 

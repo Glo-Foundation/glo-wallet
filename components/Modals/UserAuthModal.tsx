@@ -71,7 +71,6 @@ export default function UserAuthModal({
     Cookies.set(WC_COOKIE, state);
     setRawWcState(state);
   };
-  const [wcReloadReq, setWcReloadReq] = useState(false);
 
   const { open } = useWalletModal();
 
@@ -98,10 +97,6 @@ export default function UserAuthModal({
   const connectWithConnector = async (index: number) => {
     requireUserAgreed(async () => {
       if (index == 99) {
-        if (wcReloadReq) {
-          return;
-        }
-
         if (["STELLAR_PREP", "STELLAR_READY"].includes(wcState)) {
           setWcState("STELLAR_READY");
         } else {
@@ -121,9 +116,6 @@ export default function UserAuthModal({
 
   const connectWithWallectConnect = () => {
     requireUserAgreed(async () => {
-      if (wcReloadReq) {
-        return;
-      }
       if (["WC_PREP", "WC_READY"].includes(wcState)) {
         setWcState("WC_READY");
         await connectWithConnector(3);
