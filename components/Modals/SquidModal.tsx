@@ -1,6 +1,6 @@
 import { SquidWidget } from "@0xsquid/widget";
 import Image from "next/image";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { celo } from "viem/chains";
 import { useAccount } from "wagmi";
 

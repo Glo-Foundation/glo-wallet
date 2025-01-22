@@ -28,12 +28,13 @@ export default function SwapGate(props: Props) {
   const isVe = apiInstance?.defaults.headers["glo-pub-address"]
     ?.toString()
     .startsWith("ve");
+  const isWc = connector?.id === "walletConnect";
 
   if (isSequenceWallet) {
     return <BuyWithCoinbaseSequenceModal buyAmount={buyAmount} />;
   }
 
-  if (isMetaMask || isCoinbaseWallet) {
+  if (isMetaMask || isCoinbaseWallet || isWc) {
     return <SwapModal buyAmount={buyAmount} />;
   }
 

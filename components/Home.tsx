@@ -185,11 +185,13 @@ export default function Home() {
 
   const { asPath, push } = useRouter();
   useEffect(() => {
-    if ((!isConnected && !showedLogin) || asPath === "/sign-in") {
+    if ((!isConnected && !showedLogin) || asPath.startsWith("/sign-in")) {
+      const connector = asPath.replace("/sign-in/", "");
       openModal(
         <UserAuthModal
           setStellarConnected={setStellarConnected}
           setStellarAddress={setStellarAddress}
+          connector={connector}
         />,
         "bg-transparent"
       );
