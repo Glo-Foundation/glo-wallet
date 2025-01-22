@@ -448,3 +448,5 @@ export const getOnRampUrl = (
     chainMap[name] || name
   }"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
 };
+
+export const WC_COOKIE = "recently-used-wc";
