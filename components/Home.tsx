@@ -192,7 +192,10 @@ export default function Home() {
   useAutoConnect(isSafe);
 
   useEffect(() => {
-    if ((!isConnected && !showedLogin) || asPath.startsWith("/sign-in")) {
+    if (
+      (!isConnected && !showedLogin && !isSafe) ||
+      asPath.startsWith("/sign-in")
+    ) {
       const connector = asPath.replace("/sign-in/", "");
       openModal(
         <UserAuthModal
