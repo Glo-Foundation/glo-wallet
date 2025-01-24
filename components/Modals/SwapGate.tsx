@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { apiInstance } from "@/lib/utils";
-import { buyWithStellarX, buyWithVerocket } from "@/payments";
+import { buyWithAqua, buyWithVerocket } from "@/payments";
 
 import { BuyBox } from "../BuyBox";
 
@@ -61,13 +61,13 @@ export default function SwapGate(props: Props) {
     return (
       <BoxBuyModal buyAmount={buyAmount}>
         <BuyBox
-          key="stellarx"
-          name="StellarX"
-          icon="/stellarx.png"
+          key="aquarius"
+          name="Aquarius"
+          icon="/aquarius.png"
           fees="0.1"
           worksFor="🔐 XLM"
           delay="⚡ Instant"
-          onClick={() => buyWithStellarX()}
+          onClick={() => buyWithAqua()}
         />
       </BoxBuyModal>
     );
