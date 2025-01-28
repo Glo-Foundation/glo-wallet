@@ -218,11 +218,6 @@ export const getUSDCToUSDGLOSwapDeeplink = (
       swapChain = dex === "Uniswap" ? "celo_alfajores" : "celo";
       break;
     }
-    case optimism.id: {
-      outputCurrency = getSmartContractAddress(optimism.id);
-      swapChain = "optimism";
-      break;
-    }
     case optimismSepolia.id: {
       outputCurrency = getSmartContractAddress(optimismSepolia.id);
       swapChain = "optimism_sepolia";
@@ -251,11 +246,17 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     case polygonMumbai.id: {
       outputCurrency = getSmartContractAddress(polygonMumbai.id);
       swapChain = dex === "Uniswap" ? "polygon_mumbai" : "polygon";
+      break;
     }
-    case polygon.id:
+    case polygon.id: {
+      outputCurrency = getSmartContractAddress(polygonMumbai.id);
+      swapChain = dex === "Uniswap" ? "polygon_mumbai" : "polygon";
+      break;
+    }
+    case optimism.id:
     default: {
-      outputCurrency = getSmartContractAddress(polygon.id);
-      swapChain = "polygon";
+      outputCurrency = getSmartContractAddress(optimism.id);
+      swapChain = "optimism";
       break;
     }
   }
