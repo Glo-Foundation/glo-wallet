@@ -249,8 +249,8 @@ export const getUSDCToUSDGLOSwapDeeplink = (
       break;
     }
     case polygon.id: {
-      outputCurrency = getSmartContractAddress(polygonMumbai.id);
-      swapChain = dex === "Uniswap" ? "polygon_mumbai" : "polygon";
+      outputCurrency = getSmartContractAddress(polygon.id);
+      swapChain = "polygon";
       break;
     }
     case optimism.id:
