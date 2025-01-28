@@ -160,11 +160,11 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     type: "",
   },
   ["REFUGEE_CRISIS"]: {
-    name: "Help refugees",
-    short_name: "Refugees",
+    name: "Strengthen humanitarian aid",
+    short_name: "Humanitarian",
     iconPath: "/refugee-camp.png",
     description:
-      "Save lives & build better futures for people forced to flee home",
+      "Help make moving aid money simple and borderless",
     type: "",
   },
   ["RETRO_PG_OP"]: {
@@ -197,11 +197,11 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     type: "",
   },
   ["ENDAOMENT"]: {
-    name: "Endaoment Universal Impact Pool",
+    name: "Endaoment Universal Impact",
     short_name: "Endaoment",
     iconPath: "/endaoment-logo.svg",
     description:
-      "Can't decide? Follow group wisdom. Fund the 50+ most popular charities on Endaoment",
+      "Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
 
