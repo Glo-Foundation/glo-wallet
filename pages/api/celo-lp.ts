@@ -1,22 +1,73 @@
+import axios from "axios";
+import { ethers } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 import { cacheExchange, createClient, fetchExchange, gql } from "urql";
 import { celo } from "viem/chains";
 
-import { chainConfig } from "@/lib/config";
+import { chainConfig, getChainRPCUrl } from "@/lib/config";
+import { getBalance } from "@/utils";
 
 export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { total, details } = await getCeloUniswapLpTVL();
+  const { total: totalUniswap, details: uniswapLps } =
+    await getCeloUniswapLpTVL();
 
+  const ubeswap = await getUbeswap();
+  const refi = await getRefi();
+  const total = totalUniswap + ubeswap + refi;
   return res.status(200).json({
     total,
-    details: {
-      ...details,
+    breakdown: {
+      uniswapLps,
+      ubeswap,
+      "ReFi Medellin": refi,
     },
   });
 }
+
+const getRefi = async () => {
+  const contractAdr = "0x505E65f7D854d4a564b5486d59c91E1DfE627579";
+  const balance = await getBalance(contractAdr, celo.id);
+
+  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(celo.id));
+  const abi = [
+    "function funds() view returns (uint256, uint256, uint256, uint256)",
+  ];
+  const lendingContract = new ethers.Contract(contractAdr, abi, provider);
+
+  const res = await lendingContract.funds();
+  const totalFunds = res[0];
+
+  const scalar = BigInt(10 ** 3);
+  // Checks the lending contract, review total deposited amount, and subtract current amount in the contract.
+  const total = totalFunds / scalar - balance / BigInt(10 ** 18);
+
+  return Number(total);
+};
+
+const getUbeswap = async () => {
+  const { data: ipfsData } = await axios.get(
+    "https://api.ubeswap.org/api/ubeswap/farmv3/0x82774b5b1443759f20679a61497abf11115a4d0e2076caedf9d700a8c53f286f/ipfs-url"
+  );
+
+  const result = await axios.get(`${ipfsData.ipfsUrl}/metadata.json`);
+  const totalShares = BigInt(result.data.totalShares);
+
+  const {
+    data: {
+      result: { ethusd: celoPrice },
+    },
+  } = await axios.get(
+    `https://api.celoscan.io/api?module=stats&action=ethprice&apikey=${process.env.CELOSCAN_API_KEY}`
+  );
+
+  const total =
+    (Number(totalShares / BigInt(10 ** 18)) * parseFloat(celoPrice)) / 2;
+
+  return Math.round(total);
+};
 
 type ResType = {
   pools: [
