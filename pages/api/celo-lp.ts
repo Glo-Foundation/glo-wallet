@@ -8,13 +8,12 @@ export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const uniswapLp = await getCeloUniswapLpTVL();
-  const total = uniswapLp;
+  const { total, details } = await getCeloUniswapLpTVL();
 
   return res.status(200).json({
     total,
     details: {
-      uniswapLp,
+      ...details,
     },
   });
 }
@@ -27,9 +26,11 @@ type ResType = {
       totalValueLockedToken1: string;
       token0: {
         id: string;
+        symbol: string;
       };
       token1: {
         id: string;
+        symbol: string;
       };
     }
   ];
@@ -73,19 +74,27 @@ const getCeloUniswapLpTVL = async () => {
   const { data } = await client.query<ResType>(query, {}).toPromise();
   const pools = data?.pools;
 
+  const details: { [symbol: string]: number } = {};
+
   if (!pools) {
     console.error("Could not fetch data from Uniswap subgraph for Celo");
-    return 0;
+    return { total: 0, details };
   }
 
-  const lockedGlo = pools.map((pool) =>
-    pool.token0.id === gloToken
-      ? pool.totalValueLockedToken0
-      : pool.totalValueLockedToken1
-  );
-  const sumLockedGlo = Math.round(
-    lockedGlo.reduce((acc: number, cur: string) => acc + parseFloat(cur), 0)
-  );
+  let total = 0;
+  pools.forEach((pool) => {
+    const [token0, token1] = [pool.token0, pool.token1];
+    const [symbol, tvl] =
+      token0.id === gloToken
+        ? [token1.symbol, pool.totalValueLockedToken0]
+        : [token0.symbol, pool.totalValueLockedToken1];
+    if (!details[symbol]) {
+      details[symbol] = 0;
+    }
+    const value = Math.round(parseFloat(tvl));
+    details[symbol] += value;
+    total += value;
+  });
 
-  return sumLockedGlo;
+  return { total, details };
 };
