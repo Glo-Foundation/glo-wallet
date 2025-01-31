@@ -120,7 +120,8 @@ export default function Recipients({ yearlyYield }: Props) {
               <p className="ml-2 text-sm">Manage</p>
             </div>
           </div>
-          <p className="text-sm py-4 copy text-left">
+          {/* TODO: Temp disable yield */}
+          {/* <p className="text-sm py-4 copy text-left">
             {totalYield ? (
               <>
                 You fund up to <b>${yearlyYield.toFixed(2) || 0}</b> of the{" "}
@@ -132,7 +133,7 @@ export default function Recipients({ yearlyYield }: Props) {
                 You fund up to <b>${yearlyYield.toFixed(2) || 0}</b> per year.
               </>
             )}
-          </p>
+          </p> */}
         </section>
         <section>
           {selectedCharitiesMap.map(([key, charity]) => (

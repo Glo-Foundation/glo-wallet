@@ -57,7 +57,7 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [VECHAIN_TESTNET.id]: "0x89FD13624F64aaF03D1ff25ff5ce617cde65ee69",
 };
 
-export const defaultChain = () => (isProd() ? polygon : polygonMumbai);
+export const defaultChain = () => (isProd() ? optimism : optimismSepolia);
 export const defaultChainId = () => defaultChain().id;
 
 export const getSmartContractAddress = (chainId?: number) =>
