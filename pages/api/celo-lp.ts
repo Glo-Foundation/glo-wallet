@@ -6,7 +6,7 @@ export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const latest = await prisma.celoLiquidity.findFirst({
+  const yesterday = await prisma.celoLiquidity.findFirst({
     select: {
       total: true,
       breakdown: true,
@@ -63,7 +63,7 @@ export default async function handler(
   );
 
   return res.status(200).json({
-    latest,
+    yesterday,
     lastMonth: {
       avgTotal: Math.round(total),
       breakdown,
