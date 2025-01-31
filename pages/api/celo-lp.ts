@@ -1,151 +1,72 @@
-import axios from "axios";
-import { ethers } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
-import { cacheExchange, createClient, fetchExchange, gql } from "urql";
-import { celo } from "viem/chains";
 
-import { chainConfig, getChainRPCUrl } from "@/lib/config";
-import { getBalance } from "@/utils";
+import prisma from "@/lib/prisma";
 
 export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { total: totalUniswap, details: uniswapLps } =
-    await getCeloUniswapLpTVL();
+  const latest = await prisma.celoLiquidity.findFirst({
+    select: {
+      total: true,
+      breakdown: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
-  const ubeswap = await getUbeswap();
-  const refi = await getRefi();
-  const total = totalUniswap + ubeswap + refi;
+  const today = new Date();
+  const lastMonthRecords = await prisma.celoLiquidity.findMany({
+    select: {
+      total: true,
+      breakdown: true,
+    },
+    where: {
+      createdAt: {
+        // >= Last month 1st day
+        gte: new Date(today.getFullYear(), today.getMonth() - 1, 1),
+        // < First day of this month
+        lt: new Date(today.getFullYear(), today.getMonth(), 1),
+      },
+    },
+  });
+
+  const breakdownEntries: { [key: string]: number[] } = {};
+  let total = 0;
+  const daysLastMonth = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    0
+  ).getDate();
+  lastMonthRecords.forEach((record) => {
+    total += record.total;
+    Object.entries(record.breakdown || {}).forEach(([key, value]) => {
+      if (!breakdownEntries[key]) {
+        breakdownEntries[key] = [];
+      }
+      breakdownEntries[key].push(value);
+    });
+  });
+
+  total /= daysLastMonth;
+
+  const breakdown = Object.entries(breakdownEntries).reduce(
+    (res, [key, values]) => ({
+      ...res,
+      [key]: Math.round(
+        values.reduce((acc, cur) => acc + cur, 0) / daysLastMonth
+      ),
+    }),
+    {}
+  );
+
   return res.status(200).json({
-    total,
-    breakdown: {
-      uniswapLps,
-      ubeswap,
-      "ReFi Medellin": refi,
+    latest,
+    lastMonth: {
+      avgTotal: Math.round(total),
+      breakdown,
     },
   });
 }
-
-const getRefi = async () => {
-  const contractAdr = "0x505E65f7D854d4a564b5486d59c91E1DfE627579";
-  const balance = await getBalance(contractAdr, celo.id);
-
-  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(celo.id));
-  const abi = [
-    "function funds() view returns (uint256, uint256, uint256, uint256)",
-  ];
-  const lendingContract = new ethers.Contract(contractAdr, abi, provider);
-
-  const res = await lendingContract.funds();
-  const totalFunds = res[0];
-
-  const scalar = BigInt(10 ** 3);
-  // Checks the lending contract, review total deposited amount, and subtract current amount in the contract.
-  const total = totalFunds / scalar - balance / BigInt(10 ** 18);
-
-  return Number(total);
-};
-
-const getUbeswap = async () => {
-  const { data: ipfsData } = await axios.get(
-    "https://api.ubeswap.org/api/ubeswap/farmv3/0x82774b5b1443759f20679a61497abf11115a4d0e2076caedf9d700a8c53f286f/ipfs-url"
-  );
-
-  const result = await axios.get(`${ipfsData.ipfsUrl}/metadata.json`);
-  const totalShares = BigInt(result.data.totalShares);
-
-  const {
-    data: {
-      result: { ethusd: celoPrice },
-    },
-  } = await axios.get(
-    `https://api.celoscan.io/api?module=stats&action=ethprice&apikey=${process.env.CELOSCAN_API_KEY}`
-  );
-
-  const total =
-    (Number(totalShares / BigInt(10 ** 18)) * parseFloat(celoPrice)) / 2;
-
-  return Math.round(total);
-};
-
-type ResType = {
-  pools: [
-    {
-      id: string;
-      totalValueLockedToken0: string;
-      totalValueLockedToken1: string;
-      token0: {
-        id: string;
-        symbol: string;
-      };
-      token1: {
-        id: string;
-        symbol: string;
-      };
-    }
-  ];
-};
-
-const UNISWAP_V3_SUBPGRAPH = `https://gateway.thegraph.com/api/${process.env.THRGRAPH_API_KEY}/subgraphs/id/ESdrTJ3twMwWVoQ1hUE2u7PugEHX3QkenudD6aXCkDQ4`;
-
-const getCeloUniswapLpTVL = async () => {
-  const client = createClient({
-    url: UNISWAP_V3_SUBPGRAPH,
-    exchanges: [cacheExchange, fetchExchange],
-  });
-
-  const gloToken = chainConfig[celo.id].toLowerCase();
-
-  const query = gql`
-    query {
-      pools(
-        where: {
-          or: [
-            { token0: "${gloToken}" }
-            { token1: "${gloToken}" }
-          ]
-        }
-      ) {
-        id
-        totalValueLockedToken0
-        totalValueLockedToken1
-        token0 {
-            id
-            symbol
-        }
-        token1 {
-            id
-            symbol
-        }
-      }
-    }
-  `;
-
-  const { data } = await client.query<ResType>(query, {}).toPromise();
-  const pools = data?.pools;
-
-  const details: { [symbol: string]: number } = {};
-
-  if (!pools) {
-    console.error("Could not fetch data from Uniswap subgraph for Celo");
-    return { total: 0, details };
-  }
-
-  let total = 0;
-  pools.forEach((pool) => {
-    const [token0, token1] = [pool.token0, pool.token1];
-    const [symbol, tvl] =
-      token0.id === gloToken
-        ? [token1.symbol, pool.totalValueLockedToken0]
-        : [token0.symbol, pool.totalValueLockedToken1];
-    if (!details[symbol]) {
-      details[symbol] = 0;
-    }
-    const value = Math.round(parseFloat(tvl));
-    details[symbol] += value;
-    total += value;
-  });
-
-  return { total, details };
-};

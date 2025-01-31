@@ -77,3 +77,10 @@ model FundingChoicesCache {
   createdAt DateTime @default(now())
   choices   Json     // Stores funding choices as JSON
 }
+
+model CeloLiquidity {
+  id          Int      @id @default(autoincrement())
+  total       Int
+  breakdown   Json    
+  createdAt   DateTime @default(now())
+}

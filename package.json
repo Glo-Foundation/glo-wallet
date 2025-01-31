@@ -7,6 +7,7 @@
     "build": "npx prisma generate && next build",
     "start": "next start",
     "db:migrate-deploy": "prisma migrate deploy",
+    "db:generate-migration": "prisma migrate dev",
     "preinstall": "bash preinstall.sh",
     "postinstall": "prisma generate && npm run db:migrate-deploy",
     "lint": "next lint",

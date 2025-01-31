@@ -12,6 +12,11 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed" });
   }
 
+  const authHeader = req.headers["authorization"];
+  if (authHeader !== `Bearer ${process.env.WEBHOOK_API_KEY}`) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
   try {
     // Fetch funding choices
     const allFundingChoices = await prisma.charityChoice.findMany({
