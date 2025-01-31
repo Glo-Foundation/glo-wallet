@@ -7,6 +7,7 @@
     "build": "npx prisma generate && next build",
     "start": "next start",
     "db:migrate-deploy": "prisma migrate deploy",
+    "db:generate-migration": "prisma migrate dev",
     "preinstall": "bash preinstall.sh",
     "postinstall": "prisma generate && npm run db:migrate-deploy",
     "lint": "next lint",
@@ -41,6 +42,7 @@
     "express-rate-limit": "^6.10.0",
     "framer-motion": "^10.12.17",
     "google-spreadsheet": "^3.3.0",
+    "graphql": "^16.10.0",
     "idriss-crypto": "^2.0.0",
     "js-cookie": "^3.0.5",
     "lottie-react": "^2.4.0",
@@ -55,6 +57,7 @@
     "react-tooltip": "^5.13.1",
     "swr": "^2.2.5",
     "typescript": "5.0.4",
+    "urql": "^4.2.1",
     "viem": "^2.21.44",
     "wagmi": "^2.14.7",
     "zustand": "^4.3.8"
