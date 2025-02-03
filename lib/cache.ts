@@ -26,3 +26,21 @@ export const get = (key: string) => {
 
   return item.value;
 };
+
+export async function cachedOrFetch<T>(
+  key: string,
+  fetchMethod: () => Promise<T>
+): Promise<T> {
+  const cached = get(key);
+
+  if (cached) {
+    const json = JSON.parse(cached);
+    return json as T;
+  }
+
+  const rows = await fetchMethod();
+
+  set(key, JSON.stringify(rows), 60 * 60);
+
+  return rows;
+}
