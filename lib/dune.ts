@@ -88,3 +88,11 @@ export const fetchLargestHoldersForPastMonth = async (network?: INetworks) => {
 
   return row as ILargestMonthlyHolder[];
 };
+
+export const fetchHoldersList = async () => {
+  const rows = await _getDuneQuery({ queryId: 4663628 });
+  return {
+    total: rows[0],
+    data: [...rows.slice(1)] as { address: string; balance: number }[],
+  };
+};

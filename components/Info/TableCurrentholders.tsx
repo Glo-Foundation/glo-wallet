@@ -6,7 +6,7 @@ import { ILargestHolder } from "@/lib/dune";
 import { backendUrl } from "@/lib/utils";
 
 import { formatToCurrency } from "./data";
-import { Table, TRow, splitAndAddEllipses } from "./Table";
+import { splitAndAddEllipses, Table, TRow } from "./Table";
 import { INetworks, Networks } from "./types";
 
 export function LargestCurrentHolderTable() {

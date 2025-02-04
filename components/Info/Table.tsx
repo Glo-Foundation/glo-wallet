@@ -19,7 +19,7 @@ export function TRow(props: { td: string[] }) {
   return (
     <tr className="odd:bg-white even:bg-gray-50 border-b dark:border-gray-300">
       {props.td.map((val, i) => (
-        <td key={i} className="px-6 py-4 text-gray-600">
+        <td key={i} className="px-3 py-3 text-gray-600">
           {val}
         </td>
       ))}
@@ -32,7 +32,7 @@ function THead(props: { data: string[] }) {
     <thead className="text-xs text-gray-700 uppercase bg-gray-100 ">
       <tr>
         {props.data.map((text, i) => (
-          <th scope="col" className="px-6 py-3" key={i}>
+          <th scope="col" className="px-4 py-3" key={i}>
             {text}
           </th>
         ))}
