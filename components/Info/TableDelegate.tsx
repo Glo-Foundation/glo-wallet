@@ -1,8 +1,6 @@
 import axios from "axios";
 import useSWR from "swr";
 
-import { backendUrl } from "@/lib/utils";
-
 import { Table, TRow } from "./Table";
 
 const formatDelegate = (payload: any) => {
@@ -26,7 +24,7 @@ export function DelegateTable() {
       return formatDelegate(res.data);
     });
 
-  const { data } = useSWR(`${backendUrl}/api/funding/current`, fetcher);
+  const { data } = useSWR(`/api/funding/current`, fetcher);
 
   if (!data) return <p>...</p>;
   return (

@@ -3,7 +3,6 @@ import { useState } from "react";
 import useSWR from "swr";
 
 import { ILargestHolder } from "@/lib/dune";
-import { backendUrl } from "@/lib/utils";
 
 import { formatToCurrency } from "./data";
 import { splitAndAddEllipses, Table, TRow } from "./Table";
@@ -23,7 +22,7 @@ export function LargestCurrentHolderTable() {
         return res.data as ILargestHolder[];
       });
 
-  const { data } = useSWR(`${backendUrl}/api/largest-current-holders`, fetcher);
+  const { data } = useSWR(`/api/largest-current-holders`, fetcher);
 
   return (
     <div className="my-5">

@@ -3,7 +3,6 @@ import { useState } from "react";
 import useSWR from "swr";
 
 import { ILargestMonthlyHolder } from "@/lib/dune";
-import { backendUrl } from "@/lib/utils";
 
 import { formatToCurrency } from "./data";
 import { splitAndAddEllipses, Table, TRow } from "./Table";
@@ -23,7 +22,7 @@ export function LargestMonthlyHolderTable() {
         return res.data as ILargestMonthlyHolder[];
       });
 
-  const { data } = useSWR(`${backendUrl}/api/largest-monthly-holders`, fetcher);
+  const { data } = useSWR(`/api/largest-monthly-holders`, fetcher);
 
   if (!data) return <p>...</p>;
 
