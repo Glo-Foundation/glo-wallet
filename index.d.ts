@@ -29,3 +29,5 @@ type CTA = {
   type: CTAType;
   isCompleted: boolean;
 };
+
+type WC_STATE = "WC_PREP" | "WC_READY" | "STELLAR_PREP" | "STELLAR_READY";

@@ -1,25 +1,25 @@
 import { useConnex, useWallet } from "@vechain/dapp-kit-react";
-import { erc20ABI } from "@wagmi/core";
 import {
-  mainnet,
-  polygon,
-  celo,
-  optimism,
   arbitrum,
-  goerli,
-  polygonMumbai,
-  celoAlfajores,
-  optimismSepolia,
   arbitrumSepolia,
   base,
   baseSepolia,
+  celo,
+  celoAlfajores,
+  goerli,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  polygon,
+  polygonMumbai,
   vechain,
 } from "@wagmi/core/chains";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { erc20Abi } from "viem";
 import { useAccount, useBalance, useEnsName, useSwitchChain } from "wagmi";
 
 import Balance from "@/components/Balance";
@@ -34,17 +34,23 @@ import {
 import { ModalContext } from "@/lib/context";
 import { getIdrissName } from "@/lib/idriss";
 import { useUserStore } from "@/lib/store";
+import { useAutoConnect } from "@/lib/useAutoConnect";
 import {
-  getAllowedChains,
   api,
+  getAllowedChains,
+  horizonUrl,
   initApi,
   isProd,
-  horizonUrl,
 } from "@/lib/utils";
-import { customFormatBalance, getTotalGloBalance } from "@/utils";
-import { getUSDCContractAddress } from "@/utils";
+import {
+  customFormatBalance,
+  getTotalGloBalance,
+  getUSDCContractAddress,
+} from "@/utils";
 
 import Header from "./Header";
+import BuyWithCoinbaseSequenceModal from "./Modals/BuyWithCoinbaseSequenceModal";
+import SwapGate from "./Modals/SwapGate";
 import UserAuthModal from "./Modals/UserAuthModal";
 
 const startBalance = (decimals: number) => ({
@@ -78,7 +84,7 @@ export default function Home() {
       // TODO: Could be replaced with Viem confifured for Ve and custom Ve testnet
       connex.thor
         .account(chainConfig[isProd() ? vechain.id : -1]) // TODO:
-        .method(erc20ABI.find((x) => x.name === "balanceOf")!)
+        .method(erc20Abi.find((x) => x.name === "balanceOf")!)
         .call(veAddress)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((result: any) => {
@@ -179,12 +185,23 @@ export default function Home() {
   const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();
+
+  const isSafe =
+    window.location.ancestorOrigins.length > 0 &&
+    window.location.ancestorOrigins[0] === "https://app.safe.global";
+  useAutoConnect(isSafe);
+
   useEffect(() => {
-    if ((!isConnected && !showedLogin) || asPath === "/sign-in") {
+    if (
+      (!isConnected && !showedLogin && !isSafe) ||
+      asPath.startsWith("/sign-in")
+    ) {
+      const connector = asPath.replace("/sign-in/", "");
       openModal(
         <UserAuthModal
           setStellarConnected={setStellarConnected}
           setStellarAddress={setStellarAddress}
+          connector={connector}
         />,
         "bg-transparent"
       );
@@ -306,8 +323,17 @@ export default function Home() {
   }, [isConnected, stellarConnected, veConnected]);
 
   useEffect(() => {
-    if (isConnected && asPath === "/buy") {
+    if (!isConnected) {
+      return;
+    }
+    if (asPath === "/buy") {
       openModal(<BuyGloModal totalBalance={1000} />);
+      push("/");
+    } else if (asPath === "/purchased-coinbase") {
+      openModal(<SwapGate buyAmount={1000} />);
+      push("/");
+    } else if (asPath === "/purchased-sequence") {
+      openModal(<BuyWithCoinbaseSequenceModal buyAmount={1000} />);
       push("/");
     }
   }, []);

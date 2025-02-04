@@ -1,6 +1,5 @@
 import { Operation } from "@stellar/stellar-sdk";
-import { Chain } from "@wagmi/core";
-import { celo, celoAlfajores, vechain } from "@wagmi/core/chains";
+import { celo, celoAlfajores, Chain, vechain } from "@wagmi/core/chains";
 import axios from "axios";
 
 import { getChainBlockNumber, getStellarTxs } from "@/lib/balance";
@@ -243,19 +242,14 @@ export const getAvgStellarMarketCap = async (
   endDate: Date = new Date()
 ) => {
   const issuer = "GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV";
-  const txs = await getStellarTxs(issuer, startDate);
+  const res = await getStellarTxs(issuer, startDate);
 
-  const ops: Operations[] = txs
-    .reverse()
-    .filter((x) => x.operations[0].type === "payment")
-    .map((x) => ({
-      value: BigInt(
-        (x.operations[0] as Operation.Payment).amount.replace(".", "")
-      ),
-      ts: new Date(parseInt(x.timeBounds?.maxTime || "0") * 1000),
-      blockNumber: parseInt(x.sequence),
-      isMint: (x.operations[0] as Operation.Payment).destination !== issuer,
-    }));
+  const ops: Operations[] = res.reverse().map(([date, x, seq]) => ({
+    value: BigInt((x[0] as Operation.Payment).amount.replace(".", "")),
+    ts: date,
+    blockNumber: parseInt(seq),
+    isMint: x[0].destination !== issuer,
+  }));
 
   const endDateIndex = ops.findIndex((x) => x.ts >= endDate);
 

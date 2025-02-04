@@ -1,17 +1,18 @@
-import { Chain, FetchBalanceResult } from "@wagmi/core";
+import { GetBalanceReturnType } from "@wagmi/core";
 import {
+  arbitrum,
+  arbitrumSepolia,
+  base,
+  baseSepolia,
   celo,
   celoAlfajores,
+  Chain,
   goerli,
   mainnet,
   optimism,
   optimismSepolia,
   polygon,
   polygonMumbai,
-  arbitrum,
-  arbitrumSepolia,
-  base,
-  baseSepolia,
 } from "@wagmi/core/chains";
 import EthDater from "ethereum-block-by-date";
 import { ethers } from "ethers";
@@ -148,7 +149,7 @@ export const getUSDCContractAddress = (chain: Chain): `0x${string}` => {
       return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     }
     case celo.id: {
-      return "0xef4229c8c3250C675F21BCefa42f58EfbfF6002a";
+      return "0xcebA9300f2b948710d2653dD7B07f33A8B32118C";
     }
     case celoAlfajores.id: {
       return "0x5263F75FFB7384690818BeAEa62D7313B69f2A9c";
@@ -217,11 +218,6 @@ export const getUSDCToUSDGLOSwapDeeplink = (
       swapChain = dex === "Uniswap" ? "celo_alfajores" : "celo";
       break;
     }
-    case optimism.id: {
-      outputCurrency = getSmartContractAddress(optimism.id);
-      swapChain = "optimism";
-      break;
-    }
     case optimismSepolia.id: {
       outputCurrency = getSmartContractAddress(optimismSepolia.id);
       swapChain = "optimism_sepolia";
@@ -250,11 +246,17 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     case polygonMumbai.id: {
       outputCurrency = getSmartContractAddress(polygonMumbai.id);
       swapChain = dex === "Uniswap" ? "polygon_mumbai" : "polygon";
+      break;
     }
-    case polygon.id:
-    default: {
+    case polygon.id: {
       outputCurrency = getSmartContractAddress(polygon.id);
       swapChain = "polygon";
+      break;
+    }
+    case optimism.id:
+    default: {
+      outputCurrency = getSmartContractAddress(optimism.id);
+      swapChain = "optimism";
       break;
     }
   }
@@ -318,8 +320,8 @@ export const hexToNumber = (hex: string): number => {
 };
 
 export const getTotalGloBalance = (
-  balances: (FetchBalanceResult | undefined)[]
-): FetchBalanceResult => {
+  balances: (GetBalanceReturnType | undefined)[]
+): GetBalanceReturnType => {
   let totalBalanceValue = 0;
   for (const balance of balances) {
     if (balance) {
@@ -336,7 +338,7 @@ export const getTotalGloBalance = (
 };
 
 export const customFormatBalance = (
-  balance: FetchBalanceResult | undefined
+  balance: GetBalanceReturnType | undefined
 ): {
   yearlyYield: number;
   yearlyYieldFormatted: string;
@@ -387,9 +389,14 @@ export const getBlockNumber = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dater = new EthDater(provider as any);
 
-  const blockObject = await dater.getDate(date.toString());
+  try {
+    const blockObject = await dater.getDate(date.toString());
 
-  return blockObject.block;
+    return blockObject.block;
+  } catch (err) {
+    console.log(`Can't get block number for chain ${chainId}`);
+    return 0;
+  }
 };
 
 export const neueHaasGrotesk = localFont({
@@ -430,7 +437,17 @@ export const getOnRampUrl = (
   buyAmount: number,
   redirectUrl: string,
   chain?: Chain
-) =>
-  `https://pay.coinbase.com/buy/select-asset?appId=${
+) => {
+  const chainMap: { [key: string]: string } = {
+    "op mainnet": "optimism",
+    "arbitrum one": "arbitrum",
+  };
+  const name = chain?.name.toLowerCase() || "";
+  return `https://pay.coinbase.com/buy/select-asset?appId=${
     process.env.NEXT_PUBLIC_CPD_PROJECT_ID
-  }&addresses={"${address}":["${chain?.name.toLowerCase()}"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
+  }&addresses={"${address}":["${
+    chainMap[name] || name
+  }"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
+};
+
+export const WC_COOKIE = "recently-used-wc";

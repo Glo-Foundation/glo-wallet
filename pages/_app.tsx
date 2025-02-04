@@ -1,24 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
-import "@coinbase/onchainkit/styles.css";
 import "@/styles/globals.css";
-import "react-tooltip/dist/react-tooltip.css";
 import { sequenceWallet } from "@0xsequence/wagmi-connector";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
+import "@coinbase/onchainkit/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WalletConnectOptions } from "@vechain/dapp-kit";
+import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
+import "react-tooltip/dist/react-tooltip.css";
 import { createClient, http } from "viem";
 import { createConfig, WagmiProvider } from "wagmi";
-import { metaMask, coinbaseWallet } from "wagmi/connectors";
+import {
+  coinbaseWallet,
+  metaMask,
+  safe,
+  walletConnect,
+} from "wagmi/connectors";
 
 import Analytics from "@/components/Analytics";
 import Toast from "@/components/Toast";
 import { defaultChainId, getChainRPCUrl } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
-import { neueHaasGrotesk, polySans } from "@/utils";
+import { neueHaasGrotesk, polySans, WC_COOKIE } from "@/utils";
 
 import { getChains, isProd } from "../lib/utils";
 
@@ -77,6 +83,18 @@ const config = createConfig({
     coinbaseWallet({
       appName: "Glo Dollar",
     }),
+    ["WC_READY", "WC_PREP"].includes(Cookies.get(WC_COOKIE) || "")
+      ? walletConnect({
+          projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
+          showQrModal: true,
+          qrModalOptions: {
+            themeVariables: {
+              "--wcm-z-index": "11",
+            },
+          },
+        })
+      : metaMask(),
+    safe(),
   ],
 });
 

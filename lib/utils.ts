@@ -1,19 +1,18 @@
 import { Charity } from "@prisma/client";
-// import { Chain } from "@wagmi/core";
 import axios, { AxiosInstance } from "axios";
 import { ethers } from "ethers";
-import { Chain } from "viem/chains";
 import {
-  mainnet,
-  polygon,
-  celo,
-  celoAlfajores,
-  optimism,
-  optimismSepolia,
   arbitrum,
   arbitrumSepolia,
   base,
   baseSepolia,
+  celo,
+  celoAlfajores,
+  Chain,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  polygon,
   vechain,
 } from "wagmi/chains";
 
@@ -109,7 +108,7 @@ export const getStellarMarketCap = async (): Promise<number> => {
   const stellarMarketCap =
     stellarBalances + stellarLiquidityPools + stellarContracts;
 
-  return stellarMarketCap;
+  return Math.round(stellarMarketCap);
 };
 
 // GUSD: 3306
@@ -161,11 +160,11 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     type: "",
   },
   ["REFUGEE_CRISIS"]: {
-    name: "Help refugees",
-    short_name: "Refugees",
+    name: "Strengthen humanitarian aid",
+    short_name: "Humanitarian",
     iconPath: "/refugee-camp.png",
     description:
-      "Save lives & build better futures for people forced to flee home",
+      "Help make moving aid money simple and borderless",
     type: "",
   },
   ["RETRO_PG_OP"]: {
@@ -198,11 +197,11 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     type: "",
   },
   ["ENDAOMENT"]: {
-    name: "Endaoment Universal Impact Pool",
+    name: "Endaoment Universal Impact",
     short_name: "Endaoment",
     iconPath: "/endaoment-logo.svg",
     description:
-      "Can't decide? Follow group wisdom. Fund the 50+ most popular charities on Endaoment",
+      "Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
 
@@ -244,11 +243,15 @@ export const backendUrl = process.env.VERCEL_URL
 
 export const getChainsObjects = () => {
   const chains = [...getChains(), vechain];
+  const chainMap: { [key: string]: string } = {
+    "op mainnet": "optimism",
+    "arbitrum one": "arbitrum",
+  };
+  const getMapped = (key: string) => chainMap[key] || key;
   const chainsObject: Record<string, Chain> = chains.reduce(
     (a, v) => ({
       ...a,
-      [["Ethereum", "Polygon"].includes(v.name) ? v.name.toLowerCase() : v.id]:
-        v, // TODO: ????????????
+      [getMapped(v.name.toLowerCase())]: v,
     }),
     {}
   );

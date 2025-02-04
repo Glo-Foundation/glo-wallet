@@ -1,17 +1,15 @@
-import { FetchBalanceResult } from "@wagmi/core";
+import { GetBalanceReturnType } from "@wagmi/core";
 import { motion } from "framer-motion";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
-import { customFormatBalance } from "@/utils";
 
-import EnoughToBuy from "./EnoughToBuy";
 import GloAnimated from "./GloAnimated";
 
 type Props = {
   openModal: (content: JSX.Element) => void;
   yearlyYield: number;
   yearlyYieldFormatted: string;
-  totalBalance: FetchBalanceResult | undefined;
+  totalBalance: GetBalanceReturnType | undefined;
 };
 
 export default function ImpactInset({
@@ -26,15 +24,7 @@ export default function ImpactInset({
     <div className="m-1 relative z-0 flex justify-center">
       <button
         className={`flex flex-col ${bgColorClass} border-2 border-cyan-600 text-impact-fg rounded-[36px] h-[32px] px-2 py-5 font-normal items-baseline`}
-        onClick={() =>
-          openModal(
-            <BuyGloModal
-              totalBalance={Number(
-                customFormatBalance(totalBalance).fmtBalanceDollarPart
-              )}
-            />
-          )
-        }
+        onClick={() => openModal(<BuyGloModal totalBalance={1000} />)}
       >
         <div className="flex w-full justify-center items-center space-y-2">
           <motion.div

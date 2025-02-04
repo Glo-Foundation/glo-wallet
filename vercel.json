@@ -3,5 +3,15 @@
     "pages/api/*.ts": {
       "maxDuration": 280
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/collect-celo-data",
+      "schedule": "55 23 * * *"
+    }
+  ]
 }
