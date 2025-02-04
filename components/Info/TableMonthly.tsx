@@ -6,7 +6,7 @@ import { ILargestMonthlyHolder } from "@/lib/dune";
 import { backendUrl } from "@/lib/utils";
 
 import { formatToCurrency } from "./data";
-import { Table, TRow, splitAndAddEllipses } from "./Table";
+import { splitAndAddEllipses, Table, TRow } from "./Table";
 import { INetworks, Networks } from "./types";
 
 export function LargestMonthlyHolderTable() {
@@ -27,7 +27,6 @@ export function LargestMonthlyHolderTable() {
 
   if (!data) return <p>...</p>;
 
-  console.log(data);
   return (
     <div className="my-5">
       <Table
