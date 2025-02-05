@@ -163,8 +163,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     name: "Strengthen humanitarian aid",
     short_name: "Humanitarian",
     iconPath: "/refugee-camp.png",
-    description:
-      "Help make moving aid money simple and borderless",
+    description: "Help make moving aid money simple and borderless",
     type: "",
   },
   ["RETRO_PG_OP"]: {
@@ -200,8 +199,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     name: "Endaoment Universal Impact",
     short_name: "Endaoment",
     iconPath: "/endaoment-logo.svg",
-    description:
-      "Fund the 50+ most popular charities on Endaoment",
+    description: "Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
 
@@ -237,8 +235,10 @@ export const horizonUrl = `https://horizon${
   isProd() ? "" : "-testnet"
 }.stellar.org`;
 
-export const backendUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
+const BACKEND_URL =
+  process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
+export const backendUrl = BACKEND_URL
+  ? `https://${BACKEND_URL}`
   : "http://localhost:3000";
 
 export const getChainsObjects = () => {
