@@ -1,8 +1,8 @@
+import axios from "axios";
 import { useState } from "react";
 import useSWR from "swr";
 
 import { ILargestMonthlyHolder } from "@/lib/dune";
-import { api } from "@/lib/utils";
 
 import { formatToCurrency } from "./data";
 import { splitAndAddEllipses, Table, TRow } from "./Table";
@@ -12,7 +12,7 @@ export function LargestMonthlyHolderTable() {
   const [selectNetwork, setNetwork] = useState<INetworks>("celo");
 
   const fetcher = (url: string) =>
-    api()
+    axios
       .get(url, {
         params: {
           network: selectNetwork,
