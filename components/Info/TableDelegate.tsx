@@ -1,5 +1,6 @@
-import axios from "axios";
 import useSWR from "swr";
+
+import { api } from "@/lib/utils";
 
 import { Table, TRow } from "./Table";
 
@@ -20,9 +21,11 @@ const formatDelegate = (payload: any) => {
 
 export function DelegateTable() {
   const fetcher = (url: string) =>
-    axios.get(url).then((res) => {
-      return formatDelegate(res.data);
-    });
+    api()
+      .get(url)
+      .then((res) => {
+        return formatDelegate(res.data);
+      });
 
   const { data } = useSWR(`/api/funding/current`, fetcher);
 

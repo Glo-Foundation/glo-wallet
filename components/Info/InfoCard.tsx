@@ -1,8 +1,7 @@
-import axios from "axios";
 import Image from "next/image";
 import useSWR from "swr";
 
-import { backendUrl } from "@/lib/utils";
+import { api, backendUrl } from "@/lib/utils";
 
 import { ICard } from "./types";
 
@@ -10,13 +9,15 @@ export function InfoCard(props: { data: ICard }) {
   const { data } = props;
 
   const fetcher = (url: string) =>
-    axios.get(`${backendUrl}${url}`).then((res) => {
-      if (data.formatResult) {
-        return data.formatResult(res.data);
-      }
+    api()
+      .get(`${backendUrl}${url}`)
+      .then((res) => {
+        if (data.formatResult) {
+          return data.formatResult(res.data);
+        }
 
-      return res.data;
-    });
+        return res.data;
+      });
 
   const { data: result, isLoading, error } = useSWR(data.url, fetcher);
 
