@@ -192,7 +192,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     short_name: "Climate",
     iconPath: "/giving-green-logo.png",
     description:
-      "Donate to best-in-class charities working to decarbonize the planet",
+      "Accelerate blockchain-enabled climate solutions",
     type: "",
   },
   ["ENDAOMENT"]: {
