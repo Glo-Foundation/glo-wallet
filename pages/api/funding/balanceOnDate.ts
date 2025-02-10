@@ -1,5 +1,4 @@
 import { BalanceCharity, Charity, CharityChoice } from "@prisma/client";
-import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Chain } from "viem";
 
@@ -8,12 +7,13 @@ import {
   getAvgStellarMarketCap,
 } from "@/lib/blockscout-explorer";
 import {
-  backendUrl,
   CHARITY_MAP,
   DEFAULT_CHARITY_PER_CHAIN,
   getChainsObjects,
 } from "@/lib/utils";
 import prisma from "lib/prisma";
+
+import { handleProcessAccount } from "../../../lib/processAccount";
 
 export default async function handler(
   _req: NextApiRequest,
@@ -125,18 +125,10 @@ export default async function handler(
     }
 
     try {
-      await axios.post(
-        `${backendUrl}/api/funding/processAccount`,
-        {
-          runId,
-          address,
-          choices: filteredChoicesByAddress[address],
-        },
-        {
-          headers: {
-            Authorization: process.env.WEBHOOK_API_KEY,
-          },
-        }
+      await handleProcessAccount(
+        runId,
+        address,
+        filteredChoicesByAddress[address]
       );
     } catch (err) {
       console.error(err);
@@ -233,7 +225,6 @@ const calculateBalances = async (
 
   for (const c of chainObjects) {
     const { id, name, chain } = c;
-
     const marketCap = await (id > 0
       ? getAvgMarketCap(chain!, name, startDate, endDate)
       : getAvgStellarMarketCap(startDate, endDate).then(

@@ -16,7 +16,7 @@ const instances: any = {
   optimism: `https://optimism.blockscout.com/api`,
   arbitrum: `https://arbitrum.blockscout.com/api`,
   ethereum: `https://eth.blockscout.com/api`,
-  celo: `https://explorer.celo.org/mainnet/api`,
+  celo: `https://celo.blockscout.com/api`,
   base: `https://base.blockscout.com/api`,
 };
 
@@ -86,7 +86,9 @@ export const fetchGloTransactions = async (
       (offset ? `&offset=${offset}` : "");
   }
 
-  const transfers = await instance.get(queryString);
+  const transfers = await instance.get(
+    `${queryString}&apikey=${process.env.BLOCKSCOUT_API_KEY}`
+  );
 
   const { status, result } = transfers.data;
 
@@ -191,6 +193,9 @@ export const getAvgMarketCap = async (
   });
 
   try {
+    // TODO: Temp skip avg market cap
+    const currentMarketCap = await getMarketCap(chain.id);
+    return currentMarketCap;
     const zero =
       "0x0000000000000000000000000000000000000000000000000000000000000000";
     const topic = // sha3('Transfer(address,address,uint256)') => topic
@@ -199,7 +204,7 @@ export const getAvgMarketCap = async (
     const burnTopic = `&topic2=${zero}&topic0_2_opr=or`;
     const topics = `&topic0=${topic}${mintTopic}${burnTopic}&topic1_2_opr=or`;
     const res = await instance.get(
-      `?module=logs&action=getLogs&fromBlock=${startBlock}&toBlock=${latestBlock}&address=${GLO_ADDRESS}${topics}`
+      `?module=logs&action=getLogs&fromBlock=${startBlock}&toBlock=${latestBlock}&address=${GLO_ADDRESS}${topics}&apikey=${process.env.BLOCKSCOUT_API_KEY}`
     );
     const data = res.data.result;
 
@@ -218,7 +223,6 @@ export const getAvgMarketCap = async (
     const endToLatestOps =
       endBlockIndex >= 0 ? operations.splice(endBlockIndex) : [];
 
-    const currentMarketCap = await getMarketCap(chain.id);
     const endOfMonthMarketCap = endToLatestOps.reduce(
       (acc, cur) => (cur.isMint ? acc - cur.value : acc + cur.value),
       currentMarketCap
