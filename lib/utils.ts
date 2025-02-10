@@ -191,8 +191,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     name: "Combat climate change",
     short_name: "Climate",
     iconPath: "/giving-green-logo.png",
-    description:
-      "Accelerate blockchain-enabled climate solutions",
+    description: "Accelerate blockchain-enabled climate solutions",
     type: "",
   },
   ["ENDAOMENT"]: {
@@ -242,7 +241,9 @@ export const backendUrl = BACKEND_URL
   : "http://localhost:3000";
 
 export const getChainsObjects = () => {
-  const chains = [...getChains(), vechain];
+  // TODO: Temp skip Ve chain
+  // const chains = [...getChains(), vechain];
+  const chains = [...getChains()];
   const chainMap: { [key: string]: string } = {
     "op mainnet": "optimism",
     "arbitrum one": "arbitrum",
