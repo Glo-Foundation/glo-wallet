@@ -223,7 +223,6 @@ export const getAvgMarketCap = async (
     const endToLatestOps =
       endBlockIndex >= 0 ? operations.splice(endBlockIndex) : [];
 
-    // const currentMarketCap = await getMarketCap(chain.id);
     const endOfMonthMarketCap = endToLatestOps.reduce(
       (acc, cur) => (cur.isMint ? acc - cur.value : acc + cur.value),
       currentMarketCap
