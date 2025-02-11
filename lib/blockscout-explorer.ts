@@ -74,17 +74,10 @@ export const fetchGloTransactions = async (
     return await getVeTransactions(address, startBlock, endBlock);
   }
 
-  let queryString =
+  const queryString =
     `?module=account&action=tokentx&address=${address}&contractaddress=${GLO_ADDRESS}&startblock=${startBlock}&endblock=${endBlock}` +
     (page ? `&page=${page}` : "") +
     (offset ? `&offset=${offset}` : "");
-
-  if (chain.name.toLowerCase() === "celo") {
-    queryString =
-      `?module=account&action=tokentx&address=${address}&contractaddress=${GLO_ADDRESS}&start_block=${startBlock}&end_block=${endBlock}` +
-      (page ? `&page=${page}` : "") +
-      (offset ? `&offset=${offset}` : "");
-  }
 
   const transfers = await instance.get(
     `${queryString}&apikey=${process.env.BLOCKSCOUT_API_KEY}`

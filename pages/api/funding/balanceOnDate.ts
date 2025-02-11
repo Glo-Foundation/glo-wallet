@@ -53,9 +53,7 @@ export default async function handler(
       runId: last.id,
       generatedAt: last.ts,
       isProcessing: true,
-      ...(last.balancesData
-        ? { possibleFundingChoices: last.balancesData }
-        : {}),
+      ...{ result: last.balancesData || {} },
     });
   }
 
@@ -133,7 +131,7 @@ export default async function handler(
     } catch (err) {
       console.error(err);
       return res.status(200).json({
-        msg: "Probably a timetout",
+        msg: "Probably a timeout",
       });
     }
   }
@@ -156,7 +154,7 @@ export default async function handler(
     runId,
     generatedAt: jobTs,
     isProcessing: false,
-    possibleFundingChoices: result,
+    ...result,
   });
 }
 
@@ -168,9 +166,9 @@ const buildSummary = async (runId: number) => {
   });
 
   const { allocated, choices } = flattenRecords(records!);
-  const possibleFundingChoices = await calculateBalances(allocated, choices);
+  const result = await calculateBalances(allocated, choices);
 
-  return possibleFundingChoices;
+  return result;
 };
 
 const flattenRecords = (records: BalanceCharity[]) => {
@@ -223,6 +221,7 @@ const calculateBalances = async (
   );
   chainObjects.push({ id: 0, name: "stellar" });
 
+  const marketCaps: { [name: string]: number } = {};
   for (const c of chainObjects) {
     const { id, name, chain } = c;
     const marketCap = await (id > 0
@@ -233,11 +232,13 @@ const calculateBalances = async (
         ));
     const charity = DEFAULT_CHARITY_PER_CHAIN(id.toString());
 
+    marketCaps[name] = Number(marketCap / BigInt(10 ** 18));
+
     choices[charity] += Number(
       (marketCap - allocated[name]) / BigInt(10 ** 18)
     );
   }
-  return choices;
+  return { possibleFundingChoices: choices, marketCaps };
 };
 
 type ChainObject = {

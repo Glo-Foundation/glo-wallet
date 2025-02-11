@@ -69,7 +69,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
     const milisecondsInMonth = BigInt(milisecondsInMonthString.toString());
     let totalBalance = BigInt(0);
     let currentDate = end;
-    let currentBalance = balance;
+    let currentBalance = balance * BigInt(10 ** 7);
 
     const txs = await getStellarTxs(address, firstLastMonth, firstThisMonth);
     for (const [txDate, ops] of txs) {
