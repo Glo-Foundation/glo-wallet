@@ -30,7 +30,6 @@ export default async function handler(
       creationDate: {
         lt: firstThisMonth.toISOString(),
       },
-      name: { not: "OPEN_SOURCE" },
     },
     distinct: ["address", "name"],
     orderBy: {

@@ -97,7 +97,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
 
     const averageBalance = totalBalance / milisecondsInMonth;
 
-    return averageBalance;
+    return averageBalance / BigInt(10 ** 7);
   };
 
   const isStellar = !address.includes("0x");
