@@ -1,19 +1,13 @@
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount } from "wagmi";
 
-import BuyGloModal from "@/components/Modals/BuyGloModal";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
+import SquidModal from "./SquidModal";
 
-export default function BoxBuyModal({
-  buyAmount,
-  children,
-}: {
-  buyAmount: number;
-  children: JSX.Element | JSX.Element[];
-}) {
+export default function SellGloModal() {
   const { address, isConnected } = useAccount();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -35,7 +29,7 @@ export default function BoxBuyModal({
           height={25}
           alt="arrow-right"
           className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
-          onClick={() => openModal(<BuyGloModal totalBalance={buyAmount} />)}
+          onClick={() => closeModal()}
         />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         {isConnected && (
@@ -55,20 +49,25 @@ export default function BoxBuyModal({
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      <h2 className="text-center pt-0">Buy Glo Dollars</h2>
-      {children}
+      <h2 className="text-center pt-0">Sell Glo Dollars</h2>
       <div className="flex flex-col space-y-2 mt-4">
+        <button
+          className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6"
+          onClick={() => openModal(<SquidModal buyAmount={1000} />)}
+        >
+          Swap from USDGLO to USDC (Powered by Squid Router)
+        </button>
         <button
           className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6"
           onClick={() => window.open("https://peanut.to/cashout", "_blank")}
         >
-          Sell for wire to US/CAD/EU bank accounts
+          Withdraw to bank account in EU or USA (Powered by Peanut Protocol)
         </button>
         <button
           className="bg-cyan-600 text-pine-900 h-[52px] py-3.5 mx-6"
           onClick={() => window.open("https://www.offramp.xyz/", "_blank")}
         >
-          Sell for card in 160+ countries
+          Pay with debit card in 160+ countries (Powered by Offramp.xyz)
         </button>
       </div>
     </div>

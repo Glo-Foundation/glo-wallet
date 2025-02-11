@@ -157,6 +157,20 @@ export default function SwapModal({ buyAmount }: Props) {
               USDC={usdcBalance?.formatted}
             />
           )}
+          <StepCard
+            index={3}
+            iconPath="/peanut.png"
+            title="Sell USDGLO for wire to US/CAD/EU bank accounts"
+            content={"Sell with Peanut.to"}
+            action={() => window.open("https://peanut.to/cashout", "_blank")}
+          />
+          <StepCard
+            index={4}
+            iconPath="/offramp.png"
+            title="Sell USDGLO for card in 160+ countries"
+            content={"Sell with Offramp.xyz"}
+            action={() => window.open("https://www.offramp.xyz/", "_blank")}
+          />
         </section>
       )}
     </div>
