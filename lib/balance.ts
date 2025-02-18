@@ -1,19 +1,19 @@
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { kv } from "@vercel/kv";
-import { Chain } from "@wagmi/core";
 import {
-  celo,
-  celoAlfajores,
-  goerli,
-  mainnet,
-  polygon,
-  polygonMumbai,
-  optimism,
-  optimismSepolia,
   arbitrum,
   arbitrumSepolia,
   base,
   baseSepolia,
+  celo,
+  celoAlfajores,
+  Chain,
+  goerli,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  polygon,
+  polygonMumbai,
   vechain,
 } from "@wagmi/core/chains";
 import axios from "axios";
@@ -219,22 +219,31 @@ export const getStellarTxs = async (
     )
     .map(
       (record) =>
-        StellarSdk.TransactionBuilder.fromXDR(
-          record.envelope_xdr,
-          isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
-        ) as StellarSdk.Transaction
-    );
+        [
+          new Date(record["created_at"]),
+          StellarSdk.TransactionBuilder.fromXDR(
+            record.envelope_xdr,
+            isProd() ? StellarSdk.Networks.PUBLIC : StellarSdk.Networks.TESTNET
+          ).operations.filter(
+            (op) =>
+              op.type === "payment" &&
+              op.asset.code === "USDGLO" &&
+              (op.destination === address ||
+                record["source_account"] === address)
+          ),
+          record["source_account_sequence"],
+        ] as [Date, StellarSdk.Operation.Payment[], string]
+    )
+    .filter((record) => record[1].length); // Filter out empty ops lists
 };
 
 const calculateStellarBalance = async (address: string, onDate: Date) => {
   let sum = 0;
   const txs = await getStellarTxs(address, onDate);
-  for (const tx of txs) {
-    for (const op of tx.operations) {
-      if (op.type === "payment" && op.asset.code === "USDGLO") {
-        const incoming = op.destination === address;
-        sum += parseFloat(op.amount) * (incoming ? +1 : -1);
-      }
+  for (const [, ops] of txs) {
+    for (const op of ops) {
+      const incoming = op.destination === address;
+      sum += parseFloat(op.amount) * (incoming ? +1 : -1);
     }
   }
   return sum;

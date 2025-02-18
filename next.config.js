@@ -21,6 +21,10 @@ const nextConfig = {
         destination: "/",
       },
       {
+        source: "/sign-in/:id",
+        destination: "/",
+      },
+      {
         source: "/purchased-sequence",
         destination: "/",
       },
@@ -75,8 +79,14 @@ const nextConfig = {
         source: "/.well-known/stellar.toml",
         headers: [{ key: "Content-Type", value: "text/plain" }],
       },
+      {
+        source: "/manifest.json",
+        headers: [{ key: "Access-Control-Allow-Origin", value: "*" }],
+      },
     ];
   },
+  transpilePackages: ["@0xsquid/widget", "@0xsquid/react-hooks"],
+  swcMinify: false,
 };
 
 // Injected content via Sentry wizard below

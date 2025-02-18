@@ -1,19 +1,18 @@
 import { Charity } from "@prisma/client";
-// import { Chain } from "@wagmi/core";
 import axios, { AxiosInstance } from "axios";
 import { ethers } from "ethers";
-import { Chain } from "viem/chains";
 import {
-  mainnet,
-  polygon,
-  celo,
-  celoAlfajores,
-  optimism,
-  optimismSepolia,
   arbitrum,
   arbitrumSepolia,
   base,
   baseSepolia,
+  celo,
+  celoAlfajores,
+  Chain,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  polygon,
   vechain,
 } from "wagmi/chains";
 
@@ -161,11 +160,10 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     type: "",
   },
   ["REFUGEE_CRISIS"]: {
-    name: "Help refugees",
-    short_name: "Refugees",
+    name: "Strengthen humanitarian aid",
+    short_name: "Humanitarian",
     iconPath: "/refugee-camp.png",
-    description:
-      "Save lives & build better futures for people forced to flee home",
+    description: "Help make moving aid money simple and borderless",
     type: "",
   },
   ["RETRO_PG_OP"]: {
@@ -193,16 +191,14 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     name: "Combat climate change",
     short_name: "Climate",
     iconPath: "/giving-green-logo.png",
-    description:
-      "Donate to best-in-class charities working to decarbonize the planet",
+    description: "Accelerate blockchain-enabled climate solutions",
     type: "",
   },
   ["ENDAOMENT"]: {
-    name: "Endaoment Universal Impact Pool",
+    name: "Endaoment Universal Impact",
     short_name: "Endaoment",
     iconPath: "/endaoment-logo.svg",
-    description:
-      "Can't decide? Follow group wisdom. Fund the 50+ most popular charities on Endaoment",
+    description: "Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
 
@@ -238,12 +234,16 @@ export const horizonUrl = `https://horizon${
   isProd() ? "" : "-testnet"
 }.stellar.org`;
 
-export const backendUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
+const BACKEND_URL =
+  process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
+export const backendUrl = BACKEND_URL
+  ? `https://${BACKEND_URL}`
   : "http://localhost:3000";
 
 export const getChainsObjects = () => {
-  const chains = [...getChains(), vechain];
+  // TODO: Temp skip Ve chain
+  // const chains = [...getChains(), vechain];
+  const chains = [...getChains()];
   const chainMap: { [key: string]: string } = {
     "op mainnet": "optimism",
     "arbitrum one": "arbitrum",

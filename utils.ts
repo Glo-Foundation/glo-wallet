@@ -1,17 +1,18 @@
-import { Chain, FetchBalanceResult } from "@wagmi/core";
+import { GetBalanceReturnType } from "@wagmi/core";
 import {
+  arbitrum,
+  arbitrumSepolia,
+  base,
+  baseSepolia,
   celo,
   celoAlfajores,
+  Chain,
   goerli,
   mainnet,
   optimism,
   optimismSepolia,
   polygon,
   polygonMumbai,
-  arbitrum,
-  arbitrumSepolia,
-  base,
-  baseSepolia,
 } from "@wagmi/core/chains";
 import EthDater from "ethereum-block-by-date";
 import { ethers } from "ethers";
@@ -217,11 +218,6 @@ export const getUSDCToUSDGLOSwapDeeplink = (
       swapChain = dex === "Uniswap" ? "celo_alfajores" : "celo";
       break;
     }
-    case optimism.id: {
-      outputCurrency = getSmartContractAddress(optimism.id);
-      swapChain = "optimism";
-      break;
-    }
     case optimismSepolia.id: {
       outputCurrency = getSmartContractAddress(optimismSepolia.id);
       swapChain = "optimism_sepolia";
@@ -250,11 +246,17 @@ export const getUSDCToUSDGLOSwapDeeplink = (
     case polygonMumbai.id: {
       outputCurrency = getSmartContractAddress(polygonMumbai.id);
       swapChain = dex === "Uniswap" ? "polygon_mumbai" : "polygon";
+      break;
     }
-    case polygon.id:
-    default: {
+    case polygon.id: {
       outputCurrency = getSmartContractAddress(polygon.id);
       swapChain = "polygon";
+      break;
+    }
+    case optimism.id:
+    default: {
+      outputCurrency = getSmartContractAddress(optimism.id);
+      swapChain = "optimism";
       break;
     }
   }
@@ -318,8 +320,8 @@ export const hexToNumber = (hex: string): number => {
 };
 
 export const getTotalGloBalance = (
-  balances: (FetchBalanceResult | undefined)[]
-): FetchBalanceResult => {
+  balances: (GetBalanceReturnType | undefined)[]
+): GetBalanceReturnType => {
   let totalBalanceValue = 0;
   for (const balance of balances) {
     if (balance) {
@@ -336,7 +338,7 @@ export const getTotalGloBalance = (
 };
 
 export const customFormatBalance = (
-  balance: FetchBalanceResult | undefined
+  balance: GetBalanceReturnType | undefined
 ): {
   yearlyYield: number;
   yearlyYieldFormatted: string;
@@ -447,3 +449,5 @@ export const getOnRampUrl = (
     chainMap[name] || name
   }"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
 };
+
+export const WC_COOKIE = "recently-used-wc";

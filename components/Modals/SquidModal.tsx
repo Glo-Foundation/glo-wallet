@@ -1,11 +1,12 @@
+import { SquidWidget } from "@0xsquid/widget";
 import Image from "next/image";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import { celo } from "viem/chains";
 import { useAccount } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { getUSDCContractAddress } from "@/utils";
-
 interface Props {
   buyAmount: number;
 }
@@ -14,7 +15,7 @@ export default function SquidModal({}: Props) {
   const { closeModal } = useContext(ModalContext);
   const { chain } = useAccount();
 
-  const chainId = chain?.id.toString();
+  const chainId = chain?.id.toString() || celo.id.toString();
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
 
@@ -23,24 +24,6 @@ export default function SquidModal({}: Props) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
-
-  const config = {
-    integratorId: process.env.NEXT_PUBLIC_SQUID_INTEGRATION_ID,
-    initialAssets: {
-      from: {
-        chainId,
-        address: getUSDCContractAddress(chain!).toLowerCase(),
-      },
-      to: {
-        chainId,
-        address: getSmartContractAddress(chain?.id).toLowerCase(),
-      },
-    },
-  };
-
-  const src = `https://studio.squidrouter.com/iframe?config=${JSON.stringify(
-    config
-  )}`;
 
   return (
     <div className="flex flex-col text-pine-900 p-2">
@@ -59,12 +42,22 @@ export default function SquidModal({}: Props) {
         </button>
       </div>
       <section>
-        <iframe
-          title="squid_widget"
-          width="430"
-          height="684"
-          src={src}
-        ></iframe>
+        <SquidWidget
+          config={{
+            integratorId: process.env.NEXT_PUBLIC_SQUID_INTEGRATION_ID!,
+            apiUrl: "https://apiplus.squidrouter.com",
+            initialAssets: {
+              from: {
+                chainId,
+                address: getUSDCContractAddress(chain!).toLowerCase(),
+              },
+              to: {
+                chainId,
+                address: getSmartContractAddress(chain?.id).toLowerCase(),
+              },
+            },
+          }}
+        />
       </section>
     </div>
   );

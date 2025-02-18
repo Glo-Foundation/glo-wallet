@@ -1,4 +1,4 @@
-import { FetchBalanceResult } from "@wagmi/core";
+import { GetBalanceReturnType } from "@wagmi/core";
 import Image from "next/image";
 import { useContext, useState } from "react";
 import { useAccount } from "wagmi";
@@ -12,16 +12,16 @@ import BuyGloModal from "./Modals/BuyGloModal";
 import SwapGate from "./Modals/SwapGate";
 
 type Props = {
-  polygonBalance: FetchBalanceResult | undefined;
-  ethereumBalance: FetchBalanceResult | undefined;
-  celoBalance: FetchBalanceResult | undefined;
-  optimismBalance: FetchBalanceResult | undefined;
-  arbitrumBalance: FetchBalanceResult | undefined;
-  totalBalance: FetchBalanceResult | undefined;
-  usdcBalance: FetchBalanceResult | undefined;
-  stellarBalance: FetchBalanceResult | undefined;
-  baseBalance: FetchBalanceResult | undefined;
-  veBalance: FetchBalanceResult | undefined;
+  polygonBalance: GetBalanceReturnType | undefined;
+  ethereumBalance: GetBalanceReturnType | undefined;
+  celoBalance: GetBalanceReturnType | undefined;
+  optimismBalance: GetBalanceReturnType | undefined;
+  arbitrumBalance: GetBalanceReturnType | undefined;
+  totalBalance: GetBalanceReturnType | undefined;
+  usdcBalance: GetBalanceReturnType | undefined;
+  stellarBalance: GetBalanceReturnType | undefined;
+  baseBalance: GetBalanceReturnType | undefined;
+  veBalance: GetBalanceReturnType | undefined;
   stellarConnected: boolean;
   veConnected: boolean;
 };

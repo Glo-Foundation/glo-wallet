@@ -1,5 +1,4 @@
 import { BalanceCharity, Charity, CharityChoice } from "@prisma/client";
-import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Chain } from "viem";
 
@@ -8,12 +7,13 @@ import {
   getAvgStellarMarketCap,
 } from "@/lib/blockscout-explorer";
 import {
-  backendUrl,
   CHARITY_MAP,
   DEFAULT_CHARITY_PER_CHAIN,
   getChainsObjects,
 } from "@/lib/utils";
 import prisma from "lib/prisma";
+
+import { handleProcessAccount } from "../../../lib/processAccount";
 
 export default async function handler(
   _req: NextApiRequest,
@@ -30,7 +30,6 @@ export default async function handler(
       creationDate: {
         lt: firstThisMonth.toISOString(),
       },
-      name: { not: "OPEN_SOURCE" },
     },
     distinct: ["address", "name"],
     orderBy: {
@@ -53,9 +52,7 @@ export default async function handler(
       runId: last.id,
       generatedAt: last.ts,
       isProcessing: true,
-      ...(last.balancesData
-        ? { possibleFundingChoices: last.balancesData }
-        : {}),
+      ...{ result: last.balancesData || {} },
     });
   }
 
@@ -125,23 +122,15 @@ export default async function handler(
     }
 
     try {
-      await axios.post(
-        `${backendUrl}/api/funding/processAccount`,
-        {
-          runId,
-          address,
-          choices: filteredChoicesByAddress[address],
-        },
-        {
-          headers: {
-            Authorization: process.env.WEBHOOK_API_KEY,
-          },
-        }
+      await handleProcessAccount(
+        runId,
+        address,
+        filteredChoicesByAddress[address]
       );
     } catch (err) {
       console.error(err);
       return res.status(200).json({
-        msg: "Probably a timetout",
+        msg: "Probably a timeout",
       });
     }
   }
@@ -164,7 +153,7 @@ export default async function handler(
     runId,
     generatedAt: jobTs,
     isProcessing: false,
-    possibleFundingChoices: result,
+    ...result,
   });
 }
 
@@ -176,9 +165,9 @@ const buildSummary = async (runId: number) => {
   });
 
   const { allocated, choices } = flattenRecords(records!);
-  const possibleFundingChoices = await calculateBalances(allocated, choices);
+  const result = await calculateBalances(allocated, choices);
 
-  return possibleFundingChoices;
+  return result;
 };
 
 const flattenRecords = (records: BalanceCharity[]) => {
@@ -231,9 +220,9 @@ const calculateBalances = async (
   );
   chainObjects.push({ id: 0, name: "stellar" });
 
+  const marketCaps: { [name: string]: number } = {};
   for (const c of chainObjects) {
     const { id, name, chain } = c;
-
     const marketCap = await (id > 0
       ? getAvgMarketCap(chain!, name, startDate, endDate)
       : getAvgStellarMarketCap(startDate, endDate).then(
@@ -242,11 +231,13 @@ const calculateBalances = async (
         ));
     const charity = DEFAULT_CHARITY_PER_CHAIN(id.toString());
 
+    marketCaps[name] = Number(marketCap / BigInt(10 ** 18));
+
     choices[charity] += Number(
       (marketCap - allocated[name]) / BigInt(10 ** 18)
     );
   }
-  return choices;
+  return { possibleFundingChoices: choices, marketCaps };
 };
 
 type ChainObject = {

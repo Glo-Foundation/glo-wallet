@@ -1,5 +1,4 @@
 import { Charity } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
 
 import { getAverageBalance, getBalances, getStellarTxs } from "@/lib/balance";
 import { fetchGloTransactions } from "@/lib/blockscout-explorer";
@@ -11,24 +10,11 @@ type Choice = {
   percent: number;
 };
 
-type Body = {
-  runId: number;
-  address: string;
-  choices: Choice[];
-};
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (
-    !process.env.WEBHOOK_API_KEY ||
-    req.headers.authorization !== process.env.WEBHOOK_API_KEY
-  ) {
-    return res.status(401).json({ message: "Incorrect token" });
-  }
-  const { runId, address, choices } = req.body as Body;
-
+export const handleProcessAccount = async (
+  runId: number,
+  address: string,
+  choices: Choice[]
+) => {
   const processed = await processAccount(address, choices);
 
   await prisma.balanceCharity.create({
@@ -42,9 +28,7 @@ export default async function handler(
       charityData: processed.possibleFundingChoices,
     },
   });
-
-  return res.status(200).json({});
-}
+};
 
 const processAccount = async (address: string, choices: Choice[]) => {
   const chainsObject = getChainsObjects();
@@ -85,24 +69,20 @@ const processAccount = async (address: string, choices: Choice[]) => {
     const milisecondsInMonth = BigInt(milisecondsInMonthString.toString());
     let totalBalance = BigInt(0);
     let currentDate = end;
-    let currentBalance = balance;
+    let currentBalance = balance * BigInt(10 ** 7);
 
     const txs = await getStellarTxs(address, firstLastMonth, firstThisMonth);
-    for (const tx of txs) {
-      const txDate = new Date(1000 * parseInt(tx.timeBounds?.maxTime || "0"));
-
+    for (const [txDate, ops] of txs) {
       const balanceTime = BigInt(
         (currentDate.valueOf() - txDate.valueOf()).toString()
       );
       let transactionDelta = BigInt(0);
-      for (const op of tx.operations) {
-        if (op.type === "payment" && op.asset.code === "USDGLO") {
-          const incoming = op.destination === address;
-          const x = BigInt(op.amount.replace(".", ""));
-          transactionDelta = incoming
-            ? transactionDelta + x
-            : transactionDelta - x;
-        }
+      for (const op of ops) {
+        const incoming = op.destination === address;
+        const x = BigInt(op.amount.replace(".", ""));
+        transactionDelta = incoming
+          ? transactionDelta - x
+          : transactionDelta + x;
       }
 
       const weightedBalance = currentBalance * balanceTime;
@@ -117,7 +97,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
 
     const averageBalance = totalBalance / milisecondsInMonth;
 
-    return averageBalance;
+    return averageBalance / BigInt(10 ** 7);
   };
 
   const isStellar = !address.includes("0x");

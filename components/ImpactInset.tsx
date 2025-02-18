@@ -1,17 +1,15 @@
-import { FetchBalanceResult } from "@wagmi/core";
+import { GetBalanceReturnType } from "@wagmi/core";
 import { motion } from "framer-motion";
 
 import BuyGloModal from "@/components/Modals/BuyGloModal";
-import { customFormatBalance } from "@/utils";
 
-import EnoughToBuy from "./EnoughToBuy";
 import GloAnimated from "./GloAnimated";
 
 type Props = {
   openModal: (content: JSX.Element) => void;
   yearlyYield: number;
   yearlyYieldFormatted: string;
-  totalBalance: FetchBalanceResult | undefined;
+  totalBalance: GetBalanceReturnType | undefined;
 };
 
 export default function ImpactInset({

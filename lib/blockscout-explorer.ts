@@ -1,6 +1,5 @@
 import { Operation } from "@stellar/stellar-sdk";
-import { Chain } from "@wagmi/core";
-import { celo, celoAlfajores, vechain } from "@wagmi/core/chains";
+import { celo, celoAlfajores, Chain, vechain } from "@wagmi/core/chains";
 import axios from "axios";
 
 import { getChainBlockNumber, getStellarTxs } from "@/lib/balance";
@@ -17,7 +16,7 @@ const instances: any = {
   optimism: `https://optimism.blockscout.com/api`,
   arbitrum: `https://arbitrum.blockscout.com/api`,
   ethereum: `https://eth.blockscout.com/api`,
-  celo: `https://explorer.celo.org/mainnet/api`,
+  celo: `https://celo.blockscout.com/api`,
   base: `https://base.blockscout.com/api`,
 };
 
@@ -75,19 +74,14 @@ export const fetchGloTransactions = async (
     return await getVeTransactions(address, startBlock, endBlock);
   }
 
-  let queryString =
+  const queryString =
     `?module=account&action=tokentx&address=${address}&contractaddress=${GLO_ADDRESS}&startblock=${startBlock}&endblock=${endBlock}` +
     (page ? `&page=${page}` : "") +
     (offset ? `&offset=${offset}` : "");
 
-  if (chain.name.toLowerCase() === "celo") {
-    queryString =
-      `?module=account&action=tokentx&address=${address}&contractaddress=${GLO_ADDRESS}&start_block=${startBlock}&end_block=${endBlock}` +
-      (page ? `&page=${page}` : "") +
-      (offset ? `&offset=${offset}` : "");
-  }
-
-  const transfers = await instance.get(queryString);
+  const transfers = await instance.get(
+    `${queryString}&apikey=${process.env.BLOCKSCOUT_API_KEY}`
+  );
 
   const { status, result } = transfers.data;
 
@@ -192,6 +186,9 @@ export const getAvgMarketCap = async (
   });
 
   try {
+    // TODO: Temp skip avg market cap
+    const currentMarketCap = await getMarketCap(chain.id);
+    return currentMarketCap;
     const zero =
       "0x0000000000000000000000000000000000000000000000000000000000000000";
     const topic = // sha3('Transfer(address,address,uint256)') => topic
@@ -200,7 +197,7 @@ export const getAvgMarketCap = async (
     const burnTopic = `&topic2=${zero}&topic0_2_opr=or`;
     const topics = `&topic0=${topic}${mintTopic}${burnTopic}&topic1_2_opr=or`;
     const res = await instance.get(
-      `?module=logs&action=getLogs&fromBlock=${startBlock}&toBlock=${latestBlock}&address=${GLO_ADDRESS}${topics}`
+      `?module=logs&action=getLogs&fromBlock=${startBlock}&toBlock=${latestBlock}&address=${GLO_ADDRESS}${topics}&apikey=${process.env.BLOCKSCOUT_API_KEY}`
     );
     const data = res.data.result;
 
@@ -219,7 +216,6 @@ export const getAvgMarketCap = async (
     const endToLatestOps =
       endBlockIndex >= 0 ? operations.splice(endBlockIndex) : [];
 
-    const currentMarketCap = await getMarketCap(chain.id);
     const endOfMonthMarketCap = endToLatestOps.reduce(
       (acc, cur) => (cur.isMint ? acc - cur.value : acc + cur.value),
       currentMarketCap
@@ -243,19 +239,14 @@ export const getAvgStellarMarketCap = async (
   endDate: Date = new Date()
 ) => {
   const issuer = "GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV";
-  const txs = await getStellarTxs(issuer, startDate);
+  const res = await getStellarTxs(issuer, startDate);
 
-  const ops: Operations[] = txs
-    .reverse()
-    .filter((x) => x.operations[0].type === "payment")
-    .map((x) => ({
-      value: BigInt(
-        (x.operations[0] as Operation.Payment).amount.replace(".", "")
-      ),
-      ts: new Date(parseInt(x.timeBounds?.maxTime || "0") * 1000),
-      blockNumber: parseInt(x.sequence),
-      isMint: (x.operations[0] as Operation.Payment).destination !== issuer,
-    }));
+  const ops: Operations[] = res.reverse().map(([date, x, seq]) => ({
+    value: BigInt((x[0] as Operation.Payment).amount.replace(".", "")),
+    ts: date,
+    blockNumber: parseInt(seq),
+    isMint: x[0].destination !== issuer,
+  }));
 
   const endDateIndex = ops.findIndex((x) => x.ts >= endDate);
 
