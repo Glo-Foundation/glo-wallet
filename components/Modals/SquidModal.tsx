@@ -11,7 +11,7 @@ interface Props {
   buyAmount: number;
 }
 
-export default function SquidModal({}: Props) {
+export default function SquidModal({ buyAmount }: Props) {
   const { closeModal } = useContext(ModalContext);
   const { chain } = useAccount();
 
@@ -24,6 +24,12 @@ export default function SquidModal({}: Props) {
       setTimeout(() => setIsCopiedTooltipOpen(false), 2000);
     }
   }, [isCopiedTooltipOpen]);
+
+  const fromTo = [
+    getUSDCContractAddress(chain!).toLowerCase(),
+    getSmartContractAddress(chain?.id).toLowerCase(),
+  ];
+  const [from, to] = buyAmount > 0 ? fromTo : fromTo.reverse();
 
   return (
     <div className="flex flex-col text-pine-900 p-2">
@@ -49,11 +55,11 @@ export default function SquidModal({}: Props) {
             initialAssets: {
               from: {
                 chainId,
-                address: getUSDCContractAddress(chain!).toLowerCase(),
+                address: from,
               },
               to: {
                 chainId,
-                address: getSmartContractAddress(chain?.id).toLowerCase(),
+                address: to,
               },
             },
           }}
