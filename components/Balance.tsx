@@ -215,25 +215,28 @@ export default function Balance({
               height={16}
             />
           </div>
-          <div
-            className="flex justify-center items-center bg-pine-50 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
-            onClick={() =>
-              openModal(
-                <SellModal
-                  sellAmount={Number(totalBalance.value / BigInt(10 ** 18))}
-                />
-              )
-            }
-          >
-            <span className="font-bolder">Sell</span>
-            <Image
-              className="ml-2"
-              alt="Buy Glo"
-              src="/arrow-right.svg"
-              width={16}
-              height={16}
-            />
-          </div>
+
+          {!stellarConnected && !veConnected && (
+            <div
+              className="flex justify-center items-center bg-pine-50 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
+              onClick={() =>
+                openModal(
+                  <SellModal
+                    sellAmount={Number(totalBalance.value / BigInt(10 ** 18))}
+                  />
+                )
+              }
+            >
+              <span className="font-bolder">Sell</span>
+              <Image
+                className="ml-2"
+                alt="Buy Glo"
+                src="/arrow-right.svg"
+                width={16}
+                height={16}
+              />
+            </div>
+          )}
         </div>
       ) : (
         <div

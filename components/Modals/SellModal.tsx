@@ -98,25 +98,22 @@ export default function SellModal({ sellAmount }: Props) {
       </div>
       <section>
         <StepCard
-          index={1}
-          iconPath="/squidrouter.svg"
-          title="Swap from USDGLO to USDC"
-          content="Powered by Squid Router"
-          action={() => openModal(<SquidModal buyAmount={-sellAmount} />)}
-        />
-        <StepCard
-          index={2}
           iconPath="/peanut.png"
           title="Withdraw to bank account in EU or USA"
           content="Powered by Peanut Protocol"
           action={() => window.open("https://peanut.to/cashout", "_blank")}
         />
         <StepCard
-          index={3}
           iconPath="/offramp.svg"
           title="Pay with debit card in 160+ countries"
           content="Powered by Offramp.xyz"
           action={() => window.open("https://app.offramp.xyz", "_blank")}
+        />
+        <StepCard
+          iconPath="/squidrouter.svg"
+          title="Swap from USDGLO to USDC"
+          content="Powered by Squid Router"
+          action={() => openModal(<SquidModal buyAmount={-sellAmount} />)}
         />
       </section>
     </div>

@@ -2,7 +2,7 @@ import clsx from "clsx";
 import Image from "next/image";
 
 interface Props {
-  index: number;
+  index?: number;
   iconPath: string;
   title: string;
   content: string;
@@ -11,6 +11,44 @@ interface Props {
   isSequenceWallet?: boolean;
   USDC?: string;
 }
+
+function Icon({
+  iconPath,
+  done,
+  index,
+}: {
+  iconPath: string;
+  done?: boolean;
+  index?: number;
+}) {
+  if (index) {
+    return (
+      <div
+        className={clsx(
+          "relative circle border-2 w-[32px] h-[32px]",
+          done && "border-none bg-cyan-600 w-[32px] h-[32px]"
+        )}
+      >
+        {!done ? (
+          index
+        ) : (
+          <Image alt="checkmark" src="check-alpha.svg" height={12} width={12} />
+        )}
+        <div
+          className={clsx(
+            "circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]",
+            done && "top-[-5px] right-[-8px]"
+          )}
+        >
+          <Image alt={iconPath} src={iconPath} height={20} width={20} />
+        </div>
+      </div>
+    );
+  }
+
+  return <Image alt={iconPath} src={iconPath} height={32} width={32} />;
+}
+
 const StepCard = ({
   index,
   iconPath,
@@ -30,31 +68,7 @@ const StepCard = ({
   >
     <div className="flex flex-col justify-center">
       <div className="flex items-center p-3">
-        <div
-          className={clsx(
-            "relative circle border-2 w-[32px] h-[32px]",
-            done && "border-none bg-cyan-600 w-[32px] h-[32px]"
-          )}
-        >
-          {!done ? (
-            index
-          ) : (
-            <Image
-              alt="checkmark"
-              src="check-alpha.svg"
-              height={12}
-              width={12}
-            />
-          )}
-          <div
-            className={clsx(
-              "circle w-[20px] h-[20px] absolute top-[-7px] right-[-10px]",
-              done && "top-[-5px] right-[-8px]"
-            )}
-          >
-            <Image alt={iconPath} src={iconPath} height={20} width={20} />
-          </div>
-        </div>
+        <Icon iconPath={iconPath} done={done} index={index} />
         <div className="pl-4">
           <h5 className="text-sm mb-2">{title}</h5>
           <p className="copy text-xs">
