@@ -153,7 +153,15 @@ export default function SellModal({ sellAmount }: Props) {
             USDC={usdcBalance?.formatted}
           />
         ) : (
-          <SquidStep />
+          <StepCard
+            index={1}
+            iconPath="/squidrouter.svg"
+            title={`Swap ${sellAmount} USDGLO to USDC`}
+            content="Powered by Squid Router"
+            action={() => openModal(<SquidModal buyAmount={-sellAmount} />)}
+            done={(usdcBalance?.value || 0) >= BigInt(sellAmount)}
+            USDC={usdcBalance?.formatted}
+          />
         )}
         <OfframpStep />
       </section>
