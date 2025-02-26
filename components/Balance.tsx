@@ -220,11 +220,7 @@ export default function Balance({
             <div
               className="flex justify-center items-center bg-pine-50 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
               onClick={() =>
-                openModal(
-                  <SellModal
-                    sellAmount={Number(totalBalance.value / BigInt(10 ** 18))}
-                  />
-                )
+                openModal(<SellModal sellAmount={Number(totalBalance.value)} />)
               }
             >
               <span className="font-bolder">Sell</span>

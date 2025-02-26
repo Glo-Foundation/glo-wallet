@@ -1,7 +1,7 @@
 import { optimism } from "@wagmi/core/chains";
 import { parseUnits } from "ethers";
 import Image from "next/image";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { useAccount, useBalance, useSwitchChain } from "wagmi";
 
@@ -9,7 +9,11 @@ import StepCard from "@/components/Modals/StepCard";
 import { chainConfig } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
-import { getOnRampUrl, getUSDCContractAddress, POPUP_PROPS } from "@/utils";
+import {
+  getCoinbaseOnRampUrl,
+  getUSDCContractAddress,
+  POPUP_PROPS,
+} from "@/utils";
 
 interface Props {
   buyAmount: number;
@@ -109,7 +113,7 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
           content="Withdraw to the wallet address shown above"
           action={() => {
             window.open(
-              getOnRampUrl(
+              getCoinbaseOnRampUrl(
                 address!,
                 buyAmount,
                 `${window.location.origin}/purchased-sequence`,

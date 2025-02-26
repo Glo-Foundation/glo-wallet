@@ -95,7 +95,7 @@ const StepCard = ({
           </p>
         </div>
       </div>
-      {index === 2 && USDC && (
+      {USDC && (
         <div className="p-3 border-t-2 flex justify-center w-full">
           <Image alt="usdc" src="usdc.svg" height={20} width={20} />
           <span className="ml-2 copy text-pine-900 font-bold">
