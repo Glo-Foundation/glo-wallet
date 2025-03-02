@@ -35,6 +35,8 @@ export default function SellModal({ sellAmount }: Props) {
   const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
   const isSequenceWallet = connector?.id === "sequence";
 
+  const forceBaseTarget = isCoinbaseWallet && isCelo;
+
   const { data: usdcBalance } = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
@@ -107,22 +109,15 @@ export default function SellModal({ sellAmount }: Props) {
     <StepCard
       index={2}
       iconPath="/coinbase-invert.svg"
-      title={
-        isCelo ? "Celo not supported." : `Sell ${sellAmount} USDC on Coinbase`
-      }
-      content={
-        isCelo
-          ? "Switch to a different chain like Optimism"
-          : "Withdraws to the connected wallet address"
-      }
+      title={`Sell ${sellAmount} USDC on Coinbase`}
+      content="Withdraws to the connected wallet address"
       action={() =>
-        !isCelo &&
         window.open(
           getCoinbaseOffRampUrl(
             address!,
             123,
             `${window.location.origin}/purchased-coinbase`,
-            chain
+            isCelo ? base : chain
           ),
           "_blank",
           POPUP_PROPS
@@ -156,9 +151,20 @@ export default function SellModal({ sellAmount }: Props) {
           <StepCard
             index={1}
             iconPath="/squidrouter.svg"
-            title={`Swap ${sellAmount} USDGLO to USDC`}
+            title={
+              forceBaseTarget
+                ? `Swap ${sellAmount} USDGLO (Celo) to USDC (Base)`
+                : `Swap ${sellAmount} USDGLO to USDC`
+            }
             content="Powered by Squid Router"
-            action={() => openModal(<SquidModal buyAmount={-sellAmount} />)}
+            action={() =>
+              openModal(
+                <SquidModal
+                  buyAmount={-sellAmount}
+                  targetChain={forceBaseTarget ? base : undefined}
+                />
+              )
+            }
             done={(usdcBalance?.value || 0) >= BigInt(sellAmount)}
             USDC={usdcBalance?.formatted}
           />

@@ -1,7 +1,7 @@
 import { SquidWidget } from "@0xsquid/widget";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
-import { celo } from "viem/chains";
+import { celo, Chain } from "viem/chains";
 import { useAccount } from "wagmi";
 
 import { getSmartContractAddress } from "@/lib/config";
@@ -9,9 +9,10 @@ import { ModalContext } from "@/lib/context";
 import { getUSDCContractAddress } from "@/utils";
 interface Props {
   buyAmount: number;
+  targetChain?: Chain;
 }
 
-export default function SquidModal({ buyAmount }: Props) {
+export default function SquidModal({ buyAmount, targetChain }: Props) {
   const { closeModal } = useContext(ModalContext);
   const { chain } = useAccount();
 
@@ -26,7 +27,7 @@ export default function SquidModal({ buyAmount }: Props) {
   }, [isCopiedTooltipOpen]);
 
   const fromTo = [
-    getUSDCContractAddress(chain!).toLowerCase(),
+    getUSDCContractAddress(targetChain || chain!).toLowerCase(),
     getSmartContractAddress(chain?.id).toLowerCase(),
   ];
   const [from, to] = buyAmount > 0 ? fromTo : fromTo.reverse();
@@ -58,7 +59,7 @@ export default function SquidModal({ buyAmount }: Props) {
                 address: from,
               },
               to: {
-                chainId,
+                chainId: targetChain ? targetChain.id.toString() : chainId,
                 address: to,
               },
             },
