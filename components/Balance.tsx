@@ -9,6 +9,7 @@ import { customFormatBalance } from "@/utils";
 import CharitySelector from "./CharitySelector";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
+import SellModal from "./Modals/SellModal";
 import SwapGate from "./Modals/SwapGate";
 
 type Props = {
@@ -53,6 +54,7 @@ export default function Balance({
   const { connector } = useAccount();
   const isSequenceWallet = connector?.id === "sequence";
   const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
+  const hasGlo = totalBalance && totalBalance.value > 0;
 
   const formattedUSDC = Intl.NumberFormat("en-US", {
     style: "currency",
@@ -175,7 +177,7 @@ export default function Balance({
           yearlyYieldFormatted={totalBalanceFormatted.yearlyYieldUSFormatted}
           totalBalance={totalBalance}
         />
-        {totalBalance && totalBalance.value > 0 && (
+        {hasGlo && (
           <>
             <div className="self-center text-sm text-pine-700/90 mb-1.5 mx-1">
               for
@@ -191,28 +193,71 @@ export default function Balance({
         </div>
       </div>
 
-      <div
-        className={`${
-          totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
-        } rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer`}
-        onClick={() =>
-          openModal(
-            <BuyGloModal
-              totalBalance={1000}
-              stellarConnected={stellarConnected}
+      {hasGlo ? (
+        <div className="flex justify-center h-[60px]">
+          <div
+            className="flex justify-center items-center bg-impact-bg w-full rounded-bl-xl border-t-pine-900/10 border-t cursor-pointer"
+            onClick={() =>
+              openModal(
+                <BuyGloModal
+                  totalBalance={1000}
+                  stellarConnected={stellarConnected}
+                />
+              )
+            }
+          >
+            <span className="font-bolder">Buy</span>
+            <Image
+              className="ml-2"
+              alt="Buy Glo"
+              src="/arrow-right.svg"
+              width={16}
+              height={16}
             />
-          )
-        }
-      >
-        <span className="font-bolder">Buy Glo Dollar</span>
-        <Image
-          className="ml-2"
-          alt="Buy Glo"
-          src="/arrow-right.svg"
-          width={16}
-          height={16}
-        />
-      </div>
+          </div>
+
+          {!stellarConnected && !veConnected && (
+            <div
+              className="flex justify-center items-center bg-pine-50 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
+              onClick={() =>
+                openModal(<SellModal sellAmount={Number(totalBalance.value)} />)
+              }
+            >
+              <span className="font-bolder">Sell</span>
+              <Image
+                className="ml-2"
+                alt="Buy Glo"
+                src="/arrow-right.svg"
+                width={16}
+                height={16}
+              />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div
+          className={`${
+            totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
+          } rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer`}
+          onClick={() =>
+            openModal(
+              <BuyGloModal
+                totalBalance={1000}
+                stellarConnected={stellarConnected}
+              />
+            )
+          }
+        >
+          <span className="font-bolder">Buy Glo Dollar</span>
+          <Image
+            className="ml-2"
+            alt="Buy Glo"
+            src="/arrow-right.svg"
+            width={16}
+            height={16}
+          />
+        </div>
+      )}
     </div>
   );
 }

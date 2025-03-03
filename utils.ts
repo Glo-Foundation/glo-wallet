@@ -432,7 +432,7 @@ export const polySans = localFont({
 export const POPUP_PROPS =
   "toolbar=1,scrollbars=1,location=0,statusbar=0,menubar=1,resizable=1,width=900, height=800,top=0";
 
-export const getOnRampUrl = (
+export const getCoinbaseOnRampUrl = (
   address: string,
   buyAmount: number,
   redirectUrl: string,
@@ -448,6 +448,24 @@ export const getOnRampUrl = (
   }&addresses={"${address}":["${
     chainMap[name] || name
   }"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&redirectUrl=${redirectUrl}`;
+};
+
+export const getCoinbaseOffRampUrl = (
+  address: string,
+  buyAmount: number,
+  redirectUrl: string,
+  chain?: Chain
+) => {
+  const chainMap: { [key: string]: string } = {
+    "op mainnet": "optimism",
+    "arbitrum one": "arbitrum",
+  };
+  const name = chain?.name.toLowerCase() || "";
+  return `https://pay.coinbase.com/v3/sell/input?appId=${
+    process.env.NEXT_PUBLIC_CPD_PROJECT_ID
+  }&addresses={"${address}":["${
+    chainMap[name] || name
+  }"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&partnerUserId=${address}&redirectUrl=${redirectUrl}`;
 };
 
 export const WC_COOKIE = "recently-used-wc";
