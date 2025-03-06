@@ -161,7 +161,7 @@ export default function SellModal({ sellAmount }: Props) {
               openModal(
                 <SquidModal
                   buyAmount={-sellAmount}
-                  targetChain={forceBaseTarget ? base : undefined}
+                  usdcChain={forceBaseTarget ? base : undefined}
                 />
               )
             }
