@@ -9,10 +9,11 @@ import { ModalContext } from "@/lib/context";
 import { getUSDCContractAddress } from "@/utils";
 interface Props {
   buyAmount: number;
-  targetChain?: Chain;
+  gloChain?: Chain;
+  usdcChain?: Chain;
 }
 
-export default function SquidModal({ buyAmount, targetChain }: Props) {
+export default function SquidModal({ buyAmount, usdcChain, gloChain }: Props) {
   const { closeModal } = useContext(ModalContext);
   const { chain } = useAccount();
 
@@ -27,8 +28,14 @@ export default function SquidModal({ buyAmount, targetChain }: Props) {
   }, [isCopiedTooltipOpen]);
 
   const fromTo = [
-    getUSDCContractAddress(targetChain || chain!).toLowerCase(),
-    getSmartContractAddress(chain?.id).toLowerCase(),
+    {
+      chainId: gloChain ? gloChain.id.toString() : chainId,
+      address: getUSDCContractAddress(usdcChain || chain!).toLowerCase(),
+    },
+    {
+      chainId: usdcChain ? usdcChain.id.toString() : chainId,
+      address: getSmartContractAddress(gloChain?.id || chain?.id).toLowerCase(),
+    },
   ];
   const [from, to] = buyAmount > 0 ? fromTo : fromTo.reverse();
 
@@ -54,14 +61,8 @@ export default function SquidModal({ buyAmount, targetChain }: Props) {
             integratorId: process.env.NEXT_PUBLIC_SQUID_INTEGRATION_ID!,
             apiUrl: "https://apiplus.squidrouter.com",
             initialAssets: {
-              from: {
-                chainId,
-                address: from,
-              },
-              to: {
-                chainId: targetChain ? targetChain.id.toString() : chainId,
-                address: to,
-              },
+              from,
+              to,
             },
           }}
         />

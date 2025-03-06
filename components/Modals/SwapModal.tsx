@@ -32,13 +32,6 @@ export default function SwapModal({ buyAmount }: Props) {
   const isBase = base.id === chain?.id || baseSepolia.id === chain?.id;
   const isCelo = celo.id === chain?.id || celoAlfajores.id === chain?.id;
 
-  const { data: gloBalance } = useBalance({
-    address,
-    token: getSmartContractAddress(chain?.id),
-    query: {
-      gcTime: 3_000,
-    },
-  });
   const { data: usdcBalance } = useBalance({
     address,
     token: getUSDCContractAddress(chain!),
@@ -114,24 +107,17 @@ export default function SwapModal({ buyAmount }: Props) {
           <StepCard
             index={1}
             iconPath="/coinbase-invert.svg"
-            title={
-              isCelo
-                ? "Celo not supported."
-                : `Buy ${buyAmount} USDC on Coinbase`
-            }
-            content={
-              isCelo
-                ? "Switch to a different chain like Optimism"
-                : "Withdraws to the connected wallet address"
-            }
+            title={`Buy ${buyAmount} USDC ${
+              isCelo ? "(Base)" : ""
+            } on Coinbase`}
+            content="Withdraws to the connected wallet address"
             action={() =>
-              !isCelo &&
               window.open(
                 getCoinbaseOnRampUrl(
                   address!,
                   buyAmount,
                   `${window.location.origin}/purchased-coinbase`,
-                  chain
+                  isCelo ? base : chain
                 ),
                 "_blank",
                 POPUP_PROPS
@@ -152,9 +138,20 @@ export default function SwapModal({ buyAmount }: Props) {
             <StepCard
               index={2}
               iconPath="/squidrouter.svg"
-              title={`Swap ${buyAmount} USDC to USDGLO`}
+              title={
+                isCelo
+                  ? `Swap ${buyAmount} USDC (Base) to USDGLO (Celo)`
+                  : `Swap ${buyAmount} USDC to USDGLO`
+              }
               content={"Swap with Squid Router"}
-              action={() => openModal(<SquidModal buyAmount={buyAmount} />)}
+              action={() =>
+                openModal(
+                  <SquidModal
+                    buyAmount={buyAmount}
+                    gloChain={isCelo ? base : undefined}
+                  />
+                )
+              }
             />
           )}
         </section>
