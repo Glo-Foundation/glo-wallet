@@ -1,16 +1,16 @@
 import {
-  mainnet,
-  goerli,
-  polygon,
-  polygonMumbai,
-  celo,
-  base,
-  celoAlfajores,
-  optimism,
-  optimismSepolia,
   arbitrum,
   arbitrumSepolia,
+  base,
   baseSepolia,
+  celo,
+  celoAlfajores,
+  goerli,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  polygon,
+  polygonMumbai,
   vechain,
 } from "viem/chains";
 
@@ -103,7 +103,9 @@ const chainRPCUrl: { [id: number]: string } = {
   // Mainnets
   [polygon.id]: process.env.NEXT_PUBLIC_POLYGON_RPC_URL as string,
   [mainnet.id]: process.env.NEXT_PUBLIC_MAINNET_RPC_URL as string,
-  [celo.id]: process.env.NEXT_PUBLIC_CELO_RPC_URL as string,
+  [celo.id]:
+    process.env.CELO_RPC_URL ||
+    (process.env.NEXT_PUBLIC_CELO_RPC_URL as string),
   [optimism.id]: process.env.NEXT_PUBLIC_OPTIMISM_RPC_URL as string,
   [arbitrum.id]: process.env.NEXT_PUBLIC_ARBITRUM_RPC_URL as string,
   [base.id]: process.env.NEXT_PUBLIC_BASE_RPC_URL as string,
