@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { apiInstance } from "@/lib/utils";
-import { buyWithAqua, buyWithVerocket } from "@/payments";
+import { buyWithAqua, buyWithBetterSwap } from "@/payments";
 
 import { BuyBox } from "../BuyBox";
 
@@ -39,18 +39,22 @@ export default function SwapGate(props: Props) {
     return <SwapModal buyAmount={buyAmount} />;
   }
 
+  const BetterSwap = () => (
+    <BuyBox
+      key="betterswap"
+      name="BetterSwap"
+      icon="/betterswap.png"
+      fees="0.3"
+      worksFor="🔐 Crypto"
+      delay="⚡ Instant"
+      onClick={() => buyWithBetterSwap()}
+    />
+  );
+
   if (isVe) {
     return (
       <BoxBuyModal buyAmount={buyAmount}>
-        <BuyBox
-          key="verocket"
-          name="Verocket"
-          icon="/verocket.png"
-          fees="0.3"
-          worksFor="🔐 Crypto"
-          delay="⚡ Instant"
-          onClick={() => buyWithVerocket()}
-        />
+        <BetterSwap />
       </BoxBuyModal>
     );
   }
@@ -76,15 +80,7 @@ export default function SwapGate(props: Props) {
   // Default option
   return (
     <BoxBuyModal buyAmount={buyAmount}>
-      <BuyBox
-        key="verocket"
-        name="Verocket"
-        icon="/verocket.png"
-        fees="0.3"
-        worksFor="🔐 Crypto"
-        delay="⚡ Instant"
-        onClick={() => buyWithVerocket()}
-      />
+      <BetterSwap />
       <BuyBox
         key="squidrouter"
         name="squidrouter"
