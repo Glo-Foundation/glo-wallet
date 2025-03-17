@@ -204,7 +204,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
   ["VEBETTERDAO"]: {
     name: "VeBetterDAO",
     short_name: "VeBetterDAO",
-    iconPath: "/giving-green-logo.png",
+    iconPath: "/ve-better-dao.png",
     description: "Support tokenizing sustainable assets and actions",
     type: "",
   },
