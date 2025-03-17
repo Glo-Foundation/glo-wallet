@@ -17,3 +17,9 @@ export const buyWithBetterSwap = () =>
     "https://www.betterswap.io/?tokenIn=native&tokenOut=0x29c630cce4ddb23900f5fe66ab55e488c15b9f5e",
     "_blank"
   );
+
+export const sellWithBetterSwap = () =>
+  window.open(
+    "https://www.betterswap.io/?tokenOut=native&tokenIn=0x29c630cce4ddb23900f5fe66ab55e488c15b9f5e",
+    "_blank"
+  );

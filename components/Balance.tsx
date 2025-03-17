@@ -216,7 +216,7 @@ export default function Balance({
             />
           </div>
 
-          {!stellarConnected && !veConnected && (
+          {!stellarConnected && (
             <div
               className="flex justify-center items-center bg-pine-50 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
               onClick={() =>
