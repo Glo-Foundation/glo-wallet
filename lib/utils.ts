@@ -201,22 +201,13 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     description: "Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
-
-  // ["SAVE_LIVES"]: {
-  //   name: "Save Lives",
-  //   short_name: "Saving lives",
-  //   iconPath: "/givewell-logo.jpeg",
-  //   description:
-  //     "Funds charities that save or improve lives the most per dollar donated",
-  //   type: "",
-  // },
-  // ["ANIMAL_LIVES"]: {
-  //   name: "Improve Animal Welfare",
-  //   short_name: "Animals",
-  //   iconPath: "/give-directly-logo.jpeg",
-  //   description: "Funds basic income programs for people in extreme poverty",
-  //   type: "",
-  // }
+  ["VEBETTERDAO"]: {
+    name: "VeBetterDAO",
+    short_name: "VeBetterDAO",
+    iconPath: "/ve-better-dao.png",
+    description: "Support tokenizing sustainable assets and actions",
+    type: "",
+  },
 };
 
 export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {

@@ -40,6 +40,7 @@ enum Charity {
   ENDAOMENT
   RETRO_PG_OP
   CELO_PG
+  VEBETTERDAO
 }
 
 model CharityChoice {
