@@ -1,5 +1,6 @@
 import { SwapDefault } from "@coinbase/onchainkit/swap";
 import { Token } from "@coinbase/onchainkit/token";
+import { useWallet } from "@vechain/dapp-kit-react";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
@@ -9,6 +10,7 @@ import { useAccount, useBalance } from "wagmi";
 import { chainConfig, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
+import { sellWithBetterSwap } from "@/payments";
 import {
   getCoinbaseOffRampUrl,
   getUSDCContractAddress,
@@ -23,7 +25,7 @@ interface Props {
 }
 
 export default function SellModal({ sellAmount }: Props) {
-  const { address, chain, connector } = useAccount();
+  const { address: wagmiAddress, chain, connector } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
 
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -36,6 +38,10 @@ export default function SellModal({ sellAmount }: Props) {
   const isSequenceWallet = connector?.id === "sequence";
 
   const forceBaseTarget = isCoinbaseWallet && isCelo;
+
+  const { account: veAccount } = useWallet();
+  const address = wagmiAddress || (veAccount as `0x${string}` | undefined);
+  const isVe = !!veAccount;
 
   const { data: usdcBalance } = useBalance({
     address,
@@ -200,7 +206,16 @@ export default function SellModal({ sellAmount }: Props) {
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
-      {isCoinbaseWallet ? (
+      {isVe ? (
+        <section className="w-[300px]">
+          <StepCard
+            iconPath="/betterswap.png"
+            title="Swap USDGLO to VET"
+            content="Powered by Betterswap"
+            action={() => sellWithBetterSwap()}
+          />
+        </section>
+      ) : isCoinbaseWallet ? (
         <CoinbaseSwap />
       ) : isSequenceWallet ? (
         <SequenceSwap />

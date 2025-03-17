@@ -215,8 +215,7 @@ export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
     [optimism.id]: Charity.RETRO_PG_OP,
     [celo.id]: Charity.CELO_PG,
     "0": Charity.REFUGEE_CRISIS, // Stellar
-    // TODO:
-    [vechain.id]: Charity.CLIMATE, // Ve
+    [vechain.id]: Charity.VEBETTERDAO, // Ve
   };
   return DEFAULTS[chainId] || Charity.OPEN_SOURCE;
 };
