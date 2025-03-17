@@ -14,6 +14,6 @@ export const buyWithAqua = () =>
 
 export const buyWithBetterSwap = () =>
   window.open(
-    "https://www.betterswap.io/token/0x29c630cce4ddb23900f5fe66ab55e488c15b9f5e/",
+    "https://www.betterswap.io/?tokenIn=native&tokenOut=0x29c630cce4ddb23900f5fe66ab55e488c15b9f5e",
     "_blank"
   );
