@@ -35,7 +35,6 @@ export default function Impact({
   optimismBalanceFormatted,
   arbitrumBalanceFormatted,
   baseBalanceFormatted,
-  vechainBalanceFormatted,
   isVe,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
@@ -103,11 +102,6 @@ export default function Impact({
       logo: "/base-logo.svg",
       balance: baseBalanceFormatted,
     },
-    {
-      name: "Ve",
-      logo: "/ve.png",
-      balance: vechainBalanceFormatted,
-    },
   ];
 
   return (
@@ -168,7 +162,7 @@ export default function Impact({
                 <span className="text-sm ml-1">Glo Dollar</span>
               </div>
               {showBalanceDropdown && !isVe && (
-                <div className="absolute top-10 z-10 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
+                <div className="absolute top-10 z-10 mt-1 w-[280px] bg-white border-2 border-pine-400/90 rounded-lg">
                   <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
 
                   <div className="flex flex-col justify-center items-center">
