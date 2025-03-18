@@ -212,7 +212,7 @@ export default function SellModal({ sellAmount }: Props) {
             iconPath="/betterswap.png"
             title="Swap USDGLO to VET"
             content="Powered by Betterswap"
-            action={() => sellWithBetterSwap()}
+            action={() => sellWithBetterSwap(sellAmount)}
           />
         </section>
       ) : isCoinbaseWallet ? (

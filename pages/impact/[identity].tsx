@@ -16,9 +16,9 @@ import { ModalContext } from "@/lib/context";
 import { idriss } from "@/lib/idriss";
 import { lastSliceAddress, sliceAddress } from "@/lib/utils";
 import {
+  customFormatBalance,
   getTotalYield,
   getUSFormattedNumber,
-  customFormatBalance,
 } from "@/utils";
 
 import { KVResponse } from "../api/transfers/first-glo/[address]";
@@ -162,7 +162,7 @@ export default function Impact({
                 <span className="text-sm ml-1">Glo Dollar</span>
               </div>
               {showBalanceDropdown && !isVe && (
-                <div className="absolute top-10 z-10 mt-1 w-[280px] h-[120px] bg-white border-2 border-pine-400/90 rounded-lg">
+                <div className="absolute top-10 z-10 mt-1 w-[280px] bg-white border-2 border-pine-400/90 rounded-lg">
                   <div className="h-4 w-4 bg-white border-white border-t-pine-400/90 border-r-pine-400/90 border-2 -rotate-45 transform origin-top-left translate-x-32"></div>
 
                   <div className="flex flex-col justify-center items-center">
@@ -276,7 +276,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   );
 
   const pathname = context.req.url;
-  const isVe = pathname?.startsWith("/impact/ve/0x");
+  const isVe = pathname?.includes("/impact/ve/0x");
 
   // identity can be an address or an idriss identity
   let { identity } = context.query;
@@ -330,7 +330,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-
   const {
     totalBalance: balance,
     polygonBalance,
@@ -339,8 +338,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     optimismBalance,
     arbitrumBalance,
     baseBalance,
+    vechainBalance,
   } = await getBalances(isVe ? `ve${address}` : address);
-
   let yearlyYield = getTotalYield(balance);
 
   // round down to 0 when the yield isn't even $1
@@ -369,6 +368,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       arbitrumBalanceFormatted: formatBalance(arbitrumBalance || BigInt(0)),
       baseBalanceFormatted: formatBalance(baseBalance || BigInt(0)),
       celoBalanceFormatted: formatBalance(celoBalance || BigInt(0)),
+      vechainBalanceFormatted: formatBalance(vechainBalance || BigInt(0)),
       isVe,
       openGraphData: [
         {

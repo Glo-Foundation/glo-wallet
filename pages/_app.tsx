@@ -141,13 +141,17 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const setModalClass = (className = "") => setModalClassName(className);
 
-  const openGraphData = pageProps.openGraphData || [];
+  const openGraphData: {
+    key: string;
+    property: string;
+    content: string;
+  }[] = pageProps.openGraphData || [];
   const { chain } = config.getClient();
   return (
     <>
       <Head>
-        {openGraphData.map((og: any) => (
-          <meta {...og} />
+        {openGraphData.map(({ key, property, content }) => (
+          <meta key={key} property={property} content={content} />
         ))}
       </Head>
       <Analytics />
