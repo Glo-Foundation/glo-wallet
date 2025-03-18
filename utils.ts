@@ -307,6 +307,7 @@ export const getBalance = async (
     }
   } catch (err) {
     console.log(`Could not fetch balance for ${address} at ${chainId}`);
+    console.log(err);
     return BigInt(0);
   }
 };
