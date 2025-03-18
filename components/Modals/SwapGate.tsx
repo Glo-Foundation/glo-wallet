@@ -47,7 +47,7 @@ export default function SwapGate(props: Props) {
       fees="0.3"
       worksFor="🔐 Crypto"
       delay="⚡ Instant"
-      onClick={() => buyWithBetterSwap()}
+      onClick={() => buyWithBetterSwap(buyAmount)}
     />
   );
 
