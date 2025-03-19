@@ -136,6 +136,7 @@ async function getChainBalance(
     }
   } catch (_err) {
     console.log(`Can't fetch balance for ${address}`);
+    console.log(_err);
   }
   return balance;
 }
