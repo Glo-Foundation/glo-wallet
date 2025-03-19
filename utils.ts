@@ -1,3 +1,6 @@
+import { Driver, SimpleNet, SimpleWallet } from "@vechain/connex-driver";
+import { Framework } from "@vechain/connex-framework";
+import * as thor from "@vechain/web3-providers-connex";
 import { GetBalanceReturnType } from "@wagmi/core";
 import {
   arbitrum,
@@ -13,6 +16,7 @@ import {
   optimismSepolia,
   polygon,
   polygonMumbai,
+  vechain,
 } from "@wagmi/core/chains";
 import EthDater from "ethereum-block-by-date";
 import { ethers } from "ethers";
@@ -289,7 +293,24 @@ export const getBalance = async (
   chainId?: number,
   blockTag?: number
 ): Promise<bigint> => {
-  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
+  const getProvider = async () => {
+    if (chainId === vechain.id) {
+      const net = new SimpleNet("https://node-mainnet.vechain.energy");
+      const wallet = new SimpleWallet();
+      const driver = await Driver.connect(net, wallet);
+      const connex = new Framework(driver);
+      return thor.ethers.modifyProvider(
+        new ethers.BrowserProvider(
+          new thor.Provider({
+            connex,
+            wallet,
+          })
+        )
+      );
+    }
+    return new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
+  };
+  const provider = await getProvider();
   const abi = ["function balanceOf(address account) view returns (uint256)"];
   const usdgloContract = new ethers.Contract(
     getSmartContractAddress(chainId),
