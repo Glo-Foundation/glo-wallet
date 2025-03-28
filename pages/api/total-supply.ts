@@ -1,10 +1,11 @@
 import {
-  mainnet,
-  polygon,
-  celo,
-  optimism,
-  base,
   arbitrum,
+  base,
+  celo,
+  mainnet,
+  optimism,
+  polygon,
+  vechain,
 } from "@wagmi/core/chains";
 import { formatEther } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -30,6 +31,7 @@ export default async function handler(
     getMarketCap(optimism.id),
     getMarketCap(base.id),
     getMarketCap(arbitrum.id),
+    getMarketCap(vechain.id),
   ]);
 
   const stellarMarketCap = await getStellarMarketCap();

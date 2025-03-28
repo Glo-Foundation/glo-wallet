@@ -288,29 +288,30 @@ export const getUSDCToUSDGLOSwapDeeplink = (
   return outputUrl;
 };
 
+export const getJsonProvider = async (chainId: number) => {
+  if (chainId === vechain.id) {
+    const net = new SimpleNet("https://node-mainnet.vechain.energy");
+    const wallet = new SimpleWallet();
+    const driver = await Driver.connect(net, wallet);
+    const connex = new Framework(driver);
+    return thor.ethers.modifyProvider(
+      new ethers.BrowserProvider(
+        new thor.Provider({
+          connex,
+          wallet,
+        })
+      )
+    );
+  }
+  return new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
+};
+
 export const getBalance = async (
   address: string,
-  chainId?: number,
+  chainId: number,
   blockTag?: number
 ): Promise<bigint> => {
-  const getProvider = async () => {
-    if (chainId === vechain.id) {
-      const net = new SimpleNet("https://node-mainnet.vechain.energy");
-      const wallet = new SimpleWallet();
-      const driver = await Driver.connect(net, wallet);
-      const connex = new Framework(driver);
-      return thor.ethers.modifyProvider(
-        new ethers.BrowserProvider(
-          new thor.Provider({
-            connex,
-            wallet,
-          })
-        )
-      );
-    }
-    return new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
-  };
-  const provider = await getProvider();
+  const provider = await getJsonProvider(chainId);
   const abi = ["function balanceOf(address account) view returns (uint256)"];
   const usdgloContract = new ethers.Contract(
     getSmartContractAddress(chainId),

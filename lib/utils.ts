@@ -17,8 +17,9 @@ import {
 } from "wagmi/chains";
 
 import UsdgloContract from "@/abi/usdglo.json";
+import { getJsonProvider } from "@/utils";
 
-import { getChainRPCUrl, getSmartContractAddress } from "./config";
+import { getSmartContractAddress } from "./config";
 
 export const sliceAddress = (address: string, amt = 3) =>
   `${address?.slice(0, amt + 2)}...${address?.slice(amt * -1)}`;
@@ -74,8 +75,8 @@ export const DEFAULT_CTAS: CTA[] = ["TWEEET_IMPACT", "JOIN_CONSORTIUM"].map(
   (cta) => ({ type: cta } as CTA)
 );
 
-export const getMarketCap = async (chainId?: number): Promise<bigint> => {
-  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
+export const getMarketCap = async (chainId: number): Promise<bigint> => {
+  const provider = await getJsonProvider(chainId);
 
   const usdgloContract = new ethers.Contract(
     getSmartContractAddress(chainId),
