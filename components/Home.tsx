@@ -187,7 +187,7 @@ export default function Home() {
   const { asPath, push } = useRouter();
 
   const isSafe =
-    window.location.ancestorOrigins.length > 0 &&
+    window.location.ancestorOrigins?.length > 0 &&
     window.location.ancestorOrigins[0] === "https://app.safe.global";
   useAutoConnect(isSafe);
 
