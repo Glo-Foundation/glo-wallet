@@ -237,7 +237,16 @@ const calculateBalances = async (
       (marketCap - allocated[name]) / BigInt(10 ** 18)
     );
   }
-  return { possibleFundingChoices: choices, marketCaps };
+
+  const addTotal = (dict: { [name: string]: number }) => ({
+    ...dict,
+    _total: Object.values(dict).reduce((acc, cur) => acc + cur, 0),
+  });
+
+  return {
+    possibleFundingChoices: addTotal(choices),
+    marketCaps: addTotal(marketCaps),
+  };
 };
 
 type ChainObject = {

@@ -76,13 +76,7 @@ export const getBalances = async (address: string, onDate?: Date) => {
       baseBalance;
     balance /= decimals;
   } else if (address.slice(0, 2) === "ve") {
-    vechainBalance = await getChainBalance(
-      address.slice(2),
-      vechain,
-      // TODO: Does not really work with testnet
-      // isProd() ? vechain : VECHAIN_TESTNET,
-      onDate
-    );
+    vechainBalance = await getChainBalance(address.slice(2), vechain, onDate);
 
     const decimals = BigInt(10 ** 18);
     balance = vechainBalance / decimals;

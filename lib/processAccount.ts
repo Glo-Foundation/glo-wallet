@@ -102,8 +102,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
 
   const isStellar = !address.includes("0x");
   for (const [key] of Object.entries(balancesEndOfMonth)) {
-    // TODO: Temp skip Ve chain
-    if (key == "totalBalance" || key == "vechainBalance") {
+    if (key == "totalBalance") {
       continue;
     }
     if (key == "stellarBalance") {
@@ -122,6 +121,12 @@ const processAccount = async (address: string, choices: Choice[]) => {
       allocated["stellar"] = allocated["stellar"] + stellarAdjusted;
     } else if (!isStellar) {
       const chainName = key.replace("Balance", "");
+      const isVeAddress = address.startsWith("ve");
+      const isVeKey = key == "vechainBalance";
+      // isVeKey XOR isVeAddress
+      if ((isVeKey && !isVeAddress) || (!isVeKey && isVeAddress)) {
+        continue;
+      }
 
       const gloTransactionsLastMonth = await fetchGloTransactions(
         address,
@@ -131,7 +136,7 @@ const processAccount = async (address: string, choices: Choice[]) => {
         firstThisMonth
       );
       const averageBalance = await getAverageBalance(
-        address.startsWith("ve") ? address.slice(2) : address,
+        isVeAddress ? address.slice(2) : address,
         firstLastMonth,
         firstThisMonth,
         balancesEndOfMonth[key],

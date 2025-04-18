@@ -320,9 +320,12 @@ export const getBalance = async (
   );
 
   try {
-    if (blockTag !== null) {
+    if (blockTag !== null && blockTag !== 0) {
+      const params =
+        chainId === vechain.id ? { blockNumber: blockTag } : { blockTag };
+
       return await usdgloContract.balanceOf.call(undefined, address, {
-        blockTag: blockTag,
+        ...params,
       });
     } else {
       return await usdgloContract.balanceOf(address);
@@ -406,7 +409,7 @@ export const getBlockNumber = async (
   date: Date,
   chainId: number
 ): Promise<number> => {
-  const provider = new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
+  const provider = await getJsonProvider(chainId);
 
   // ethereum-block-by-date -> ethers 5.7
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
