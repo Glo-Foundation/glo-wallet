@@ -53,4 +53,8 @@ __tests__/.next/
 /test-results/
 /playwright-report/
 /playwright/.cache/
-/tests-examples
+
+
+/starlight
+/starlight.pub
+
