@@ -129,3 +129,37 @@ export const getCeloUniswapLpTVL = async () => {
 
   return { total, details };
 };
+
+type DexType = {
+  chainId: string;
+  dexId: string;
+  url: string;
+  pairAddress: string;
+  priceUsd: string;
+  baseToken: {
+    address: string;
+    name: string;
+    symbol: string;
+  };
+  quoteToken: {
+    address: string;
+    name: string;
+    symbol: string;
+  };
+  liquidity: {
+    usd: number;
+    base: number;
+    quote: number;
+  };
+};
+
+export const getDexData = async () => {
+  const url =
+    "https://api.dexscreener.com/latest/dex/pairs/celo/0x3d9e27c04076288ebfdc4815b4f6d81b0ed1b341";
+
+  const {
+    data: { pair },
+  } = await axios.get<{ pair: DexType }>(url);
+
+  return Math.round(pair.liquidity.usd);
+};
