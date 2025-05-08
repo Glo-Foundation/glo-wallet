@@ -232,9 +232,7 @@ export const backendUrl = BACKEND_URL
   : "http://localhost:3000";
 
 export const getChainsObjects = () => {
-  // TODO: Temp skip Ve chain
-  // const chains = [...getChains(), vechain];
-  const chains = [...getChains()];
+  const chains = [...getChains(), vechain];
   const chainMap: { [key: string]: string } = {
     "op mainnet": "optimism",
     "arbitrum one": "arbitrum",
