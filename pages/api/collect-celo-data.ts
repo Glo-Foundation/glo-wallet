@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { getCeloUniswapLpTVL, getRefi, getUbeswap } from "@/lib/celo-data";
+import { getCeloUniswapLpTVL, getDexData, getRefi, getUbeswap } from "@/lib/celo-data";
 import prisma from "@/lib/prisma";
 
 export default async function handler(
@@ -33,7 +33,8 @@ export default async function handler(
 
   const ubeswap = await getUbeswap();
   const refi = await getRefi();
-  const total = totalUniswap + ubeswap + refi;
+  const ubeswapGoodDollar = await getDexData();
+  const total = totalUniswap + ubeswap + refi + ubeswapGoodDollar;
 
   await prisma.celoLiquidity.create({
     data: {
@@ -42,6 +43,7 @@ export default async function handler(
         ...uniswapLps,
         ubeswap,
         "ReFi Medellin": refi,
+        "Ubeswap/G$": ubeswapGoodDollar
       },
     },
   });
