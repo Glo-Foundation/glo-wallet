@@ -32,7 +32,7 @@ export const getUbeswap = async () => {
   );
 
   const result = await axios.get(`${ipfsData.ipfsUrl}/metadata.json`);
-  const total = BigInt(result.data.activeAmount0) +  BigInt(result.data.activeAmount1) * BigInt(10 ** 12)
+  const total = BigInt(result.data.activeAmount0);
 
   return Math.round(Number(total / BigInt(10 ** 18)));
 };
