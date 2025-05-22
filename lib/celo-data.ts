@@ -32,20 +32,9 @@ export const getUbeswap = async () => {
   );
 
   const result = await axios.get(`${ipfsData.ipfsUrl}/metadata.json`);
-  const totalShares = BigInt(result.data.totalShares);
+  const total = BigInt(result.data.activeAmount0);
 
-  const {
-    data: {
-      result: { ethusd: celoPrice },
-    },
-  } = await axios.get(
-    `https://api.celoscan.io/api?module=stats&action=ethprice&apikey=${process.env.CELOSCAN_API_KEY}`
-  );
-
-  const total =
-    (Number(totalShares / BigInt(10 ** 18)) * parseFloat(celoPrice)) / 2;
-
-  return Math.round(total);
+  return Math.round(Number(total / BigInt(10 ** 18)));
 };
 
 type ResType = {
