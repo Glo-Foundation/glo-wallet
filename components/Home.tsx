@@ -1,4 +1,4 @@
-import { useConnex, useWallet } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/dapp-kit-react";
 import {
   arbitrum,
   arbitrumSepolia,
@@ -75,26 +75,26 @@ export default function Home() {
 
   const [veBalance, setVeBalance] = useState(startBalance(18));
 
-  const connex = useConnex();
   const { account: veAddress } = useWallet();
   const veConnected = !!veAddress;
 
   useEffect(() => {
     if (veAddress) {
       // TODO: Could be replaced with Viem confifured for Ve and custom Ve testnet
-      connex.thor
-        .account(chainConfig[isProd() ? vechain.id : -1]) // TODO:
-        .method(erc20Abi.find((x) => x.name === "balanceOf")!)
-        .call(veAddress)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((result: any) => {
-          const value = BigInt(result.decoded[0]);
-          setVeBalance({
-            ...veBalance,
-            value,
-            formatted: (value / BigInt(10 ** 18)).toString(),
-          });
-        });
+      // connex.thor
+      //   .account(chainConfig[isProd() ? vechain.id : -1]) // TODO:
+      //   .method(erc20Abi.find((x) => x.name === "balanceOf")!)
+      //   .call(veAddress)
+      //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      //   .then((result: any) => {
+      //     const value = BigInt(result.decoded[0]);
+      const value = BigInt(0);
+      setVeBalance({
+        ...veBalance,
+        value,
+        formatted: (value / BigInt(10 ** 18)).toString(),
+      });
+      // });
     } else {
       setVeBalance(startBalance(18));
     }

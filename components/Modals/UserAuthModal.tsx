@@ -108,7 +108,7 @@ export default function UserAuthModal({
         await connectStellar();
       } else {
         // Connect with EVM connectors
-        connect({ connector: connectors[index] });
+        // connect({ connector: connectors[index] });
       }
       closeModal();
     });

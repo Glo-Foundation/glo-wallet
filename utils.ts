@@ -1,6 +1,4 @@
-import { Driver, SimpleNet, SimpleWallet } from "@vechain/connex-driver";
-import { Framework } from "@vechain/connex-framework";
-import * as thor from "@vechain/web3-providers-connex";
+// import * as thor from "@vechain/web3-providers-connex";
 import { GetBalanceReturnType } from "@wagmi/core";
 import {
   arbitrum,
@@ -289,20 +287,20 @@ export const getUSDCToUSDGLOSwapDeeplink = (
 };
 
 export const getJsonProvider = async (chainId: number) => {
-  if (chainId === vechain.id) {
-    const net = new SimpleNet("https://node-mainnet.vechain.energy");
-    const wallet = new SimpleWallet();
-    const driver = await Driver.connect(net, wallet);
-    const connex = new Framework(driver);
-    return thor.ethers.modifyProvider(
-      new ethers.BrowserProvider(
-        new thor.Provider({
-          connex,
-          wallet,
-        })
-      )
-    );
-  }
+  // if (chainId === vechain.id) {
+  //   const net = new SimpleNet("https://node-mainnet.vechain.energy");
+  //   const wallet = new SimpleWallet();
+  //   const driver = await Driver.connect(net, wallet);
+  //   const connex = new Framework(driver);
+  //   return thor.ethers.modifyProvider(
+  //     new ethers.BrowserProvider(
+  //       new thor.Provider({
+  //         connex,
+  //         wallet,
+  //       })
+  //     )
+  //   );
+  // }
   return new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
 };
 
