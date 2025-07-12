@@ -173,22 +173,11 @@ export default function App({ Component, pageProps }: AppProps) {
                 }}
               >
                 <DAppKitProvider
-                  // REQUIRED: The URL of the node you want to connect to
-                  node={MAINNET_URL}
-                  // OPTIONAL: Whether or not to persist state in local storage (account, wallet source)
-                  usePersistence={true}
-                  // OPTIONAL: Options to enable wallet connect
+                  node={isProd() ? MAINNET_URL : TESTNET_URL}
+                  usePersistence
                   walletConnectOptions={walletConnectOptions}
-                  // OPTIONAL: A log level for console logs
                   logLevel="DEBUG"
-                  // OPTIONAL: theme mode 'LIGHT' or 'DARK'
-                  themeMode="LIGHT"
-                  // OPTIONAL: app current language
-                  language="en"
-                  // OPTIONAL: every wallet has a connection certificate, but wallet connect doesn't connect with a certificate, it uses a session; if required, with this option, we will force the user to sign a certificate after he finishes the connection with wallet connect
-                  requireCertificate={false}
-                  // OPTIONAL: you can choose which wallets to allow in your application between 'wallet-connect', 'veworld', 'sync2' or 'sync'. Default: all
-                  allowedWallets={["veworld", "sync2"]}
+                  allowedWallets={["veworld", "wallet-connect", "sync2"]}
                 >
                   <ModalContext.Provider
                     value={{ openModal, closeModal, setModalClass }}
