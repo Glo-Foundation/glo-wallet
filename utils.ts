@@ -26,6 +26,8 @@ import {
   defaultChainId,
   getChainRPCUrl,
   getSmartContractAddress,
+  B3TR,
+  USDGLO,
 } from "@/lib/config";
 import { getAllowedChains } from "@/lib/utils";
 
@@ -492,6 +494,359 @@ export const getCoinbaseOffRampUrl = (
   }&addresses={"${address}":["${
     chainMap[name] || name
   }"]}&presetCryptoAmount=${buyAmount}&assets=["USDC"]&partnerUserId=${address}&redirectUrl=${redirectUrl}`;
+};
+
+export const getVeChainTokenBalance = async (
+  tokenAddress: string,
+  walletAddress: string,
+  chainId: number
+): Promise<bigint> => {
+  try {
+    const provider = await getJsonProvider(chainId);
+    const abi = ["function balanceOf(address account) view returns (uint256)"];
+    const tokenContract = new ethers.Contract(tokenAddress, abi, provider);
+    return await tokenContract.balanceOf(walletAddress);
+  } catch (err) {
+    console.log(
+      `Could not fetch token balance for ${walletAddress} on chain ${chainId}`
+    );
+    console.log(err);
+    return BigInt(0);
+  }
+};
+
+export const getVeChainLiquidityPoolInfo = async (
+  poolAddress: string,
+  chainId: number
+): Promise<{
+  token0: string;
+  token1: string;
+  reserve0: bigint;
+  reserve1: bigint;
+  totalSupply: bigint;
+}> => {
+  try {
+    const provider = await getJsonProvider(chainId);
+    const abi = [
+      "function token0() view returns (address)",
+      "function token1() view returns (address)",
+      "function getReserves() view returns (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast)",
+      "function totalSupply() view returns (uint256)",
+    ];
+    const poolContract = new ethers.Contract(poolAddress, abi, provider);
+
+    const [token0, token1, reserves, totalSupply] = await Promise.all([
+      poolContract.token0(),
+      poolContract.token1(),
+      poolContract.getReserves(),
+      poolContract.totalSupply(),
+    ]);
+
+    return {
+      token0,
+      token1,
+      reserve0: BigInt(reserves._reserve0),
+      reserve1: BigInt(reserves._reserve1),
+      totalSupply: BigInt(totalSupply),
+    };
+  } catch (err) {
+    console.log(
+      `Could not fetch pool info for ${poolAddress} on chain ${chainId}`
+    );
+    console.log(err);
+    return {
+      token0: "",
+      token1: "",
+      reserve0: BigInt(0),
+      reserve1: BigInt(0),
+      totalSupply: BigInt(0),
+    };
+  }
+};
+
+export const getPairReserves = async (
+  pairAddress: string,
+  chainId: number
+): Promise<{
+  reserve0: bigint;
+  reserve1: bigint;
+  blockTimestampLast: number;
+}> => {
+  try {
+    const provider = await getJsonProvider(chainId);
+    const abi = [
+      "function getReserves() view returns (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast)",
+    ];
+    const pairContract = new ethers.Contract(pairAddress, abi, provider);
+
+    const reserves = await pairContract.getReserves();
+
+    return {
+      reserve0: BigInt(reserves._reserve0),
+      reserve1: BigInt(reserves._reserve1),
+      blockTimestampLast: Number(reserves._blockTimestampLast),
+    };
+  } catch (err) {
+    console.log(
+      `Could not fetch reserves for pair ${pairAddress} on chain ${chainId}`
+    );
+    console.log(err);
+    return {
+      reserve0: BigInt(0),
+      reserve1: BigInt(0),
+      blockTimestampLast: 0,
+    };
+  }
+};
+
+export const getQuoteFromRouter = async (
+  routerAddress: string,
+  amountA: bigint,
+  reserveA: bigint,
+  reserveB: bigint,
+  chainId: number
+): Promise<bigint> => {
+  try {
+    const provider = await getJsonProvider(chainId);
+    const abi = [
+      "function quote(uint256 amountA, uint256 reserveA, uint256 reserveB) pure returns (uint256 amountB)",
+    ];
+    const routerContract = new ethers.Contract(routerAddress, abi, provider);
+
+    const amountB = await routerContract.quote(amountA, reserveA, reserveB);
+    return BigInt(amountB);
+  } catch (err) {
+    console.log(
+      `Could not get quote from router ${routerAddress} on chain ${chainId}`
+    );
+    console.log(err);
+    return BigInt(0);
+  }
+};
+
+// Pure calculation function (client-side calculation without contract call)
+export const calculateQuote = (
+  amountA: bigint,
+  reserveA: bigint,
+  reserveB: bigint
+): bigint => {
+  if (reserveA === BigInt(0)) {
+    return BigInt(0);
+  }
+  return (amountA * reserveB) / reserveA;
+};
+
+export const calculateLiquidityTokensToMint = (
+  amountA: bigint,
+  amountB: bigint,
+  reserveA: bigint,
+  reserveB: bigint,
+  totalSupply: bigint
+): bigint => {
+  if (totalSupply === BigInt(0)) {
+    // Initial liquidity - geometric mean minus minimum liquidity
+    const liquidity = (amountA * amountB) ** BigInt(1 / 2) - BigInt(1000);
+    return liquidity > BigInt(0) ? liquidity : BigInt(0);
+  } else {
+    // Subsequent liquidity - minimum of proportional amounts
+    const liquidityA = (amountA * totalSupply) / reserveA;
+    const liquidityB = (amountB * totalSupply) / reserveB;
+    return liquidityA < liquidityB ? liquidityA : liquidityB;
+  }
+};
+
+export const calculateTokensFromLiquidity = (
+  liquidity: bigint,
+  totalSupply: bigint,
+  reserveA: bigint,
+  reserveB: bigint
+): { amountA: bigint; amountB: bigint } => {
+  const amountA = (liquidity * reserveA) / totalSupply;
+  const amountB = (liquidity * reserveB) / totalSupply;
+  return { amountA, amountB };
+};
+
+// VeChain Router Contract Address (replace with actual router address)
+export const VECHAIN_ROUTER_ADDRESS =
+  "0x349Ede93B675c0F0f8d7CdaD74eCF1419943E6ac"; // Replace with actual router address
+
+// Helper function to format units (similar to ethers formatUnits)
+const formatUnits = (value: bigint, decimals = 18): string => {
+  return (Number(value) / Math.pow(10, decimals)).toFixed(4);
+};
+
+export const addVeChainLiquidity = async (
+  connex: any,
+  tokenA: string,
+  tokenB: string,
+  amountADesired: bigint,
+  amountBDesired: bigint,
+  userAddress: string,
+  slippageTolerance = 0.5 // 0.5% default slippage
+): Promise<any> => {
+  try {
+    // Calculate minimum amounts with slippage tolerance
+    const slippageMultiplier = (100 - slippageTolerance) / 100;
+    const amountAMin = BigInt(
+      Math.floor(Number(amountADesired) * slippageMultiplier)
+    );
+    const amountBMin = BigInt(
+      Math.floor(Number(amountBDesired) * slippageMultiplier)
+    );
+
+    // Set deadline to 20 minutes from now
+    const deadline = Math.floor(Date.now() / 1000) + 1200;
+
+    // addLiquidity ABI
+    const addLiquidityABI = {
+      inputs: [
+        { internalType: "address", name: "tokenA", type: "address" },
+        { internalType: "address", name: "tokenB", type: "address" },
+        { internalType: "uint256", name: "amountADesired", type: "uint256" },
+        { internalType: "uint256", name: "amountBDesired", type: "uint256" },
+        { internalType: "uint256", name: "amountAMin", type: "uint256" },
+        { internalType: "uint256", name: "amountBMin", type: "uint256" },
+        { internalType: "address", name: "to", type: "address" },
+        { internalType: "uint256", name: "deadline", type: "uint256" },
+      ],
+      name: "addLiquidity",
+      outputs: [
+        { internalType: "uint256", name: "amountA", type: "uint256" },
+        { internalType: "uint256", name: "amountB", type: "uint256" },
+        { internalType: "uint256", name: "liquidity", type: "uint256" },
+      ],
+      stateMutability: "nonpayable",
+      type: "function",
+    };
+
+    // Approve ABI for token approvals
+    const approveABI = {
+      constant: false,
+      inputs: [
+        { name: "_spender", type: "address" },
+        { name: "_amount", type: "uint256" },
+      ],
+      name: "approve",
+      outputs: [{ name: "success", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    };
+
+    // Prepare approval clauses for both tokens
+    const tokenAContract = connex.thor.account(tokenA).method(approveABI);
+    const tokenBContract = connex.thor.account(tokenB).method(approveABI);
+    const routerContract = connex.thor
+      .account(VECHAIN_ROUTER_ADDRESS)
+      .method(addLiquidityABI);
+
+    const tokenAApprovalClause = tokenAContract.asClause(
+      VECHAIN_ROUTER_ADDRESS,
+      amountADesired.toString()
+    );
+    const tokenBApprovalClause = tokenBContract.asClause(
+      VECHAIN_ROUTER_ADDRESS,
+      amountBDesired.toString()
+    );
+
+    // Prepare addLiquidity clause
+    const addLiquidityClause = routerContract.asClause(
+      tokenA,
+      tokenB,
+      amountADesired.toString(),
+      amountBDesired.toString(),
+      amountAMin.toString(),
+      amountBMin.toString(),
+      userAddress,
+      deadline.toString()
+    );
+
+    // Create transaction with all clauses
+    const clauses = [
+      {
+        comment: `Approve ${formatUnits(amountADesired, 18)} ${
+          tokenA === B3TR ? "B3TR" : "Token A"
+        }`,
+        ...tokenAApprovalClause,
+      },
+      {
+        comment: `Approve ${formatUnits(amountBDesired, 18)} ${
+          tokenB === USDGLO ? "USDGLO" : "Token B"
+        }`,
+        ...tokenBApprovalClause,
+      },
+      {
+        comment: `Add liquidity: ${formatUnits(
+          amountADesired,
+          18
+        )} + ${formatUnits(amountBDesired, 18)}`,
+        ...addLiquidityClause,
+      },
+    ];
+
+    console.log("Sending liquidity transaction with clauses:", clauses);
+
+    // Send transaction
+    const result = await connex.vendor
+      .sign("tx", clauses)
+      .signer(userAddress)
+      .gas(500000) // Set maximum gas for liquidity operations
+      .comment(
+        `Add liquidity: ${formatUnits(amountADesired, 18)} ${
+          tokenA === B3TR ? "B3TR" : "TokenA"
+        } + ${formatUnits(amountBDesired, 18)} ${
+          tokenB === USDGLO ? "USDGLO" : "TokenB"
+        }`
+      )
+      .request();
+
+    console.log("Liquidity transaction result:", result);
+    return result;
+  } catch (error) {
+    console.error("Error adding VeChain liquidity:", error);
+    throw error;
+  }
+};
+
+export const removeVeChainLiquidity = async (
+  tokenA: string,
+  tokenB: string,
+  liquidity: bigint,
+  amountAMin: bigint,
+  amountBMin: bigint,
+  to: string,
+  deadline: number,
+  chainId: number
+): Promise<string> => {
+  try {
+    const provider = await getJsonProvider(chainId);
+
+    const routerAbi = [
+      "function removeLiquidity(address tokenA, address tokenB, uint liquidity, uint amountAMin, uint amountBMin, address to, uint deadline) returns (uint amountA, uint amountB)",
+    ];
+
+    const routerAddress = "0x..."; // Replace with actual VeChain DEX router
+    const routerContract = new ethers.Contract(
+      routerAddress,
+      routerAbi,
+      provider
+    );
+
+    const tx = await routerContract.removeLiquidity(
+      tokenA,
+      tokenB,
+      liquidity,
+      amountAMin,
+      amountBMin,
+      to,
+      deadline
+    );
+
+    return tx.hash;
+  } catch (err) {
+    console.log("Error removing VeChain liquidity:", err);
+    throw err;
+  }
 };
 
 export const WC_COOKIE = "recently-used-wc";
