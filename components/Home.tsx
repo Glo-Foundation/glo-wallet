@@ -263,7 +263,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isConnected || stellarConnected || veConnected) {
-      const key = `glo-wallet-${stellarConnected ? stellarAddress : address}`;
+      const _key = `glo-wallet-${stellarConnected ? stellarAddress : address}`;
 
       const sign = async () => {
         return "public-signature";

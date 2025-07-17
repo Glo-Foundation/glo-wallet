@@ -8,8 +8,6 @@ import { useAccount, useBalance } from "wagmi";
 
 import {
   B3TR,
-  chainConfig,
-  getSmartContractAddress,
   USDGLO,
   VECHAIN_B3TR_USDGLO_POOL,
   token0,
@@ -22,7 +20,6 @@ import { sliceAddress } from "@/lib/utils";
 import {
   addVeChainLiquidity,
   getCoinbaseOnRampUrl,
-  getUSDCContractAddress,
   getVeChainTokenBalance,
   POPUP_PROPS,
 } from "@/utils";
@@ -156,8 +153,6 @@ export default function LiquidityModal({ buyAmount }: Props) {
     image: "https://vechainstats.com/assets/media/token-icon_b3tr.png?r=1.4",
     chainId: chain?.id || base.id,
   };
-
-  const swappableTokens = [b3trToken, gloToken];
 
   // Fetch VeChain balances
   useEffect(() => {
