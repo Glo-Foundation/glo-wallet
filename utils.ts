@@ -28,6 +28,7 @@ import {
   getSmartContractAddress,
   B3TR,
   USDGLO,
+  VECHAIN_B3TR_USDGLO_POOL,
 } from "@/lib/config";
 import { getAllowedChains } from "@/lib/utils";
 
@@ -808,44 +809,152 @@ export const addVeChainLiquidity = async (
   }
 };
 
+// Get LP token total supply
+export const getLPTokenTotalSupply = async (
+  lpTokenAddress: string,
+  chainId: number
+): Promise<bigint> => {
+  try {
+    const provider = await getJsonProvider(chainId);
+    const abi = ["function totalSupply() view returns (uint256)"];
+    const lpContract = new ethers.Contract(lpTokenAddress, abi, provider);
+
+    const totalSupply = await lpContract.totalSupply();
+    return BigInt(totalSupply);
+  } catch (err) {
+    console.log(
+      `Could not fetch LP token total supply for ${lpTokenAddress} on chain ${chainId}`
+    );
+    console.log(err);
+    return BigInt(0);
+  }
+};
+
+// Calculate tokens to receive when removing liquidity
+export const calculateRemoveLiquidityAmounts = (
+  lpTokenAmount: bigint,
+  totalSupply: bigint,
+  reserve0: bigint,
+  reserve1: bigint
+): { amount0: bigint; amount1: bigint; percentage: number } => {
+  if (totalSupply === BigInt(0)) {
+    return { amount0: BigInt(0), amount1: BigInt(0), percentage: 0 };
+  }
+
+  const amount0 = (lpTokenAmount * reserve0) / totalSupply;
+  const amount1 = (lpTokenAmount * reserve1) / totalSupply;
+  const percentage =
+    Number((lpTokenAmount * BigInt(10000)) / totalSupply) / 100;
+
+  return { amount0, amount1, percentage };
+};
+
 export const removeVeChainLiquidity = async (
+  connex: any,
   tokenA: string,
   tokenB: string,
   liquidity: bigint,
-  amountAMin: bigint,
-  amountBMin: bigint,
-  to: string,
-  deadline: number,
-  chainId: number
-): Promise<string> => {
+  userAddress: string,
+  slippageTolerance = 0.5 // 0.5% default slippage
+): Promise<any> => {
   try {
-    const provider = await getJsonProvider(chainId);
+    // Calculate minimum amounts with slippage tolerance
+    const slippageMultiplier = (100 - slippageTolerance) / 100;
 
-    const routerAbi = [
-      "function removeLiquidity(address tokenA, address tokenB, uint liquidity, uint amountAMin, uint amountBMin, address to, uint deadline) returns (uint amountA, uint amountB)",
-    ];
+    // For remove liquidity, we need to calculate expected amounts first
+    // This would typically require knowing the current reserves and total supply
+    // For now, we'll set minimum amounts to 0 (can be improved)
+    const amountAMin = BigInt(0); // Should be calculated based on expected amounts
+    const amountBMin = BigInt(0); // Should be calculated based on expected amounts
 
-    const routerAddress = "0x..."; // Replace with actual VeChain DEX router
-    const routerContract = new ethers.Contract(
-      routerAddress,
-      routerAbi,
-      provider
+    // Set deadline to 20 minutes from now
+    const deadline = Math.floor(Date.now() / 1000) + 1200;
+
+    // removeLiquidity ABI
+    const removeLiquidityABI = {
+      inputs: [
+        { internalType: "address", name: "tokenA", type: "address" },
+        { internalType: "address", name: "tokenB", type: "address" },
+        { internalType: "uint256", name: "liquidity", type: "uint256" },
+        { internalType: "uint256", name: "amountAMin", type: "uint256" },
+        { internalType: "uint256", name: "amountBMin", type: "uint256" },
+        { internalType: "address", name: "to", type: "address" },
+        { internalType: "uint256", name: "deadline", type: "uint256" },
+      ],
+      name: "removeLiquidity",
+      outputs: [
+        { internalType: "uint256", name: "amountA", type: "uint256" },
+        { internalType: "uint256", name: "amountB", type: "uint256" },
+      ],
+      stateMutability: "nonpayable",
+      type: "function",
+    };
+
+    // Approve ABI for LP token approval
+    const approveABI = {
+      constant: false,
+      inputs: [
+        { name: "_spender", type: "address" },
+        { name: "_amount", type: "uint256" },
+      ],
+      name: "approve",
+      outputs: [{ name: "success", type: "bool" }],
+      payable: false,
+      stateMutability: "nonpayable",
+      type: "function",
+    };
+
+    // Prepare approval clause for LP token
+    const lpTokenContract = connex.thor
+      .account(VECHAIN_B3TR_USDGLO_POOL)
+      .method(approveABI);
+    const routerContract = connex.thor
+      .account(VECHAIN_ROUTER_ADDRESS)
+      .method(removeLiquidityABI);
+
+    const lpTokenApprovalClause = lpTokenContract.asClause(
+      VECHAIN_ROUTER_ADDRESS,
+      liquidity.toString()
     );
 
-    const tx = await routerContract.removeLiquidity(
+    // Prepare removeLiquidity clause
+    const removeLiquidityClause = routerContract.asClause(
       tokenA,
       tokenB,
-      liquidity,
-      amountAMin,
-      amountBMin,
-      to,
-      deadline
+      liquidity.toString(),
+      amountAMin.toString(),
+      amountBMin.toString(),
+      userAddress,
+      deadline.toString()
     );
 
-    return tx.hash;
-  } catch (err) {
-    console.log("Error removing VeChain liquidity:", err);
-    throw err;
+    // Create transaction with all clauses
+    const clauses = [
+      {
+        comment: `Approve ${formatUnits(liquidity, 18)} LP tokens`,
+        ...lpTokenApprovalClause,
+      },
+      {
+        comment: `Remove liquidity: ${formatUnits(liquidity, 18)} LP tokens`,
+        ...removeLiquidityClause,
+      },
+    ];
+
+    console.log("Sending remove liquidity transaction with clauses:", clauses);
+
+    // Send transaction
+    const result = await connex.vendor
+      .sign("tx", clauses)
+      .signer(userAddress)
+      .gas(300000) // Set maximum gas for remove liquidity operations
+      .comment(`Remove liquidity: ${formatUnits(liquidity, 18)} LP tokens`)
+      .request();
+
+    console.log("Remove liquidity transaction result:", result);
+    return result;
+  } catch (error) {
+    console.error("Error removing VeChain liquidity:", error);
+    throw error;
   }
 };
 

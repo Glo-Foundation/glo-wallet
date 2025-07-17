@@ -27,6 +27,7 @@ import {
   POPUP_PROPS,
 } from "@/utils";
 
+import RemoveLiquidityModal from "./RemoveLiquidityModal";
 import SquidModal from "./SquidModal";
 import StepCard from "./StepCard";
 
@@ -261,7 +262,20 @@ export default function LiquidityModal({ buyAmount }: Props) {
       </div>
       {isTokenForm ? (
         <section className="flex flex-col space-y-4 p-4">
-          <div className="text-lg font-semibold">Add Liquidity</div>
+          <div className="flex items-center justify-between">
+            <div className="text-lg font-semibold">Manage Liquidity</div>
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button className="px-3 py-1 text-sm font-medium bg-white shadow-sm rounded-md text-gray-900">
+                Add
+              </button>
+              <button
+                onClick={() => openModal(<RemoveLiquidityModal />)}
+                className="px-3 py-1 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
 
           {/* Balance Display */}
           <div className="bg-gray-50 rounded-lg p-4 space-y-3">
@@ -322,8 +336,16 @@ export default function LiquidityModal({ buyAmount }: Props) {
                   (!isVe &&
                     lpTokenBalance?.value &&
                     lpTokenBalance.value > BigInt(0))) && (
-                  <div className="text-xs text-gray-500 mt-1">
-                    You have liquidity in this pool
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="text-xs text-gray-500">
+                      You have liquidity in this pool
+                    </div>
+                    <button
+                      onClick={() => openModal(<RemoveLiquidityModal />)}
+                      className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded-md transition-colors"
+                    >
+                      Remove
+                    </button>
                   </div>
                 )}
               </div>
