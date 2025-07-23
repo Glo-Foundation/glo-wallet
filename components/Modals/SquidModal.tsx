@@ -1,4 +1,4 @@
-import { SquidWidget } from "@0xsquid/widget";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { celo, Chain } from "viem/chains";
@@ -12,6 +12,14 @@ interface Props {
   gloChain?: Chain;
   usdcChain?: Chain;
 }
+
+const SquidWidget = dynamic(
+  async () => {
+    const { SquidWidget: _SquidWidget } = await import("@0xsquid/widget");
+    return _SquidWidget;
+  },
+  { ssr: false }
+);
 
 export default function SquidModal({ buyAmount, usdcChain, gloChain }: Props) {
   const { closeModal } = useContext(ModalContext);
