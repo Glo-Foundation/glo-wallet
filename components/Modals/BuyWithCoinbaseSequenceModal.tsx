@@ -6,6 +6,7 @@ import { Tooltip } from "react-tooltip";
 import { useAccount, useBalance, useSwitchChain } from "wagmi";
 
 import StepCard from "@/components/Modals/StepCard";
+import { getCoinbaseSessionToken } from "@/fetchers";
 import { chainConfig } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
@@ -111,13 +112,14 @@ export default function BuyWithCoinbaseSequenceModal({ buyAmount }: Props) {
           iconPath="/coinbase-invert.svg"
           title={`Buy ${buyAmount} USDC on Coinbase`}
           content="Withdraw to the wallet address shown above"
-          action={() => {
+          action={async () => {
+            const sessionToken = await getCoinbaseSessionToken(chain);
+
             window.open(
               getCoinbaseOnRampUrl(
-                address!,
                 buyAmount,
                 `${window.location.origin}/purchased-sequence`,
-                chain
+                sessionToken
               ),
               "_blank",
               POPUP_PROPS
