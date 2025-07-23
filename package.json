@@ -19,6 +19,7 @@
   "dependencies": {
     "@0xsequence/wagmi-connector": "^4.0.1",
     "@0xsquid/widget": "^4.0.0",
+    "@coinbase/cdp-sdk": "^1.26.0",
     "@coinbase/onchainkit": "^0.34.1",
     "@creit.tech/stellar-wallets-kit": "^0.8.4-beta1",
     "@prisma/client": "^4.15.0",
