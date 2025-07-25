@@ -20,7 +20,7 @@
     "@0xsequence/wagmi-connector": "^4.0.1",
     "@0xsquid/widget": "^4.0.0",
     "@coinbase/cdp-sdk": "^1.26.0",
-    "@coinbase/onchainkit": "^0.34.1",
+    "@coinbase/onchainkit": "^0.38.17",
     "@creit.tech/stellar-wallets-kit": "^0.8.4-beta1",
     "@prisma/client": "^4.15.0",
     "@sentry/nextjs": "^7.77.0",
