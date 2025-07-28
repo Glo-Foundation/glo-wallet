@@ -135,7 +135,7 @@ body {
 
 /* Fixes Ock styles */
 .ock-bg-primary {
-  background-color: var(--ock-bg-primary);
+  background-color: var(--ock-bg-primary) !important;
 }
 
 .ock-bg-alternate {
