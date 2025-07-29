@@ -1,11 +1,11 @@
 import { kv } from "@vercel/kv";
-import { celoAlfajores, celo } from "@wagmi/core/chains";
+import { celo, celoAlfajores } from "@wagmi/core/chains";
 import Moralis from "moralis";
 import { Erc20Transaction, EvmAddress } from "moralis/common-evm-utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { TokenTransfer, fetchCeloTransactions } from "@/lib/celo-explorer";
-import { getFirstGloBlock, chainConfig, supportedChains } from "@/lib/config";
+import { chainConfig, getFirstGloBlock, supportedChains } from "@/lib/config";
 import { isProd } from "@/lib/utils";
 
 export interface KVResponse {

@@ -6,6 +6,7 @@ import { Tooltip } from "react-tooltip";
 import { base, baseSepolia, celo, celoAlfajores } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
+import { getCoinbaseSessionToken } from "@/fetchers";
 import { getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
@@ -111,18 +112,18 @@ export default function SwapModal({ buyAmount }: Props) {
               isCelo ? "(Base)" : ""
             } on Coinbase`}
             content="Withdraws to the connected wallet address"
-            action={() =>
+            action={async () => {
+              const sessionToken = await getCoinbaseSessionToken(chain);
               window.open(
                 getCoinbaseOnRampUrl(
-                  address!,
                   buyAmount,
                   `${window.location.origin}/purchased-coinbase`,
-                  isCelo ? base : chain
+                  sessionToken
                 ),
                 "_blank",
                 POPUP_PROPS
-              )
-            }
+              );
+            }}
             done={(usdcBalance?.value || 0) >= BigInt(buyAmount)}
             USDC={usdcBalance?.formatted}
           />

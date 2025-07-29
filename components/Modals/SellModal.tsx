@@ -7,6 +7,7 @@ import { Tooltip } from "react-tooltip";
 import { base, baseSepolia, celo, celoAlfajores } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
+import { getCoinbaseSessionToken } from "@/fetchers";
 import { chainConfig, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
@@ -87,6 +88,8 @@ export default function SellModal({ sellAmount }: Props) {
     />
   );
 
+  const usdc = Math.floor(parseFloat(usdcBalance?.formatted || "0"));
+
   const SequenceSwap = () => (
     <section>
       <StepCard
@@ -104,31 +107,31 @@ export default function SellModal({ sellAmount }: Props) {
             window.open(url, "_blank");
           }
         }}
-        done={(usdcBalance?.value || 0) >= BigInt(sellAmount)}
+        done={usdc >= sellAmount}
         USDC={usdcBalance?.formatted}
       />
       <OfframpStep />
     </section>
   );
-
   const OfframpStep = () => (
     <StepCard
       index={2}
       iconPath="/coinbase-invert.svg"
-      title={`Sell ${sellAmount} USDC on Coinbase`}
+      title={`Sell ${usdc} USDC on Coinbase`}
       content="Withdraws to the connected wallet address"
-      action={() =>
+      action={async () => {
+        const sessionToken = await getCoinbaseSessionToken(chain);
         window.open(
           getCoinbaseOffRampUrl(
             address!,
-            123,
+            usdc,
             `${window.location.origin}/purchased-coinbase`,
-            isCelo ? base : chain
+            sessionToken
           ),
           "_blank",
           POPUP_PROPS
-        )
-      }
+        );
+      }}
     />
   );
 
@@ -150,7 +153,7 @@ export default function SellModal({ sellAmount }: Props) {
             title={`Swap ${sellAmount} USDGLO to USDC`}
             content={"Swap with Coinbase"}
             action={() => setIsSwapForm(true)}
-            done={(usdcBalance?.value || 0) >= BigInt(sellAmount)}
+            done={usdc >= sellAmount}
             USDC={usdcBalance?.formatted}
           />
         ) : (
@@ -171,7 +174,7 @@ export default function SellModal({ sellAmount }: Props) {
                 />
               )
             }
-            done={(usdcBalance?.value || 0) >= BigInt(sellAmount)}
+            done={usdc >= sellAmount}
             USDC={usdcBalance?.formatted}
           />
         )}
