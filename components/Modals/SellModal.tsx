@@ -7,6 +7,7 @@ import { Tooltip } from "react-tooltip";
 import { base, baseSepolia, celo, celoAlfajores } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
+import { getCoinbaseSessionToken } from "@/fetchers";
 import { chainConfig, getSmartContractAddress } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { sliceAddress } from "@/lib/utils";
@@ -117,18 +118,19 @@ export default function SellModal({ sellAmount }: Props) {
       iconPath="/coinbase-invert.svg"
       title={`Sell ${sellAmount} USDC on Coinbase`}
       content="Withdraws to the connected wallet address"
-      action={() =>
+      action={async () => {
+        const sessionToken = await getCoinbaseSessionToken(chain);
         window.open(
           getCoinbaseOffRampUrl(
             address!,
-            123,
+            sellAmount,
             `${window.location.origin}/purchased-coinbase`,
-            isCelo ? base : chain
+            sessionToken
           ),
           "_blank",
           POPUP_PROPS
-        )
-      }
+        );
+      }}
     />
   );
 
