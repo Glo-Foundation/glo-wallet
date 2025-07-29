@@ -6,23 +6,20 @@ import { Tooltip } from "react-tooltip";
 import { base, baseSepolia, celo, celoAlfajores, vechain } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
+import { getCoinbaseSessionToken } from "@/fetchers";
+import { addVeChainLiquidity, getVeChainTokenBalance } from "@/lib/betterswap";
 import {
   B3TR,
-  USDGLO,
-  VECHAIN_B3TR_USDGLO_POOL,
   token0,
   token1,
+  USDGLO,
+  VECHAIN_B3TR_USDGLO_POOL,
 } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { usePairReserves } from "@/lib/usePairReserves";
 import { useQuote } from "@/lib/useQuote";
 import { sliceAddress } from "@/lib/utils";
-import {
-  addVeChainLiquidity,
-  getCoinbaseOnRampUrl,
-  getVeChainTokenBalance,
-  POPUP_PROPS,
-} from "@/utils";
+import { getCoinbaseOnRampUrl, POPUP_PROPS } from "@/utils";
 
 import RemoveLiquidityModal from "./RemoveLiquidityModal";
 import SquidModal from "./SquidModal";
@@ -535,18 +532,19 @@ export default function LiquidityModal({ buyAmount }: Props) {
               isCelo ? "(Base)" : ""
             } on Coinbase`}
             content="Withdraws to the connected wallet address"
-            action={() =>
+            action={async () => {
+              const sessionToken = await getCoinbaseSessionToken(chain);
+
               window.open(
                 getCoinbaseOnRampUrl(
-                  address!,
                   buyAmount,
-                  `${window.location.origin}/purchased-coinbase`,
-                  isCelo ? base : chain
+                  `${window.location.origin}/purchased-sequence`,
+                  sessionToken
                 ),
                 "_blank",
                 POPUP_PROPS
-              )
-            }
+              );
+            }}
             done={(b3trBalance?.value || 0) >= BigInt(buyAmount)}
             USDC={b3trBalance?.formatted}
           />

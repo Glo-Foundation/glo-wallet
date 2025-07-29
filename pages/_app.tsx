@@ -172,12 +172,12 @@ export default function App({ Component, pageProps }: AppProps) {
                 }}
               >
                 <DAppKitProvider
-                  genesis={isProd() ? "main" : "main"}
+                  genesis={isProd() ? "main" : "test"}
                   logLevel="DEBUG"
                   nodeUrl={
                     isProd()
                       ? "https://mainnet.vecha.in"
-                      : "https://mainnet.vechain.org/"
+                      : "https://testnet.vechain.org/"
                   }
                   usePersistence
                   walletConnectOptions={walletConnectOptions}

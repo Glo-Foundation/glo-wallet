@@ -16,14 +16,6 @@ import {
 
 import { isProd } from "./utils";
 
-export const BETTER_VET = "0xf9b02b47694fd635A413F16dC7B38aF06Cc16fe5";
-export const B3TR = "0x5ef79995FE8a89e0812330E4378eB2660ceDe699";
-export const USDGLO = "0x29c630cCe4DdB23900f5Fe66Ab55e488C15b9F5e";
-export const VECHAIN_B3TR_USDGLO_POOL =
-  "0x654502E86BcD153f074Fe534C817EB62fc7EF4C1";
-export const token0 = USDGLO;
-export const token1 = B3TR;
-
 export const VECHAIN_TESTNET = {
   id: -1,
   name: "vechain_testnet",
@@ -184,3 +176,12 @@ export const getChainExplorerUrl = (chainId?: number) => {
       return "https://etherscan.io";
   }
 };
+
+// BetterSwap
+export const BETTER_VET = "0xf9b02b47694fd635A413F16dC7B38aF06Cc16fe5";
+export const B3TR = "0x5ef79995FE8a89e0812330E4378eB2660ceDe699";
+export const USDGLO = chainConfig[vechain.id];
+export const VECHAIN_B3TR_USDGLO_POOL =
+  "0x654502E86BcD153f074Fe534C817EB62fc7EF4C1";
+export const token0 = USDGLO;
+export const token1 = B3TR;

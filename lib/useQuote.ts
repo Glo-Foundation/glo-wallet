@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { vechain } from "viem/chains";
 import { useAccount } from "wagmi";
 
-import { calculateQuote, getQuoteFromRouter } from "@/utils";
+import { calculateQuote, getQuoteFromRouter } from "./betterswap";
 
 export interface UseQuoteParameters {
   amountA?: bigint;

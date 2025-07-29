@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { vechain } from "viem/chains";
 import { useAccount } from "wagmi";
 
-import { getPairReserves } from "@/utils";
+import { getPairReserves } from "./betterswap";
 
 export interface UsePairReservesParameters {
   pairAddress?: string;

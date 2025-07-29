@@ -403,8 +403,7 @@ export default function Home() {
                 veConnected={veConnected}
               />
 
-              {/* Liquidity Button */}
-              {(isConnected || stellarConnected || veConnected) && (
+              {veConnected && (
                 <div className="flex justify-center">
                   <button
                     onClick={() =>

@@ -6,17 +6,16 @@ import { Tooltip } from "react-tooltip";
 import { base, vechain } from "viem/chains";
 import { useAccount, useBalance } from "wagmi";
 
-import { B3TR, USDGLO, VECHAIN_B3TR_USDGLO_POOL } from "@/lib/config";
-import { ModalContext } from "@/lib/context";
-import { usePairReserves } from "@/lib/usePairReserves";
-import { sliceAddress } from "@/lib/utils";
 import {
   calculateRemoveLiquidityAmounts,
   getLPTokenTotalSupply,
   getVeChainTokenBalance,
   removeVeChainLiquidity,
-} from "@/utils";
-
+} from "@/lib/betterswap";
+import { B3TR, USDGLO, VECHAIN_B3TR_USDGLO_POOL } from "@/lib/config";
+import { ModalContext } from "@/lib/context";
+import { usePairReserves } from "@/lib/usePairReserves";
+import { sliceAddress } from "@/lib/utils";
 interface Props {
   onClose?: () => void;
 }
