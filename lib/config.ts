@@ -185,3 +185,7 @@ export const VECHAIN_B3TR_USDGLO_POOL =
   "0x654502E86BcD153f074Fe534C817EB62fc7EF4C1";
 export const token0 = USDGLO;
 export const token1 = B3TR;
+
+// VeChain Router Contract Address (replace with actual router address)
+export const VECHAIN_ROUTER_ADDRESS =
+  "0x349Ede93B675c0F0f8d7CdaD74eCF1419943E6ac"; // Replace with actual router address

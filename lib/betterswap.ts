@@ -1,6 +1,11 @@
 import { ethers } from "ethers";
 
-import { B3TR, USDGLO, VECHAIN_B3TR_USDGLO_POOL } from "@/lib/config";
+import {
+  B3TR,
+  USDGLO,
+  VECHAIN_B3TR_USDGLO_POOL,
+  VECHAIN_ROUTER_ADDRESS,
+} from "@/lib/config";
 import { getJsonProvider } from "@/utils";
 
 export const getVeChainTokenBalance = async (
@@ -172,10 +177,6 @@ export const calculateTokensFromLiquidity = (
   const amountB = (liquidity * reserveB) / totalSupply;
   return { amountA, amountB };
 };
-
-// VeChain Router Contract Address (replace with actual router address)
-export const VECHAIN_ROUTER_ADDRESS =
-  "0x349Ede93B675c0F0f8d7CdaD74eCF1419943E6ac"; // Replace with actual router address
 
 // Helper function to format units (similar to ethers formatUnits)
 const formatUnits = (value: bigint, decimals = 18): string => {
