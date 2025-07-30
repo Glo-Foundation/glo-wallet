@@ -25,7 +25,6 @@ import { useAccount, useBalance, useEnsName, useSwitchChain } from "wagmi";
 import Balance from "@/components/Balance";
 import CTA from "@/components/CTA";
 import BuyGloModal from "@/components/Modals/BuyGloModal";
-import LiquidityModal from "@/components/Modals/LiquidityModal";
 import Recipients from "@/components/Recipients";
 import {
   chainConfig,
@@ -402,19 +401,6 @@ export default function Home() {
                 stellarConnected={stellarConnected}
                 veConnected={veConnected}
               />
-
-              {veConnected && (
-                <div className="flex justify-center">
-                  <button
-                    onClick={() =>
-                      openModal(<LiquidityModal buyAmount={1000} />)
-                    }
-                    className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-sm"
-                  >
-                    Manage Liquidity
-                  </button>
-                </div>
-              )}
 
               <CTA
                 balance={totalBalance?.formatted}

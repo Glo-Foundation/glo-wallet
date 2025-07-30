@@ -499,7 +499,8 @@ export default function LiquidityModal({ buyAmount }: Props) {
                     console.log("EVM liquidity addition not implemented yet");
                   }
 
-                  closeModal();
+                  // Don't autoclose modal
+                  // closeModal();
                 } catch (error) {
                   console.error("Failed to add liquidity:", error);
                   // You might want to show an error toast here

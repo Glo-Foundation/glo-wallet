@@ -192,7 +192,8 @@ export default function RemoveLiquidityModal({ onClose }: Props) {
         console.log("EVM liquidity removal not implemented yet");
       }
 
-      closeModal();
+      // Don't autoclose modal
+      // closeModal();
     } catch (error) {
       console.error("Failed to remove liquidity:", error);
       // You might want to show an error toast here
