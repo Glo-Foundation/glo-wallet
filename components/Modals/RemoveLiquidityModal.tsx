@@ -16,13 +16,12 @@ import { B3TR, USDGLO, VECHAIN_B3TR_USDGLO_POOL } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { usePairReserves } from "@/lib/usePairReserves";
 import { sliceAddress } from "@/lib/utils";
-interface Props {
-  onClose?: () => void;
-}
 
-export default function RemoveLiquidityModal({ onClose }: Props) {
+import LiquidityModal from "./LiquidityModal";
+
+export default function RemoveLiquidityModal() {
   const { address, chain } = useAccount();
-  const { closeModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   // VeChain wallet integration
   const { account: veAddress } = useWallet();
@@ -211,7 +210,7 @@ export default function RemoveLiquidityModal({ onClose }: Props) {
           height={25}
           alt="arrow-right"
           className="flex w-25px max-w-25px h-25px max-h-25px scale-x-[-1] cursor-pointer -translate-x-1"
-          onClick={() => onClose?.() || closeModal()}
+          onClick={() => closeModal()}
         />
         <Tooltip id="copy-deposit-tooltip" isOpen={isCopiedTooltipOpen} />
         <button
@@ -225,14 +224,27 @@ export default function RemoveLiquidityModal({ onClose }: Props) {
         >
           🔗 {sliceAddress(displayAddress!)}
         </button>
-        <button onClick={() => onClose?.() || closeModal()}>
+        <button onClick={() => closeModal()}>
           <Image alt="x" src="/x.svg" height={16} width={16} />
         </button>
       </div>
 
       <section className="flex flex-col space-y-4 p-4">
-        <div className="text-lg font-semibold">Remove Liquidity</div>
-
+        {" "}
+        <div className="flex items-center justify-between">
+          <div className="text-lg font-semibold">Remove Liquidity</div>
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => openModal(<LiquidityModal />)}
+              className="px-3 py-1 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Add
+            </button>
+            <button className="px-3 py-1 text-sm font-medium bg-white shadow-sm rounded-md text-gray-900">
+              Remove
+            </button>
+          </div>
+        </div>
         {/* LP Balance Display */}
         <div className="bg-gray-50 rounded-lg p-4 space-y-3">
           <div className="text-sm font-medium text-gray-700">
@@ -275,7 +287,6 @@ export default function RemoveLiquidityModal({ onClose }: Props) {
             )}
           </div>
         </div>
-
         {/* Percentage Selection */}
         <div className="space-y-4">
           <div className="text-sm font-medium text-gray-700">
@@ -343,7 +354,6 @@ export default function RemoveLiquidityModal({ onClose }: Props) {
             </div>
           </div>
         </div>
-
         {/* Expected Output */}
         {expectedAmounts && lpAmountToRemove && (
           <div className="bg-blue-50 rounded-lg p-4 space-y-3">
@@ -384,7 +394,6 @@ export default function RemoveLiquidityModal({ onClose }: Props) {
             </div>
           </div>
         )}
-
         <button
           className={`py-3 px-6 rounded-lg font-medium mt-4 transition-colors ${
             lpAmountToRemove &&
@@ -410,7 +419,6 @@ export default function RemoveLiquidityModal({ onClose }: Props) {
             ? "Removing Liquidity..."
             : "Remove Liquidity"}
         </button>
-
         {currentLpBalance === BigInt(0) && (
           <div className="text-center text-gray-500 text-sm py-4">
             You don&apos;t have any LP tokens to remove

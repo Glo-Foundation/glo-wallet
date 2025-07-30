@@ -244,7 +244,7 @@ export default function Balance({
         {canAdd && (
           <div
             className="flex justify-center items-center bg-pine-200 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
-            onClick={() => openModal(<LiquidityModal buyAmount={1000} />)}
+            onClick={() => openModal(<LiquidityModal />)}
           >
             <span className="font-bolder">Add Liquidity</span>
           </div>

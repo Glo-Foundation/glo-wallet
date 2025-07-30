@@ -129,7 +129,7 @@ export default function CTA({
       iconPath: "/betterswap2.png",
       fillIcon: true,
       description: "Buy Glo Dollar, add liquidity and get B3TR via VeBetterDAO",
-      action: () => openModal(<LiquidityModal buyAmount={1000} />),
+      action: () => openModal(<LiquidityModal />),
     },
   };
   const CTAS = DEFAULT_CTAS;
