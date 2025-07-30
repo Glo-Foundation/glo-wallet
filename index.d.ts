@@ -7,6 +7,7 @@ type ActionButton = {
   url?: string;
   slug?: string;
   action?: () => void;
+  fillIcon?: boolean;
 };
 
 type Transfer = {
@@ -23,7 +24,11 @@ type TransfersPage = {
   cursor?: string;
 };
 
-type CTAType = "JOIN_CONSORTIUM" | "TWEEET_IMPACT" | "REGISTER_IDRISS";
+type CTAType =
+  | "JOIN_CONSORTIUM"
+  | "TWEEET_IMPACT"
+  | "REGISTER_IDRISS"
+  | "ADD_BETTERSWAP_LIQUIDITY";
 
 type CTA = {
   type: CTAType;

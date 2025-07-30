@@ -10,11 +10,18 @@ import { DEFAULT_CTAS } from "@/lib/utils";
 
 import { CompletedIcon } from "./CompletedIcon";
 import IdrissModal from "./Modals/IdrissModal";
+import LiquidityModal from "./Modals/LiquidityModal";
 import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
   <button className="flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-200">
     <Image src={path} width={16} height={16} alt="call to action" />
+  </button>
+);
+
+const FillIcon = ({ path }: { path: string }) => (
+  <button className="flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-100">
+    <Image src={path} width={30} height={30} alt="call to action" />
   </button>
 );
 
@@ -41,6 +48,8 @@ const ActionButton = ({
     >
       {ctaData.isCompleted ? (
         <CompletedIcon name={`cta-${ctaData.type}`} path={cta.iconPath} />
+      ) : cta.fillIcon ? (
+        <FillIcon path={cta.iconPath} />
       ) : (
         <Icon path={cta.iconPath} />
       )}
@@ -114,6 +123,13 @@ export default function CTA({
       description:
         "Hold $100+ of Glo Dollar to claim an IDriss registration for this wallet",
       action: () => openModal(<IdrissModal balance={gloBalance} />),
+    },
+    ["ADD_BETTERSWAP_LIQUIDITY"]: {
+      title: "Add to BetterSwap LP",
+      iconPath: "/betterswap2.png",
+      fillIcon: true,
+      description: "Buy Glo Dollar, add liquidity and get B3TR via VeBetterDAO",
+      action: () => openModal(<LiquidityModal buyAmount={1000} />),
     },
   };
   const CTAS = DEFAULT_CTAS;
