@@ -16,9 +16,10 @@ import {
   VECHAIN_B3TR_USDGLO_POOL,
 } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
+import { useUserStore } from "@/lib/store";
 import { usePairReserves } from "@/lib/usePairReserves";
 import { useQuote } from "@/lib/useQuote";
-import { sliceAddress } from "@/lib/utils";
+import { api, sliceAddress } from "@/lib/utils";
 import { getCoinbaseOnRampUrl, POPUP_PROPS } from "@/utils";
 
 import RemoveLiquidityModal from "./RemoveLiquidityModal";
@@ -32,6 +33,7 @@ interface Props {
 export default function LiquidityModal({ buyAmount }: Props) {
   const { address, chain } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
+  const { ctas, setCTAs } = useUserStore();
 
   // VeChain wallet integration
   const { account: veAddress } = useWallet();
@@ -494,6 +496,16 @@ export default function LiquidityModal({ buyAmount }: Props) {
                     // Clear form after successful transaction
                     setB3trAmount("");
                     setUsdgloAmount("");
+
+                    await api().post<string>("/betterswap/liquidity-added");
+
+                    setCTAs(
+                      ctas.map((cta) =>
+                        cta.type === "ADD_BETTERSWAP_LIQUIDITY"
+                          ? { ...cta, isCompleted: true }
+                          : cta
+                      )
+                    );
                   } else {
                     // EVM transaction would go here
                     console.log("EVM liquidity addition not implemented yet");
