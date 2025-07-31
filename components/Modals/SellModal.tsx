@@ -212,6 +212,7 @@ export default function SellModal({ sellAmount }: Props) {
         <section className="w-[300px]">
           <StepCard
             iconPath="/betterswap.png"
+            blackBg
             title="Swap USDGLO to VET"
             content="Powered by Betterswap"
             action={() => sellWithBetterSwap(sellAmount)}

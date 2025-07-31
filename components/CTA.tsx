@@ -20,7 +20,7 @@ const Icon = ({ path }: { path: string }) => (
 );
 
 const FillIcon = ({ path }: { path: string }) => (
-  <button className="flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-pine-100">
+  <button className="flex border justify-center min-w-[40px] min-h-[40px] rounded-full bg-black">
     <Image src={path} width={30} height={30} alt="call to action" />
   </button>
 );
@@ -126,7 +126,7 @@ export default function CTA({
     },
     ["ADD_BETTERSWAP_LIQUIDITY"]: {
       title: "Add to BetterSwap LP",
-      iconPath: "/betterswap2.png",
+      iconPath: "/betterswap.png",
       fillIcon: true,
       description: "Buy Glo Dollar, add liquidity and get B3TR via VeBetterDAO",
       action: () => openModal(<LiquidityModal />),
@@ -149,11 +149,14 @@ export default function CTA({
         <h3>🌟 Help Grow Glo!</h3>
       </div>
       <ul className="mt-2">
-        {ctaList.map((cta) => (
-          <motion.div key={cta.type} layout transition={spring}>
-            <ActionButton CTA_MAP={CTA_MAP} email={email} ctaData={cta} />
-          </motion.div>
-        ))}
+        {ctaList
+          // Filter out betterswap if not a Ve user
+          .filter((cta) => isVe || cta.type !== "ADD_BETTERSWAP_LIQUIDITY")
+          .map((cta) => (
+            <motion.div key={cta.type} layout transition={spring}>
+              <ActionButton CTA_MAP={CTA_MAP} email={email} ctaData={cta} />
+            </motion.div>
+          ))}
       </ul>
     </div>
   );
