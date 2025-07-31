@@ -125,9 +125,8 @@ export default function CTA({
       action: () => openModal(<IdrissModal balance={gloBalance} />),
     },
     ["ADD_BETTERSWAP_LIQUIDITY"]: {
-      title: "Add to BetterSwap LP",
-      iconPath: "/betterswap.png",
-      fillIcon: true,
+      title: "Add DEX liquidity",
+      iconPath: "/vebetterdao.png",
       description: "Buy Glo Dollar, add liquidity and get B3TR via VeBetterDAO",
       action: () => openModal(<LiquidityModal />),
     },
