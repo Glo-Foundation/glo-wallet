@@ -44,6 +44,7 @@ export default function SwapGate(props: Props) {
       key="betterswap"
       name="BetterSwap"
       icon="/betterswap.png"
+      blackBg
       fees="0.3"
       worksFor="🔐 Crypto"
       delay="⚡ Instant"

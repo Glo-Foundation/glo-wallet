@@ -1,7 +1,7 @@
 import { GetBalanceReturnType } from "@wagmi/core";
+import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useState } from "react";
-import { useAccount } from "wagmi";
 
 import { ModalContext } from "@/lib/context";
 import { customFormatBalance } from "@/utils";
@@ -9,6 +9,7 @@ import { customFormatBalance } from "@/utils";
 import CharitySelector from "./CharitySelector";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
+import LiquidityModal from "./Modals/LiquidityModal";
 import SellModal from "./Modals/SellModal";
 import SwapGate from "./Modals/SwapGate";
 
@@ -49,11 +50,7 @@ export default function Balance({
   const optimismBalanceFormatted = customFormatBalance(optimismBalance);
   const arbitrumBalanceFormatted = customFormatBalance(arbitrumBalance);
   const totalBalanceFormatted = customFormatBalance(totalBalance);
-  const usdcBalanceFormatted = customFormatBalance(usdcBalance);
   const baseBalanceformatted = customFormatBalance(baseBalance);
-  const { connector } = useAccount();
-  const isSequenceWallet = connector?.id === "sequence";
-  const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
   const hasGlo = totalBalance && totalBalance.value > 0;
 
   const formattedUSDC = Intl.NumberFormat("en-US", {
@@ -94,6 +91,10 @@ export default function Balance({
       balance: baseBalanceformatted,
     },
   ];
+
+  const canSell = hasGlo && !stellarConnected;
+  const canAdd = veConnected;
+  const buyOnly = !canAdd && !canSell;
 
   return (
     <div className="bg-white rounded-[20px] pt-4">
@@ -193,52 +194,12 @@ export default function Balance({
         </div>
       </div>
 
-      {hasGlo ? (
-        <div className="flex justify-center h-[60px]">
-          <div
-            className="flex justify-center items-center bg-impact-bg w-full rounded-bl-xl border-t-pine-900/10 border-t cursor-pointer"
-            onClick={() =>
-              openModal(
-                <BuyGloModal
-                  totalBalance={1000}
-                  stellarConnected={stellarConnected}
-                />
-              )
-            }
-          >
-            <span className="font-bolder">Buy</span>
-            <Image
-              className="ml-2"
-              alt="Buy Glo"
-              src="/arrow-right.svg"
-              width={16}
-              height={16}
-            />
-          </div>
-
-          {!stellarConnected && (
-            <div
-              className="flex justify-center items-center bg-pine-50 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
-              onClick={() =>
-                openModal(<SellModal sellAmount={Number(totalBalance.value)} />)
-              }
-            >
-              <span className="font-bolder">Sell</span>
-              <Image
-                className="ml-2"
-                alt="Buy Glo"
-                src="/arrow-right.svg"
-                width={16}
-                height={16}
-              />
-            </div>
-          )}
-        </div>
-      ) : (
+      <div className="flex justify-center h-[60px]">
         <div
-          className={`${
-            totalBalance?.value ? "bg-pine-50" : "bg-impact-bg"
-          } rounded-b-xl border-t-pine-900/10 border-t flex justify-center items-center h-[60px] w-full cursor-pointer`}
+          className={clsx(
+            "flex justify-center items-center bg-impact-bg w-full rounded-bl-xl border-t-pine-900/10 border-t cursor-pointer",
+            buyOnly && "rounded-br-xl"
+          )}
           onClick={() =>
             openModal(
               <BuyGloModal
@@ -248,7 +209,9 @@ export default function Balance({
             )
           }
         >
-          <span className="font-bolder">Buy Glo Dollar</span>
+          <span className="font-bolder">
+            {buyOnly ? "Buy Glo Dollar" : "Buy"}
+          </span>
           <Image
             className="ml-2"
             alt="Buy Glo"
@@ -257,7 +220,36 @@ export default function Balance({
             height={16}
           />
         </div>
-      )}
+
+        {canSell && (
+          <div
+            className={clsx(
+              "flex justify-center items-center bg-pine-50 w-full border-t-pine-900/10 border-t cursor-pointer",
+              !canAdd && "rounded-br-xl"
+            )}
+            onClick={() =>
+              openModal(<SellModal sellAmount={Number(totalBalance.value)} />)
+            }
+          >
+            <span className="font-bolder">Sell</span>
+            <Image
+              className="ml-2"
+              alt="Sell Glo"
+              src="/arrow-right.svg"
+              width={16}
+              height={16}
+            />
+          </div>
+        )}
+        {canAdd && (
+          <div
+            className="flex justify-center items-center bg-pine-200 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
+            onClick={() => openModal(<LiquidityModal />)}
+          >
+            <span className="font-bolder">Add Liquidity</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

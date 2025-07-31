@@ -9,6 +9,7 @@ export const BuyBox = ({
   delay,
   onClick,
   disabled = false,
+  blackBg = false,
 }: {
   name: string;
   icon: string;
@@ -17,6 +18,7 @@ export const BuyBox = ({
   delay: string;
   onClick: () => void;
   disabled?: boolean;
+  blackBg?: boolean;
 }) => (
   <div
     id={name}
@@ -27,7 +29,13 @@ export const BuyBox = ({
     onClick={!disabled ? onClick : undefined}
   >
     <div className="flex py-2">
-      <Image alt={name} src={icon} height={28} width={28} />
+      <Image
+        className={clsx(blackBg && "bg-black")}
+        alt={name}
+        src={icon}
+        height={28}
+        width={28}
+      />
 
       <h3 className="px-3">{name}</h3>
     </div>

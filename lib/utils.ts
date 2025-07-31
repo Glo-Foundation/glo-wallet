@@ -71,9 +71,11 @@ export const getChains = (): [Chain, ...Chain[]] => {
 
 export const signMsgContent = "glo-wallet";
 
-export const DEFAULT_CTAS: CTA[] = ["TWEEET_IMPACT", "JOIN_CONSORTIUM"].map(
-  (cta) => ({ type: cta } as CTA)
-);
+export const DEFAULT_CTAS: CTA[] = [
+  "TWEEET_IMPACT",
+  "JOIN_CONSORTIUM",
+  "ADD_BETTERSWAP_LIQUIDITY",
+].map((cta) => ({ type: cta } as CTA));
 
 export const getMarketCap = async (chainId: number): Promise<bigint> => {
   const provider = await getJsonProvider(chainId);

@@ -176,3 +176,16 @@ export const getChainExplorerUrl = (chainId?: number) => {
       return "https://etherscan.io";
   }
 };
+
+// BetterSwap
+export const BETTER_VET = "0xf9b02b47694fd635A413F16dC7B38aF06Cc16fe5";
+export const B3TR = "0x5ef79995FE8a89e0812330E4378eB2660ceDe699";
+export const USDGLO = chainConfig[vechain.id];
+export const VECHAIN_B3TR_USDGLO_POOL =
+  "0x654502E86BcD153f074Fe534C817EB62fc7EF4C1";
+export const token0 = USDGLO;
+export const token1 = B3TR;
+
+// VeChain Router Contract Address (replace with actual router address)
+export const VECHAIN_ROUTER_ADDRESS =
+  "0x349Ede93B675c0F0f8d7CdaD74eCF1419943E6ac"; // Replace with actual router address
