@@ -14,6 +14,7 @@ import {
 } from "@/lib/betterswap";
 import { B3TR, USDGLO, VECHAIN_B3TR_USDGLO_POOL } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
+import { useUserStore } from "@/lib/store";
 import { usePairReserves } from "@/lib/usePairReserves";
 import { sliceAddress } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ import LiquidityModal from "./LiquidityModal";
 export default function RemoveLiquidityModal() {
   const { address, chain } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
+  const { refreshVeBalance } = useUserStore();
 
   // VeChain wallet integration
   const { account: veAddress } = useWallet();
@@ -183,6 +185,9 @@ export default function RemoveLiquidityModal() {
         );
         console.log("Liquidity removed successfully:", result);
 
+        refreshVeBalance();
+        //
+
         // Clear form after successful transaction
         setLpAmountToRemove("");
         setPercentage(0);
@@ -235,7 +240,7 @@ export default function RemoveLiquidityModal() {
           <div className="text-lg font-semibold">Remove Liquidity</div>
           <div className="flex bg-gray-100 rounded-lg p-1">
             <button
-              onClick={() => openModal(<LiquidityModal />)}
+              onClick={() => openModal(<LiquidityModal />, "", true)}
               className="px-3 py-1 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
             >
               Add

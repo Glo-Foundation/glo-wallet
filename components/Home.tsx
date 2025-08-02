@@ -64,6 +64,8 @@ export default function Home() {
   const { address, isConnected, connector, chain } = useAccount();
   const { switchChain } = useSwitchChain();
   const { openModal, closeModal } = useContext(ModalContext);
+  const { setCTAs, isRecipientsView, veBalanceRefresher } = useUserStore();
+
   const [idrissName, setIdrissName] = useState("");
   const [stellarConnected, setStellarConnected] = useState(
     localStorage.getItem("stellarConnected") === "true"
@@ -98,7 +100,7 @@ export default function Home() {
     } else {
       setVeBalance(startBalance(18));
     }
-  }, [veAddress]);
+  }, [veAddress, veBalanceRefresher]);
 
   const { data: ensName } = useEnsName({ address });
 
@@ -181,7 +183,6 @@ export default function Home() {
     veBalance,
   ]);
 
-  const { setCTAs, isRecipientsView } = useUserStore();
   const showedLogin = localStorage.getItem("showedLogin");
 
   const { asPath, push } = useRouter();

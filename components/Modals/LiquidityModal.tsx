@@ -25,7 +25,7 @@ import RemoveLiquidityModal from "./RemoveLiquidityModal";
 export default function LiquidityModal() {
   const { address, chain } = useAccount();
   const { openModal, closeModal } = useContext(ModalContext);
-  const { ctas, setCTAs } = useUserStore();
+  const { ctas, setCTAs, refreshVeBalance } = useUserStore();
 
   // VeChain wallet integration
   const { account: veAddress } = useWallet();
@@ -250,7 +250,7 @@ export default function LiquidityModal() {
               Add
             </button>
             <button
-              onClick={() => openModal(<RemoveLiquidityModal />)}
+              onClick={() => openModal(<RemoveLiquidityModal />, "", true)}
               className="px-3 py-1 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
             >
               Remove
@@ -320,7 +320,9 @@ export default function LiquidityModal() {
                     You have liquidity in this pool
                   </div>
                   <button
-                    onClick={() => openModal(<RemoveLiquidityModal />)}
+                    onClick={() =>
+                      openModal(<RemoveLiquidityModal />, "", true)
+                    }
                     className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded-md transition-colors"
                   >
                     Remove
@@ -484,6 +486,7 @@ export default function LiquidityModal() {
 
                   await api().post<string>("/betterswap/liquidity-added");
 
+                  refreshVeBalance();
                   setCTAs(
                     ctas.map((cta) =>
                       cta.type === "ADD_BETTERSWAP_LIQUIDITY"

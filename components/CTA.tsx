@@ -128,7 +128,7 @@ export default function CTA({
       title: "Add DEX liquidity",
       iconPath: "/vebetterdao.png",
       description: "Buy Glo Dollar, add liquidity and get B3TR via VeBetterDAO",
-      action: () => openModal(<LiquidityModal />),
+      action: () => openModal(<LiquidityModal />, "", true),
     },
   };
   const CTAS = DEFAULT_CTAS;
