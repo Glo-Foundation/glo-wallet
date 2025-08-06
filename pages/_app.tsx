@@ -102,6 +102,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [modalContent, setModalContent] = useState(<div />);
   const [modalClassName, setModalClassName] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+  const [outsideClickDisabled, setOutsideClickDisabled] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -116,11 +117,15 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   const dialogClickHandler = (e: React.MouseEvent) => {
+    if (outsideClickDisabled) {
+      return;
+    }
     const target = e.target as HTMLDialogElement;
-    if (target.tagName !== "DIALOG")
+
+    if (target.tagName !== "DIALOG") {
       //This prevents issues with forms
       return;
-
+    }
     const rect = target.getBoundingClientRect();
 
     const clickedInDialog =
@@ -132,10 +137,15 @@ export default function App({ Component, pageProps }: AppProps) {
     if (clickedInDialog === false) closeModal();
   };
 
-  const openModal = (content: JSX.Element, className: string | undefined) => {
+  const openModal = (
+    content: JSX.Element,
+    className: string | undefined,
+    disableOutsideClickToClose = false
+  ) => {
     closeModal();
     setModalContent(content);
     setModalClassName(className || "");
+    setOutsideClickDisabled(disableOutsideClickToClose);
     dialogRef.current?.showModal();
   };
 
