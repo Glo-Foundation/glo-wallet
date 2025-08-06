@@ -145,38 +145,6 @@ export const supportedChains = {
   testnet: [polygonMumbai.id, goerli.id, celoAlfajores.id],
 };
 
-export const getChainExplorerUrl = (chainId?: number) => {
-  switch (chainId) {
-    case polygon.id:
-      return "https://polygonscan.com";
-    case polygonMumbai.id:
-      return "https://mumbai.polygonscan.com";
-    case celo.id:
-      return "https://celoscan.io";
-    case celoAlfajores.id:
-      return "https://alfajores.celoscan.io";
-    case goerli.id:
-      return "https://goerli.etherscan.io";
-    case optimism.id:
-      return "https://optimistic.etherscan.io";
-    case optimismSepolia.id:
-      return "https://sepolia-optimism.etherscan.io";
-    case arbitrum.id:
-      return "https://arbiscan.io";
-    case arbitrumSepolia.id:
-      return "https://sepolia.arbiscan.io";
-    case base.id:
-      return "https://basescan.org";
-    case baseSepolia.id:
-      return "https://sepolia.basescan.org";
-    case vechain.id:
-      return "https://explore.vechain.org";
-    case mainnet.id:
-    default:
-      return "https://etherscan.io";
-  }
-};
-
 // BetterSwap
 export const BETTER_VET = "0xf9b02b47694fd635A413F16dC7B38aF06Cc16fe5";
 export const B3TR = "0x5ef79995FE8a89e0812330E4378eB2660ceDe699";
