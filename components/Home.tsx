@@ -61,7 +61,7 @@ const startBalance = (decimals: number) => ({
 });
 
 export default function Home() {
-  const { address, isConnected, connector, chain } = useAccount();
+  const { address, isConnected, connector, chain, chainId } = useAccount();
   const { switchChain } = useSwitchChain();
   const { openModal, closeModal } = useContext(ModalContext);
   const { setCTAs, isRecipientsView, veBalanceRefresher } = useUserStore();
@@ -279,7 +279,7 @@ export default function Home() {
 
       sign().then(async (signature: string) => {
         if (isConnected) {
-          await initApi(address!, chain!.id, signature);
+          await initApi(address!, chainId! , signature);
         } else if (stellarConnected) {
           await initApi(stellarAddress, 0, signature);
         } else if (veConnected) {
@@ -372,7 +372,7 @@ export default function Home() {
         />
         <meta name="twitter:image:alt" content="Glo Dollar logo" />
       </Head>
-      <div className="mt-4 px-6 bg-pine-100">
+      <div className="px-6 mt-4 bg-pine-100">
         <Header
           idrissName={idrissName}
           ensName={ensName || ""}

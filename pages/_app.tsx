@@ -5,14 +5,21 @@ import { sequenceWallet } from "@0xsequence/wagmi-connector";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import "@coinbase/onchainkit/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { inAppWalletConnector } from "@thirdweb-dev/wagmi-adapter";
 import { WalletConnectOptions } from "@vechain/dapp-kit";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import "react-tooltip/dist/react-tooltip.css";
+import {
+  createThirdwebClient,
+  defineChain as thirdwebDefineChain,
+} from "thirdweb";
+import { ThirdwebProvider } from 'thirdweb/react';
 import { createClient, http } from "viem";
 import { createConfig, WagmiProvider } from "wagmi";
+import { mainnet } from "wagmi/chains";
 import {
   coinbaseWallet,
   metaMask,
@@ -43,6 +50,39 @@ const DAppKitProvider = dynamic(
   }
 );
 
+const thirdwebClientId =
+  process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID ||
+  "4e8c81182c3709ee441e30d776223354";
+const unicornFactoryAddress =
+  process.env.NEXT_PUBLIC_UNICORN_FACTORY_ADDRESS ||
+  "0xD771615c873ba5a2149D5312448cE01D677Ee48A";
+
+// Create Thirdweb Client
+const client = createThirdwebClient({
+  clientId: thirdwebClientId,
+});
+
+// Create the Unicorn Wallet Connector (using Thirdweb In-App Wallet)
+// Note: The chain specified here is for the smart account functionality as per Unicorn docs.
+const unicornConnector = inAppWalletConnector({
+  client,
+  smartAccount: {
+    sponsorGas: true, // or false based on your needs / Unicorn requirements
+    chain: thirdwebDefineChain(mainnet.id),
+    factoryAddress: unicornFactoryAddress,
+  },
+  metadata: {
+    name: "Unicorn.eth",
+    icon: "/unicorn.png",
+    image: {
+      src: "/unicorn.png",
+      alt: "Unicorn.eth",
+      height: 100,
+      width: 100,
+    },
+  },
+});
+
 const walletConnectOptions: WalletConnectOptions = {
   projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
   metadata: {
@@ -63,6 +103,7 @@ const config = createConfig({
     return createClient({ chain, transport: http(getChainRPCUrl(chain.id)) });
   },
   connectors: [
+    unicornConnector,
     sequenceWallet({
       connectOptions: {
         app: "Glo wallet",
@@ -170,44 +211,46 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         {isMounted && (
           <WagmiProvider config={config}>
-            <QueryClientProvider client={queryClient}>
-              <OnchainKitProvider
-                apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-                chain={chain as any}
-                config={{
-                  appearance: {
-                    mode: "light",
-                    theme: "default",
-                  },
-                }}
-              >
-                <DAppKitProvider
-                  genesis={isProd() ? "main" : "test"}
-                  logLevel="DEBUG"
-                  nodeUrl={
-                    isProd()
-                      ? "https://mainnet.vecha.in"
-                      : "https://testnet.vechain.org/"
-                  }
-                  usePersistence
-                  walletConnectOptions={walletConnectOptions}
+            <ThirdwebProvider>
+              <QueryClientProvider client={queryClient}>
+                <OnchainKitProvider
+                  apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
+                  chain={chain as any}
+                  config={{
+                    appearance: {
+                      mode: "light",
+                      theme: "default",
+                    },
+                  }}
                 >
-                  <ModalContext.Provider
-                    value={{ openModal, closeModal, setModalClass }}
+                  <DAppKitProvider
+                    genesis={isProd() ? "main" : "test"}
+                    logLevel="DEBUG"
+                    nodeUrl={
+                      isProd()
+                        ? "https://mainnet.vecha.in"
+                        : "https://testnet.vechain.org/"
+                    }
+                    usePersistence
+                    walletConnectOptions={walletConnectOptions}
                   >
-                    <Component {...pageProps} />
-                    <dialog
-                      ref={dialogRef}
-                      onClick={dialogClickHandler}
-                      className={`${modalClassName} outline-none bg-white`}
+                    <ModalContext.Provider
+                      value={{ openModal, closeModal, setModalClass }}
                     >
-                      <div ref={contentRef}>{modalContent}</div>
-                    </dialog>
-                  </ModalContext.Provider>
-                  <Toast />
-                </DAppKitProvider>
-              </OnchainKitProvider>
-            </QueryClientProvider>
+                      <Component {...pageProps} />
+                      <dialog
+                        ref={dialogRef}
+                        onClick={dialogClickHandler}
+                        className={`${modalClassName} outline-none bg-white`}
+                      >
+                        <div ref={contentRef}>{modalContent}</div>
+                      </dialog>
+                    </ModalContext.Provider>
+                    <Toast />
+                  </DAppKitProvider>
+                </OnchainKitProvider>
+              </QueryClientProvider>
+            </ThirdwebProvider>
           </WagmiProvider>
         )}
       </main>
