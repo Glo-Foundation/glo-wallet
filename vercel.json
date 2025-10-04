@@ -12,6 +12,10 @@
     {
       "path": "/api/collect-celo-data",
       "schedule": "55 23 * * *"
+    },
+    {
+      "path": "/api/dexes",
+      "schedule": "50 23 * * *"
     }
   ]
 }
