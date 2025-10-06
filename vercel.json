@@ -15,7 +15,7 @@
     },
     {
       "path": "/api/dexes",
-      "schedule": "50 23 * * *"
+      "schedule": "58 11,23 * * *"
     }
   ]
 }
