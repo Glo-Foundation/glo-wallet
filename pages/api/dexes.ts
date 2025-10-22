@@ -2,13 +2,13 @@ import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/I
 import Quoter from "@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json";
 import QuoterV2 from "@uniswap/v3-periphery/artifacts/contracts/lens/QuoterV2.sol/QuoterV2.json";
 import axios from "axios";
-import { ethers, formatUnits, parseUnits } from "ethers";
+import { ethers, formatUnits } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Chain, formatEther } from "viem";
 import { arbitrum, base, celo, mainnet, optimism, polygon } from "viem/chains";
 
 import { getSmartContractAddress } from "@/lib/config";
-import { getBalance, getJsonProvider, getTotalGloBalance } from "@/utils";
+import { getBalance, getJsonProvider } from "@/utils";
 
 export default async function handler(
   req: NextApiRequest,
