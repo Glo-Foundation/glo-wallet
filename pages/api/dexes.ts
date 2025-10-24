@@ -21,9 +21,9 @@ export default async function handler(
   const authHeader = req.headers["authorization"];
   const isCron = authHeader === `Bearer ${process.env.CRON_SECRET}`;
 
-  await collect({ isCron });
+  const result = await collect({ isCron });
 
-  return res.status(200).json({ message: "Data collection completed." });
+  return res.status(200).json(result);
 }
 
 const ADDR_CHAIN_OTHR: { [poolAddr: string]: [Chain, string, string] } = {
@@ -79,11 +79,10 @@ const fetchBalance = async (
 
 const collect = async ({ isCron }: { isCron: boolean }) => {
   console.log("Collecting dex data...");
-  const msg: string[] = [];
+  const msg: string[][] = [];
 
-  for (const [address, [chain, usdcAddr, url]] of Object.entries(
-    ADDR_CHAIN_OTHR
-  )) {
+  const entries = Object.entries(ADDR_CHAIN_OTHR);
+  for (const [address, [chain, usdcAddr, url]] of entries) {
     const chainId = chain.id;
     const gloAddr = getSmartContractAddress(chainId);
 
@@ -98,32 +97,39 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
     const rawUsdc = await fetchBalance(chainId, address, usdcAddr);
     const usdc = chainId === celo.id ? rawUsdc : rawUsdc * BigInt(1e12); // USDC has 6 decimals on most chains, but 18 on Celo
     const sum = glo + usdc;
-    msg.push(
-      ...[
-        `*<https://${url}/address/${address}|${chain.name}>*`,
-        `${result.price}$ - ${result.amountIn} USDGLO -> ${result.amountOut}`,
-        `${formatPercent(glo, sum)}% / ${formatPercent(usdc, sum)}%`,
-        `USDGLO: ${formatUSD(glo)}`,
-        `USDC: ${formatUSD(usdc)}\n`,
-      ]
-    );
+    msg.push([
+      `*<https://${url}/address/${address}|${chain.name}>*`,
+      `${result.price}$ - ${result.amountIn} USDGLO -> ${result.amountOut}`,
+      `${formatPercent(glo, sum)}% / ${formatPercent(usdc, sum)}%`,
+      `USDGLO: ${formatUSD(glo)}`,
+      `USDC: ${formatUSD(usdc)}`,
+      "\n",
+    ]);
     await sleep(500); // to avoid rate limiting
   }
 
-  if (!isCron) {
-    console.log(msg.join("\n"));
-    return;
+  const jsonResult = msg.map((elements, index) => ({
+    name: entries[index][1][0].name,
+    price: elements[1],
+    percentage: elements[2],
+    USDGLO: elements[3],
+    USDC: elements[4],
+  }));
+
+  if (isCron) {
+    return jsonResult;
   }
 
-  if (!process.env.SLACK_WEBHOOK_URL) {
+  if (process.env.SLACK_WEBHOOK_URL) {
+    await axios.post(process.env.SLACK_WEBHOOK_URL, {
+      text: msg.flat().join("\n"),
+    });
+  } else {
     console.warn("SLACK_WEBHOOK_URL not set, skipping Slack notification.");
-    console.log(msg.join("\n"));
-    return;
+    console.log(msg.flat().join("\n"));
   }
 
-  await axios.post(process.env.SLACK_WEBHOOK_URL, {
-    text: msg.join("\n"),
-  });
+  return jsonResult;
 };
 
 function sleep(ms: number) {
@@ -213,12 +219,14 @@ export const getPoolData = async ({
     return quotedAmountOut;
   };
 
-  const usdcDecimals = chainId === celo.id ? 18 : 6; // USDC 6, GLO 18
+  const isCelo = chainId === celo.id;
+  const usdcDecimals = isCelo ? 18 : 6; // USDC 6, GLO 18
   const sqrtPriceX96 = slot0[0];
   const decimalsDiff = 18 - usdcDecimals;
-  const fraction = isGloFirst
-    ? BigInt(2 ** 96) / BigInt(sqrtPriceX96)
-    : BigInt(sqrtPriceX96) / BigInt(2 ** 96);
+  const fraction =
+    isGloFirst && !isCelo
+      ? BigInt(2 ** 96) / BigInt(sqrtPriceX96)
+      : BigInt(sqrtPriceX96) / BigInt(2 ** 96);
   const price = fraction ** BigInt(2);
 
   const quotedAmountOut = await getQuote();
