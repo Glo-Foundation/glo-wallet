@@ -105,7 +105,7 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
       `USDC: ${formatUSD(usdc)}`,
       "\n",
     ]);
-    await sleep(1000); // to avoid rate limiting
+    await sleep(2000); // to avoid rate limiting
   }
 
   const jsonResult = msg.map((elements, index) => ({
@@ -116,7 +116,7 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
     USDC: elements[4],
   }));
 
-  if (isCron) {
+  if (!isCron) {
     return jsonResult;
   }
 
