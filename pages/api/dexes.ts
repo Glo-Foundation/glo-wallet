@@ -77,13 +77,13 @@ const ADDR_CHAIN_OTHR: {
   },
 ];
 
-const SCANNERS = {
-  celo: "celoscan.io",
-  mainnet: "etherscan.io",
-  optimism: "optimistic.etherscan.io",
-  base: "basescan.org",
-  polygon: "polygonscan.com",
-  arbitrum: "arbiscan.io",
+const SCANNERS: { [key: string]: string } = {
+  [celo.name]: "celoscan.io",
+  [mainnet.name]: "etherscan.io",
+  [optimism.name]: "optimistic.etherscan.io",
+  [base.name]: "basescan.org",
+  [polygon.name]: "polygonscan.com",
+  [arbitrum.name]: "arbiscan.io",
 };
 
 const fetchBalance = async (
@@ -114,10 +114,11 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
     otherAddr,
     v2Quouter,
     decimals,
+    name,
   } of ADDR_CHAIN_OTHR) {
     const chainId = chain.id;
     const gloAddr = getSmartContractAddress(chainId);
-    const url = SCANNERS[chain.name as keyof typeof SCANNERS];
+    const url = SCANNERS[chain.name];
 
     const result = await getPoolData({
       poolAddr,
@@ -133,12 +134,12 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
     const usdc = decimals == 18 ? rawUsdc : rawUsdc * BigInt(1e12); // USDC has 6 decimals on most chains, but 18 on Celo (cUSD)
     const sum = glo + usdc;
     msg.push([
-      `*<https://${url}/address/${poolAddr}|${chain.name}>*`,
-      `${result.price}$ - ${result.amountIn} USDGLO -> ${result.amountOut}`,
+      `https://${url}/address/${poolAddr}-${name || chain.name}`,
+      `${result.price}$`,
+      `${result.amountIn} USDGLO -> ${result.amountOut} USDC`,
       `${formatPercent(glo, sum)}% / ${formatPercent(usdc, sum)}%`,
       `USDGLO: ${formatUSD(glo)}`,
       `USDC: ${formatUSD(usdc)}`,
-      "\n",
     ]);
     await sleep(2000); // to avoid rate limiting
   }
@@ -147,9 +148,10 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
   const jsonResult = msg.map((elements, index) => ({
     name: entries[index]?.name || entries[index].chain.name,
     price: elements[1],
-    percentage: elements[2],
-    USDGLO: elements[3],
-    USDC: elements[4],
+    inout: elements[2],
+    percentage: elements[3],
+    USDGLO: elements[4],
+    USDC: elements[5],
   }));
 
   if (!isCron) {
@@ -157,8 +159,49 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
   }
 
   if (process.env.SLACK_WEBHOOK_URL) {
-    await axios.post(process.env.SLACK_WEBHOOK_URL, {
-      text: msg.flat().join("\n"),
+    const rows = msg.map((row) =>
+      row.map((text, index) =>
+        index
+          ? {
+              type: "raw_text",
+              text,
+            }
+          : {
+              type: "rich_text",
+              elements: [
+                {
+                  type: "rich_text_section",
+                  elements: [
+                    {
+                      text: text.split("-")[1].trim(),
+                      type: "link",
+                      url: text.split("-")[0].trim(),
+                    },
+                  ],
+                },
+              ],
+            }
+      )
+    );
+    await axios.post(process.env.SLACK_WEBHOOK_URL!, {
+      blocks: JSON.stringify([
+        {
+          type: "context",
+          elements: [
+            {
+              type: "plain_text",
+              text: `DEX Pool Updates - ${new Date().toLocaleString("en-GB", {
+                timeZone: "Europe/Paris",
+              })} Europe/Paris`,
+            },
+          ],
+        },
+        {
+          type: "table",
+          column_settings: [{ is_wrapped: true }, { align: "right" }],
+          rows,
+        },
+      ]),
     });
   } else {
     console.warn("SLACK_WEBHOOK_URL not set, skipping Slack notification.");
