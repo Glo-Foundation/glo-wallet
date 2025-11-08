@@ -86,22 +86,46 @@ const SCANNERS: { [key: string]: string } = {
   [arbitrum.name]: "arbiscan.io",
 };
 
-const fetchBalance = async (
-  chainId: number,
-  poolAddr: string,
-  token: string
-) => {
-  const result = await axios.get("https://api.etherscan.io/v2/api", {
-    params: {
-      chainId,
-      address: poolAddr,
-      module: "account",
-      action: "tokenbalance",
-      contractaddress: token,
-      apikey: process.env.ETHERSCAN_API_KEY,
-    },
-  });
-  return BigInt(result.data.result);
+const ALCHEMY_NAMES: { [key: string]: string } = {
+  [mainnet.name]: "eth",
+  [optimism.name]: "opt",
+  [arbitrum.name]: "arb",
+};
+
+const fetchAlchemyBalances = async ({
+  poolAddr,
+  chainName,
+  gloAddr,
+  otherAddr,
+}: {
+  poolAddr: string;
+  chainName: string;
+  gloAddr: string;
+  otherAddr: string;
+}): Promise<[bigint, bigint]> => {
+  const res = await axios.post(
+    `https://${
+      ALCHEMY_NAMES[chainName] || chainName
+    }-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+    {
+      jsonrpc: "2.0",
+      method: "alchemy_getTokenBalances",
+      params: [poolAddr, [gloAddr, otherAddr]],
+      id: 1,
+    }
+  );
+  const resultMap = res.data.result.tokenBalances.reduce(
+    (
+      acc: { [key: string]: string },
+      cur: { contractAddress: string; tokenBalance: string }
+    ) => ({
+      ...acc,
+      [cur.contractAddress]: BigInt(cur.tokenBalance),
+    }),
+    {} as { [key: string]: string }
+  );
+
+  return [resultMap[gloAddr] || BigInt(0), resultMap[otherAddr] || BigInt(0)];
 };
 
 const collect = async ({ isCron }: { isCron: boolean }) => {
@@ -129,8 +153,13 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
       decimals,
     });
 
-    const glo = await fetchBalance(chainId, poolAddr, gloAddr);
-    const rawUsdc = await fetchBalance(chainId, poolAddr, otherAddr);
+    const [glo, rawUsdc] = await fetchAlchemyBalances({
+      poolAddr,
+      chainName: chain.name,
+      gloAddr,
+      otherAddr,
+    });
+
     const usdc = decimals == 18 ? rawUsdc : rawUsdc * BigInt(1e12); // USDC has 6 decimals on most chains, but 18 on Celo (cUSD)
     const sum = glo + usdc;
     msg.push([
@@ -141,7 +170,7 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
       `USDGLO: ${formatUSD(glo)}`,
       `USDC: ${formatUSD(usdc)}`,
     ]);
-    await sleep(2000); // to avoid rate limiting
+    await sleep(1000); // to avoid rate limits
   }
 
   const entries = Object.values(ADDR_CHAIN_OTHR);
@@ -300,10 +329,9 @@ export const getPoolData = async ({
   const usdcDecimals = decimals || 6;
   const sqrtPriceX96 = slot0[0];
   const decimalsDiff = 18 - usdcDecimals;
-  const fraction =
-    isGloFirst && usdcDecimals == 6
-      ? BigInt(2 ** 96) / BigInt(sqrtPriceX96)
-      : BigInt(sqrtPriceX96) / BigInt(2 ** 96);
+  const fraction = isGloFirst
+    ? BigInt(2 ** 96) / BigInt(sqrtPriceX96)
+    : BigInt(sqrtPriceX96) / BigInt(2 ** 96);
   const price = fraction ** BigInt(2);
 
   const quotedAmountOut = await getQuote();
