@@ -182,6 +182,20 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
     USDC: elements[5],
   }));
 
+  // Adds Stellar DEXes
+  const stellarResults = await fetchStellarPools();
+  jsonResult.push(...stellarResults);
+  msg.push(
+    ...stellarResults.map((x) => [
+      `${x.uri}-${x.name}`,
+      x.price,
+      x.inout,
+      x.percentage,
+      x.USDGLO,
+      x.USDC,
+    ])
+  );
+
   if (!isCron) {
     return jsonResult;
   }
@@ -237,6 +251,118 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
   }
 
   return jsonResult;
+};
+
+const fetchStellarPools = async () => {
+  const glo = [
+    "USDGLO",
+    "GBBS25EGYQPGEZCGCFBKG4OAGFXU6DSOQBGTHELLJT3HZXZJ34HWS6XV",
+  ];
+  const usdc = [
+    "USDC",
+    "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+  ];
+  const gloAsset = glo.join(":");
+  const usdcAsset = usdc.join(":");
+  const getStellarX = async () => {
+    const reservesRes = await axios.get(
+      `https://horizon.stellar.org/liquidity_pools?reserves=${gloAsset},${usdcAsset}`
+    );
+
+    const reserves = reservesRes.data._embedded.records[0].reserves.reduce(
+      (
+        acc: { [key: string]: string },
+        cur: { asset: string; amount: string }
+      ) => ({
+        ...acc,
+        [cur.asset]: BigInt(cur.amount.split(".")[0]) * BigInt(1e18),
+      }),
+      {} as { [key: string]: string }
+    );
+    const swapRes = await axios.get(
+      `https://horizon.stellar.lobstr.co/paths/strict-send?source_asset_type=credit_alphanum12&source_asset_code=${
+        glo[0]
+      }&source_asset_issuer=${glo[1]}&source_amount=${
+        reserves[gloAsset] / BigInt(20 * 1e18)
+      }&destination_assets=${usdcAsset}`
+    );
+
+    const { source_amount: amountIn, destination_amount: amountOut } =
+      swapRes.data._embedded.records[0];
+    const price = toDecimals(
+      (parseFloat(amountOut) / parseFloat(amountIn)).toString(),
+      5
+    );
+    const sum = reserves[gloAsset] + reserves[usdcAsset];
+
+    return {
+      name: "StellarX",
+      uri: `https://www.stellarx.com/amm/analytics/${usdcAsset}/${gloAsset}`,
+      price: `${price}$`,
+      inout: `${toDecimals(amountIn)} USDGLO -> ${toDecimals(amountOut)} USDC`,
+      percentage: `${formatPercent(reserves[gloAsset], sum)}% / ${formatPercent(
+        reserves[usdcAsset],
+        sum
+      )}%`,
+      USDGLO: `USDGLO: ${formatUSD(reserves[gloAsset])}`,
+      USDC: `USDC: ${formatUSD(reserves[usdcAsset])}`,
+    };
+  };
+
+  const getAqua = async () => {
+    const poolContract =
+      "CAC56QNJ2CX456TPC5S4MSOU3DBULG4TGN7AZ2SAYGBLD3GICFMZBIT2";
+
+    const res = await axios.get(
+      `https://amm-api.aqua.network/pools/${poolContract}`
+    );
+
+    const { tokens_str: tokenStr, reserves: reservesData } = res.data;
+
+    const reserves = tokenStr.reduce(
+      (acc: { [key: string]: string }, cur: string, i: number) => ({
+        ...acc,
+        [cur]: BigInt(reservesData[i].split(".")[0]) * BigInt(1e11), // Stellar 7 to 18 decimals
+      }),
+      {} as { [key: string]: string }
+    );
+    const sum = reserves[gloAsset] + reserves[usdcAsset];
+
+    const amountIn = (reserves[gloAsset] / BigInt(20 * 1e18)).toString();
+    const swapData = await axios.post(
+      "https://amm-api.aqua.network/pools/find-path/",
+      {
+        token_in_address:
+          "CB226ZOEYXTBPD3QEGABTJYSKZVBP2PASEISLG3SBMTN5CE4QZUVZ3CE",
+        token_out_address:
+          "CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75",
+        amount: amountIn,
+      }
+    );
+    const amountOut = swapData.data.amount;
+    const price = toDecimals(
+      (parseFloat(amountOut) / parseFloat(amountIn)).toString(),
+      5
+    );
+
+    return {
+      name: "Aquarius",
+      uri: `https://aqua.network/pools/${poolContract}`,
+      price: `${price}$`,
+      inout: `${toDecimals(amountIn)} USDGLO -> ${toDecimals(amountOut)} USDC`,
+      percentage: `${formatPercent(reserves[gloAsset], sum)}% / ${formatPercent(
+        reserves[usdcAsset],
+        sum
+      )}%`,
+      USDGLO: `USDGLO: ${formatUSD(reserves[gloAsset])}`,
+      USDC: `USDC: ${formatUSD(reserves[usdcAsset])}`,
+    };
+  };
+
+  const stellarX = await getStellarX();
+  const aqua = await getAqua();
+
+  return [stellarX, aqua];
 };
 
 function sleep(ms: number) {
