@@ -30,6 +30,11 @@ export default async function handler(
       creationDate: {
         lt: firstThisMonth.toISOString(),
       },
+      address: {
+        not: {
+          startsWith: "ve",
+        },
+      },
     },
     distinct: ["address", "name"],
     orderBy: {
