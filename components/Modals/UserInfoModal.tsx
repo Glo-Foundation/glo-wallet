@@ -1,4 +1,3 @@
-import { useWallet } from "@vechain/dapp-kit-react";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
@@ -15,7 +14,6 @@ type Props = {
   idrissName?: string;
   ensName?: string;
   isStellarConnected: boolean;
-  isVeConnected: boolean;
   setStellarConnected: (bool: boolean) => void;
   setStellarAddress: (str: string) => void;
 };
@@ -25,7 +23,6 @@ export default function UserInfoModal({
   idrissName,
   ensName,
   isStellarConnected,
-  isVeConnected,
   setStellarConnected,
   setStellarAddress,
 }: Props) {
@@ -34,7 +31,6 @@ export default function UserInfoModal({
   const { closeModal } = useContext(ModalContext);
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { setTransfers, setCTAs, setRecipientsView } = useUserStore();
-  const { disconnect: veDisconnect } = useWallet();
 
   const email = Cookies.get("glo-email");
 
@@ -48,11 +44,7 @@ export default function UserInfoModal({
     if (isStellarConnected) {
       disconnectStellar();
     }
-    if (isVeConnected) {
-      veDisconnect();
-    } else {
-      disconnect();
-    }
+    disconnect();
     setTransfers({ transfers: [] });
     setCTAs([]);
     localStorage.setItem("showedLogin", "true");
@@ -86,8 +78,7 @@ export default function UserInfoModal({
           <div className="copy pseudo-input-text text-sm">
             <span data-testid="profile-network">
               {isStellarConnected && <div>Stellar</div>}
-              {isVeConnected && <div>VeChain</div>}
-              {!isStellarConnected && !isVeConnected && (
+              {!isStellarConnected && (
                 <div>
                   {chain?.name} ({chain?.id})
                 </div>

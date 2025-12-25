@@ -11,32 +11,9 @@ import {
   optimismSepolia,
   polygon,
   polygonMumbai,
-  vechain,
 } from "viem/chains";
 
 import { isProd } from "./utils";
-
-export const VECHAIN_TESTNET = {
-  id: -1,
-  name: "vechain_testnet",
-  network: "homestead",
-  nativeCurrency: {
-    name: "VeChainThor",
-    symbol: "VET",
-    decimals: 18,
-  },
-  rpcUrls: {
-    public: {
-      http: ["https://node-testnet.vechain.energy"],
-    },
-    default: {
-      http: ["https://node-testnet.vechain.energy"],
-    },
-  },
-  blockExplorers: {
-    default: { name: "Explorer", url: "https://explore-testnet.vechain.org" },
-  },
-};
 
 export const chainConfig: { [id: number]: `0x${string}` } = {
   // Mainnets
@@ -46,7 +23,6 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [optimism.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   [base.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
   [arbitrum.id]: "0x4F604735c1cF31399C6E711D5962b2B3E0225AD3",
-  [vechain.id]: "0x29c630cce4ddb23900f5fe66ab55e488c15b9f5e",
   // Testnets
   [arbitrumSepolia.id]: "0xf3C3351D6Bd0098EEb33ca8f830FAf2a141Ea2E1", // this is actually USDC
   [optimismSepolia.id]: "0x5fd84259d66Cd46123540766Be93DFE6D43130D7", // this is actually USDC
@@ -54,7 +30,6 @@ export const chainConfig: { [id: number]: `0x${string}` } = {
   [polygonMumbai.id]: "0xbd05d3B38c400d95D52c2B8fF124DF511AB7EBfc",
   [goerli.id]: "0x2c872de03E91D2ee463308Cb5dA4Ed9e41bBB355",
   [celoAlfajores.id]: "0x6054aC9c220070F8c3093730d64E701ad23077C5",
-  [VECHAIN_TESTNET.id]: "0x89FD13624F64aaF03D1ff25ff5ce617cde65ee69",
 };
 
 export const defaultChain = () => (isProd() ? optimism : optimismSepolia);
@@ -109,7 +84,6 @@ const chainRPCUrl: { [id: number]: string } = {
   [optimism.id]: process.env.NEXT_PUBLIC_OPTIMISM_RPC_URL as string,
   [arbitrum.id]: process.env.NEXT_PUBLIC_ARBITRUM_RPC_URL as string,
   [base.id]: process.env.NEXT_PUBLIC_BASE_RPC_URL as string,
-  [vechain.id]: process.env.NEXT_PUBLIC_VECHAIN_RPC_URL as string,
   // Testnets
   [polygonMumbai.id]: process.env.NEXT_PUBLIC_MUMBAI_RPC_URL as string,
   [goerli.id]: process.env.NEXT_PUBLIC_GOERLI_RPC_URL as string,
@@ -144,16 +118,3 @@ export const supportedChains = {
   mainnet: [polygon.id, mainnet.id, celo.id],
   testnet: [polygonMumbai.id, goerli.id, celoAlfajores.id],
 };
-
-// BetterSwap
-export const BETTER_VET = "0xf9b02b47694fd635A413F16dC7B38aF06Cc16fe5";
-export const B3TR = "0x5ef79995FE8a89e0812330E4378eB2660ceDe699";
-export const USDGLO = chainConfig[vechain.id];
-export const VECHAIN_B3TR_USDGLO_POOL =
-  "0x654502E86BcD153f074Fe534C817EB62fc7EF4C1";
-export const token0 = USDGLO;
-export const token1 = B3TR;
-
-// VeChain Router Contract Address (replace with actual router address)
-export const VECHAIN_ROUTER_ADDRESS =
-  "0x349Ede93B675c0F0f8d7CdaD74eCF1419943E6ac"; // Replace with actual router address

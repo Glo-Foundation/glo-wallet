@@ -32,10 +32,6 @@ const nextConfig = {
         source: "/purchased-coinbase",
         destination: "/",
       },
-      {
-        source: "/impact/ve/:id",
-        destination: "/impact/:id",
-      },
     ];
   },
   async headers() {

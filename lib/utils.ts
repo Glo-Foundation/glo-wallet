@@ -13,7 +13,6 @@ import {
   optimism,
   optimismSepolia,
   polygon,
-  vechain,
 } from "wagmi/chains";
 
 import UsdgloContract from "@/abi/usdglo.json";
@@ -71,11 +70,9 @@ export const getChains = (): [Chain, ...Chain[]] => {
 
 export const signMsgContent = "glo-wallet";
 
-export const DEFAULT_CTAS: CTA[] = [
-  "TWEEET_IMPACT",
-  "JOIN_CONSORTIUM",
-  "ADD_BETTERSWAP_LIQUIDITY",
-].map((cta) => ({ type: cta } as CTA));
+export const DEFAULT_CTAS: CTA[] = ["TWEEET_IMPACT", "JOIN_CONSORTIUM"].map(
+  (cta) => ({ type: cta } as CTA)
+);
 
 export const getMarketCap = async (chainId: number): Promise<bigint> => {
   const provider = await getJsonProvider(chainId);
@@ -204,13 +201,6 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     description: "Fund the 50+ most popular charities on Endaoment",
     type: "",
   },
-  ["VEBETTERDAO"]: {
-    name: "VeBetterDAO",
-    short_name: "VeBetterDAO",
-    iconPath: "/ve-better-dao.png",
-    description: "Support tokenizing sustainable assets and actions",
-    type: "",
-  },
 };
 
 export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
@@ -218,7 +208,6 @@ export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
     [optimism.id]: Charity.RETRO_PG_OP,
     [celo.id]: Charity.CELO_PG,
     "0": Charity.REFUGEE_CRISIS, // Stellar
-    [vechain.id]: Charity.VEBETTERDAO, // Ve
   };
   return DEFAULTS[chainId] || Charity.OPEN_SOURCE;
 };
@@ -234,13 +223,12 @@ export const backendUrl = BACKEND_URL
   : "http://localhost:3000";
 
 export const getChainsObjects = () => {
-  const chains = [...getChains(), vechain];
   const chainMap: { [key: string]: string } = {
     "op mainnet": "optimism",
     "arbitrum one": "arbitrum",
   };
   const getMapped = (key: string) => chainMap[key] || key;
-  const chainsObject: Record<string, Chain> = chains.reduce(
+  const chainsObject: Record<string, Chain> = getChains().reduce(
     (a, v) => ({
       ...a,
       [getMapped(v.name.toLowerCase())]: v,

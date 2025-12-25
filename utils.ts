@@ -1,6 +1,3 @@
-import { Driver, SimpleNet, SimpleWallet } from "@vechain/connex-driver";
-import { Framework } from "@vechain/connex-framework";
-import * as thor from "@vechain/web3-providers-connex";
 import { GetBalanceReturnType } from "@wagmi/core";
 import {
   arbitrum,
@@ -16,7 +13,6 @@ import {
   optimismSepolia,
   polygon,
   polygonMumbai,
-  vechain,
 } from "@wagmi/core/chains";
 import EthDater from "ethereum-block-by-date";
 import { ethers } from "ethers";
@@ -288,23 +284,8 @@ export const getUSDCToUSDGLOSwapDeeplink = (
   return outputUrl;
 };
 
-export const getJsonProvider = async (chainId: number) => {
-  if (chainId === vechain.id) {
-    const net = new SimpleNet("https://node-mainnet.vechain.energy");
-    const wallet = new SimpleWallet();
-    const driver = await Driver.connect(net, wallet);
-    const connex = new Framework(driver);
-    return thor.ethers.modifyProvider(
-      new ethers.BrowserProvider(
-        new thor.Provider({
-          connex,
-          wallet,
-        })
-      )
-    );
-  }
-  return new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
-};
+export const getJsonProvider = async (chainId: number) =>
+  new ethers.JsonRpcProvider(getChainRPCUrl(chainId));
 
 export const getBalance = async (
   address: string,
@@ -321,8 +302,7 @@ export const getBalance = async (
 
   try {
     if (blockTag !== null && blockTag !== 0) {
-      const params =
-        chainId === vechain.id ? { blockNumber: blockTag } : { blockTag };
+      const params = { blockTag };
 
       return await usdgloContract.balanceOf.call(undefined, address, {
         ...params,

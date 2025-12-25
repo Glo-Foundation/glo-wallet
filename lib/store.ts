@@ -7,12 +7,10 @@ interface UserStore {
   ctas: CTA[];
   isRecipientsView: boolean;
   wcState?: WC_STATE;
-  veBalanceRefresher: number;
   setTransfers: (transfers: TransfersPage) => void;
   setCTAs: (ctas: CTA[]) => void;
   setRecipientsView: (recipientsView: boolean) => void;
   setWcState: (wcState: WC_STATE) => void;
-  refreshVeBalance: () => void;
 }
 export const useUserStore = create<UserStore>((set) => ({
   email: undefined,
@@ -21,7 +19,6 @@ export const useUserStore = create<UserStore>((set) => ({
   ctas: [],
   isRecipientsView: false,
   wcState: undefined,
-  veBalanceRefresher: Date.now(),
   setTransfers: (page: TransfersPage) =>
     set(() => ({ transfers: page.transfers, transfersCursor: page.cursor })),
   setCTAs: (ctas: CTA[]) => set(() => ({ ctas })),
@@ -29,7 +26,6 @@ export const useUserStore = create<UserStore>((set) => ({
   setRecipientsView: (isRecipientsView: boolean) =>
     set(() => ({ isRecipientsView })),
   setWcState: (wcState: WC_STATE) => set(() => ({ wcState })),
-  refreshVeBalance: () => ({ veBalanceRefresher: Date.now() }),
 }));
 
 interface ToastType {

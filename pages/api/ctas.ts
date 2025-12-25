@@ -30,6 +30,12 @@ export default async function handler(
     .status(200)
     .json([
       ...DEFAULT_CTAS.filter((cta) => !userCTAS.includes(cta.type)),
-      ...ctas,
+      ...ctas.filter((cta) => (CTA_TYPES as string[]).includes(cta.type)),
     ]);
 }
+
+const CTA_TYPES: CTAType[] = [
+  "JOIN_CONSORTIUM",
+  "TWEEET_IMPACT",
+  "REGISTER_IDRISS",
+];
