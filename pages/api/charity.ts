@@ -94,8 +94,6 @@ async function updateCharityChoicesForAddress(
     if (!valid) {
       throw new Error("Invalid signature");
     }
-  } else if (address.slice(0, 2) === "ve") {
-    // Ve
   } else {
     // isStellar
     // Temp disabled

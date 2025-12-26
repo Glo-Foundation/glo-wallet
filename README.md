@@ -5,9 +5,9 @@ Welcome! The Glo Wallet is a web3 dApp created by the Glo Foundation that seeks 
 1.  **Be the entry point** for joining the Glo Dollar Movement
 2.  **Minimize friction** for crypto newcomers to buy the Glo Dollar and start using it to pay for things in the real world
 3.  **Activate the Community** to help grow the Glo Dollar Movement by completing specific Call To Actions
-1.  **Be the entry point** for joining the Glo Dollar Movement
-2.  **Minimize friction** for crypto newcomers to buy the Glo Dollar and start using it to pay for things in the real world
-3.  **Activate the Community** to help grow the Glo Dollar Movement by completing specific Call To Actions
+4.  **Be the entry point** for joining the Glo Dollar Movement
+5.  **Minimize friction** for crypto newcomers to buy the Glo Dollar and start using it to pay for things in the real world
+6.  **Activate the Community** to help grow the Glo Dollar Movement by completing specific Call To Actions
 
 The Glo Wallet leverages the [Sequence wallet](https://sequence.xyz/) for web2 friendly authentication, and is built upon [wagmi](https://github.com/wagmi-dev/wagmi).
 
@@ -109,7 +109,6 @@ NEXT_PUBLIC_ALFAJORES_RPC_URL="https://alfajores-forno.celo-testnet.org"
 NEXT_PUBLIC_OPTIMISM_SEPOLIA_RPC_URL="https://sepolia.optimism.io"
 NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC_URL="https://sepolia-rollup.arbitrum.io/rpc"
 NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL="https://base-sepolia-rpc.publicnode.com"
-NEXT_PUBLIC_VECHAIN_RPC_URL="https://rpc.vechain.energy"
 ```
 
 #### API Keys

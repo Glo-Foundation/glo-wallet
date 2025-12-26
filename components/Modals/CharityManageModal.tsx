@@ -5,7 +5,6 @@ import {
   XBULL_ID,
 } from "@creit.tech/stellar-wallets-kit/build/index";
 import { Charity } from "@prisma/client";
-import { useWallet } from "@vechain/dapp-kit-react";
 import { Chain } from "@wagmi/core/chains";
 import Image from "next/image";
 import Slider from "rc-slider";
@@ -115,11 +114,8 @@ export default function CharityManageModal(props: Props) {
   const { data: walletClient } = useWalletClient();
 
   const { chain } = useAccount();
-  const { account: veAddress } = useWallet();
-  const isVe = !!veAddress;
 
   const [percentMap, setPercentMap] = useState({ ...props.percentMap });
-  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const [lastTouchedKey, setLastTouchedKey] = useState<string | null>(null);
   const [isAutoDistributed, setIsAutoDistributed] = useState(false);
 
@@ -292,9 +288,7 @@ export default function CharityManageModal(props: Props) {
     };
 
     const signingBodyString = JSON.stringify(signingBody);
-    const signature = isVe
-      ? "ve"
-      : await signCharityUpdateMessage(signingBodyString);
+    const signature = await signCharityUpdateMessage(signingBodyString);
 
     const apiBody: UpdateCharityChoiceBody = {
       sigFields: {
@@ -351,7 +345,6 @@ export default function CharityManageModal(props: Props) {
             yearlyYield={props.yearlyYield}
             setPercent={(value: number) => {
               percentMap[key] = value;
-              setTouched((prev) => ({ ...prev, [key]: true }));
               setLastTouchedKey(key);
               setPercentMap({ ...percentMap });
             }}
@@ -359,7 +352,6 @@ export default function CharityManageModal(props: Props) {
               charities.length > 1
                 ? () => {
                     delete percentMap[key];
-                    setTouched((prev) => ({ ...prev, [key]: false }));
                     setPercentMap({ ...percentMap });
                     setIsAutoDistributed(false); // Reset auto-distribute state
                     autoDistribute(); // Re-run auto-distribute

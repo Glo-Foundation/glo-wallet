@@ -1,5 +1,5 @@
 import { Operation } from "@stellar/stellar-sdk";
-import { celo, celoAlfajores, Chain, vechain } from "@wagmi/core/chains";
+import { celo, celoAlfajores, Chain } from "@wagmi/core/chains";
 import axios from "axios";
 
 import { getChainBlockNumber, getStellarTxs } from "@/lib/balance";
@@ -70,10 +70,6 @@ export const fetchGloTransactions = async (
   const startBlock = await getChainBlockNumber(fromDate, chain);
   const endBlock = await getChainBlockNumber(toDate, chain);
 
-  if (chain.name.toLowerCase() === "vechain") {
-    return await getVeTransactions(address, startBlock, endBlock);
-  }
-
   const queryString =
     `?module=account&action=tokentx&address=${address}&contractaddress=${GLO_ADDRESS}&startblock=${startBlock}&endblock=${endBlock}` +
     (page ? `&page=${page}` : "") +
@@ -86,79 +82,6 @@ export const fetchGloTransactions = async (
   const { status, result } = transfers.data;
 
   return status === "1" ? result : [];
-};
-
-type RawEvent = {
-  _value: string;
-  _to: string;
-  _from: string;
-  _meta: {
-    blockNumber: number;
-    blockTimestamp: number;
-  };
-};
-const getVeTransactions = async (
-  rawAddress: string,
-  startBlock: number,
-  endBlock: number
-) => {
-  const address = rawAddress.slice(2);
-  const base = {
-    address: chainConfig[vechain.id],
-    signature:
-      "Transfer (address indexed _from, address indexed _to, uint256 _value)",
-  };
-  const records: TokenTransfer[] = [];
-  let offset = 0;
-
-  while (true) {
-    try {
-      const res = await axios.post("https://event.api.vechain.energy/main", {
-        events: [
-          {
-            ...base,
-            _from: address,
-          },
-          {
-            ...base,
-            _to: address,
-          },
-        ],
-        unit: "block",
-        from: startBlock,
-        to: endBlock,
-        limit: 500,
-        offset,
-        order: "desc",
-      });
-
-      records.push(
-        ...res.data
-          .filter((x: RawEvent) => x._value != "0")
-          .map(
-            (x: RawEvent) =>
-              ({
-                value: x._value,
-                to: x._to,
-                from: x._from,
-                blockNumber: x._meta.blockNumber.toString(),
-                timeStamp: x._meta.blockTimestamp.toString(),
-              } as TokenTransfer)
-          )
-      );
-
-      if (res.data.length < 500) {
-        break;
-      }
-
-      offset += 500;
-    } catch (err) {
-      console.log({ err });
-      return [];
-    }
-  }
-
-  return records;
 };
 
 type Operations = {
@@ -191,8 +114,8 @@ export const getAvgMarketCap = async (
     return currentMarketCap;
     const zero =
       "0x0000000000000000000000000000000000000000000000000000000000000000";
-    const topic = // sha3('Transfer(address,address,uint256)') => topic
-      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+    const topic =
+      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"; // sha3('Transfer(address,address,uint256)') => topic
     const mintTopic = `&topic1=${zero}&topic0_1_opr=or`;
     const burnTopic = `&topic2=${zero}&topic0_2_opr=or`;
     const topics = `&topic0=${topic}${mintTopic}${burnTopic}&topic1_2_opr=or`;

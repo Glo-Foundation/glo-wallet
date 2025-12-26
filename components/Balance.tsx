@@ -9,7 +9,6 @@ import { customFormatBalance } from "@/utils";
 import CharitySelector from "./CharitySelector";
 import ImpactInset from "./ImpactInset";
 import BuyGloModal from "./Modals/BuyGloModal";
-import LiquidityModal from "./Modals/LiquidityModal";
 import SellModal from "./Modals/SellModal";
 import SwapGate from "./Modals/SwapGate";
 
@@ -23,9 +22,7 @@ type Props = {
   usdcBalance: GetBalanceReturnType | undefined;
   stellarBalance: GetBalanceReturnType | undefined;
   baseBalance: GetBalanceReturnType | undefined;
-  veBalance: GetBalanceReturnType | undefined;
   stellarConnected: boolean;
-  veConnected: boolean;
 };
 
 export default function Balance({
@@ -38,7 +35,6 @@ export default function Balance({
   usdcBalance,
   baseBalance,
   stellarConnected,
-  veConnected,
 }: Props) {
   const { openModal } = useContext(ModalContext);
 
@@ -93,8 +89,7 @@ export default function Balance({
   ];
 
   const canSell = hasGlo && !stellarConnected;
-  const canAdd = veConnected;
-  const buyOnly = !canAdd && !canSell;
+  const buyOnly = !canSell;
 
   return (
     <div className="bg-white rounded-[20px] pt-4">
@@ -104,10 +99,10 @@ export default function Balance({
         </div>
         <div
           className={`flex flex-row font-semibold justify-center ${
-            veConnected || stellarConnected ? "" : "cursor-pointer"
+            stellarConnected ? "" : "cursor-pointer"
           }`}
           onClick={() => {
-            veConnected || stellarConnected
+            stellarConnected
               ? null
               : setShowBalanceDropdown(!showBalanceDropdown);
           }}
@@ -225,7 +220,7 @@ export default function Balance({
           <div
             className={clsx(
               "flex justify-center items-center bg-pine-50 w-full border-t-pine-900/10 border-t cursor-pointer",
-              !canAdd && "rounded-br-xl"
+              "rounded-br-xl"
             )}
             onClick={() =>
               openModal(<SellModal sellAmount={Number(totalBalance.value)} />)
@@ -239,14 +234,6 @@ export default function Balance({
               width={16}
               height={16}
             />
-          </div>
-        )}
-        {canAdd && (
-          <div
-            className="flex justify-center items-center bg-pine-200 w-full rounded-br-xl border-t-pine-900/10 border-t cursor-pointer"
-            onClick={() => openModal(<LiquidityModal />, "", true)}
-          >
-            <span className="font-bolder">Add Liquidity</span>
           </div>
         )}
       </div>

@@ -1,4 +1,3 @@
-import { useWallet } from "@vechain/dapp-kit-react";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -10,7 +9,6 @@ import { DEFAULT_CTAS } from "@/lib/utils";
 
 import { CompletedIcon } from "./CompletedIcon";
 import IdrissModal from "./Modals/IdrissModal";
-import LiquidityModal from "./Modals/LiquidityModal";
 import TweetModal from "./Modals/TweetModal";
 
 const Icon = ({ path }: { path: string }) => (
@@ -34,15 +32,13 @@ const ActionButton = ({
   ctaData: CTA;
 }) => {
   const cta = CTA_MAP[ctaData.type];
-  const { action } = cta;
 
   const link = cta?.url ? cta.url + (cta.slug || "") : undefined;
-
   return (
     <a
       className="cta"
       href={link}
-      onClick={() => (action ? action() : undefined)}
+      onClick={() => (cta.action ? cta.action() : undefined)}
       target="_blank"
       rel="noreferrer"
     >
@@ -87,18 +83,13 @@ export default function CTA({
   const { ctas } = useUserStore();
   const { openModal } = useContext(ModalContext);
 
-  const { account: veAddress } = useWallet();
-  const isVe = !!veAddress;
-
   const gloBalance = Number(balance) || 100;
 
   const email = Cookies.get("glo-email") || "";
 
   const shareImpactText = `I just bought ${nf.format(
     gloBalance
-  )} @glodollar, the stablecoin that funds public goods and charities.\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${
-    isVe ? "ve/" : ""
-  }${identity}`;
+  )} @glodollar, the stablecoin that funds public goods and charities.\n\nLearn more on my personal impact page: https://app.glodollar.org/impact/${identity}`;
 
   const shareImpactTextShort = `${
     shareImpactText.split("public goods")[0]
@@ -124,16 +115,9 @@ export default function CTA({
         "Hold $100+ of Glo Dollar to claim an IDriss registration for this wallet",
       action: () => openModal(<IdrissModal balance={gloBalance} />),
     },
-    ["ADD_BETTERSWAP_LIQUIDITY"]: {
-      title: "Add DEX liquidity",
-      iconPath: "/vebetterdao.png",
-      description: "Buy Glo Dollar, add liquidity and get B3TR via VeBetterDAO",
-      action: () => openModal(<LiquidityModal />, "", true),
-    },
   };
-  const CTAS = DEFAULT_CTAS;
 
-  const ctaList: CTA[] = ctas.length > 0 ? ctas : CTAS;
+  const ctaList: CTA[] = ctas.length > 0 ? ctas : DEFAULT_CTAS;
 
   const spring = {
     type: "spring",
@@ -148,14 +132,11 @@ export default function CTA({
         <h3>🌟 Help Grow Glo!</h3>
       </div>
       <ul className="mt-2">
-        {ctaList
-          // Filter out betterswap if not a Ve user
-          .filter((cta) => isVe || cta.type !== "ADD_BETTERSWAP_LIQUIDITY")
-          .map((cta) => (
-            <motion.div key={cta.type} layout transition={spring}>
-              <ActionButton CTA_MAP={CTA_MAP} email={email} ctaData={cta} />
-            </motion.div>
-          ))}
+        {ctaList.map((cta) => (
+          <motion.div key={cta.type} layout transition={spring}>
+            <ActionButton CTA_MAP={CTA_MAP} email={email} ctaData={cta} />
+          </motion.div>
+        ))}
       </ul>
     </div>
   );

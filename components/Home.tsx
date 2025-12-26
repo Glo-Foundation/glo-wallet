@@ -1,4 +1,3 @@
-import { useConnex, useWallet } from "@vechain/dapp-kit-react";
 import {
   arbitrum,
   arbitrumSepolia,
@@ -12,7 +11,6 @@ import {
   optimismSepolia,
   polygon,
   polygonMumbai,
-  vechain,
 } from "@wagmi/core/chains";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -64,7 +62,7 @@ export default function Home() {
   const { address, isConnected, connector, chain } = useAccount();
   const { switchChain } = useSwitchChain();
   const { openModal, closeModal } = useContext(ModalContext);
-  const { setCTAs, isRecipientsView, veBalanceRefresher } = useUserStore();
+  const { setCTAs, isRecipientsView } = useUserStore();
 
   const [idrissName, setIdrissName] = useState("");
   const [stellarConnected, setStellarConnected] = useState(
@@ -74,33 +72,6 @@ export default function Home() {
     localStorage.getItem("stellarAddress") || ""
   );
   const [stellarBalance, setStellarBalance] = useState(startBalance(7));
-
-  const [veBalance, setVeBalance] = useState(startBalance(18));
-
-  const connex = useConnex();
-  const { account: veAddress } = useWallet();
-  const veConnected = !!veAddress;
-
-  useEffect(() => {
-    if (veAddress) {
-      // TODO: Could be replaced with Viem confifured for Ve and custom Ve testnet
-      connex.thor
-        .account(chainConfig[isProd() ? vechain.id : -1]) // TODO:
-        .method(erc20Abi.find((x) => x.name === "balanceOf")!)
-        .call(veAddress)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((result: any) => {
-          const value = BigInt(result.decoded[0]);
-          setVeBalance({
-            ...veBalance,
-            value,
-            formatted: (value / BigInt(10 ** 18)).toString(),
-          });
-        });
-    } else {
-      setVeBalance(startBalance(18));
-    }
-  }, [veAddress, veBalanceRefresher]);
 
   const { data: ensName } = useEnsName({ address });
 
@@ -180,7 +151,6 @@ export default function Home() {
     arbitrumBalance,
     stellarBalance,
     baseBalance,
-    veBalance,
   ]);
 
   const showedLogin = localStorage.getItem("showedLogin");
@@ -262,7 +232,7 @@ export default function Home() {
   }, [switchChain]);
 
   useEffect(() => {
-    if (isConnected || stellarConnected || veConnected) {
+    if (isConnected || stellarConnected) {
       const _key = `glo-wallet-${stellarConnected ? stellarAddress : address}`;
 
       const sign = async () => {
@@ -282,8 +252,6 @@ export default function Home() {
           await initApi(address!, chain!.id, signature);
         } else if (stellarConnected) {
           await initApi(stellarAddress, 0, signature);
-        } else if (veConnected) {
-          await initApi(`ve${veAddress}`, vechain.id, signature);
         }
 
         const email = Cookies.get("glo-email") || null;
@@ -321,7 +289,7 @@ export default function Home() {
       localStorage.setItem("showedLogin", "true");
       localStorage.setItem("loggedIn", "false");
     }
-  }, [isConnected, stellarConnected, veConnected]);
+  }, [isConnected, stellarConnected]);
 
   useEffect(() => {
     if (!isConnected) {
@@ -398,16 +366,12 @@ export default function Home() {
                 baseBalance={baseBalance}
                 totalBalance={totalBalance}
                 usdcBalance={usdcBalance.data}
-                veBalance={veBalance}
                 stellarConnected={stellarConnected}
-                veConnected={veConnected}
               />
 
               <CTA
                 balance={totalBalance?.formatted}
-                identity={
-                  idrissName || address! || stellarAddress! || veAddress!
-                }
+                identity={idrissName || address! || stellarAddress!}
               />
             </>
           )}

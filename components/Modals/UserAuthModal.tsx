@@ -14,7 +14,6 @@ import {
   xBullModule,
 } from "@creit.tech/stellar-wallets-kit/build/index";
 
-import { useWalletModal } from "@vechain/dapp-kit-react";
 import clsx from "clsx";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -71,8 +70,6 @@ export default function UserAuthModal({
     Cookies.set(WC_COOKIE, state);
     setRawWcState(state);
   };
-
-  const { open } = useWalletModal();
 
   const tosAlreadyAgreed = Cookies.get(TOS_COOKIE);
 
@@ -254,19 +251,6 @@ export default function UserAuthModal({
               width={35}
               height={35}
             />
-          </button>
-          <button
-            className="auth-button"
-            data-testid="vechain-login-button"
-            onClick={() =>
-              requireUserAgreed(() => {
-                open();
-                closeModal();
-              })
-            }
-          >
-            <h4>VeChain</h4>
-            <Image alt="ve" src="/ve.png" width={35} height={35} />
           </button>
         </div>
 

@@ -1,4 +1,3 @@
-import { useWallet } from "@vechain/dapp-kit-react";
 import Head from "next/head";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
@@ -34,9 +33,6 @@ export default function Header({
   const [isCopiedTooltipOpen, setIsCopiedTooltipOpen] = useState(false);
   const { openModal } = useContext(ModalContext);
   const { setRecipientsView } = useUserStore();
-  const { account: veAccount } = useWallet();
-
-  const isVeConnected = !!veAccount;
 
   const isSequenceWallet = connector?.id === "sequence";
   const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
@@ -55,7 +51,6 @@ export default function Header({
         idrissName={idrissName}
         ensName={ensName}
         isStellarConnected={stellarConnected}
-        isVeConnected={isVeConnected}
         setStellarConnected={setStellarConnected}
         setStellarAddress={setStellarAddress}
       />
@@ -85,14 +80,10 @@ export default function Header({
 
         {isPending ? (
           <button className="primary-button">Connecting... </button>
-        ) : isConnected ||
-          isSequenceWallet ||
-          isVeConnected ||
-          stellarConnected ? (
+        ) : isConnected || isSequenceWallet || stellarConnected ? (
           <div className="flex z-10">
             {!isSequenceWallet &&
               !isCoinbaseWallet &&
-              !isVeConnected &&
               !stellarConnected &&
               !isWc && <AddToWallet />}
             {isConnected && <NetworkSwitcher />}
@@ -107,27 +98,20 @@ export default function Header({
               className="text-sm text-pine-800 mr-3 font-normal"
               onClick={() => {
                 navigator.clipboard.writeText(
-                  ensName ||
-                    idrissName ||
-                    address! ||
-                    stellarAddress ||
-                    veAccount!
+                  ensName || idrissName || address! || stellarAddress
                 );
                 setIsCopiedTooltipOpen(true);
               }}
             >
               {ensName ||
                 idrissName ||
-                sliceAddress(address! || stellarAddress || veAccount || "")}
+                sliceAddress(address! || stellarAddress || "")}
             </button>
             <button
               className="primary-button w-9 h-9"
               onClick={() =>
                 openUserInfoModal(
-                  address?.toString() ||
-                    stellarAddress ||
-                    veAccount ||
-                    undefined
+                  address?.toString() || stellarAddress || undefined
                 )
               }
               data-testid="profile-button"

@@ -5,9 +5,7 @@ import { sequenceWallet } from "@0xsequence/wagmi-connector";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import "@coinbase/onchainkit/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WalletConnectOptions } from "@vechain/dapp-kit";
 import Cookies from "js-cookie";
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import "react-tooltip/dist/react-tooltip.css";
@@ -26,36 +24,11 @@ import { defaultChainId, getChainRPCUrl } from "@/lib/config";
 import { ModalContext } from "@/lib/context";
 import { neueHaasGrotesk, polySans, WC_COOKIE } from "@/utils";
 
-import { getChains, isProd } from "../lib/utils";
+import { getChains } from "../lib/utils";
 
 import type { AppProps } from "next/app";
 
 const queryClient = new QueryClient();
-const DAppKitProvider = dynamic(
-  async () => {
-    const { DAppKitProvider: _DAppKitProvider } = await import(
-      "@vechain/dapp-kit-react"
-    );
-    return _DAppKitProvider;
-  },
-  {
-    ssr: false,
-  }
-);
-
-const walletConnectOptions: WalletConnectOptions = {
-  projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
-  metadata: {
-    name: "Glo wallet",
-    description: "Glo Dollar dApp",
-    url: typeof window !== "undefined" ? window.location.origin : "",
-    icons: [
-      typeof window !== "undefined"
-        ? `${window.location.origin}/glo-logo.png`
-        : "",
-    ],
-  },
-};
 
 const config = createConfig({
   chains: getChains(),
@@ -181,31 +154,19 @@ export default function App({ Component, pageProps }: AppProps) {
                   },
                 }}
               >
-                <DAppKitProvider
-                  genesis={isProd() ? "main" : "test"}
-                  logLevel="DEBUG"
-                  nodeUrl={
-                    isProd()
-                      ? "https://mainnet.vecha.in"
-                      : "https://testnet.vechain.org/"
-                  }
-                  usePersistence
-                  walletConnectOptions={walletConnectOptions}
+                <ModalContext.Provider
+                  value={{ openModal, closeModal, setModalClass }}
                 >
-                  <ModalContext.Provider
-                    value={{ openModal, closeModal, setModalClass }}
+                  <Component {...pageProps} />
+                  <dialog
+                    ref={dialogRef}
+                    onClick={dialogClickHandler}
+                    className={`${modalClassName} outline-none bg-white`}
                   >
-                    <Component {...pageProps} />
-                    <dialog
-                      ref={dialogRef}
-                      onClick={dialogClickHandler}
-                      className={`${modalClassName} outline-none bg-white`}
-                    >
-                      <div ref={contentRef}>{modalContent}</div>
-                    </dialog>
-                  </ModalContext.Provider>
-                  <Toast />
-                </DAppKitProvider>
+                    <div ref={contentRef}>{modalContent}</div>
+                  </dialog>
+                </ModalContext.Provider>
+                <Toast />
               </OnchainKitProvider>
             </QueryClientProvider>
           </WagmiProvider>

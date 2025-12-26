@@ -25,9 +25,7 @@ export default function SwapGate(props: Props) {
   const isSequenceWallet = connector?.id === "sequence";
   const isMetaMask = connector?.id === "metaMaskSDK";
   const isCoinbaseWallet = connector?.id === "coinbaseWalletSDK";
-  const isVe = apiInstance?.defaults.headers["glo-pub-address"]
-    ?.toString()
-    .startsWith("ve");
+
   const isWc = connector?.id === "walletConnect";
   const isSafe = connector?.id === "safe";
 
@@ -51,14 +49,6 @@ export default function SwapGate(props: Props) {
       onClick={() => buyWithBetterSwap(buyAmount)}
     />
   );
-
-  if (isVe) {
-    return (
-      <BoxBuyModal buyAmount={buyAmount}>
-        <BetterSwap />
-      </BoxBuyModal>
-    );
-  }
 
   const isStellar = localStorage.getItem("stellarConnected") == "true";
 

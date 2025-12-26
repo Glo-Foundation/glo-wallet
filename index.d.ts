@@ -24,11 +24,7 @@ type TransfersPage = {
   cursor?: string;
 };
 
-type CTAType =
-  | "JOIN_CONSORTIUM"
-  | "TWEEET_IMPACT"
-  | "REGISTER_IDRISS"
-  | "ADD_BETTERSWAP_LIQUIDITY";
+type CTAType = "JOIN_CONSORTIUM" | "TWEEET_IMPACT" | "REGISTER_IDRISS";
 
 type CTA = {
   type: CTAType;
