@@ -362,7 +362,7 @@ const fetchStellarPools = async () => {
   const stellarX = await getStellarX();
   const aqua = await getAqua();
 
-  return [stellarX, aqua];
+  return [aqua, stellarX];
 };
 
 function sleep(ms: number) {
