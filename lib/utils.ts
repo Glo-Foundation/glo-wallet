@@ -155,8 +155,15 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
   ["OPEN_SOURCE"]: {
     name: "Web3 public goods",
     short_name: "Public Goods",
-    iconPath: "/eth-rainbow",
+    iconPath: "/eth-rainbow.png",
     description: "Support causes that fund developers in Web3",
+    type: "",
+  },
+  ["CELO_PG"]: {
+    name: "Celo Public Goods",
+    short_name: "Celo PG",
+    iconPath: "/celo-square-logo.svg",
+    description: "Empower teams helping Celo become a regenerative economy",
     type: "",
   },
   ["REFUGEE_CRISIS"]: {
@@ -173,13 +180,6 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
   //   description: "Grow the funding pool for Superchain builders via Retro PGF",
   //   type: "",
   // },
-  ["CELO_PG"]: {
-    name: "Celo Public Goods",
-    short_name: "Celo PG",
-    iconPath: "/celo-square-logo.svg",
-    description: "Empower teams helping Celo become a regenerative economy",
-    type: "",
-  },
   ["EXTREME_POVERTY"]: {
     name: "Fight extreme poverty",
     short_name: "Extreme poverty",
