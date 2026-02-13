@@ -155,7 +155,7 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
   ["OPEN_SOURCE"]: {
     name: "Web3 public goods",
     short_name: "Public Goods",
-    iconPath: "/gitcoin-grants-logo.jpeg",
+    iconPath: "/eth-rainbow",
     description: "Support causes that fund developers in Web3",
     type: "",
   },
@@ -166,13 +166,13 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     description: "Help make moving aid money simple and borderless",
     type: "",
   },
-  ["RETRO_PG_OP"]: {
-    name: "Optimism Retro Funding",
-    short_name: "Optimism RPGF",
-    iconPath: "/optimism-logo.svg",
-    description: "Grow the funding pool for Superchain builders via Retro PGF",
-    type: "",
-  },
+  // ["RETRO_PG_OP"]: {
+  //   name: "Optimism Retro Funding",
+  //   short_name: "Optimism RPGF",
+  //   iconPath: "/optimism-logo.svg",
+  //   description: "Grow the funding pool for Superchain builders via Retro PGF",
+  //   type: "",
+  // },
   ["CELO_PG"]: {
     name: "Celo Public Goods",
     short_name: "Celo PG",
@@ -194,13 +194,13 @@ export const CHARITY_MAP: Record<string, CharityRecord> = {
     description: "Accelerate blockchain-enabled climate solutions",
     type: "",
   },
-  ["ENDAOMENT"]: {
-    name: "Endaoment Universal Impact",
-    short_name: "Endaoment",
-    iconPath: "/endaoment-logo.svg",
-    description: "Fund the 50+ most popular charities on Endaoment",
-    type: "",
-  },
+  // ["ENDAOMENT"]: {
+  //   name: "Endaoment Universal Impact",
+  //   short_name: "Endaoment",
+  //   iconPath: "/endaoment-logo.svg",
+  //   description: "Fund the 50+ most popular charities on Endaoment",
+  //   type: "",
+  // },
 };
 
 export const DEFAULT_CHARITY_PER_CHAIN = (chainId: string): Charity => {
