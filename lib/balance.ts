@@ -149,8 +149,8 @@ async function getStellarBalance(
     );
 
     if (onDate) {
-      const sum = await calculateStellarBalance(address, onDate);
-      stellarBalanceValue += sum;
+      const inflows = await calculateStellarInflows(address, onDate);
+      stellarBalanceValue -= inflows;
     }
 
     const balance = BigInt(`${stellarBalanceValue}`.replace(".", ""));
@@ -223,7 +223,7 @@ export const getStellarTxs = async (
     .filter((record) => record[1].length); // Filter out empty ops lists
 };
 
-const calculateStellarBalance = async (address: string, onDate: Date) => {
+const calculateStellarInflows = async (address: string, onDate: Date) => {
   let sum = 0;
   const txs = await getStellarTxs(address, onDate);
   for (const [, ops] of txs) {
