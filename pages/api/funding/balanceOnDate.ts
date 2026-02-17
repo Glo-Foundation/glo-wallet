@@ -176,7 +176,8 @@ const buildSummary = async (runId: number) => {
 };
 
 const flattenRecords = (records: BalanceCharity[]) => {
-  const choices = Object.keys(CHARITY_MAP).reduce(
+  const avaialableChoices = Object.keys(CHARITY_MAP);
+  const choices = avaialableChoices.reduce(
     (acc, cur) => ({ ...acc, [cur]: 0 }),
     {} as { [key: string]: number }
   );
@@ -192,7 +193,11 @@ const flattenRecords = (records: BalanceCharity[]) => {
       [key: string]: number;
     };
     for (const [choice, value] of Object.entries(choicesData)) {
-      choices[choice] += value;
+      // Fallback for deleted charities
+      const ch = avaialableChoices.includes(choice)
+        ? choice
+        : Charity.OPEN_SOURCE;
+      choices[ch] += value;
     }
     for (const [chain, value] of Object.entries(balances)) {
       allocated[chain] = allocated[chain] + BigInt(value);
