@@ -75,13 +75,21 @@ export const fetchGloTransactions = async (
     (page ? `&page=${page}` : "") +
     (offset ? `&offset=${offset}` : "");
 
-  const transfers = await instance.get(
-    `${queryString}&apikey=${process.env.BLOCKSCOUT_API_KEY}`
-  );
+  try {
+    const transfers = await instance.get(
+      `${queryString}&apikey=${process.env.BLOCKSCOUT_API_KEY}`
+    );
 
-  const { status, result } = transfers.data;
+    const { status, result } = transfers.data;
 
-  return status === "1" ? result : [];
+    return status === "1" ? result : [];
+  } catch (err) {
+    console.error(
+      `fetchGloTransactions - Blockscout error for ${address} on ${chainName}:`,
+      err
+    );
+    return [];
+  }
 };
 
 type Operations = {
