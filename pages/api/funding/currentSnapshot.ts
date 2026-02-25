@@ -73,7 +73,8 @@ export default async function handler(
   );
 
   // Initialize charity totals and per-chain allocated amounts (all in 18dp)
-  const choices = Object.keys(CHARITY_MAP).reduce(
+  const availableChoices = Object.keys(CHARITY_MAP);
+  const choices = availableChoices.reduce(
     (acc, cur) => ({ ...acc, [cur]: 0 }),
     {} as { [key: string]: number }
   );
@@ -120,7 +121,11 @@ export default async function handler(
       for (const choice of addressChoices) {
         const amount =
           (totalBalance18dp * BigInt(choice.percent)) / BigInt(100) / decimals;
-        choices[choice.name] = (choices[choice.name] || 0) + Number(amount);
+        // Fallback for deleted charities
+        const ch = availableChoices.includes(choice.name)
+          ? choice.name
+          : Charity.OPEN_SOURCE;
+        choices[ch] = (choices[ch] || 0) + Number(amount);
       }
     } catch (err) {
       console.error(
