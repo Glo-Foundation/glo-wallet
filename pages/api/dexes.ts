@@ -55,7 +55,7 @@ const ADDR_CHAIN_OTHR: {
     otherAddr: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
   },
   {
-    poolAddr: "0x6DB8d9D795C053ad0fd24723320E47b2a21c3dC1",
+    poolAddr: "0x60135e8Ec8B5075bC30E143dfe732dE30E68540D",
     chain: base,
     otherAddr: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     v2Quouter: "0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a",
@@ -139,6 +139,7 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
     decimals,
     name,
   } of ADDR_CHAIN_OTHR) {
+    console.log(`Processing ${poolAddr} at ${chain.name}...`);
     const chainId = chain.id;
     const gloAddr = getSmartContractAddress(chainId);
     const url = SCANNERS[chain.name];
@@ -459,13 +460,21 @@ export const getPoolData = async ({
     : BigInt(sqrtPriceX96) / BigInt(2 ** 96);
   const price = fraction ** BigInt(2);
 
-  const quotedAmountOut = await getQuote();
+  try {
+    const quotedAmountOut = await getQuote();
 
-  return {
-    price: toDecimals(formatUnits(price.toString(), decimalsDiff), 5),
-    amountIn: toDecimals(formatEther(amountIn)),
-    amountOut: toDecimals(formatUnits(quotedAmountOut, usdcDecimals)),
-  };
+    return {
+      price: toDecimals(formatUnits(price.toString(), decimalsDiff), 5),
+      amountIn: toDecimals(formatEther(amountIn)),
+      amountOut: toDecimals(formatUnits(quotedAmountOut, usdcDecimals)),
+    };
+  } catch (error) {
+    console.error(
+      `Error fetching quote for pool ${poolAddr} on chain ${chainId}:`,
+      error
+    );
+    return null;
+  }
 };
 
 const toDecimals = (str: string, digits = 2) => {
