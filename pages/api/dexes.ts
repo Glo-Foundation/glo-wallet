@@ -153,6 +153,10 @@ const collect = async ({ isCron }: { isCron: boolean }) => {
       decimals,
     });
 
+    if (!result) {
+      continue;
+    }
+
     const [glo, rawUsdc] = await fetchAlchemyBalances({
       poolAddr,
       chainName: chain.name,
