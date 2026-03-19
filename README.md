@@ -114,9 +114,7 @@ NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL="https://base-sepolia-rpc.publicnode.com"
 #### API Keys
 
 ```
-WEBHOOK_API_KEY="your-webhook-api-key"
 CMC_API_KEY="your-cmc-api-key"
-NEXT_PUBLIC_ALCHEMY_KEY="your-alchemy-key"
 MORALIS_API_KEY="your-moralis-api-key"
 ```
 
