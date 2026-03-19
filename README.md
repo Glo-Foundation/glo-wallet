@@ -118,6 +118,15 @@ CMC_API_KEY="your-cmc-api-key"
 MORALIS_API_KEY="your-moralis-api-key"
 ```
 
+#### KV Storage
+
+```
+KV_URL="your-kv-url"
+KV_REST_API_URL="your-kv-rest-api-url"
+KV_REST_API_TOKEN="your-kv-rest-api-token"
+KV_REST_API_READ_ONLY_TOKEN="your-kv-rest-api-read-only-token"
+```
+
 #### Database
 
 ```
